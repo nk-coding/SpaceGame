@@ -1,0 +1,45 @@
+package com.nkcoding.interpreter.compiler;
+
+public class TypeNamePair {
+
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    private String dataType;
+
+    public String getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(String dataType){
+        this.dataType = dataType;
+    }
+
+    //simple constructor
+    public TypeNamePair() {}
+
+    //constructor
+    public TypeNamePair(String name, String dataType){
+        this.name = name;
+        this.dataType = dataType;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('(');
+        sb.append(dataType);
+        sb.append(", ");
+        sb.append(name);
+        sb.append(')');
+        return sb.toString();
+    }
+
+}
