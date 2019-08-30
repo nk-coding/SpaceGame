@@ -133,6 +133,7 @@ public abstract class Component {
     //health has to be stored again, because it changes during simulation
     //if it reaches zero, the component should be destroyed TODO implementation
     //should be initialized in constructor out of componentDef
+    @ExternalProperty(key = "Health", readonly = true)
     private int health;
 
     public int getHealth(){
@@ -151,19 +152,21 @@ public abstract class Component {
     //it could be set ingame, but also uses automatic stuff
 
     //power that component requests
-    private float powerRequest;
+    @ExternalProperty(key = "PowerRequested")
+    private float powerRequested;
 
-    public float getPowerRequest(){
-        return powerRequest;
+    public float getPowerRequested(){
+        return powerRequested;
     }
 
-    void setPowerRequest(float powerRequest){
+    void setPowerRequested(float powerRequested){
         //TODO implementation
         //submit change to Ship
-        this.powerRequest = powerRequest;
+        this.powerRequested = powerRequested;
     }
 
     //how important is it to get the power
+    @ExternalProperty(key = "RequestLevel")
     private int requestLevel;
 
     public int getRequestLevel(){
@@ -177,6 +180,7 @@ public abstract class Component {
     }
 
     //shows if the component get the full power (used to prevent issues with float rounding)
+    @ExternalProperty(key = "HasFullPower", readonly = true)
     private boolean hasFullPower;
 
     public boolean isHasFullPower() {
@@ -190,16 +194,17 @@ public abstract class Component {
     }
 
     //how much power does it actually get
-    private float receivedPower;
+    @ExternalProperty(key = "PowerReceived", readonly = true)
+    private float powerReceived;
 
-    public float getReceivedPower(){
-        return receivedPower;
+    public float getPowerReceived(){
+        return powerReceived;
     }
 
-    void setReceivedPower(float receivedPower){
+    void setPowerReceived(float powerReceived){
         //TODO implementation
         //call a callback that the power level has changed
-        this.receivedPower = receivedPower;
+        this.powerReceived = powerReceived;
     }
 
     //constructor to force subclasses to implement important stuff
