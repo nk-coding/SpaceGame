@@ -32,7 +32,7 @@ public class ScriptingEngine {
                 e.printStackTrace();
             }
             catch (Exception fatal) {
-                System.out.println("fatal exception occured");
+                System.out.println("fatal exception occurred");
                 fatal.printStackTrace();
             }
             stack.clearStackLevel();
