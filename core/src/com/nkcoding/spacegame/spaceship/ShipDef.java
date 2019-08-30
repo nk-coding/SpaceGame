@@ -68,7 +68,7 @@ public class ShipDef {
     }
 
     //the max width / height of a ship
-    public static final int MAX_SIZE = 100;
+    public static final int MAX_SIZE = 25;
 
     //the size of one unit in box2d
     public static final float UNIT_SIZE = 0.1f;

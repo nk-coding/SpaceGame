@@ -144,7 +144,8 @@ public abstract class Component {
         if (health < 0) health = 0;
         this.health = health;
         if (health == 0){
-            //TODO
+            //destroy this component
+            ship.destroyComponent(this);
         }
     }
 
@@ -221,9 +222,11 @@ public abstract class Component {
     }
 
     //get the instance of a definition, this is necessary to avoid bugs
+    /*
     public static ComponentDef createDefinition(){
         return null;
     }
+     */
 
     //the physics system
 
