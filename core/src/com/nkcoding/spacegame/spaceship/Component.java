@@ -153,7 +153,7 @@ public abstract class Component {
     //it could be set ingame, but also uses automatic stuff
 
     //power that component requests
-    @ExternalProperty(key = "PowerRequested")
+    @ExternalProperty(key = "PowerRequested", readonly = true)
     private float powerRequested;
 
     public float getPowerRequested(){
@@ -161,8 +161,8 @@ public abstract class Component {
     }
 
     void setPowerRequested(float powerRequested){
-        //TODO implementation
         //submit change to Ship
+        if (powerRequested != this.powerRequested) ship.invalidatePowerDelivery();
         this.powerRequested = powerRequested;
     }
 
@@ -175,8 +175,8 @@ public abstract class Component {
     }
 
     void setRequestLevel(int requestLevel){
-        //TODO implementation
         //submit change to ship
+        if (requestLevel != this.requestLevel) ship.invalidatePowerLevelOrder();
         this.requestLevel = requestLevel;
     }
 
@@ -206,6 +206,8 @@ public abstract class Component {
         //TODO implementation
         //call a callback that the power level has changed
         this.powerReceived = powerReceived;
+        //update has full power
+        setHasFullPower(powerRequested == powerReceived);
     }
 
     //constructor to force subclasses to implement important stuff
@@ -228,6 +230,8 @@ public abstract class Component {
     }
      */
 
+
+
     //the physics system
 
     //add the shapes
@@ -241,6 +245,10 @@ public abstract class Component {
             body.destroyFixture(f);
         }
         fixtures.clear();
+    }
+
+    void act (float time) {
+        //TODO implementation
     }
 }
 
