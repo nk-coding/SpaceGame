@@ -2,7 +2,7 @@ package com.nkcoding.interpreter;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ExternMethodFuture extends CompletableFuture<Object> {
+public class ExternalMethodFuture extends CompletableFuture<Object> {
     //the parameters for the method
     private Object[] parameters;
 

@@ -11,9 +11,9 @@ public class ScriptingEngine {
 
     //Queue of all ExternMethodFutures, they will be executed on the main tread
     //therefore, this queue must be concurrent
-    private ConcurrentLinkedQueue<ExternMethodFuture> futureQueue = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<ExternalMethodFuture> futureQueue = new ConcurrentLinkedQueue<>();
 
-    public ConcurrentLinkedQueue<ExternMethodFuture> getFutureQueue() {
+    public ConcurrentLinkedQueue<ExternalMethodFuture> getFutureQueue() {
         return futureQueue;
     }
 

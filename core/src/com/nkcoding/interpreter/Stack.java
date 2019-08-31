@@ -64,7 +64,7 @@ public class Stack {
     }
 
     //should add this to the list on the main thread
-    public void requestExternMethod(ExternMethodFuture future){
+    public void requestExternMethod(ExternalMethodFuture future){
         scriptingEngine.getFutureQueue().add(future);
     }
 }

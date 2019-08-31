@@ -41,6 +41,7 @@ public class SpaceSimulation implements Simulated{
     //implementation for Simulated
     @Override
     public void act(float time) {
+        //handle all external Methods
         for (Ship ship : ships) {
             //call act on ships
             ship.act(time);

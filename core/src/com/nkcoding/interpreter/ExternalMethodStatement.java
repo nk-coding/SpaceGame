@@ -1,6 +1,6 @@
 package com.nkcoding.interpreter;
 
-public class ExternMethodStatement<T> implements Statement, Expression<T> {
+public class ExternalMethodStatement<T> implements Statement, Expression<T> {
 
     //normally used to init
     protected Expression[] parameterExpressions = null;
@@ -17,7 +17,7 @@ public class ExternMethodStatement<T> implements Statement, Expression<T> {
 
     private String type;
 
-    public ExternMethodStatement(String type) {
+    public ExternalMethodStatement(String type) {
         this.type = type;
     }
 
@@ -33,7 +33,7 @@ public class ExternMethodStatement<T> implements Statement, Expression<T> {
         else{
             parameters = new Object[0];
         }
-        ExternMethodFuture future = new ExternMethodFuture();
+        ExternalMethodFuture future = new ExternalMethodFuture();
         future.setParameters(parameters);
         stack.requestExternMethod(future);
         try {
