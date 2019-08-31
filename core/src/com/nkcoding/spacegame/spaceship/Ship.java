@@ -2,6 +2,7 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.spacegame.Simulated;
 import com.nkcoding.spacegame.SpaceSimulation;
 
@@ -248,5 +249,38 @@ public class Ship implements Simulated {
     @Override
     public void draw(SpriteBatch batch) {
 
+    }
+
+    /**
+     * get or set the value
+     * @param future the ExternalMethodFuture which contains name and parameters
+     */
+    public void handleExternalMethod(ExternalMethodFuture future) {
+        Component component = components.stream().filter(com -> com.getName().equals(future.getParameters()[future.getParameters().length - 1])).findFirst().orElse(null);
+        if (component != null) {
+            switch (future.getName()) {
+                case "getHealth":
+                    future.complete(component.getHealth());
+                    break;
+                case "getPowerRequested":
+                    future.complete(component.getPowerRequested());
+                    break;
+                case "getRequestLevel":
+                    future.complete(component.getRequestLevel());
+                    break;
+                case "setRequestLevel":
+                    component.setRequestLevel((int)future.getParameters()[0]);
+                    future.complete(null);
+                    break;
+                case "getHasFullPower":
+                    future.complete(component.isHasFullPower());
+                    break;
+                case "getPowerReceived":
+                    future.complete(component.getPowerReceived());
+                    break;
+                default:
+                    throw new IllegalArgumentException("can't handle " + future.getName());
+            }
+        }
     }
 }

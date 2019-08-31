@@ -278,10 +278,10 @@ public abstract class Component {
 
     private static MethodDefinition createExternalMethodDef(String name, String type, boolean get) {
         if (get) {
-            return new MethodDefinition(MethodType.External, name, type);
+            return new MethodDefinition(MethodType.External, name, type, new TypeNamePair("id", DataTypes.String));
         }
         else {
-            return new MethodDefinition(MethodType.External, name, DataTypes.Void, new TypeNamePair("value", type));
+            return new MethodDefinition(MethodType.External, name, DataTypes.Void, new TypeNamePair("value", type), new TypeNamePair("id", DataTypes.String));
         }
     }
 
