@@ -2,8 +2,13 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.MethodDefinition;
+import com.nkcoding.interpreter.compiler.MethodType;
+import com.nkcoding.interpreter.compiler.TypeNamePair;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Component {
     //subclass which contains all the stuff that is necessary to design a ship but not emulate it
@@ -269,6 +274,37 @@ public abstract class Component {
 
     void act (float time) {
         //TODO implementation
+    }
+
+    private static MethodDefinition createExternalMethodDef(String name, String type, boolean get) {
+        if (get) {
+            return new MethodDefinition(MethodType.External, name, type);
+        }
+        else {
+            return new MethodDefinition(MethodType.External, name, DataTypes.Void, new TypeNamePair("value", type));
+        }
+    }
+
+    /**
+     * creates an array with all existing external methods
+     * @return the Array with the external method definitions
+     */
+    public static MethodDefinition[] createExternalMethodDefs() {
+        //TODO add others
+        //register all external methods
+        List<MethodDefinition> externalMethods = new ArrayList<>();
+        //health
+        externalMethods.add(Component.createExternalMethodDef("getHealth", DataTypes.Integer, true));
+        //powerRequested
+        externalMethods.add(Component.createExternalMethodDef("getPowerRequested", DataTypes.Double, true));
+        //requestLevel
+        externalMethods.add(Component.createExternalMethodDef("getRequestLevel", DataTypes.Integer, true));
+        externalMethods.add(Component.createExternalMethodDef("setRequestLevel", DataTypes.Integer, false));
+        //hasFullPower
+        externalMethods.add(Component.createExternalMethodDef("getHasFullPower", DataTypes.Boolean, true));
+        //powerReceived
+        externalMethods.add(Component.createExternalMethodDef("getPowerReceived", DataTypes.Double, true));
+        return externalMethods.toArray(MethodDefinition[]::new);
     }
 }
 

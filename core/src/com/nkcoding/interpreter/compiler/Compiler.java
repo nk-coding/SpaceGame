@@ -638,7 +638,7 @@ public class Compiler {
                     preDef.setParameterExpressions(arguments);
                     preDef.setPredefinedMethod(methods.getPredefinedMethod(def));
                     return preDef;
-                case Extern:
+                case External:
                     ExternMethodStatement exMeth = new ExternMethodStatement(def.getReturnType());
                     exMeth.setName(def.getName());
                     exMeth.setParameterExpressions(arguments);
