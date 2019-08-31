@@ -91,11 +91,23 @@ public abstract class Component {
             return type;
         }
 
+        //name for the component
+        private String name = "";
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
         //constructor
         //force subclasses to implement a type
         public ComponentDef(ComponentType type){
             this.type = type;
         }
+
     }
 
     //Type if the Component
@@ -103,6 +115,11 @@ public abstract class Component {
 
     public ComponentType getType(){
         return type;
+    }
+
+    //get the name
+    public String getName() {
+        return componentDef.getName();
     }
 
     //ComponentDef with which this was created, a reference is stored to reduce duplicate variables

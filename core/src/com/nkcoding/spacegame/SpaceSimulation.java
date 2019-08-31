@@ -1,10 +1,11 @@
 package com.nkcoding.spacegame;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.nkcoding.spacegame.spaceship.Ship;
 
 import java.util.ArrayList;
 
-public class SpaceSimulation {
+public class SpaceSimulation implements Simulated{
     public static final float SCALE_FACTOR = 350f;
 
     //list with all ships
@@ -27,4 +28,15 @@ public class SpaceSimulation {
     }
 
 
+    //implementation for Simulated
+    @Override
+    public void act(float time) {
+
+    }
+
+    //implementation for Simulated
+    @Override
+    public void draw(SpriteBatch batch) {
+
+    }
 }
