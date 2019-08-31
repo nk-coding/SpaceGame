@@ -1,10 +1,10 @@
 package com.nkcoding.interpreter.compiler;
 
 
-import com.nkcoding.interpreter.DoubleToIntegerCast;
 import com.nkcoding.interpreter.Expression;
+import com.nkcoding.interpreter.FloatToIntegerCast;
 import com.nkcoding.interpreter.GetValueExpression;
-import com.nkcoding.interpreter.IntegerToDoubleCast;
+import com.nkcoding.interpreter.IntegerToFloatCast;
 import com.nkcoding.interpreter.operators.*;
 
 import java.util.Arrays;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CompilerHelper {
     //array with all the reserved keywords
-    private static final String[] keywords = new String[] {"int", "double", "boolean", "void", "if", "else", "for", "while", "return", "null", "true", "false"};
+    private static final String[] keywords = new String[] {"int", "float", "boolean", "void", "if", "else", "for", "while", "return", "null", "true", "false"};
 
     //checks if a name is already in a list of MethodDefinition
     public static boolean methodDefinitionsContainName(List<MethodDefinition> methodDefinitions, String name) {
@@ -107,8 +107,8 @@ public class CompilerHelper {
         }
     }
 
-    //parse a double
-    public static double parseDouble(ProgramTextWrapper text) throws CompileException {
+    //parse a float
+    public static float parseFloat(ProgramTextWrapper text) throws CompileException {
         StringBuilder sb = new StringBuilder();
         boolean endReached = false;
         boolean dotFound = false;
@@ -131,7 +131,7 @@ public class CompilerHelper {
             }
         }
         try {
-            return Double.parseDouble(sb.toString());
+            return Float.parseFloat(sb.toString());
         }
         catch (NumberFormatException e) {
             throw new CompileException(e.toString(), text.getPosition());
@@ -185,10 +185,10 @@ public class CompilerHelper {
             //correct type if possible
             switch (exp1.getType()) {
                 case DataTypes.Integer:
-                    if (exp2.getType().equals(DataTypes.Double)) exp2 = new DoubleToIntegerCast(exp2);
+                    if (exp2.getType().equals(DataTypes.Float)) exp2 = new FloatToIntegerCast(exp2);
                     break;
-                case DataTypes.Double:
-                    if (exp2.getType().equals(DataTypes.Integer)) exp2 = new IntegerToDoubleCast(exp2);
+                case DataTypes.Float:
+                    if (exp2.getType().equals(DataTypes.Integer)) exp2 = new IntegerToFloatCast(exp2);
                     break;
             }
             //check if type is now correct
@@ -199,8 +199,8 @@ public class CompilerHelper {
             switch (op) {
                 case AddAssign:
                     switch (exp1.getType()) {
-                        case DataTypes.Double:
-                            binaryOperation = new AddAssignmentDoubleOperation(variableName);
+                        case DataTypes.Float:
+                            binaryOperation = new AddAssignmentFloatOperation(variableName);
                             break;
                         case DataTypes.Integer:
                             binaryOperation = new AddAssignmentIntegerOperation(variableName);
@@ -214,8 +214,8 @@ public class CompilerHelper {
                     break;
                 case SubtractAssign:
                     switch (exp1.getType()) {
-                        case DataTypes.Double:
-                            binaryOperation = new SubtractAssignmentDoubleOperation(variableName);
+                        case DataTypes.Float:
+                            binaryOperation = new SubtractAssignmentFloatOperation(variableName);
                             break;
                         case DataTypes.Integer:
                             binaryOperation = new SubtractAssignmentIntegerOperation(variableName);
@@ -226,8 +226,8 @@ public class CompilerHelper {
                     break;
                 case MultiplyAssign:
                     switch (exp1.getType()) {
-                        case DataTypes.Double:
-                            binaryOperation = new MultiplyAssignmentDoubleOperation(variableName);
+                        case DataTypes.Float:
+                            binaryOperation = new MultiplyAssignmentFloatOperation(variableName);
                             break;
                         case DataTypes.Integer:
                             binaryOperation = new MultiplyAssignmentIntegerOperation(variableName);
@@ -238,8 +238,8 @@ public class CompilerHelper {
                     break;
                 case DivideAssign:
                     switch (exp1.getType()) {
-                        case DataTypes.Double:
-                            binaryOperation = new DivideAssignmentDoubleOperation(variableName);
+                        case DataTypes.Float:
+                            binaryOperation = new DivideAssignmentFloatOperation(variableName);
                             break;
                         case DataTypes.Integer:
                             binaryOperation = new DivideAssignmentIntegerOperation(variableName);
@@ -250,8 +250,8 @@ public class CompilerHelper {
                     break;
                 case ModAssign:
                     switch (exp1.getType()) {
-                        case DataTypes.Double:
-                            binaryOperation = new ModAssignmentDoubleOperation(variableName);
+                        case DataTypes.Float:
+                            binaryOperation = new ModAssignmentFloatOperation(variableName);
                             break;
                         case DataTypes.Integer:
                             binaryOperation = new ModAssignmentIntegerOperation(variableName);
@@ -272,10 +272,10 @@ public class CompilerHelper {
         }
         else {
             //correct the type if possible
-            if (exp1.getType().equals(DataTypes.Integer) && exp2.getType().equals(DataTypes.Double))
-                exp1 = new IntegerToDoubleCast(exp1);
-            else if (exp1.getType().equals(DataTypes.Double) && exp2.getType().equals(DataTypes.Integer))
-                exp2 = new IntegerToDoubleCast(exp2);
+            if (exp1.getType().equals(DataTypes.Integer) && exp2.getType().equals(DataTypes.Float))
+                exp1 = new IntegerToFloatCast(exp1);
+            else if (exp1.getType().equals(DataTypes.Float) && exp2.getType().equals(DataTypes.Integer))
+                exp2 = new IntegerToFloatCast(exp2);
             //now check the type
             if (!exp1.getType().equals(exp2.getType()))
                 throw new CompileException(exp1.getType() + "can't be castet implicitly to " + exp2.getType(), pos);
@@ -284,8 +284,8 @@ public class CompilerHelper {
             switch(op){
                 case Add:
                     switch (exp1.getType()) {
-                        case DataTypes.Double:
-                            binaryOperation = new AddDoubleOperation();
+                        case DataTypes.Float:
+                            binaryOperation = new AddFloatOperation();
                             break;
                         case DataTypes.Integer:
                             binaryOperation = new AddIntegerOperation();
@@ -299,8 +299,8 @@ public class CompilerHelper {
                     break;
                 case Subtract:
                     switch (exp1.getType()) {
-                        case DataTypes.Double:
-                            binaryOperation = new SubtractDoubleOperation();
+                        case DataTypes.Float:
+                            binaryOperation = new SubtractFloatOperation();
                             break;
                         case DataTypes.Integer:
                             binaryOperation = new SubtractIntegerOperation();
@@ -311,8 +311,8 @@ public class CompilerHelper {
                     break;
                 case Multiply:
                     switch (exp1.getType()) {
-                        case DataTypes.Double:
-                            binaryOperation = new MultiplyDoubleOperation();
+                        case DataTypes.Float:
+                            binaryOperation = new MultiplyFloatOperation();
                             break;
                         case DataTypes.Integer:
                             binaryOperation = new MultiplyIntegerOperation();
@@ -323,8 +323,8 @@ public class CompilerHelper {
                     break;
                 case Divide:
                     switch (exp1.getType()) {
-                        case DataTypes.Double:
-                            binaryOperation = new DivideDoubleOperation();
+                        case DataTypes.Float:
+                            binaryOperation = new DivideFloatOperation();
                             break;
                         case DataTypes.Integer:
                             binaryOperation = new DivideIntegerOperation();
@@ -335,8 +335,8 @@ public class CompilerHelper {
                     break;
                 case Mod:
                     switch (exp1.getType()) {
-                        case DataTypes.Double:
-                            binaryOperation = new ModDoubleOperation();
+                        case DataTypes.Float:
+                            binaryOperation = new ModFloatOperation();
                             break;
                         case DataTypes.Integer:
                             binaryOperation = new ModIntegerOperation();
@@ -357,8 +357,8 @@ public class CompilerHelper {
                     return (Expression)binExBase;
                 case Greater:
                     switch (exp1.getType()) {
-                        case DataTypes.Double:
-                            binExBase =  new GreaterDoubleOperation();
+                        case DataTypes.Float:
+                            binExBase =  new GreaterFloatOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
                             return (Expression)binExBase;
@@ -372,8 +372,8 @@ public class CompilerHelper {
                     }
                 case GreaterEquals:
                     switch (exp1.getType()) {
-                        case DataTypes.Double:
-                            binExBase =  new GreaterEqualsDoubleOperation();
+                        case DataTypes.Float:
+                            binExBase =  new GreaterEqualsFloatOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
                             return (Expression)binExBase;
@@ -388,8 +388,8 @@ public class CompilerHelper {
                     }
                 case Lesser:
                     switch (exp1.getType()) {
-                        case DataTypes.Double:
-                            binExBase =  new LesserDoubleOperation();
+                        case DataTypes.Float:
+                            binExBase =  new LesserFloatOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
                             return (Expression)binExBase;
@@ -403,8 +403,8 @@ public class CompilerHelper {
                     }
                 case LesserEquals:
                     switch (exp1.getType()) {
-                        case DataTypes.Double:
-                            binExBase =  new LesserEqualsDoubleOperation();
+                        case DataTypes.Float:
+                            binExBase =  new LesserEqualsFloatOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
                             return (Expression)binExBase;

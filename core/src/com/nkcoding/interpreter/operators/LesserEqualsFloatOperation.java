@@ -4,7 +4,7 @@ import com.nkcoding.interpreter.Expression;
 import com.nkcoding.interpreter.Stack;
 import com.nkcoding.interpreter.compiler.DataTypes;
 
-public class LesserEqualsDoubleOperation extends BinaryExpressionBase<Double> implements Expression<Boolean> {
+public class LesserEqualsFloatOperation extends BinaryExpressionBase<Float> implements Expression<Boolean> {
     @Override
     public Boolean getResult(Stack stack) {
         return firstExpression.getResult(stack) <= secondExpression.getResult(stack);

@@ -5,18 +5,18 @@ import com.nkcoding.interpreter.Stack;
 import com.nkcoding.interpreter.StackItem;
 import com.nkcoding.interpreter.Statement;
 
-public class SubtractAssignmentDoubleOperation extends SubtractDoubleOperation implements Statement {
+public class MultiplyAssignmentFloatOperation extends MultiplyFloatOperation implements Statement {
 
     private String name;
 
-    public SubtractAssignmentDoubleOperation(String name){
+    public MultiplyAssignmentFloatOperation(String name){
         this.name = name;
     }
 
     @Override
-    public Double getResult(Stack stack){
-        Double res = super.getResult(stack);
-        ((StackItem<Double>) stack.getFromStack(name)).setValue(res);
+    public Float getResult(Stack stack){
+        Float res = super.getResult(stack);
+        ((StackItem<Float>) stack.getFromStack(name)).setValue(res);
         return res;
     }
 

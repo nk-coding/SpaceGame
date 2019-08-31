@@ -30,8 +30,8 @@ public class DefineValueStatement<T> implements Statement {
 
     private Object getAlternativeValue(){
         switch(type) {
-            case DataTypes.Double:
-                return (double) 0;
+            case DataTypes.Float:
+                return (float) 0;
             case DataTypes.Integer:
                 return 0;
             case DataTypes.Boolean:

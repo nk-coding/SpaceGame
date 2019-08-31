@@ -5,17 +5,18 @@ import com.nkcoding.interpreter.Stack;
 import com.nkcoding.interpreter.StackItem;
 import com.nkcoding.interpreter.Statement;
 
-public class DivideAssignmentDoubleOperation extends DivideDoubleOperation implements Statement {
+public class ModAssignmentFloatOperation extends ModFloatOperation implements Statement {
 
     private String name;
 
-    public DivideAssignmentDoubleOperation(String name){
-        this.name = name; }
+    public ModAssignmentFloatOperation(String name){
+        this.name = name;
+    }
 
     @Override
-    public Double getResult(Stack stack){
-        Double res = super.getResult(stack);
-        ((StackItem<Double>) stack.getFromStack(name)).setValue(res);
+    public Float getResult(Stack stack){
+        Float res = super.getResult(stack);
+        ((StackItem<Float>) stack.getFromStack(name)).setValue(res);
         return res;
     }
 
@@ -23,4 +24,5 @@ public class DivideAssignmentDoubleOperation extends DivideDoubleOperation imple
     public void run(Stack stack) throws ReturnException {
         getResult(stack);
     }
+
 }

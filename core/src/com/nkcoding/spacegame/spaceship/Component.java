@@ -296,14 +296,14 @@ public abstract class Component {
         //health
         externalMethods.add(Component.createExternalMethodDef("getHealth", DataTypes.Integer, true));
         //powerRequested
-        externalMethods.add(Component.createExternalMethodDef("getPowerRequested", DataTypes.Double, true));
+        externalMethods.add(Component.createExternalMethodDef("getPowerRequested", DataTypes.Float, true));
         //requestLevel
         externalMethods.add(Component.createExternalMethodDef("getRequestLevel", DataTypes.Integer, true));
         externalMethods.add(Component.createExternalMethodDef("setRequestLevel", DataTypes.Integer, false));
         //hasFullPower
         externalMethods.add(Component.createExternalMethodDef("getHasFullPower", DataTypes.Boolean, true));
         //powerReceived
-        externalMethods.add(Component.createExternalMethodDef("getPowerReceived", DataTypes.Double, true));
+        externalMethods.add(Component.createExternalMethodDef("getPowerReceived", DataTypes.Float, true));
         return externalMethods.toArray(MethodDefinition[]::new);
     }
 }

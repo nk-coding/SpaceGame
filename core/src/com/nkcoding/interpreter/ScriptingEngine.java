@@ -59,8 +59,8 @@ public class ScriptingEngine {
                             case DataTypes.Boolean:
                                 stack.addToStack(parameterNames[x].getName(), (Boolean)parameters[x], DataTypes.Boolean);
                                 break;
-                            case DataTypes.Double:
-                                stack.addToStack(parameterNames[x].getName(), (Double)parameters[x], DataTypes.Double);
+                            case DataTypes.Float:
+                                stack.addToStack(parameterNames[x].getName(), (Float)parameters[x], DataTypes.Float);
                                 break;
                             case DataTypes.Integer:
                                 stack.addToStack(parameterNames[x].getName(), (Integer)parameters[x], DataTypes.Integer);

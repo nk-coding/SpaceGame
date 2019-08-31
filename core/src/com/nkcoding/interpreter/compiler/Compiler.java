@@ -376,25 +376,25 @@ public class Compiler {
                 mainExpression = new RawValueExpression<>(CompilerHelper.parseString(text), DataTypes.String);
             }
             else if (firstOfMain == '.') {
-                //this is a legal double
-                mainExpression = new RawValueExpression<>(CompilerHelper.parseDouble(text), DataTypes.Double);
+                //this is a legal float
+                mainExpression = new RawValueExpression<>(CompilerHelper.parseFloat(text), DataTypes.Float);
             }
             else if (Character.isDigit(firstOfMain)) {
-                //it is a raw double or int, find it out with the exception
+                //it is a raw float or int, find it out with the exception
                 ProgramPosition pos = text.getPosition();
                 try {
                     int val = CompilerHelper.parseInt(text);
                     mainExpression = new RawValueExpression<>(val, DataTypes.Integer);
                 }
                 catch (CompilerHelper.WrongTypeException e) {
-                    //it was a double
+                    //it was a float
                     //reset position and try again
                     text.setPosition(pos);
-                    mainExpression = new RawValueExpression<>(CompilerHelper.parseDouble(text), DataTypes.Double);
+                    mainExpression = new RawValueExpression<>(CompilerHelper.parseFloat(text), DataTypes.Float);
                 }
             }
             else {
-                //it's not a double or an integer, so get the complete String
+                //it's not a float or an integer, so get the complete String
                 String exp = text.getNextWord();
                 //check if it is a raw boolean
                 if (exp.equals("true") || exp.equals("false")) {
@@ -477,14 +477,14 @@ public class Compiler {
                     aaio.setSecondExpression(new RawValueExpression<Integer>(plusPostfix ? 1 : -1, DataTypes.Integer));
                     mainExpression = aaio;
                     break;
-                case DataTypes.Double:
-                    AddAssignmentDoubleOperation aado = new AddAssignmentDoubleOperation(getValueExpression.getName());
-                    aado.setFirstExpression((Expression<Double>)mainExpression);
-                    aado.setSecondExpression(new RawValueExpression<Double>(plusPostfix ? 1d : -1d, DataTypes.Double));
+                case DataTypes.Float:
+                    AddAssignmentFloatOperation aado = new AddAssignmentFloatOperation(getValueExpression.getName());
+                    aado.setFirstExpression((Expression<Float>)mainExpression);
+                    aado.setSecondExpression(new RawValueExpression<Float>(plusPostfix ? 1f : -1f, DataTypes.Float));
                     mainExpression = aado;
                     break;
                 default:
-                    throw new CompileException("type mismatch: expected: int or double found: " + mainExpression.getType(), text.getPosition());
+                    throw new CompileException("type mismatch: expected: int or float found: " + mainExpression.getType(), text.getPosition());
             }
         }
         //apply unary minus if necessary
@@ -496,13 +496,13 @@ public class Compiler {
                     nio.setFirstExpression((Expression<Integer>)mainExpression);
                     mainExpression = nio;
                     break;
-                case DataTypes.Double:
-                    NegateDoubleOperation ndo = new NegateDoubleOperation();
-                    ndo.setFirstExpression((Expression<Double>)mainExpression);
+                case DataTypes.Float:
+                    NegateFloatOperation ndo = new NegateFloatOperation();
+                    ndo.setFirstExpression((Expression<Float>)mainExpression);
                     mainExpression = ndo;
                     break;
                 default:
-                    throw new CompileException("unary minus can only be applied to int or double expressions", text.getPosition());
+                    throw new CompileException("unary minus can only be applied to int or float expressions", text.getPosition());
 
             }
         }
@@ -581,28 +581,28 @@ public class Compiler {
                                 //same type, everything ok
                                 arguments[x] = methodArguments.get(x);
                                 break;
-                            case DataTypes.Double:
+                            case DataTypes.Float:
                                 //cast implicitly
-                                arguments[x] = new IntegerToDoubleCast((Expression<Integer>)methodArguments.get(x));
+                                arguments[x] = new IntegerToFloatCast((Expression<Integer>)methodArguments.get(x));
                                 break;
                             default:
                                 //type does not fit, throw an exception
                                 throw new CompileException("type mismatch: int can not be casted implicitly to " + parameters[x].getDataType(), text.getPosition());
                         }
                         break;
-                    case DataTypes.Double:
+                    case DataTypes.Float:
                         switch (parameters[x].getDataType()) {
-                            case DataTypes.Double:
+                            case DataTypes.Float:
                                 //same type, everything ok
                                 arguments[x] = methodArguments.get(x);
                                 break;
                             case DataTypes.Integer:
                                 //cast implicitly
-                                arguments[x] = new DoubleToIntegerCast((Expression<Double>)methodArguments.get(x));
+                                arguments[x] = new FloatToIntegerCast((Expression<Float>)methodArguments.get(x));
                                 break;
                             default:
                                 //type does not fit, throw an exception
-                                throw new CompileException("type mismatch: double can not be casted implicitly to " + parameters[x].getDataType(), text.getPosition());
+                                throw new CompileException("type mismatch: float can not be casted implicitly to " + parameters[x].getDataType(), text.getPosition());
                         }
                         break;
                     default:
@@ -772,10 +772,10 @@ public class Compiler {
             else {
                 Expression assignToReturn = compileCompleteExpression();
                 //correct type if possible
-                if (actualMethod.getReturnType().equals(DataTypes.Integer) && assignToReturn.getType().equals(DataTypes.Double))
-                    assignToReturn = new DoubleToIntegerCast(assignToReturn);
-                else if (actualMethod.getReturnType().equals(DataTypes.Double) && assignToReturn.getType().equals(DataTypes.Integer))
-                    assignToReturn = new IntegerToDoubleCast(assignToReturn);
+                if (actualMethod.getReturnType().equals(DataTypes.Integer) && assignToReturn.getType().equals(DataTypes.Float))
+                    assignToReturn = new FloatToIntegerCast(assignToReturn);
+                else if (actualMethod.getReturnType().equals(DataTypes.Float) && assignToReturn.getType().equals(DataTypes.Integer))
+                    assignToReturn = new IntegerToFloatCast(assignToReturn);
                 //check if type is correct
                 if (!actualMethod.getReturnType().equals(assignToReturn.getType()))
                     throw new CompileException("wrong return type", text.getPosition());
@@ -804,10 +804,10 @@ public class Compiler {
                     //it is an assignment
                     initExpression = compileCompleteExpression();
                     //correct type if possible
-                    if (firstWord.equals(DataTypes.Integer) && initExpression.getType().equals(DataTypes.Double))
-                        initExpression = new DoubleToIntegerCast(initExpression);
-                    else if (firstWord.equals(DataTypes.Double) && initExpression.getType().equals(DataTypes.Integer))
-                        initExpression = new IntegerToDoubleCast(initExpression);
+                    if (firstWord.equals(DataTypes.Integer) && initExpression.getType().equals(DataTypes.Float))
+                        initExpression = new FloatToIntegerCast(initExpression);
+                    else if (firstWord.equals(DataTypes.Float) && initExpression.getType().equals(DataTypes.Integer))
+                        initExpression = new IntegerToFloatCast(initExpression);
                     //check if type is correct
                     if (!firstWord.equals(initExpression.getType()))
                         throw new CompileException("can't assign " + initExpression.getType() + " to " + firstWord, text.getPosition());

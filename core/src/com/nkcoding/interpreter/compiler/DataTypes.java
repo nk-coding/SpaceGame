@@ -2,7 +2,7 @@ package com.nkcoding.interpreter.compiler;
 
 public class DataTypes {
     public static final String Integer = "int";
-    public static final String Double = "double";
+    public static final String Float = "float";
     public static final String Boolean = "boolean";
     public static final String String = "String";
     //just used for methods
@@ -16,7 +16,7 @@ public class DataTypes {
     //check if it contains datatype
     public static boolean containsDataType(String type){
         return type.equals(Integer) ||
-                type.equals(Double) ||
+                type.equals(Float) ||
                 type.equals(Boolean) ||
                 type.equals(String);
     }

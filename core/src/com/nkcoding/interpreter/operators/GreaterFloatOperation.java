@@ -4,10 +4,10 @@ import com.nkcoding.interpreter.Expression;
 import com.nkcoding.interpreter.Stack;
 import com.nkcoding.interpreter.compiler.DataTypes;
 
-public class LesserDoubleOperation extends BinaryExpressionBase<Double> implements Expression<Boolean> {
+public class GreaterFloatOperation extends BinaryExpressionBase<Float> implements Expression<Boolean> {
     @Override
     public Boolean getResult(Stack stack) {
-        return firstExpression.getResult(stack) < secondExpression.getResult(stack);
+        return firstExpression.getResult(stack) > secondExpression.getResult(stack);
     }
 
     @Override

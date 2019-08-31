@@ -1,9 +1,9 @@
 package com.nkcoding.interpreter;
 
-public class DoubleToIntegerCast implements Expression<Integer> {
-    private Expression<Double> toCast;
+public class FloatToIntegerCast implements Expression<Integer> {
+    private Expression<Float> toCast;
 
-    public DoubleToIntegerCast(Expression<Double> toCast){
+    public FloatToIntegerCast(Expression<Float> toCast){
         this.toCast = toCast;
     }
 

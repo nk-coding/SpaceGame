@@ -40,10 +40,10 @@ public class Methods {
                 {
                     return String.valueOf((int)obj[0]);
                 });
-        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "doubleToStr", DataTypes.String, new TypeNamePair("i", DataTypes.Double)),
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "floatToStr", DataTypes.String, new TypeNamePair("i", DataTypes.Float)),
                 (Function<Object[], String>) obj ->
                 {
-                    return String.valueOf((double)obj[0]);
+                    return String.valueOf((float)obj[0]);
                 });
         predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "boolToStr", DataTypes.String, new TypeNamePair("i", DataTypes.Boolean)),
                 (Function<Object[], String>) obj ->
