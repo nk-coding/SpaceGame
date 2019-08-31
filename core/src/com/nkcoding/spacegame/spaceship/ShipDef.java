@@ -49,8 +49,8 @@ public class ShipDef {
         //otherwise this might lead to unexpected behaviour
         public void MoveComponent(Component.ComponentDef componentDef, int x, int y, int rotation){
             //delete the old references
-            for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); x++){
-                for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); y++){
+            for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++){
+                for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++){
                     componentsMap[_x][_y] = null;
                 }
             }
@@ -59,8 +59,8 @@ public class ShipDef {
             componentDef.setX(x);
             componentDef.setY(y);
             //add new references
-            for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); x++){
-                for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); y++){
+            for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++){
+                for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++){
                     componentsMap[_x][_y] = componentDef;
                 }
             }
@@ -73,6 +73,6 @@ public class ShipDef {
     //the size of one unit in box2d
     public static final float UNIT_SIZE = 0.1f;
 
-    final ArrayList<Component.ComponentDef> componentDefs = new ArrayList<Component.ComponentDef>();
+    final ArrayList<Component.ComponentDef> componentDefs = new ArrayList<>();
 
 }

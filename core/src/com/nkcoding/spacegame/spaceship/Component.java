@@ -127,6 +127,9 @@ public abstract class Component {
         //TODO other implementation stuff (probably graphical stuff)
     }
 
+    //helper to check structural integrity
+    boolean structureHelper = false;
+
     //it stores the shapes, so it can resit it if necessary and also remove it from the Ship
     protected final ArrayList<Fixture> fixtures = new ArrayList<Fixture>();
 
