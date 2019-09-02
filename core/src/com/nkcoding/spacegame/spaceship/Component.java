@@ -158,7 +158,6 @@ public abstract class Component {
     //health has to be stored again, because it changes during simulation
     //if it reaches zero, the component should be destroyed TODO implementation
     //should be initialized in constructor out of componentDef
-    @ExternalProperty(key = "Health", readonly = true)
     private int health;
 
     public int getHealth(){
@@ -178,7 +177,6 @@ public abstract class Component {
     //it could be set ingame, but also uses automatic stuff
 
     //power that component requests
-    @ExternalProperty(key = "PowerRequested", readonly = true)
     private float powerRequested;
 
     public float getPowerRequested(){
@@ -192,7 +190,6 @@ public abstract class Component {
     }
 
     //how important is it to get the power
-    @ExternalProperty(key = "RequestLevel")
     private int requestLevel;
 
     public int getRequestLevel(){
@@ -206,7 +203,6 @@ public abstract class Component {
     }
 
     //shows if the component get the full power (used to prevent issues with float rounding)
-    @ExternalProperty(key = "HasFullPower", readonly = true)
     private boolean hasFullPower;
 
     public boolean isHasFullPower() {
@@ -220,7 +216,6 @@ public abstract class Component {
     }
 
     //how much power does it actually get
-    @ExternalProperty(key = "PowerReceived", readonly = true)
     private float powerReceived;
 
     public float getPowerReceived(){
