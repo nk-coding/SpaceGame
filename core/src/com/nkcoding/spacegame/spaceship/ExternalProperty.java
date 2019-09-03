@@ -1,6 +1,7 @@
 package com.nkcoding.spacegame.spaceship;
 
 import com.nkcoding.interpreter.MethodStatement;
+import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.interpreter.compiler.DataTypes;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.interpreter.compiler.MethodType;
@@ -8,12 +9,7 @@ import com.nkcoding.interpreter.compiler.TypeNamePair;
 
 import java.lang.reflect.Method;
 
-public class ExternalProperty<T> {
-    /**the type of this property*/
-    public final String type;
-
-    /**the name of this property*/
-    public final String name;
+public abstract class ExternalProperty {
 
     /**are setters allowed?*/
     public final boolean readonly;
@@ -24,6 +20,9 @@ public class ExternalProperty<T> {
     /**method that is called when property is changed and notifyChange is activated*/
     private MethodStatement changedMethodStatement = null;
 
+    /**is the value changed*/
+    protected boolean changed = false;
+
     public MethodStatement getChangedMethodStatement() {
         return changedMethodStatement;
     }
@@ -32,28 +31,11 @@ public class ExternalProperty<T> {
         this.changedMethodStatement = changedMethodStatement;
     }
 
-    public ExternalProperty(String type, String name, boolean readonly, boolean notifyChanges) {
-        this.type = type;
-        this.name = name;
+    public ExternalProperty(boolean readonly, boolean notifyChanges) {
         this.readonly = readonly;
         this.notifyChanges = notifyChanges;
     }
 
-    /**
-     * create the getter
-     * @return the MethodDefinition for the getter
-     */
-    public MethodDefinition createGetter() {
-         return new MethodDefinition(MethodType.External, "get" + name, type, new TypeNamePair("id", DataTypes.String));
-    }
+    public abstract void StartChangedHandler(ScriptingEngine engine);
 
-    /**
-     * create the setter if possible
-     * @return the MethodDefinition if !readonly or null if readonly
-     */
-    public MethodDefinition createSetter() {
-        return readonly ? null :
-                new MethodDefinition(MethodType.External, "set" + name, DataTypes.Void,
-                        new TypeNamePair("id", DataTypes.String), new TypeNamePair("value", type));
-    }
 }
