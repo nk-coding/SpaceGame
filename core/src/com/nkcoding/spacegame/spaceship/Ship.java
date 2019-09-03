@@ -175,7 +175,7 @@ public class Ship implements Simulated {
         //check if power level order is correct
         if (!isPowerLevelOrderCorrect) {
             //change the order
-            components.sort(Comparator.comparingInt(Component::getRequestLevel));
+            components.sort(Comparator.comparingInt(com -> com.requestLevel.get()));
             isPowerLevelOrderCorrect = true;
         }
         //update the power stuff
@@ -185,8 +185,8 @@ public class Ship implements Simulated {
             float availablePower = 0f;
             for (Component component : components) {
                 //check if it consumes or delivers power
-                if (component.getPowerRequested() < 0) {
-                    availablePower -= component.getPowerRequested();
+                if (component.powerRequested.get() < 0) {
+                    availablePower -= component.powerReceived.get();
                 }
             }
             float startAvailablePower = availablePower;
@@ -197,11 +197,11 @@ public class Ship implements Simulated {
                 if (availablePower > 0) {
                     //there is power available
                     int i0 = i;
-                    int level = components.get(i).getRequestLevel();
+                    int level = components.get(i).requestLevel.get();
                     float levelPowerRequest = 0f;
                     //check how much power is necessary for this level
-                    while (i < components.size() && components.get(i).getRequestLevel() == level) {
-                        levelPowerRequest += components.get(i).getPowerRequested();
+                    while (i < components.size() && components.get(i).requestLevel.get() == level) {
+                        levelPowerRequest += components.get(i).powerRequested.get();
                         i++;
                     }
                     //is enough power available
@@ -209,7 +209,7 @@ public class Ship implements Simulated {
                         //enough power is available
                         availablePower -= levelPowerRequest;
                         for (int x = i0; x < i; x++) {
-                            components.get(x).setPowerReceived(components.get(x).getPowerRequested());
+                            components.get(x).powerReceived.set(components.get(x).powerRequested.get());
                         }
                     }
                     else {
@@ -217,14 +217,14 @@ public class Ship implements Simulated {
                         float fac = levelPowerRequest / availablePower;
                         availablePower = 0f;
                         for (int x = i0; x < i; x++) {
-                            components.get(x).setPowerReceived(components.get(x).getPowerRequested() * fac);
+                            components.get(x).powerReceived.set(components.get(x).powerRequested.get() * fac);
                         }
                     }
                 }
                 else {
                     //no power is available, set all to 0
                     while (i < components.size()) {
-                        components.get(i).setPowerReceived(0f);
+                        components.get(i).powerReceived.set(0f);
                         i++;
                     }
                 }
@@ -234,8 +234,8 @@ public class Ship implements Simulated {
             float fac = (startAvailablePower - availablePower) / availablePower;
             for (Component component : components) {
                 //check if it consumes or delivers power
-                if (component.getPowerRequested() < 0) {
-                    component.setPowerReceived(component.getPowerRequested() * fac);
+                if (component.powerRequested.get() < 0) {
+                    component.powerReceived.set(component.powerRequested.get() * fac);
                 }
             }
             isPowerRequestDifferent = false;
@@ -257,30 +257,6 @@ public class Ship implements Simulated {
      */
     public void handleExternalMethod(ExternalMethodFuture future) {
         Component component = components.stream().filter(com -> com.getName().equals(future.getParameters()[future.getParameters().length - 1])).findFirst().orElse(null);
-        if (component != null) {
-            switch (future.getName()) {
-                case "getHealth":
-                    future.complete(component.getHealth());
-                    break;
-                case "getPowerRequested":
-                    future.complete(component.getPowerRequested());
-                    break;
-                case "getRequestLevel":
-                    future.complete(component.getRequestLevel());
-                    break;
-                case "setRequestLevel":
-                    component.setRequestLevel((int)future.getParameters()[0]);
-                    future.complete(null);
-                    break;
-                case "getHasFullPower":
-                    future.complete(component.isHasFullPower());
-                    break;
-                case "getPowerReceived":
-                    future.complete(component.getPowerReceived());
-                    break;
-                default:
-                    throw new IllegalArgumentException("can't handle " + future.getName());
-            }
-        }
+        if (component != null) component.handleExternalMethod(future);
     }
 }

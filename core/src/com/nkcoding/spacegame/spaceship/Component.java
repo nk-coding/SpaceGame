@@ -2,11 +2,13 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.compiler.DataTypes;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.interpreter.compiler.MethodType;
 import com.nkcoding.interpreter.compiler.TypeNamePair;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -158,77 +160,55 @@ public abstract class Component {
     //health has to be stored again, because it changes during simulation
     //if it reaches zero, the component should be destroyed TODO implementation
     //should be initialized in constructor out of componentDef
-    private int health;
-
-    public int getHealth(){
-        return health;
-    }
-
-    public void setHealth(int health){
-        if (health < 0) health = 0;
-        this.health = health;
-        if (health == 0){
-            //destroy this component
-            ship.destroyComponent(this);
+    public final IntProperty health = new IntProperty(true, true) {
+        @Override
+        public void set(int value) {
+            super.set(Math.max(value, 0));
+            if (get() == 0){
+                //destroy this component
+                destroy();
+            }
         }
+    };
+
+    private void destroy() {
+        ship.destroyComponent(this);
     }
+
 
     //the power system is complicated
     //it could be set ingame, but also uses automatic stuff
 
     //power that component requests
-    private float powerRequested;
-
-    public float getPowerRequested(){
-        return powerRequested;
-    }
-
-    void setPowerRequested(float powerRequested){
-        //submit change to Ship
-        if (powerRequested != this.powerRequested) ship.invalidatePowerDelivery();
-        this.powerRequested = powerRequested;
-    }
+    public final FloatProperty powerRequested = new FloatProperty(true, true) {
+        @Override
+        public void set(float value) {
+            if (get() != value) ship.invalidatePowerDelivery();
+            super.set(value);
+        }
+    };
 
     //how important is it to get the power
-    private int requestLevel;
-
-    public int getRequestLevel(){
-        return this.requestLevel;
-    }
-
-    void setRequestLevel(int requestLevel){
-        //submit change to ship
-        if (requestLevel != this.requestLevel) ship.invalidatePowerLevelOrder();
-        this.requestLevel = requestLevel;
-    }
+    public final IntProperty requestLevel = new IntProperty(false, true) {
+        @Override
+        public void set(int value) {
+            if (get() != value) ship.invalidatePowerLevelOrder();
+            super.set(value);
+        }
+    };
 
     //shows if the component get the full power (used to prevent issues with float rounding)
-    private boolean hasFullPower;
+    private BooleanProperty hasFullPower = new BooleanProperty(true, true);
 
-    public boolean isHasFullPower() {
-        return hasFullPower;
-    }
-
-    void setHasFullPower(boolean hasFullPower){
-        //TODO implementation
-        //propably has to do nothing if everything is done in setReceivedPower
-        this.hasFullPower = hasFullPower;
-    }
 
     //how much power does it actually get
-    private float powerReceived;
-
-    public float getPowerReceived(){
-        return powerReceived;
-    }
-
-    void setPowerReceived(float powerReceived){
-        //TODO implementation
-        //call a callback that the power level has changed
-        this.powerReceived = powerReceived;
-        //update has full power
-        setHasFullPower(powerRequested == powerReceived);
-    }
+    public final FloatProperty powerReceived = new FloatProperty(true, true) {
+        @Override
+        public void set(float value) {
+            super.set(value);
+            hasFullPower.set(powerRequested.get() == powerReceived.get());
+        }
+    };
 
     //constructor to force subclasses to implement important stuff
     protected Component(ComponentType type, ComponentDef componentDef, Ship ship){
@@ -240,17 +220,8 @@ public abstract class Component {
         this.componentDef = componentDef;
 
         //set health
-        setHealth(componentDef.getHealth());
+        health.set(componentDef.getHealth());
     }
-
-    //get the instance of a definition, this is necessary to avoid bugs
-    /*
-    public static ComponentDef createDefinition(){
-        return null;
-    }
-     */
-
-
 
     //the physics system
 
@@ -284,10 +255,17 @@ public abstract class Component {
      * creates an array with all existing external methods
      * @return the Array with the external method definitions
      */
-    public static MethodDefinition[] createExternalMethodDefs() {
+    public static MethodDefinition[] getExternalMethods() {
         //TODO add others
         //register all external methods
         List<MethodDefinition> externalMethods = new ArrayList<>();
+        //this class
+        createExternalMethodDefs(externalMethods);
+
+        return externalMethods.toArray(MethodDefinition[]::new);
+    }
+
+    public static void createExternalMethodDefs(List<MethodDefinition> externalMethods) {
         //health
         externalMethods.add(Component.createExternalMethodDef("getHealth", DataTypes.Integer, true));
         //powerRequested
@@ -299,7 +277,32 @@ public abstract class Component {
         externalMethods.add(Component.createExternalMethodDef("getHasFullPower", DataTypes.Boolean, true));
         //powerReceived
         externalMethods.add(Component.createExternalMethodDef("getPowerReceived", DataTypes.Float, true));
-        return externalMethods.toArray(MethodDefinition[]::new);
+    }
+
+    public void handleExternalMethod(ExternalMethodFuture future) {
+        switch (future.getName()) {
+            case "getHealth":
+                future.complete(health.get());
+                break;
+            case "getPowerRequested":
+                future.complete(powerRequested.get());
+                break;
+            case "getRequestLevel":
+                future.complete(requestLevel.get());
+                break;
+            case "setRequestLevel":
+                requestLevel.set((int)future.getParameters()[0]);
+                future.complete(null);
+                break;
+            case "getHasFullPower":
+                future.complete(hasFullPower.get());
+                break;
+            case "getPowerReceived":
+                future.complete(powerReceived.get());
+                break;
+            default:
+                throw new IllegalArgumentException("can't handle " + future.getName());
+        }
     }
 }
 
