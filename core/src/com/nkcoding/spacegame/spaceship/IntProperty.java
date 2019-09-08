@@ -13,14 +13,24 @@ public class IntProperty extends ExternalProperty {
         this.value = value;
     }
 
-    public IntProperty(boolean readonly, boolean notifyChanges) {
-        super(readonly, notifyChanges);
+    public IntProperty(boolean readonly, boolean notifyChanges, String name) {
+        super(readonly, notifyChanges, name);
     }
 
     @Override
-    public void StartChangedHandler(ScriptingEngine engine) {
+    public void startChangedHandler(ScriptingEngine engine) {
         if (notifyChanges && changed && getChangedMethodStatement() != null) {
             engine.runMethod(getChangedMethodStatement(), value);
+        }
+    }
+
+    @Override
+    public void setInitValue(String value) {
+        try {
+            this.value = Integer.parseInt(value);
+        }
+        catch (Exception e) {
+            this.value = 0;
         }
     }
 }

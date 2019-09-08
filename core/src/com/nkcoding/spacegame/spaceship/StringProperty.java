@@ -13,14 +13,19 @@ public class StringProperty extends ExternalProperty {
         this.value = value;
     }
 
-    public StringProperty(boolean readonly, boolean notifyChanges) {
-        super(readonly, notifyChanges);
+    public StringProperty(boolean readonly, boolean notifyChanges, String name) {
+        super(readonly, notifyChanges, name);
     }
 
     @Override
-    public void StartChangedHandler(ScriptingEngine engine) {
+    public void startChangedHandler(ScriptingEngine engine) {
         if (notifyChanges && changed && getChangedMethodStatement() != null) {
             engine.runMethod(getChangedMethodStatement(), value);
         }
+    }
+
+    @Override
+    public void setInitValue(String value) {
+        this.value = value;
     }
 }

@@ -8,13 +8,21 @@ import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.interpreter.compiler.MethodType;
 import com.nkcoding.interpreter.compiler.TypeNamePair;
 
-import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public abstract class Component {
     //subclass which contains all the stuff that is necessary to design a ship but not emulate it
-    public static abstract class ComponentDef{
+    public static abstract class ComponentDef {
+
+        //region names for the ExternalProperties
+        public static final String HealthKey = "Health";
+        public static final String PowerRequestedKey = "PowerRequested";
+        public static final String RequestLevelKey = "RequestLevel";
+        public static final String HasFullPowerKey = "HasFullPower";
+        public static final String PowerReceivedKey = "PowerReceived";
+        //endregion
 
         //the width of the component, it should be set in the constructor
         private int width;
@@ -109,10 +117,28 @@ public abstract class Component {
             this.name = name;
         }
 
-        //constructor
-        //force subclasses to implement a type
+        /**HashMap with all the ExternalPropertyData*/
+        public final HashMap<String, ExternalPropertyData> properties = new HashMap<>();
+
+        /**
+         * default constructor
+         * subclasses have to add all <code>ExternalPropertyData</code>
+         * @param type the type of the ComponentDefinition
+         */
         public ComponentDef(ComponentType type){
             this.type = type;
+            //add all ExternalPropertyDefs
+            properties.put(HealthKey, new ExternalPropertyData(DataTypes.Float));
+            properties.put(PowerRequestedKey, new ExternalPropertyData(DataTypes.Float));
+            properties.put(RequestLevelKey, new ExternalPropertyData(DataTypes.Integer));
+            properties.put(HasFullPowerKey, new ExternalPropertyData(DataTypes.Boolean));
+            properties.put(PowerReceivedKey, new ExternalPropertyData(DataTypes.Float));
+        }
+
+        public void initExternalProperty (ExternalProperty property) {
+            ExternalPropertyData data = properties.get(property.name);
+            property.setInitValue(data.initData);
+            //TODO implementation of changedMethodStatement probably with the SpaceSimulation's list of methods
         }
 
     }
@@ -160,7 +186,7 @@ public abstract class Component {
     //health has to be stored again, because it changes during simulation
     //if it reaches zero, the component should be destroyed TODO implementation
     //should be initialized in constructor out of componentDef
-    public final IntProperty health = new IntProperty(true, true) {
+    public final IntProperty health = new IntProperty(true, true, ComponentDef.HealthKey) {
         @Override
         public void set(int value) {
             super.set(Math.max(value, 0));
@@ -180,7 +206,7 @@ public abstract class Component {
     //it could be set ingame, but also uses automatic stuff
 
     //power that component requests
-    public final FloatProperty powerRequested = new FloatProperty(true, true) {
+    public final FloatProperty powerRequested = new FloatProperty(true, true, ComponentDef.PowerRequestedKey) {
         @Override
         public void set(float value) {
             if (get() != value) ship.invalidatePowerDelivery();
@@ -189,7 +215,7 @@ public abstract class Component {
     };
 
     //how important is it to get the power
-    public final IntProperty requestLevel = new IntProperty(false, true) {
+    public final IntProperty requestLevel = new IntProperty(false, true, ComponentDef.RequestLevelKey) {
         @Override
         public void set(int value) {
             if (get() != value) ship.invalidatePowerLevelOrder();
@@ -198,11 +224,11 @@ public abstract class Component {
     };
 
     //shows if the component get the full power (used to prevent issues with float rounding)
-    private BooleanProperty hasFullPower = new BooleanProperty(true, true);
+    public final BooleanProperty hasFullPower = new BooleanProperty(true, true, ComponentDef.HasFullPowerKey);
 
 
     //how much power does it actually get
-    public final FloatProperty powerReceived = new FloatProperty(true, true) {
+    public final FloatProperty powerReceived = new FloatProperty(true, true, ComponentDef.PowerReceivedKey) {
         @Override
         public void set(float value) {
             super.set(value);
