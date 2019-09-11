@@ -3,6 +3,7 @@ package com.nkcoding.ui;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,6 +23,7 @@ public class UITestScreen implements Screen {
 	SpaceGame spaceGame;
 
 	SpriteBatch batch;
+	AssetManager assetManager;
 
 	Stage stage;
 	MultiColorTextArea textArea;
@@ -37,15 +39,23 @@ public class UITestScreen implements Screen {
 	public UITestScreen(SpaceGame spaceGame) {
 		this.spaceGame = spaceGame;
 		this.batch = spaceGame.getBatch();
+		assetManager = spaceGame.getAssetManager();
 		//create the stage
 		stage = new Stage(new ScreenViewport(), batch);
 		Gdx.input.setInputProcessor(stage);
 
 		//create the bitmapFont
-		BitmapFont consolasFont = new BitmapFont(Gdx.files.internal("consolas.fnt"));
+		BitmapFont consolasFont = assetManager.get("consolas.fnt");
+		Texture simpleBorder = assetManager.get("simpleborder.png");
+		Texture scrollBarBackground = assetManager.get("scrollBarBackground.png");
+		Texture cursor = assetManager.get("cursor.png");
+		Texture numbers = assetManager.get("numbers.png");
+		Texture newScrollBarBackground = assetManager.get("newScrollBarBackground.png");
+		Texture scrollBarThumb = assetManager.get("scrollBarThumb.png");
+		Texture badlogic= assetManager.get("badlogic.jpg");
 
 
-		NinePatchDrawable ninePatch = new NinePatchDrawable(new NinePatch(new Texture(Gdx.files.internal("simpleborder.png")),3, 3, 3, 3));
+		NinePatchDrawable ninePatch = new NinePatchDrawable(new NinePatch(simpleBorder,3, 3, 3, 3));
 		final Label.LabelStyle labelStyle = new Label.LabelStyle(consolasFont, new Color(1, 1, 1, 1));
 		/*
 		//create a table
@@ -66,8 +76,8 @@ public class UITestScreen implements Screen {
 		TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
 		textFieldStyle.fontColor = new Color(1,1,1,1);
 		textFieldStyle.font = consolasFont;
-		//textFieldStyle.background = new SpriteDrawable(new Sprite(new Texture("scrollBarBackground.png")));;
-		textFieldStyle.cursor = new SpriteDrawable(new Sprite(new Texture("cursor.png")));
+		//textFieldStyle.background = new SpriteDrawable(new Sprite(scrollBarBackground));;
+		textFieldStyle.cursor = new SpriteDrawable(new Sprite(cursor));
 
 		//create the text area
 		textArea = new TextArea("\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na", textFieldStyle) {
@@ -90,8 +100,8 @@ public class UITestScreen implements Screen {
 
 		//create a ScrollPaneStyle
 		ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
-		scrollPaneStyle.vScrollKnob = new SpriteDrawable(new Sprite(new Texture("cursor.png")));
-		scrollPaneStyle.vScroll = new SpriteDrawable(new Sprite(new Texture("scrollBarBackground.png")));
+		scrollPaneStyle.vScrollKnob = new SpriteDrawable(new Sprite(cursor));
+		scrollPaneStyle.vScroll = new SpriteDrawable(new Sprite(scrollBarBackground));
 
 		Label muchTextLabel = new Label("\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na", labelStyle);
 
@@ -102,7 +112,7 @@ public class UITestScreen implements Screen {
 		*/
 
 		Table table = new Table();
-		//table.setBackground(new SpriteDrawable(new Sprite(new Texture("badlogic.jpg"))));
+		//table.setBackground(new SpriteDrawable(new Sprite(badlogic)));
 		table.setFillParent(true);
 		stage.addActor(table);
 
@@ -111,8 +121,8 @@ public class UITestScreen implements Screen {
 		TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
 		textFieldStyle.fontColor = new Color(1,1,1,1);
 		textFieldStyle.font = consolasFont;
-		textFieldStyle.selection = new SpriteDrawable(new Sprite(new Texture("scrollBarBackground.png")));
-		textFieldStyle.cursor = new SpriteDrawable(new Sprite(new Texture("cursor.png")));
+		textFieldStyle.selection = new SpriteDrawable(new Sprite(scrollBarBackground));
+		textFieldStyle.cursor = new SpriteDrawable(new Sprite(cursor));
 
 		//create the text area
 		textArea = new MultiColorTextArea("test 1\n\"check this", textFieldStyle);
@@ -121,10 +131,10 @@ public class UITestScreen implements Screen {
 		//create a ScrollPaneStyle
 		ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
 		scrollPaneStyle.background = ninePatch;
-		scrollPaneStyle.vScrollKnob = new SpriteDrawable(new Sprite(new Texture("scrollBarThumb.png")));
-		scrollPaneStyle.vScroll = new SpriteDrawable(new Sprite(new Texture("newScrollBarBackground.png")));
-		scrollPaneStyle.hScrollKnob = new SpriteDrawable(new Sprite(new Texture("scrollBarThumb.png")));
-		scrollPaneStyle.hScroll = new SpriteDrawable(new Sprite(new Texture("newScrollBarBackground.png")));
+		scrollPaneStyle.vScrollKnob = new SpriteDrawable(new Sprite(scrollBarThumb));
+		scrollPaneStyle.vScroll = new SpriteDrawable(new Sprite(newScrollBarBackground));
+		scrollPaneStyle.hScrollKnob = new SpriteDrawable(new Sprite(scrollBarThumb));
+		scrollPaneStyle.hScroll = new SpriteDrawable(new Sprite(newScrollBarBackground));
 
 		//create the ScrollPane
 		//scrollPane = new ScrollPane(textArea, scrollPaneStyle);
@@ -134,14 +144,14 @@ public class UITestScreen implements Screen {
 		//CodeEditor editor = new CodeEditor(textFieldStyle, scrollPaneStyle, new ScriptColorParser());
 
 		//table.add(editor).grow();
-		SimpleZoomableWidget simpleZoomableWidget = new SimpleZoomableWidget(new SpriteDrawable(new Sprite(new Texture("badlogic.jpg"))),
+		SimpleZoomableWidget simpleZoomableWidget = new SimpleZoomableWidget(new SpriteDrawable(new Sprite(badlogic)),
 				1, 1, 2000f);
 
 		ZoomScrollPane.ZoomScrollPaneStyle zspStyle = new ZoomScrollPane.ZoomScrollPaneStyle();
-		zspStyle.vScrollKnob = new SpriteDrawable(new Sprite(new Texture("scrollBarThumb.png")));
-		zspStyle.vScroll = new SpriteDrawable(new Sprite(new Texture("newScrollBarBackground.png")));
-		zspStyle.hScrollKnob = new SpriteDrawable(new Sprite(new Texture("scrollBarThumb.png")));
-		zspStyle.hScroll = new SpriteDrawable(new Sprite(new Texture("newScrollBarBackground.png")));
+		zspStyle.vScrollKnob = new SpriteDrawable(new Sprite(scrollBarThumb));
+		zspStyle.vScroll = new SpriteDrawable(new Sprite(newScrollBarBackground));
+		zspStyle.hScrollKnob = new SpriteDrawable(new Sprite(scrollBarThumb));
+		zspStyle.hScroll = new SpriteDrawable(new Sprite(newScrollBarBackground));
 
 		ZoomScrollPane zsp = new ZoomScrollPane(simpleZoomableWidget, zspStyle);
 		//table.add(zsp).grow();
@@ -157,7 +167,7 @@ public class UITestScreen implements Screen {
 		listViewItems2 = new Array<>(true, 1);
 		//listViewItems2.add("ajsflaksflöjadslöögjlkasghlöadskhgölaskjgjölasjglkwhgkölahklgjskölgjsdjlfjhlsdfjnhkälsdjkhladhölkjfdhkjljhakjsjdgköaöjkdhkdshfjlgkhaölkdfhgladhfgö0");
 
-		List.ListStyle listStyle = new List.ListStyle(consolasFont, Color.BLACK, Color.WHITE, new SpriteDrawable(new Sprite(new Texture("cursor.png"))) );
+		List.ListStyle listStyle = new List.ListStyle(consolasFont, Color.BLACK, Color.WHITE, new SpriteDrawable(new Sprite(cursor)) );
 		//listStyle.background = ninePatch;
 
 		list1 = new List<>(listStyle);
