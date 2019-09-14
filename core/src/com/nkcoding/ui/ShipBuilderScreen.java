@@ -1,11 +1,9 @@
-package com.nkcoding.spacegame;
+package com.nkcoding.ui;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.nkcoding.ui.CodeEditor;
-import com.nkcoding.ui.ShipDesigner;
 
 public class ShipBuilderScreen implements Screen {
 
