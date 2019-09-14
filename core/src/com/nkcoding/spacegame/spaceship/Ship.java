@@ -50,7 +50,7 @@ public class Ship implements Simulated {
         components = new ArrayList<>(def.componentDefs.size());
         //init the map
         componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];
-        for (Component.ComponentDef comDef : def.componentDefs) {
+        for (ComponentDef comDef : def.componentDefs) {
             Component component = null;
             switch (comDef.getType()) {
                 case TestType:
@@ -80,7 +80,7 @@ public class Ship implements Simulated {
         //init the map
         componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];
         for (Component component : components) {
-            Component.ComponentDef comDef = component.getComponentDef();
+            ComponentDef comDef = component.getComponentDef();
             //add to map
             for (int _x = comDef.getX(); _x < (comDef.getX() + comDef.getRealWidth()); _x++){
                 for (int _y = comDef.getY(); _y < (comDef.getY() + comDef.getRealHeight()); _y++){
@@ -117,7 +117,7 @@ public class Ship implements Simulated {
     //checks the structure recursive (helper for checkStructure())
     private void checkStructureRec(Component component) {
         component.structureHelper = true;
-        Component.ComponentDef comDef = component.getComponentDef();
+        ComponentDef comDef = component.getComponentDef();
         //go around component
         //check left side
         if (comDef.getX() > 0) {
