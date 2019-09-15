@@ -4,7 +4,7 @@ package com.nkcoding.spacegame.spaceship;
 public class  TestImp extends Component {
 
     public TestImp(ComponentDef componentDef, Ship ship) {
-        super(ComponentType.TestType, componentDef, ship);
+        super(componentDef, ship);
     }
 
 

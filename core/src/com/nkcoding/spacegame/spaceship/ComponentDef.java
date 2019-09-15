@@ -2,10 +2,29 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.nkcoding.interpreter.compiler.DataTypes;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 //subclass which contains all the stuff that is necessary to design a ship but not emulate it
 public class ComponentDef {
+
+    //class which contains some basic information about a specific component
+    public static final class ComponentInfo {
+        //the type of this component
+        public final ComponentType type;
+
+        //file position of the preview image
+        public final String previewImg;
+
+        private ComponentInfo(ComponentType type, String previewImg) {
+            this.type = type;
+            this.previewImg = previewImg;
+        }
+    }
+
+    public static final List<ComponentInfo> componentInfos;
 
     //region names for the ExternalProperties
     public static final String HealthKey = "Health";
@@ -14,8 +33,6 @@ public class ComponentDef {
     public static final String HasFullPowerKey = "HasFullPower";
     public static final String PowerReceivedKey = "PowerReceived";
     //endregion
-
-    public final String previewTexture = "";
 
     //the width of the component, it should be set in the constructor
     private int width;
@@ -113,6 +130,12 @@ public class ComponentDef {
     /**HashMap with all the ExternalPropertyData*/
     public final HashMap<String, ExternalPropertyData> properties = new HashMap<>();
 
+    static {
+        ArrayList<ComponentInfo> infos = new ArrayList<>();
+        infos.add(new ComponentInfo(ComponentType.TestType, "badlogic.jpg"));
+        componentInfos = Collections.unmodifiableList(infos);
+    }
+
     /**
      * default constructor
      * subclasses have to add all <code>ExternalPropertyData</code>
@@ -126,6 +149,7 @@ public class ComponentDef {
         properties.put(RequestLevelKey, new ExternalPropertyData(DataTypes.Integer));
         properties.put(HasFullPowerKey, new ExternalPropertyData(DataTypes.Boolean));
         properties.put(PowerReceivedKey, new ExternalPropertyData(DataTypes.Float));
+        //TODO add all type specific properties
     }
 
     public void initExternalProperty (ExternalProperty property) {
@@ -133,5 +157,9 @@ public class ComponentDef {
         property.setInitValue(data.initData);
         //TODO implementation of changedMethodStatement probably with the SpaceSimulation's list of methods
     }
+
+
+
+
 
 }

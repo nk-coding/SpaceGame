@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.nkcoding.ui.ShipBuilderScreen;
 import com.nkcoding.ui.UITestScreen;
 
 public class SpaceGame extends Game {
@@ -22,6 +23,7 @@ public class SpaceGame extends Game {
 	}
 
 	UITestScreen testScreen;
+	ShipBuilderScreen shipBuilderScreen;
 	
 	@Override
 	public void create () {
@@ -39,8 +41,9 @@ public class SpaceGame extends Game {
 		assetManager.load("simpleborder.png", Texture.class);
 		assetManager.update();
 		assetManager.finishLoading();
-		testScreen = new UITestScreen(this);
-		setScreen(testScreen);
+		//testScreen = new UITestScreen(this);
+		shipBuilderScreen = new ShipBuilderScreen(this);
+		setScreen(shipBuilderScreen);
 	}
 
 	@Override
@@ -50,7 +53,8 @@ public class SpaceGame extends Game {
 	
 	@Override
 	public void dispose () {
-		testScreen.dispose();
+		//testScreen.dispose();
+		shipBuilderScreen.dispose();
 		assetManager.dispose();
 		batch.dispose();
 	}

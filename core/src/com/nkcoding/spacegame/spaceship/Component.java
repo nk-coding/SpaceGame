@@ -28,6 +28,10 @@ public abstract class Component {
     //ComponentDef with which this was created, a reference is stored to reduce duplicate variables
     private final ComponentDef componentDef;
 
+    public ComponentDef getComponentDef() {
+        return componentDef;
+    }
+
     //Ship which has references to box2d and drawing stuff
     //setter includes update stuff
     private Ship ship;
@@ -103,12 +107,9 @@ public abstract class Component {
     };
 
     //constructor to force subclasses to implement important stuff
-    protected Component(ComponentType type, ComponentDef componentDef, Ship ship){
-        //check if the correct component is generated
-        if (type != componentDef.getType()) throw new IllegalArgumentException();
-
+    protected Component(ComponentDef componentDef, Ship ship){
         //set the final variables
-        this.type = type;
+        this.type = componentDef.getType();
         this.componentDef = componentDef;
 
         //set health
