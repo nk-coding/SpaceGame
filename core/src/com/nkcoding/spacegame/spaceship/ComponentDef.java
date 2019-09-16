@@ -14,12 +14,25 @@ public class ComponentDef {
         //the type of this component
         public final ComponentType type;
 
+        //the width of the component
+        public final int width;
+
+        //the height of the component
+        public final int height;
+
         //file position of the preview image
         public final String previewImg;
 
-        private ComponentInfo(ComponentType type, String previewImg) {
+        private ComponentInfo(ComponentType type, String previewImg, int width, int height) {
             this.type = type;
             this.previewImg = previewImg;
+            this.width = width;
+            this.height = height;
+        }
+
+        //sets width and height to 1
+        private ComponentInfo(ComponentType type, String previewImg) {
+            this(type, previewImg, 1, 1);
         }
     }
 
@@ -33,26 +46,12 @@ public class ComponentDef {
     public static final String PowerReceivedKey = "PowerReceived";
     //endregion
 
-    //the width of the component, it should be set in the constructor
-    private int width;
-
     public int getWidth(){
-        return width;
+        return componentInfo.width;
     }
-
-    protected void setWidth(int width){
-        this.width = width;
-    }
-
-    //the height of the component, it should be set in the constructor
-    private int height;
 
     public int getHeight(){
-        return height;
-    }
-
-    protected void setHeight(int height){
-        this.height = height;
+        return componentInfo.height;
     }
 
     //0 = not rotated, 1 = 90°, 2 = 180°, 3 = 270°, everything different will be normalised, negative values are not allowed
@@ -100,12 +99,12 @@ public class ComponentDef {
 
     //function to get width, includes rotation
     public int getRealWidth(){
-        return ((rotation % 2) == 0) ? width : height;
+        return ((rotation % 2) == 0) ? componentInfo.width : componentInfo.height;
     }
 
     //function to get height, includes rotation
     public int getRealHeight(){
-        return ((rotation % 2) == 0) ? height : width;
+        return ((rotation % 2) == 0) ? componentInfo.height : componentInfo.width;
     }
 
     //ComponentInfo with all necessary information
@@ -137,17 +136,25 @@ public class ComponentDef {
 
     static {
         HashMap<ComponentType, ComponentInfo> infos = new HashMap<>();
-        infos.put(ComponentType.TestType, new ComponentInfo(ComponentType.TestType, "badlogic.jpg"));
+        infos.put(ComponentType.TestType, new ComponentInfo(ComponentType.TestType, "badlogic.jpg", 2, 1));
         componentInfos = Collections.unmodifiableMap(infos);
     }
 
     /**
      * default constructor
      * subclasses have to add all <code>ExternalPropertyData</code>
-     * @param type the type of the ComponentDefinition
+     * @param type the type of the ComponentDef
      */
     public ComponentDef(ComponentType type){
-        this.componentInfo = componentInfos.get(type);
+        this(componentInfos.get(type));
+    }
+
+    /**
+     * constructor with a ComponentInfo instead of a ComponentType
+     * @param info contains the type of the ComponentDef
+     */
+    public ComponentDef(ComponentInfo info) {
+        this.componentInfo = info;
         //add all ExternalPropertyDefs
         properties.put(HealthKey, new ExternalPropertyData(DataTypes.Float));
         properties.put(PowerRequestedKey, new ExternalPropertyData(DataTypes.Float));

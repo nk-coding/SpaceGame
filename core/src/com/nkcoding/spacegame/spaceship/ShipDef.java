@@ -26,9 +26,19 @@ public class ShipDef {
             componentDef.setX(x);
             componentDef.setY(y);
             //add new references
-            for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); x++){
-                for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); y++){
+            for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++){
+                for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++){
                     componentsMap[_x][_y] = componentDef;
+                }
+            }
+        }
+
+        public void removeComponent(ComponentDef componentDef) {
+            //delete the old references
+            componentDefs.remove(componentDef);
+            for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++){
+                for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++){
+                    componentsMap[_x][_y] = null;
                 }
             }
         }
@@ -54,21 +64,9 @@ public class ShipDef {
         //otherwise this might lead to unexpected behaviour
         public void moveComponent(ComponentDef componentDef, int x, int y, int rotation){
             //delete the old references
-            for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++){
-                for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++){
-                    componentsMap[_x][_y] = null;
-                }
-            }
-            //update component
-            componentDef.setRotation(rotation);
-            componentDef.setX(x);
-            componentDef.setY(y);
+            removeComponent(componentDef);
             //add new references
-            for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++){
-                for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++){
-                    componentsMap[_x][_y] = componentDef;
-                }
-            }
+            addComponent(componentDef, x, y, rotation);
         }
     }
 

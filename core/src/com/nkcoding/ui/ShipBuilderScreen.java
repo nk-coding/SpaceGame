@@ -7,8 +7,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nkcoding.spacegame.SpaceGame;
@@ -16,6 +19,9 @@ import com.nkcoding.spacegame.spaceship.ComponentDef;
 import com.nkcoding.spacegame.spaceship.ShipDef;
 
 public class ShipBuilderScreen implements Screen {
+
+    //how much space between the components
+    private static final float COMPONENTS_SPACING = 10f;
 
     //the game
     private SpaceGame spaceGame;
@@ -114,12 +120,14 @@ public class ShipBuilderScreen implements Screen {
 
         //componentsStack
         componentsStack = new Table();
+        componentsStack.setTouchable(Touchable.enabled);
         initComponentsStack();
 
         //componentsScrollPane
         componentsScrollPane = new ScrollPane(componentsStack, scrollPaneStyle);
         componentsScrollPane.setFlickScroll(false);
         componentsScrollPane.setScrollingDisabled(true, false);
+
 
         //shipDesigner
         shipDesigner = new ShipDesigner(shipDef, assetManager, assetManager.get("noComponent.png", Texture.class));
@@ -162,6 +170,81 @@ public class ShipBuilderScreen implements Screen {
 
         //endregion
 
+        //drag and drop for the Components
+        DragAndDrop componentsDragAndDrop = new DragAndDrop();
+        //add the componentsStack as a source
+        componentsDragAndDrop.addSource(new DragAndDrop.Source(componentsStack) {
+            @Override
+            public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer) {
+                //calculate the selected
+                int selected = (int)((componentsStack.getHeight() - y) / (ShipDesigner.COMPONENT_SIZE + COMPONENTS_SPACING));
+                if (selected < 0 || selected >= ComponentDef.componentInfos.size()) return null;
+
+                DragAndDrop.Payload payload = new DragAndDrop.Payload();
+                Image image = (Image)componentsStack.getChild(selected);
+                ComponentDef.ComponentInfo info = (ComponentDef.ComponentInfo)image.getUserObject();
+                payload.setObject(new ComponentDef(info));
+                Image dragActor = new Image(image.getDrawable());
+                float componentSize = ShipDesigner.COMPONENT_SIZE * shipDesignerZoomScrollPane.getZoom();
+                dragActor.setSize(
+                         componentSize * info.width,
+                        componentSize * info.height);
+                payload.setDragActor(dragActor);
+                componentsDragAndDrop.setDragActorPosition(dragActor.getWidth() - componentSize / 2, -dragActor.getHeight() + componentSize / 2);
+                return payload;
+            }
+        });
+
+        //add the shipDesigner as a source
+        componentsDragAndDrop.addSource(new DragAndDrop.Source(shipDesigner) {
+            @Override
+            public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer) {
+                ComponentDef def = shipDesigner.getSelectedComponent();
+                if (def != null) {
+                    DragAndDrop.Payload payload = new DragAndDrop.Payload();
+                    payload.setObject(def);
+                    float componentSize = ShipDesigner.COMPONENT_SIZE * shipDesignerZoomScrollPane.getZoom();
+                    Image dragActor = new Image(assetManager.get(def.getPreviewImage(), Texture.class));
+                    dragActor.setRotation(def.getRotation());
+                    dragActor.setSize(
+                            componentSize * def.getWidth(),
+                            componentSize * def.getHeight());
+                    payload.setDragActor(dragActor);
+                    componentsDragAndDrop.setDragActorPosition(dragActor.getWidth() - componentSize / 2, -dragActor.getHeight() + componentSize / 2);
+                    return payload;
+                }
+                else return null;
+            }
+        });
+
+        //add the shipDesigner as a target
+        componentsDragAndDrop.addTarget(new DragAndDrop.Target(shipDesigner) {
+            @Override
+            public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
+                return shipDesigner.drag((ComponentDef)payload.getObject(), x, y, pointer);
+            }
+
+            @Override
+            public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
+                shipDesigner.drop((ComponentDef)payload.getObject(), x, y, pointer);
+            }
+        });
+
+        //add the componentsStack as a target
+
+        componentsDragAndDrop.addTarget(new DragAndDrop.Target(componentsStack) {
+            @Override
+            public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
+                return true;
+            }
+
+            @Override
+            public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
+                if (source.getActor() == shipDesigner) shipDesigner.removeComponent((ComponentDef)payload.getObject());
+            }
+        });
+
+
         //just some debugging
         rootTable.setDebug(true, true);
 
@@ -175,7 +258,7 @@ public class ShipBuilderScreen implements Screen {
             Image img = new Image(assetManager.get(info.previewImg, Texture.class));
 
             img.setUserObject(info);
-            componentsStack.add(img).size(100).top().expand();
+            componentsStack.add(img).size(ShipDesigner.COMPONENT_SIZE).top().expand();
             componentsStack.row();
         }
     }

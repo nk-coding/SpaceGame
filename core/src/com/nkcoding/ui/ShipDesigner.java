@@ -17,7 +17,7 @@ import java.util.HashMap;
 public class ShipDesigner extends Widget implements Zoomable, Disposable {
 
     //default size of a single component
-    private static final float COMPONENT_SIZE = 50f;
+    static final float COMPONENT_SIZE = 50f;
 
     //ShipDef that contains all ComponentDefs
     private ShipDef shipDef;
@@ -41,8 +41,8 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
     }
 
     private void setSelectedComponent(int x, int y) {
-        //TODO implementation
-        System.out.println(String.format("x: %d, y: %d", x, y));
+        selectedComponentX = x;
+        selectedComponentY = y;
     }
 
     //where how much should it draw
@@ -75,16 +75,12 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
 
         this.designerHelper = shipDef.getShipDesignerHelper();
 
-        //set width and height
-        //setWidth(COMPONENT_SIZE * zoom * ShipDef.MAX_SIZE);
-        //setHeight(COMPONENT_SIZE * zoom * ShipDef.MAX_SIZE);
-        //it seems that it is not necessary to call invalidate because setWidth calls sizeChanged which calls invalidate
 
         //capture touch events
         addCaptureListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                setSelectedComponent((int)(x / (COMPONENT_SIZE * zoom)), (int)((getHeight() - y) / (COMPONENT_SIZE * zoom)));
+                setSelectedComponent(calculateXIndex(x), calculateYIndex(y));
                 return true;
             }
         });
@@ -115,6 +111,31 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
                 }
             }
         }
+    }
+
+    //checks if def could be placed there
+    public boolean drag(ComponentDef def, float x, float y, int pointer) {
+        return designerHelper.tryMoveComponent(def, calculateXIndex(x), calculateYIndex(y), def.getRotation());
+    }
+
+    //drops at the position
+    public void drop(ComponentDef def, float x, float y, int pointer) {
+        designerHelper.moveComponent(def, calculateXIndex(x), calculateYIndex(y), def.getRotation());
+    }
+
+    //removes a component
+    public void removeComponent(ComponentDef def) {
+        designerHelper.removeComponent(def);
+    }
+
+    //calculates the x index
+    private int calculateXIndex(float x) {
+        return (int)(x / (COMPONENT_SIZE * zoom));
+    }
+
+    //calculates the y index
+    private int calculateYIndex(float y){
+        return (int)((getHeight() - y) / (COMPONENT_SIZE * zoom));
     }
 
     @Override

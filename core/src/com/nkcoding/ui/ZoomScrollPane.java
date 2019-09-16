@@ -907,6 +907,14 @@ public class ZoomScrollPane extends WidgetGroup {
         return !scrollY ? 0 : visualAmountY;
     }
 
+    public float getVisualZoom() {
+        return visualZoomLevel;
+    }
+
+    public float getZoom() {
+        return zoomLevel;
+    }
+
     public float getVisualScrollPercentX () {
         if (maxX == 0) return 0;
         return MathUtils.clamp(visualAmountX / maxX, 0, 1);
