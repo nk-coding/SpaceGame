@@ -25,12 +25,8 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
@@ -885,7 +881,6 @@ public class ZoomScrollPane extends WidgetGroup {
         return amountY;
     }
 
-    //TODO
     public void setZoom(float newZoom) {
         //return if a zoom is already happening //depracted
         //if (visualZoomLevel != zoomLevel) return;
@@ -1246,6 +1241,15 @@ public class ZoomScrollPane extends WidgetGroup {
         }
 
         public ZoomScrollPaneStyle (ZoomScrollPaneStyle style) {
+            this.background = style.background;
+            this.corner = style.corner;
+            this.hScroll = style.hScroll;
+            this.hScrollKnob = style.hScrollKnob;
+            this.vScroll = style.vScroll;
+            this.vScrollKnob = style.vScrollKnob;
+        }
+
+        public ZoomScrollPaneStyle(ScrollPane.ScrollPaneStyle style) {
             this.background = style.background;
             this.corner = style.corner;
             this.hScroll = style.hScroll;

@@ -2,10 +2,9 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.nkcoding.interpreter.compiler.DataTypes;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 //subclass which contains all the stuff that is necessary to design a ship but not emulate it
 public class ComponentDef {
@@ -24,7 +23,7 @@ public class ComponentDef {
         }
     }
 
-    public static final List<ComponentInfo> componentInfos;
+    public static final Map<ComponentType, ComponentInfo> componentInfos;
 
     //region names for the ExternalProperties
     public static final String HealthKey = "Health";
@@ -109,11 +108,17 @@ public class ComponentDef {
         return ((rotation % 2) == 0) ? height : width;
     }
 
-    //type
-    private final ComponentType type;
+    //ComponentInfo with all necessary information
+    private final ComponentInfo componentInfo;
 
+    //get the type
     public ComponentType getType(){
-        return type;
+        return componentInfo.type;
+    }
+
+    //get the preview image file
+    public String getPreviewImage() {
+        return componentInfo.previewImg;
     }
 
     //name for the component
@@ -131,9 +136,9 @@ public class ComponentDef {
     public final HashMap<String, ExternalPropertyData> properties = new HashMap<>();
 
     static {
-        ArrayList<ComponentInfo> infos = new ArrayList<>();
-        infos.add(new ComponentInfo(ComponentType.TestType, "badlogic.jpg"));
-        componentInfos = Collections.unmodifiableList(infos);
+        HashMap<ComponentType, ComponentInfo> infos = new HashMap<>();
+        infos.put(ComponentType.TestType, new ComponentInfo(ComponentType.TestType, "badlogic.jpg"));
+        componentInfos = Collections.unmodifiableMap(infos);
     }
 
     /**
@@ -142,7 +147,7 @@ public class ComponentDef {
      * @param type the type of the ComponentDefinition
      */
     public ComponentDef(ComponentType type){
-        this.type = type;
+        this.componentInfo = componentInfos.get(type);
         //add all ExternalPropertyDefs
         properties.put(HealthKey, new ExternalPropertyData(DataTypes.Float));
         properties.put(PowerRequestedKey, new ExternalPropertyData(DataTypes.Float));

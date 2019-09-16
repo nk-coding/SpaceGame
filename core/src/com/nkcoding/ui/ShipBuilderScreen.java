@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nkcoding.spacegame.SpaceGame;
 import com.nkcoding.spacegame.spaceship.ComponentDef;
+import com.nkcoding.spacegame.spaceship.ShipDef;
 
 public class ShipBuilderScreen implements Screen {
 
@@ -47,6 +48,9 @@ public class ShipBuilderScreen implements Screen {
     //Stack for the external properties for the selected Component
     private Table propertiesStack;
 
+    //ZoomScrollOane for the shipDesigner
+    private ZoomScrollPane shipDesignerZoomScrollPane;
+
     //the main Designer for the Ship
     private ShipDesigner shipDesigner;
 
@@ -60,24 +64,39 @@ public class ShipBuilderScreen implements Screen {
     //normal (ship) view?
     private boolean isShipView = true;
 
+    //region data
+    ShipDef shipDef;
+    //endregion
+
     //constructor
     public ShipBuilderScreen(SpaceGame spaceGame) {
+        //debug
+        shipDef = new ShipDef();
+
+
         this.spaceGame = spaceGame;
         this.spriteBatch = spaceGame.getBatch();
         this.assetManager = spaceGame.getAssetManager();
 
         //region create the stage with and all its components
         ScreenViewport viewport = new ScreenViewport();
-        viewport.setUnitsPerPixel(1.4f * Gdx.graphics.getDensity());
+        viewport.setUnitsPerPixel(0.6f / Gdx.graphics.getDensity());
         System.out.println(Gdx.graphics.getDensity());
         stage = new Stage(viewport, spriteBatch);
+        Gdx.input.setInputProcessor(stage);
 
         //region styles
 
         //ScrollPane
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
+        //scrollPaneStyle.background = new SpriteDrawable(new Sprite(assetManager.get("simpleborder.png", Texture.class)));
+        scrollPaneStyle.vScrollKnob = new SpriteDrawable(new Sprite(assetManager.get("scrollBarThumb.png", Texture.class)));
+        scrollPaneStyle.vScroll = new SpriteDrawable(new Sprite(assetManager.get("newScrollBarBackground.png", Texture.class)));
+        scrollPaneStyle.hScrollKnob = new SpriteDrawable(new Sprite(assetManager.get("scrollBarThumb.png", Texture.class)));
         scrollPaneStyle.hScroll = new SpriteDrawable(new Sprite(assetManager.get("newScrollBarBackground.png", Texture.class)));
-        scrollPaneStyle.background = new SpriteDrawable(new Sprite(assetManager.get("simpleborder.png", Texture.class)));
+
+        //ZoomScrollPane
+        ZoomScrollPane.ZoomScrollPaneStyle zoomScrollPaneStyle = new ZoomScrollPane.ZoomScrollPaneStyle(scrollPaneStyle);
 
         //Button
         ImageButton.ImageButtonStyle imageButtonStyle = new ImageButton.ImageButtonStyle();
@@ -103,7 +122,10 @@ public class ShipBuilderScreen implements Screen {
         componentsScrollPane.setScrollingDisabled(true, false);
 
         //shipDesigner
-        shipDesigner = new ShipDesigner();
+        shipDesigner = new ShipDesigner(shipDef, assetManager, assetManager.get("noComponent.png", Texture.class));
+        shipDesignerZoomScrollPane = new ZoomScrollPane(shipDesigner, zoomScrollPaneStyle);
+        shipDesignerZoomScrollPane.setFlickScroll(false);
+        shipDesignerZoomScrollPane.setFadeScrollBars(false);
 
         //propertiesStack
         propertiesStack = new Table();
@@ -125,13 +147,14 @@ public class ShipBuilderScreen implements Screen {
 
         //regions add the components to the rootTable
         //add the buttons
-        rootTable.add(switchButton).right().size(100);
+        rootTable.add();
+        rootTable.add(switchButton).right().size(50);
         rootTable.add(saveButton).right().size(100);
         rootTable.row();
 
         //add all the main controls
         rootTable.add(componentsScrollPane).left().growY().width(120);
-        rootTable.add(shipDesigner).expand();
+        rootTable.add(shipDesignerZoomScrollPane).grow();
         rootTable.add(propertiesScrollPane).right().growY().width(200);
 
         //endregion
@@ -147,7 +170,7 @@ public class ShipBuilderScreen implements Screen {
     private void initComponentsStack() {
         //TODO add all components that exist
         //at this point, this is (sadly) only the TestImp
-        for (ComponentDef.ComponentInfo info : ComponentDef.componentInfos) {
+        for (ComponentDef.ComponentInfo info : ComponentDef.componentInfos.values()) {
             Image img = new Image(assetManager.get(info.previewImg, Texture.class));
 
             img.setUserObject(info);

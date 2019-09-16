@@ -39,6 +39,7 @@ public class SpaceGame extends Game {
 		assetManager.load("scrollBarBackground.png", Texture.class);
 		assetManager.load("scrollBarThumb.png", Texture.class);
 		assetManager.load("simpleborder.png", Texture.class);
+		assetManager.load("noComponent.png", Texture.class);
 		assetManager.update();
 		assetManager.finishLoading();
 		//testScreen = new UITestScreen(this);

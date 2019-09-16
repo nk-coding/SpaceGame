@@ -4,17 +4,22 @@ import java.util.ArrayList;
 
 public class ShipDef {
     public class ShipDesignerHelper{
+        //default constructor
+        protected  ShipDesignerHelper() {
+
+        }
+
         private ComponentDef[][] componentsMap = new ComponentDef[MAX_SIZE][MAX_SIZE];
 
         //locate component if there is one
-        public ComponentDef GetComponent(int x, int y){
+        public ComponentDef getComponent(int x, int y){
             return componentsMap[x][y];
         }
 
         //Add a component to componentsMap and componentsDefs
         //this requires that TryMoveComponent was called immediately before
         //otherwise this might lead to unexpected behaviour
-        public void AddComponent(ComponentDef componentDef, int x, int y, int rotation){
+        public void addComponent(ComponentDef componentDef, int x, int y, int rotation){
             componentDefs.add(componentDef);
             //update component
             componentDef.setRotation(rotation);
@@ -29,7 +34,7 @@ public class ShipDef {
         }
 
         //is it possible to move a component to a specific position
-        public boolean TryMoveComponent(ComponentDef componentDef, int x, int y, int rotation){
+        public boolean tryMoveComponent(ComponentDef componentDef, int x, int y, int rotation){
             //calculate resulting width and height
             int width = (rotation % 2 == 0) ? componentDef.getWidth() : componentDef.getHeight();
             int height = (rotation % 2 == 0) ? componentDef.getHeight() : componentDef.getWidth();
@@ -47,7 +52,7 @@ public class ShipDef {
         //actually move component
         //this requires that TryMoveComponent was called immediately before
         //otherwise this might lead to unexpected behaviour
-        public void MoveComponent(ComponentDef componentDef, int x, int y, int rotation){
+        public void moveComponent(ComponentDef componentDef, int x, int y, int rotation){
             //delete the old references
             for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++){
                 for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++){
@@ -74,5 +79,13 @@ public class ShipDef {
     public static final float UNIT_SIZE = 0.1f;
 
     final ArrayList<ComponentDef> componentDefs = new ArrayList<>();
+
+    //ShipDesignerHelper if one is attached
+    private ShipDesignerHelper designerHelper = null;
+
+    public ShipDesignerHelper getShipDesignerHelper() {
+        if (designerHelper == null) designerHelper = new ShipDesignerHelper();
+        return designerHelper;
+    }
 
 }
