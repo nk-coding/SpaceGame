@@ -126,6 +126,7 @@ public class ShipBuilderScreen implements Screen {
         shipDesignerZoomScrollPane = new ZoomScrollPane(shipDesigner, zoomScrollPaneStyle);
         shipDesignerZoomScrollPane.setFlickScroll(false);
         shipDesignerZoomScrollPane.setFadeScrollBars(false);
+        shipDesignerZoomScrollPane.setOverscroll(false, false);
 
         //propertiesStack
         propertiesStack = new Table();

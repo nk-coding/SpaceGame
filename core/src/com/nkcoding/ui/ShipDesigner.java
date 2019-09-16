@@ -84,7 +84,7 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
         addCaptureListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                setSelectedComponent((int)(x / (COMPONENT_SIZE * zoom)), (int)(y / (COMPONENT_SIZE * zoom)));
+                setSelectedComponent((int)(x / (COMPONENT_SIZE * zoom)), (int)((getHeight() - y) / (COMPONENT_SIZE * zoom)));
                 return true;
             }
         });
@@ -125,7 +125,7 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
         }
         float componentSize = COMPONENT_SIZE * zoom;
         startDrawX = Math.max((int)(cullingArea.x / componentSize), 0);
-        startDrawY = Math.max((int)((getHeight() - cullingArea.y - cullingArea.height) / componentSize), 0);
+        startDrawY = Math.max((int)((getPrefHeight() - cullingArea.y - cullingArea.height) / componentSize), 0);
         amountDrawX = Math.min(ShipDef.MAX_SIZE - startDrawX, (int)(cullingArea.width / componentSize) + 2);
         amountDrawY = Math.min(ShipDef.MAX_SIZE - startDrawY, (int)(cullingArea.height / componentSize) + 2);
         //it seems that it is not necessary to call invalidate because setWidth calls sizeChanged which calls invalidate

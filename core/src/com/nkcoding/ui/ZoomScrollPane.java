@@ -241,7 +241,6 @@ public class ZoomScrollPane extends WidgetGroup {
                 setScrollbarsVisible(true);
                 //check for zoom
                 if (zoom && (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT))) {
-                    System.out.println("zoom");
                     setZoom(zoomLevel * (float)Math.pow(1.3, -amount));
                 }
                 else if (scrollY)
@@ -417,8 +416,8 @@ public class ZoomScrollPane extends WidgetGroup {
             }
 
             //correct the position
-            amountY = getActor().getHeight() * (1 - childPercentageY) * (visualZoomLevel / oldVisualZoom) - getHeight() * (1 - percentageY);
-            amountX  = getActor().getWidth() * (visualZoomLevel / oldVisualZoom) * childPercentageX - getWidth() * percentageX;
+            amountY = Math.max(getActor().getHeight() * (1 - childPercentageY) * (visualZoomLevel / oldVisualZoom) - getHeight() * (1 - percentageY), 0);
+            amountX = Math.max(getActor().getWidth() * (visualZoomLevel / oldVisualZoom) * childPercentageX - getWidth() * percentageX, 0);
             visualScrollY(amountY);
             visualScrollX(amountX);
 
@@ -882,31 +881,12 @@ public class ZoomScrollPane extends WidgetGroup {
     }
 
     public void setZoom(float newZoom) {
-        //return if a zoom is already happening //depracted
-        //if (visualZoomLevel != zoomLevel) return;
-
         Vector2 localPosition = screenToLocalCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
         percentageX = localPosition.x / getWidth();
         percentageY = localPosition.y / getHeight();
 
-        //System.out.println(percentageY);
-
-        //try to replace this with a manual calculation to see if this fixes the error
-
-        /*
-        Vector2 localChildPosition = localToActorCoordinates(getActor(), localPosition);
-        childPercentageX = localChildPosition.x / getActor().getWidth();
-        childPercentageY = localChildPosition.y / getActor().getHeight();
-        System.out.println(childPercentageY);
-
-         */
-
         childPercentageX = (visualAmountX + localPosition.x) / getActor().getWidth();
         childPercentageY = 1f - (visualAmountY + (getHeight() - localPosition.y)) / getActor().getHeight();
-        System.out.println(visualAmountY + ", " + localPosition.y);
-
-        System.out.println(childPercentageY);
-
 
         zoomLevelDif = Math.abs(visualZoomLevel - newZoom);
         this.zoomLevel = newZoom;
