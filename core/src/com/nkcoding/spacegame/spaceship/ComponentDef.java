@@ -20,10 +20,15 @@ public class ComponentDef {
         //the height of the component
         public final int height;
 
+        //the start health
+        //this should never be a negative value or zero
+        //the component will be destroyed if health reaches zero
+        public final int health = 100;
+
         //file position of the preview image
         public final String previewImg;
 
-        private ComponentInfo(ComponentType type, String previewImg, int width, int height) {
+        private ComponentInfo(ComponentType type, int width, int height, int health, String previewImg) {
             this.type = type;
             this.previewImg = previewImg;
             this.width = width;
@@ -32,7 +37,7 @@ public class ComponentDef {
 
         //sets width and height to 1
         private ComponentInfo(ComponentType type, String previewImg) {
-            this(type, previewImg, 1, 1);
+            this(type, 1, 1, 100, previewImg);
         }
     }
 
@@ -88,13 +93,8 @@ public class ComponentDef {
         this.y = y;
     }
 
-    //start health can be set by a subclass, but is only mutable in Component
-    //this should never be a negative value or zero
-    //the component will be destroyed if health reaches zero
-    protected int health = 100;
-
     public int getHealth(){
-        return health;
+        return componentInfo.health;
     }
 
     //function to get width, includes rotation
@@ -136,7 +136,8 @@ public class ComponentDef {
 
     static {
         HashMap<ComponentType, ComponentInfo> infos = new HashMap<>();
-        infos.put(ComponentType.TestType, new ComponentInfo(ComponentType.TestType, "badlogic.jpg", 2, 1));
+        infos.put(ComponentType.TestType, new ComponentInfo(ComponentType.TestType, 2, 1, 100, "badlogic.jpg"));
+        infos.put(ComponentType.BasicHull, new ComponentInfo(ComponentType.BasicHull, "basicHull.png"));
         componentInfos = Collections.unmodifiableMap(infos);
     }
 

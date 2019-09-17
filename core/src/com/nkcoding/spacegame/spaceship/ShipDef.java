@@ -35,10 +35,12 @@ public class ShipDef {
 
         public void removeComponent(ComponentDef componentDef) {
             //delete the old references
-            componentDefs.remove(componentDef);
-            for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++){
-                for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++){
-                    componentsMap[_x][_y] = null;
+            if (componentDefs.contains(componentDef)){
+                componentDefs.remove(componentDef);
+                for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++){
+                    for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++){
+                        componentsMap[_x][_y] = null;
+                    }
                 }
             }
         }
