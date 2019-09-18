@@ -3,8 +3,11 @@ package com.nkcoding.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -13,12 +16,15 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nkcoding.spacegame.SpaceGame;
 import com.nkcoding.spacegame.spaceship.ComponentDef;
 import com.nkcoding.spacegame.spaceship.ComponentType;
 import com.nkcoding.spacegame.spaceship.ShipDef;
+
 
 public class ShipBuilderScreen implements Screen {
 
@@ -51,7 +57,7 @@ public class ShipBuilderScreen implements Screen {
     private ScrollPane propertiesScrollPane;
 
     //Stack for the external properties for the selected Component
-    private Table propertiesStack;
+    private VerticalGroup propertiesStack;
 
     //ZoomScrollOane for the shipDesigner
     private ZoomScrollPane shipDesignerZoomScrollPane;
@@ -65,6 +71,9 @@ public class ShipBuilderScreen implements Screen {
     //button which switches to code view
     private Button switchButton;
     //endregion
+
+    //style for more propertyBoxes
+    PropertyBox.PropertyBoxStyle propertyBoxStyle;
 
     //normal (ship) view?
     private boolean isShipView = true;
@@ -92,6 +101,12 @@ public class ShipBuilderScreen implements Screen {
 
         //region styles
 
+        Drawable background = new NinePatchDrawable(new NinePatch(assetManager.get("simpleborder.png", Texture.class),3, 3, 3, 3));
+        background.setLeftWidth(10);
+        background.setRightWidth(10);
+        background.setTopHeight(10);
+        background.setBottomHeight(10);
+
         //ScrollPane
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
         //scrollPaneStyle.background = new SpriteDrawable(new Sprite(assetManager.get("simpleborder.png", Texture.class)));
@@ -106,6 +121,23 @@ public class ShipBuilderScreen implements Screen {
         //Button
         ImageButton.ImageButtonStyle imageButtonStyle = new ImageButton.ImageButtonStyle();
         imageButtonStyle.up = new SpriteDrawable(new Sprite(assetManager.get("badlogic.jpg", Texture.class)));
+
+        //Label
+        Label.LabelStyle labelStyle = new Label.LabelStyle(assetManager.get("consolas.fnt", BitmapFont.class), new Color(0xffffffff));
+
+        //TextField
+        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
+        textFieldStyle.font = assetManager.get("consolas.fnt");
+        textFieldStyle.fontColor = new Color(0xffffffff);
+        textFieldStyle.cursor = new SpriteDrawable(new Sprite(assetManager.get("cursor.png", Texture.class)));
+        textFieldStyle.background = new SpriteDrawable(new Sprite(assetManager.get("newScrollBarBackground.png", Texture.class)));
+
+        //PropertyBox
+        propertyBoxStyle = new PropertyBox.PropertyBoxStyle();
+        propertyBoxStyle.background = background;
+        propertyBoxStyle.textFieldStyle = textFieldStyle;
+        propertyBoxStyle.labelStyle = labelStyle;
+        propertyBoxStyle.spacing = 10f;
 
         //endregion
 
@@ -130,14 +162,15 @@ public class ShipBuilderScreen implements Screen {
 
 
         //shipDesigner
-        shipDesigner = new ShipDesigner(shipDef, assetManager, assetManager.get("noComponent.png", Texture.class));
+        shipDesigner = new ShipDesigner(shipDef, assetManager, assetManager.get("noComponent.png", Texture.class), this::selectedComponentChanged);
         shipDesignerZoomScrollPane = new ZoomScrollPane(shipDesigner, zoomScrollPaneStyle);
         shipDesignerZoomScrollPane.setFlickScroll(false);
         shipDesignerZoomScrollPane.setFadeScrollBars(false);
         shipDesignerZoomScrollPane.setOverscroll(false, false);
 
         //propertiesStack
-        propertiesStack = new Table();
+        propertiesStack = new VerticalGroup();
+        propertiesStack.grow();
 
         //propertiesScrollPane
         propertiesScrollPane = new CustomScrollPane(propertiesStack, scrollPaneStyle);
@@ -157,15 +190,10 @@ public class ShipBuilderScreen implements Screen {
         //regions add the components to the rootTable
         //add the buttons
 
-        rootTable.add();
-        rootTable.add(switchButton).right().size(120);
-        rootTable.add(saveButton).right().size(100);
-        rootTable.row();
-
         //add all the main controls
         rootTable.add(componentsScrollPane).left().growY();
-        rootTable.add(shipDesignerZoomScrollPane);
-        rootTable.add(propertiesScrollPane).right().growY();
+        rootTable.add(shipDesignerZoomScrollPane).grow();
+        rootTable.add(propertiesScrollPane).right().width(200).growY();
 
         //endregion
 
@@ -226,7 +254,9 @@ public class ShipBuilderScreen implements Screen {
 
             @Override
             public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-                shipDesigner.drop((ComponentDef)payload.getObject(), x, y, pointer);
+                ComponentDef def = (ComponentDef)payload.getObject();
+                shipDesigner.drop(def, x, y, pointer);
+                shipDesigner.setSelectedComponent(def);
             }
         });
 
@@ -261,6 +291,20 @@ public class ShipBuilderScreen implements Screen {
             img.setUserObject(info);
             componentsStack.add(img).width(ShipDesigner.COMPONENT_SIZE * info.width).height(ShipDesigner.COMPONENT_SIZE * info.height).pad(10, 10, 0, 10).top();
             componentsStack.row();
+        }
+    }
+
+    private void selectedComponentChanged(ComponentDef def) {
+        //update the property stack
+        //TODO add name stuff
+        //TODO add better version
+        propertiesStack.clear();
+        if (def != null) {
+            def.properties.forEach((name, data) -> {
+                Container<PropertyBox> container = new Container<>(new PropertyBox(propertyBoxStyle, name, data));
+                container.pad(10, 10, 0, 10).fill();
+                propertiesStack.addActor(container);
+            });
         }
     }
 

@@ -13,6 +13,7 @@ import com.nkcoding.spacegame.spaceship.ComponentType;
 import com.nkcoding.spacegame.spaceship.ShipDef;
 
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 public class ShipDesigner extends Widget implements Zoomable, Disposable {
 
@@ -40,9 +41,14 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
         return (selectedComponentX >= 0 && selectedComponentY >= 0) ? designerHelper.getComponent(selectedComponentX, selectedComponentY) : null;
     }
 
+    public void setSelectedComponent(ComponentDef def) {
+        setSelectedComponent(def.getX(), def.getY());
+    }
+
     private void setSelectedComponent(int x, int y) {
         selectedComponentX = x;
         selectedComponentY = y;
+        selectionChanged.accept(getSelectedComponent());
     }
 
     //where how much should it draw
@@ -63,15 +69,19 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
         return componentTextureMap.get(def.getType());
     }
 
-   //the Texture shown when no component would be at this place
-   private Texture noComponent;
+    //the Texture shown when no component would be at this place
+    private Texture noComponent;
+
+    //Consumer for when the selection changed
+    private Consumer<ComponentDef> selectionChanged;
 
 
     //constructor with a shipDef
-    public ShipDesigner(ShipDef shipDef, AssetManager assetManager, Texture noComponent) {
+    public ShipDesigner(ShipDef shipDef, AssetManager assetManager, Texture noComponent, Consumer<ComponentDef> selectionChanged) {
         this.shipDef = shipDef;
         this.assetManager = assetManager;
         this.noComponent = noComponent;
+        this.selectionChanged = selectionChanged;
 
         this.designerHelper = shipDef.getShipDesignerHelper();
 

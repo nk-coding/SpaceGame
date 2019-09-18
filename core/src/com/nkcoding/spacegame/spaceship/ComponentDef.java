@@ -4,6 +4,7 @@ import com.nkcoding.interpreter.compiler.DataTypes;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 //subclass which contains all the stuff that is necessary to design a ship but not emulate it
@@ -24,6 +25,9 @@ public class ComponentDef {
         //this should never be a negative value or zero
         //the component will be destroyed if health reaches zero
         public final int health = 100;
+
+        //constructor to create a new instance
+
 
         //file position of the preview image
         public final String previewImg;
@@ -132,7 +136,7 @@ public class ComponentDef {
     }
 
     /**HashMap with all the ExternalPropertyData*/
-    public final HashMap<String, ExternalPropertyData> properties = new HashMap<>();
+    public final LinkedHashMap<String, ExternalPropertyData> properties = new LinkedHashMap<>();
 
     static {
         HashMap<ComponentType, ComponentInfo> infos = new HashMap<>();
