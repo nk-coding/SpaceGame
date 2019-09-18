@@ -278,7 +278,7 @@ public class ShipBuilderScreen implements Screen {
 
 
         //just some debugging
-        rootTable.setDebug(true, true);
+        rootTable.setDebug(false, true);
     }
 
     //helper method to add all components to the componentsStack

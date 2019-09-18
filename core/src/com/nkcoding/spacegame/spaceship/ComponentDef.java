@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 //subclass which contains all the stuff that is necessary to design a ship but not emulate it
 public class ComponentDef {
@@ -27,21 +28,22 @@ public class ComponentDef {
         public final int health = 100;
 
         //constructor to create a new instance
-
+        public final BiFunction<ComponentDef, Ship, ? extends Component> constructor;
 
         //file position of the preview image
         public final String previewImg;
 
-        private ComponentInfo(ComponentType type, int width, int height, int health, String previewImg) {
+        private ComponentInfo(ComponentType type, BiFunction<ComponentDef, Ship, ? extends Component> constructor, int width, int height, int health, String previewImg) {
             this.type = type;
+            this.constructor = constructor;
             this.previewImg = previewImg;
             this.width = width;
             this.height = height;
         }
 
         //sets width and height to 1
-        private ComponentInfo(ComponentType type, String previewImg) {
-            this(type, 1, 1, 100, previewImg);
+        private ComponentInfo(ComponentType type, BiFunction<ComponentDef, Ship, ? extends Component> constructor, String previewImg) {
+            this(type, constructor, 1, 1, 100, previewImg);
         }
     }
 
@@ -140,8 +142,8 @@ public class ComponentDef {
 
     static {
         HashMap<ComponentType, ComponentInfo> infos = new HashMap<>();
-        infos.put(ComponentType.TestType, new ComponentInfo(ComponentType.TestType, 2, 1, 100, "badlogic.jpg"));
-        infos.put(ComponentType.BasicHull, new ComponentInfo(ComponentType.BasicHull, "basicHull.png"));
+        infos.put(ComponentType.TestType, new ComponentInfo(ComponentType.TestType, TestImp::new, 2, 1, 100, "badlogic.jpg"));
+        infos.put(ComponentType.BasicHull, new ComponentInfo(ComponentType.BasicHull, TestImp::new, "basicHull.png"));
         componentInfos = Collections.unmodifiableMap(infos);
     }
 
@@ -169,14 +171,14 @@ public class ComponentDef {
         //TODO add all type specific properties
     }
 
+    public Component createComponent(Ship ship) {
+        return componentInfo.constructor.apply(this, ship);
+    }
+
     public void initExternalProperty (ExternalProperty property) {
         ExternalPropertyData data = properties.get(property.name);
         property.setInitValue(data.initData);
         //TODO implementation of changedMethodStatement probably with the SpaceSimulation's list of methods
     }
-
-
-
-
 
 }

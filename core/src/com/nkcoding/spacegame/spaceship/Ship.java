@@ -51,14 +51,7 @@ public class Ship implements Simulated {
         //init the map
         componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];
         for (ComponentDef comDef : def.componentDefs) {
-            Component component = null;
-            switch (comDef.getType()) {
-                case TestType:
-                    component = new TestImp(comDef, this);
-                    break;
-                default:
-                    throw new UnsupportedOperationException(comDef.getType().toString());
-            }
+            Component component = comDef.createComponent(this);
             components.add(component);
             //add to map
             for (int _x = comDef.getX(); _x < (comDef.getX() + comDef.getRealWidth()); _x++){
