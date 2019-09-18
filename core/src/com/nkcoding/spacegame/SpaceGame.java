@@ -1,9 +1,6 @@
 package com.nkcoding.spacegame;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.nkcoding.ui.ShipBuilderScreen;
 import com.nkcoding.ui.UITestScreen;
@@ -16,9 +13,9 @@ public class SpaceGame extends Game {
 		return batch;
 	}
 
-	private AssetManager assetManager = null;
+	private ExtAssetManager assetManager = null;
 
-	public AssetManager getAssetManager() {
+	public ExtAssetManager getAssetManager() {
 		return assetManager;
 	}
 
@@ -28,21 +25,10 @@ public class SpaceGame extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		assetManager = new AssetManager();
+		assetManager = new ExtAssetManager();
 		//probably load a loading screen here, but I don't care now
 		//load the resources
-		assetManager.load("badlogic.jpg", Texture.class);
-		assetManager.load("consolas.fnt", BitmapFont.class);
-		assetManager.load("cursor.png", Texture.class);
-		assetManager.load("newScrollBarBackground.png", Texture.class);
-		assetManager.load("numbers.png", Texture.class);
-		assetManager.load("scrollBarBackground.png", Texture.class);
-		assetManager.load("scrollBarThumb.png", Texture.class);
-		assetManager.load("simpleborder.png", Texture.class);
-		assetManager.load("noComponent.png", Texture.class);
-		assetManager.load("basicHull.png", Texture.class);
-		assetManager.update();
-		assetManager.finishLoading();
+		assetManager.loadAll();
 		//testScreen = new UITestScreen(this);
 		shipBuilderScreen = new ShipBuilderScreen(this);
 		setScreen(shipBuilderScreen);

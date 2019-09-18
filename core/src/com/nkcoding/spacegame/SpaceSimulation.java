@@ -8,7 +8,7 @@ import com.nkcoding.spacegame.spaceship.Ship;
 
 import java.util.ArrayList;
 
-public class SpaceSimulation implements Simulated{
+public class SpaceSimulation{
     public static final float SCALE_FACTOR = 350f;
 
     //list with all ships
@@ -41,7 +41,6 @@ public class SpaceSimulation implements Simulated{
 
 
     //implementation for Simulated
-    @Override
     public void act(float time) {
         //handle all external Methods
         while (!scriptingEngine.getFutureQueue().isEmpty()) {
@@ -80,7 +79,6 @@ public class SpaceSimulation implements Simulated{
     }
 
     //implementation for Simulated
-    @Override
     public void draw(SpriteBatch batch) {
         //draw ships
         ships.forEach(ship -> ship.draw(batch));

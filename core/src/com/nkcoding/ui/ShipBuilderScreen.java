@@ -2,13 +2,9 @@ package com.nkcoding.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -18,8 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.nkcoding.spacegame.Asset;
+import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.SpaceGame;
 import com.nkcoding.spacegame.spaceship.ComponentDef;
 import com.nkcoding.spacegame.spaceship.ComponentType;
@@ -38,7 +35,7 @@ public class ShipBuilderScreen implements Screen {
     //spriteBatch for the stage
     private SpriteBatch spriteBatch;
 
-    private AssetManager assetManager;
+    private ExtAssetManager assetManager;
 
     //region fields for ui elements
     //table that contains all the other controls
@@ -101,7 +98,7 @@ public class ShipBuilderScreen implements Screen {
 
         //region styles
 
-        Drawable background = new NinePatchDrawable(new NinePatch(assetManager.get("simpleborder.png", Texture.class),3, 3, 3, 3));
+        Drawable background = new NinePatchDrawable(new NinePatch(assetManager.getTexture(Asset.SimpleBorder),3, 3, 3, 3));
         background.setLeftWidth(10);
         background.setRightWidth(10);
         background.setTopHeight(10);
@@ -110,27 +107,27 @@ public class ShipBuilderScreen implements Screen {
         //ScrollPane
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
         //scrollPaneStyle.background = new SpriteDrawable(new Sprite(assetManager.get("simpleborder.png", Texture.class)));
-        scrollPaneStyle.vScrollKnob = new SpriteDrawable(new Sprite(assetManager.get("scrollBarThumb.png", Texture.class)));
-        scrollPaneStyle.vScroll = new SpriteDrawable(new Sprite(assetManager.get("newScrollBarBackground.png", Texture.class)));
-        scrollPaneStyle.hScrollKnob = new SpriteDrawable(new Sprite(assetManager.get("scrollBarThumb.png", Texture.class)));
-        scrollPaneStyle.hScroll = new SpriteDrawable(new Sprite(assetManager.get("newScrollBarBackground.png", Texture.class)));
+        scrollPaneStyle.vScrollKnob = assetManager.getDrawable(Asset.ScrollBarKnob);
+        scrollPaneStyle.vScroll = assetManager.getDrawable(Asset.ScrollBarBackground);
+        scrollPaneStyle.hScrollKnob = assetManager.getDrawable(Asset.ScrollBarKnob);
+        scrollPaneStyle.hScroll = assetManager.getDrawable(Asset.ScrollBarBackground);
 
         //ZoomScrollPane
         ZoomScrollPane.ZoomScrollPaneStyle zoomScrollPaneStyle = new ZoomScrollPane.ZoomScrollPaneStyle(scrollPaneStyle);
 
         //Button
         ImageButton.ImageButtonStyle imageButtonStyle = new ImageButton.ImageButtonStyle();
-        imageButtonStyle.up = new SpriteDrawable(new Sprite(assetManager.get("badlogic.jpg", Texture.class)));
+        imageButtonStyle.up = assetManager.getDrawable(Asset.Badlogic);
 
         //Label
-        Label.LabelStyle labelStyle = new Label.LabelStyle(assetManager.get("consolas.fnt", BitmapFont.class), new Color(0xffffffff));
+        Label.LabelStyle labelStyle = new Label.LabelStyle(assetManager.getBitmapFont(Asset.Consolas_18), new Color(0xffffffff));
 
         //TextField
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-        textFieldStyle.font = assetManager.get("consolas.fnt");
+        textFieldStyle.font = assetManager.getBitmapFont(Asset.Consolas_18);
         textFieldStyle.fontColor = new Color(0xffffffff);
-        textFieldStyle.cursor = new SpriteDrawable(new Sprite(assetManager.get("cursor.png", Texture.class)));
-        textFieldStyle.background = new SpriteDrawable(new Sprite(assetManager.get("newScrollBarBackground.png", Texture.class)));
+        textFieldStyle.cursor = assetManager.getDrawable(Asset.Cursor);
+        textFieldStyle.background = assetManager.getDrawable(Asset.ScrollBarBackground);
 
         //PropertyBox
         propertyBoxStyle = new PropertyBox.PropertyBoxStyle();
@@ -162,7 +159,7 @@ public class ShipBuilderScreen implements Screen {
 
 
         //shipDesigner
-        shipDesigner = new ShipDesigner(shipDef, assetManager, assetManager.get("noComponent.png", Texture.class), this::selectedComponentChanged);
+        shipDesigner = new ShipDesigner(shipDef, assetManager, assetManager.getTexture(Asset.NoComponent), this::selectedComponentChanged);
         shipDesignerZoomScrollPane = new ZoomScrollPane(shipDesigner, zoomScrollPaneStyle);
         shipDesignerZoomScrollPane.setFlickScroll(false);
         shipDesignerZoomScrollPane.setFadeScrollBars(false);
@@ -232,7 +229,7 @@ public class ShipBuilderScreen implements Screen {
                     DragAndDrop.Payload payload = new DragAndDrop.Payload();
                     payload.setObject(def);
                     float componentSize = ShipDesigner.COMPONENT_SIZE * shipDesignerZoomScrollPane.getZoom();
-                    Image dragActor = new Image(assetManager.get(def.getPreviewImage(), Texture.class));
+                    Image dragActor = new Image(assetManager.getTexture(def.getPreviewImage()));
                     dragActor.setRotation(def.getRotation());
                     dragActor.setSize(
                             componentSize * def.getWidth(),
@@ -286,7 +283,7 @@ public class ShipBuilderScreen implements Screen {
         //at this point, this is (sadly) only the TestImp
         for (ComponentType type : ComponentType.values()) {
             ComponentDef.ComponentInfo info = ComponentDef.componentInfos.get(type);
-            Image img = new Image(assetManager.get(info.previewImg, Texture.class));
+            Image img = new Image(assetManager.getTexture(info.previewImg));
 
             img.setUserObject(info);
             componentsStack.add(img).width(ShipDesigner.COMPONENT_SIZE * info.width).height(ShipDesigner.COMPONENT_SIZE * info.height).pad(10, 10, 0, 10).top();

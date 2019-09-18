@@ -1,9 +1,8 @@
 package com.nkcoding.spacegame.spaceship;
 
 import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.spacegame.Asset;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -31,9 +30,9 @@ public class ComponentDef {
         public final BiFunction<ComponentDef, Ship, ? extends Component> constructor;
 
         //file position of the preview image
-        public final String previewImg;
+        public final Asset previewImg;
 
-        private ComponentInfo(ComponentType type, BiFunction<ComponentDef, Ship, ? extends Component> constructor, int width, int height, int health, String previewImg) {
+        private ComponentInfo(ComponentType type, BiFunction<ComponentDef, Ship, ? extends Component> constructor, int width, int height, int health, Asset previewImg) {
             this.type = type;
             this.constructor = constructor;
             this.previewImg = previewImg;
@@ -42,7 +41,7 @@ public class ComponentDef {
         }
 
         //sets width and height to 1
-        private ComponentInfo(ComponentType type, BiFunction<ComponentDef, Ship, ? extends Component> constructor, String previewImg) {
+        private ComponentInfo(ComponentType type, BiFunction<ComponentDef, Ship, ? extends Component> constructor, Asset previewImg) {
             this(type, constructor, 1, 1, 100, previewImg);
         }
     }
@@ -122,7 +121,7 @@ public class ComponentDef {
     }
 
     //get the preview image file
-    public String getPreviewImage() {
+    public Asset getPreviewImage() {
         return componentInfo.previewImg;
     }
 
@@ -141,10 +140,9 @@ public class ComponentDef {
     public final LinkedHashMap<String, ExternalPropertyData> properties = new LinkedHashMap<>();
 
     static {
-        HashMap<ComponentType, ComponentInfo> infos = new HashMap<>();
-        infos.put(ComponentType.TestType, new ComponentInfo(ComponentType.TestType, TestImp::new, 2, 1, 100, "badlogic.jpg"));
-        infos.put(ComponentType.BasicHull, new ComponentInfo(ComponentType.BasicHull, TestImp::new, "basicHull.png"));
-        componentInfos = Collections.unmodifiableMap(infos);
+        componentInfos = Map.of(
+                ComponentType.TestType, new ComponentInfo(ComponentType.TestType, TestImp::new, 2, 1, 100, Asset.Badlogic),
+                ComponentType.BasicHull, new ComponentInfo(ComponentType.BasicHull, TestImp::new, Asset.BasicHull));
     }
 
     /**

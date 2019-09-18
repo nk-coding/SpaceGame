@@ -1,6 +1,5 @@
 package com.nkcoding.ui;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
@@ -8,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Disposable;
+import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.spaceship.ComponentDef;
 import com.nkcoding.spacegame.spaceship.ComponentType;
 import com.nkcoding.spacegame.spaceship.ShipDef;
@@ -24,7 +24,7 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
     private ShipDef shipDef;
 
     //AssetManager to load ComponentDef textures
-    private final AssetManager assetManager;
+    private final ExtAssetManager assetManager;
 
     //helper
     private ShipDef.ShipDesignerHelper designerHelper;
@@ -64,7 +64,7 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
 
     private Texture getComponentTexture(ComponentDef def) {
         if (!componentTextureMap.containsKey(def.getType())) {
-            componentTextureMap.put(def.getType(), assetManager.get(def.getPreviewImage()));
+            componentTextureMap.put(def.getType(), assetManager.getTexture(def.getPreviewImage()));
         }
         return componentTextureMap.get(def.getType());
     }
@@ -77,7 +77,7 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
 
 
     //constructor with a shipDef
-    public ShipDesigner(ShipDef shipDef, AssetManager assetManager, Texture noComponent, Consumer<ComponentDef> selectionChanged) {
+    public ShipDesigner(ShipDef shipDef, ExtAssetManager assetManager, Texture noComponent, Consumer<ComponentDef> selectionChanged) {
         this.shipDef = shipDef;
         this.assetManager = assetManager;
         this.noComponent = noComponent;
