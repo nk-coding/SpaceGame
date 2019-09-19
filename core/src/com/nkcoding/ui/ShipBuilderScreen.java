@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
@@ -44,21 +45,12 @@ public class ShipBuilderScreen implements Screen {
 
     private ExtAssetManager assetManager;
 
-    //region fields for ui elements
-    //table that contains all the other controls
-    private Table rootTable;
-
-    //CodeEditor for the file with all methods
-    private CodeEditor codeEditor;
-
-    //ScrollPane for the componentsStack
-    private ScrollPane componentsScrollPane;
+    //the main tables
+    private Table shipRootTable;
+    private Table codeRootTable;
 
     //Stack for the possible components
     private Table componentsStack;
-
-    //ScrollPane for the propertiesStack
-    private ScrollPane propertiesScrollPane;
 
     //Stack for the external properties for the selected Component
     private VerticalGroup propertiesVerticalGroup;
@@ -69,11 +61,6 @@ public class ShipBuilderScreen implements Screen {
     //the main Designer for the Ship
     private ShipDesigner shipDesigner;
 
-    //button which saves (and probably closes?)
-    private Button saveButton;
-
-    //button which switches to code view
-    private Button switchButton;
     //endregion
 
     //style for more propertyBoxes
@@ -83,7 +70,7 @@ public class ShipBuilderScreen implements Screen {
     private boolean isShipView = true;
 
     //region data
-    ShipDef shipDef;
+    private ShipDef shipDef;
     //endregion
 
     //constructor
@@ -129,7 +116,6 @@ public class ShipBuilderScreen implements Screen {
 
         //Button
         ImageButton.ImageButtonStyle imageButtonStyle = new ImageButton.ImageButtonStyle();
-        imageButtonStyle.up = assetManager.getDrawable(Asset.Badlogic);
 
         //Label
         Label.LabelStyle labelStyle = new Label.LabelStyle(assetManager.getBitmapFont(Asset.Consolas_18), new Color(0xffffffff));
@@ -151,12 +137,14 @@ public class ShipBuilderScreen implements Screen {
         //endregion
 
 
-        //I may replace this with a skin later, if I really want to (because I hate jason)
+        //I may replace this with a skin later, if I really want to (because I hate json)
 
         //create the root table
-        rootTable = new Table();
-        rootTable.setFillParent(true);
-        stage.addActor(rootTable);
+        //region ship designer ui
+        //table that contains all the other controls
+        shipRootTable = new Table();
+        shipRootTable.setFillParent(true);
+        stage.addActor(shipRootTable);
 
         //componentsStack
         componentsStack = new Table();
@@ -165,7 +153,8 @@ public class ShipBuilderScreen implements Screen {
         initComponentsStack();
 
         //componentsScrollPane
-        componentsScrollPane = new CustomScrollPane(componentsStack, scrollPaneStyle);
+        //ScrollPane for the componentsStack
+        ScrollPane componentsScrollPane = new CustomScrollPane(componentsStack, scrollPaneStyle);
         componentsScrollPane.setFlickScroll(false);
         componentsScrollPane.setScrollingDisabled(true, false);
 
@@ -182,32 +171,48 @@ public class ShipBuilderScreen implements Screen {
         propertiesVerticalGroup.grow();
 
         //propertiesScrollPane
-        propertiesScrollPane = new CustomScrollPane(propertiesVerticalGroup, scrollPaneStyle);
+        //ScrollPane for the propertiesStack
+        ScrollPane propertiesScrollPane = new CustomScrollPane(propertiesVerticalGroup, scrollPaneStyle);
         propertiesScrollPane.setFlickScroll(false);
         propertiesScrollPane.setScrollingDisabled(true, false);
         propertiesScrollPane.setFadeScrollBars(false);
 
-        //save Button
-        saveButton = new ImageButton(imageButtonStyle);
 
-        //TODO add listener
+        //save Button
+        //button which saves (and probably closes?)
+        ImageButton saveButton = new ImageButton(assetManager.getDrawable(Asset.SaveSymbol));
+        saveButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                save();
+            }
+        });
 
         //switchButton
-        switchButton = new ImageButton(imageButtonStyle);
-        //TODO set background
-        //TODO add listener
+        //button which switches to code view
+        ImageButton switchButton = new ImageButton(assetManager.getDrawable(Asset.CodeSymbol));
+        switchButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                switchView();
+            }
+        });
 
-        //regions add the components to the rootTable
+        //rightLayoutTable
+        Table rightLayoutTable = new Table();
+        rightLayoutTable.add(propertiesScrollPane).colspan(2).grow();
+        rightLayoutTable.row();
+        rightLayoutTable.add(saveButton).size(40, 40).growX().pad(10).right();
+        rightLayoutTable.add(switchButton).size(40, 40).pad(10).right();
+
+        //add the components to the rootTable
         //add the buttons
 
         //add all the main controls
-        rootTable.add(componentsScrollPane).left().growY();
-        rootTable.add(shipDesignerZoomScrollPane).grow();
-        rootTable.add(propertiesScrollPane).right().width(200).growY();
+        shipRootTable.add(componentsScrollPane).left().growY();
+        shipRootTable.add(shipDesignerZoomScrollPane).grow();
+        shipRootTable.add(rightLayoutTable).right().width(200).growY();
 
-        //endregion
-
-        //endregion
 
         //region drag and drop for the Components
         DragAndDrop componentsDragAndDrop = new DragAndDrop();
@@ -286,9 +291,33 @@ public class ShipBuilderScreen implements Screen {
 
         //endregion
 
+        //endregion
+
+        //region code editor ui
+
+        codeRootTable = new Table();
+        codeRootTable.setFillParent(true);
+        //switch button
+        ImageButton closeButton = new ImageButton(assetManager.getDrawable(Asset.CloseSymbol));
+        closeButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                switchView();
+            }
+        });
+
+        //code editor
+        //CodeEditor for the file with all methods
+        CodeEditor codeEditor = new CodeEditor(textFieldStyle, scrollPaneStyle, new ScriptColorParser());
+
+        codeRootTable.add(codeEditor).grow();
+        codeRootTable.add(closeButton).size(40, 40).bottom().pad(10);
+
+
+        //endregion
 
         //just some debugging
-        rootTable.setDebug(false, true);
+        shipRootTable.setDebug(false, true);
     }
 
     //helper method to add all components to the componentsStack
@@ -321,7 +350,29 @@ public class ShipBuilderScreen implements Screen {
 
     //switches the view
     private void switchView() {
-        //TODO implementation
+        //TODO complete implementation
+        if(isShipView) {
+            stage.addActor(codeRootTable);
+            shipRootTable.remove();
+        }
+        else {
+            stage.addActor(shipRootTable);
+            codeRootTable.remove();
+        }
+        isShipView = !isShipView;
+    }
+
+    private void save() {
+        //debug
+        Json json = new Json(JsonWriter.OutputType.json);
+        FileHandle handle = Gdx.files.local("saveGame.json");
+        try (Writer writer = handle.writer(false)) {
+            json.setWriter(writer);
+            shipDef.toJson(json);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -360,15 +411,5 @@ public class ShipBuilderScreen implements Screen {
 
     @Override
     public void dispose() {
-        //debug
-        Json json = new Json(JsonWriter.OutputType.json);
-        FileHandle handle = Gdx.files.local("saveGame.json");
-        try (Writer writer = handle.writer(false)) {
-            json.setWriter(writer);
-            shipDef.toJson(json);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

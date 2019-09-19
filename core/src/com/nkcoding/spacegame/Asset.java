@@ -16,7 +16,10 @@ public enum Asset {
     NoComponent("textures/ui/noComponent.png"),
     ScrollBarBackground("textures/ui/scrollBarBackground.png"),
     ScrollBarKnob("textures/ui/scrollBarKnob.png"),
-    SimpleBorder("textures/ui/simpleBorder.png");
+    SimpleBorder("textures/ui/simpleBorder.png"),
+    CodeSymbol("textures/ui/codeSymbol.png"),
+    SaveSymbol("textures/ui/saveSymbol.png"),
+    CloseSymbol("textures/ui/closeSymbol.png");
 
     private String value;
 
