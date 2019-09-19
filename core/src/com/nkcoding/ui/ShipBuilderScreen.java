@@ -125,7 +125,12 @@ public class ShipBuilderScreen implements Screen {
         textFieldStyle.font = assetManager.getBitmapFont(Asset.Consolas_18);
         textFieldStyle.fontColor = new Color(0xffffffff);
         textFieldStyle.cursor = assetManager.getDrawable(Asset.Cursor);
-        textFieldStyle.background = assetManager.getDrawable(Asset.ScrollBarBackground);
+        Drawable textFieldBackground = assetManager.getDrawable(Asset.ScrollBarBackground);
+        textFieldBackground.setLeftWidth(10);
+        textFieldBackground.setRightWidth(10);
+        textFieldBackground.setTopHeight(10);
+        textFieldBackground.setBottomHeight(10);
+        textFieldStyle.background = textFieldBackground;
 
         //PropertyBox
         propertyBoxStyle = new PropertyBox.PropertyBoxStyle();

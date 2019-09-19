@@ -28,6 +28,9 @@ public class CodeEditor extends WidgetGroup {
     /**font for the line numbers*/
     private BitmapFont font;
 
+    /**style for the MultiColorTextArea*/
+    private TextField.TextFieldStyle textFieldStyle;
+
     private final Color lineNumberColor = new Color(0x808080ff);
     private final Color highlightLineNumberColor = new Color(0xffffffff);
 
@@ -42,6 +45,7 @@ public class CodeEditor extends WidgetGroup {
      * @param codeParser        used to color-format the code
      */
     public CodeEditor(TextField.TextFieldStyle textFieldStyle, ScrollPane.ScrollPaneStyle scrollPaneStyle, ColorParser codeParser) {
+        this.textFieldStyle = textFieldStyle;
         codeTextArea = new MultiColorTextArea("//this is just a test lol", textFieldStyle);
         codeScrollPane = new ScrollPane(codeTextArea, scrollPaneStyle);
         //st attributes on ScrollPane
@@ -91,7 +95,7 @@ public class CodeEditor extends WidgetGroup {
         if (ScissorStack.pushScissors(scissors)) {
             //draw line numbers
             float lineHight = font.getLineHeight();
-            float offset = -font.getLineHeight() * codeTextArea.firstLineShowing + codeScrollPane.getVisualScrollY() + numbersAreaClip.height;
+            float offset = -font.getLineHeight() * codeTextArea.firstLineShowing + codeScrollPane.getVisualScrollY() + numbersAreaClip.height - textFieldStyle.background.getTopHeight();
             int drawUntil = codeTextArea.linesShowing;
             if (codeTextArea.getLines() < codeTextArea.firstLineShowing + codeTextArea.linesShowing)
                 drawUntil = codeTextArea.getLines() - codeTextArea.firstLineShowing;
