@@ -1,6 +1,7 @@
 package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
 import java.util.ArrayList;
 
@@ -8,7 +9,14 @@ public class ShipDef {
     public class ShipDesignerHelper{
         //default constructor
         protected  ShipDesignerHelper() {
-
+            //init the componentsMap
+            for (ComponentDef componentDef : componentDefs) {
+                for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++){
+                    for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++){
+                        componentsMap[_x][_y] = componentDef;
+                    }
+                }
+            }
         }
 
         private ComponentDef[][] componentsMap = new ComponentDef[MAX_SIZE][MAX_SIZE];
@@ -101,6 +109,14 @@ public class ShipDef {
 
         json.writeArrayEnd();
         json.writeObjectEnd();
+    }
+
+    public static ShipDef fromJson(JsonValue value) {
+        ShipDef shipDef = new ShipDef();
+        for (JsonValue componentValue : value.get("comDefs")) {
+            shipDef.componentDefs.add(ComponentDef.fromJson(componentValue));
+        }
+        return shipDef;
     }
 
 }

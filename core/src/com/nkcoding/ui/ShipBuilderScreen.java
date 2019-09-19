@@ -16,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.ExtAssetManager;
@@ -87,7 +89,12 @@ public class ShipBuilderScreen implements Screen {
     //constructor
     public ShipBuilderScreen(SpaceGame spaceGame) {
         //debug
-        shipDef = new ShipDef();
+        FileHandle saveGame = Gdx.files.local("saveGame.json");
+        if (saveGame.exists()) {
+            JsonReader jsonReader = new JsonReader();
+            shipDef = ShipDef.fromJson(jsonReader.parse(saveGame));
+        }
+        else shipDef = new ShipDef();
 
 
         this.spaceGame = spaceGame;
@@ -292,7 +299,7 @@ public class ShipBuilderScreen implements Screen {
             Image img = new Image(assetManager.getTexture(info.previewImg));
 
             img.setUserObject(info);
-            componentsStack.add(img).width(ShipDesigner.COMPONENT_SIZE * info.width).height(ShipDesigner.COMPONENT_SIZE * info.height).pad(10, 10, 0, 10).top();
+            componentsStack.add(img).width(ShipDesigner.COMPONENT_SIZE * info.width).height(ShipDesigner.COMPONENT_SIZE * info.height).pad(10, 10, 0, 10).top().left();
             componentsStack.row();
         }
     }
@@ -301,6 +308,7 @@ public class ShipBuilderScreen implements Screen {
         //update the property stack
         //TODO add name stuff
         //TODO add better version
+        propertiesVerticalGroup.getChildren().forEach(actor -> ((PropertyBox)((Container)actor).getActor()).save());
         propertiesVerticalGroup.clear();
         if (def != null) {
             def.properties.forEach((name, data) -> {
@@ -353,7 +361,7 @@ public class ShipBuilderScreen implements Screen {
     @Override
     public void dispose() {
         //debug
-        Json json = new Json();
+        Json json = new Json(JsonWriter.OutputType.json);
         FileHandle handle = Gdx.files.local("saveGame.json");
         try (Writer writer = handle.writer(false)) {
             json.setWriter(writer);

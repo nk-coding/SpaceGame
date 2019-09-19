@@ -41,11 +41,20 @@ public class PropertyBox extends WidgetGroup {
         init();
     }
 
+    /**updates this control to a new ExternalPropertyData
+     * automatically calls save()
+     */
     public void update(String name, ExternalPropertyData data) {
-        //TODO maybe add some safe stuff
+        save();
         this.name = name;
         this.data = data;
         init();
+    }
+
+    /**saves the TextFields to the ExternalPropertyData, should be called before it is deleted*/
+    public void save() {
+        if (!data.readonly) data.initData = valueTextField.getText();
+        data.handlerName = changedTextField.getText();
     }
 
     private void init() {
@@ -54,15 +63,16 @@ public class PropertyBox extends WidgetGroup {
         else nameLabel.setText(name);
         //init the changed handler stuff
         if (changedLabel == null) changedLabel = new Label("changed handler", style.labelStyle);
-        if (changedTextField == null) changedTextField = new TextField("", style.textFieldStyle);
-        else changedTextField.setText("");
+        if (changedTextField == null) changedTextField = new TextField(data.handlerName, style.textFieldStyle);
+        else changedTextField.setText(data.handlerName);
         addActor(changedTextField);
         //init the value stuff if necessary
         if (!data.readonly) {
             if (valueLabel == null) valueLabel = new Label("value", style.labelStyle);
-            if (valueTextField == null) valueTextField = new TextField("", style.textFieldStyle);
-            else valueTextField.setText("");
+            if (valueTextField == null) valueTextField = new TextField(data.initData, style.textFieldStyle);
+            else valueTextField.setText(data.initData);
         }
+        invalidateHierarchy();
     }
 
     @Override

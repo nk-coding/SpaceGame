@@ -1,6 +1,7 @@
 package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import com.nkcoding.interpreter.compiler.DataTypes;
 import com.nkcoding.spacegame.Asset;
 
@@ -197,6 +198,24 @@ public class ComponentDef {
         json.writeArrayEnd();
 
         json.writeObjectEnd();
+    }
+
+    public static ComponentDef fromJson(JsonValue value) {
+        ComponentDef comDef = new ComponentDef(ComponentType.valueOf(value.getString("type")));
+        //set the basic values
+        comDef.setName(value.getString("name"));
+        comDef.setX(value.getInt("x"));
+        comDef.setY(value.getInt("y"));
+        comDef.setRotation(value.getInt("rotation"));
+
+        //init all properties
+        for (JsonValue propertyValue : value.get("properties")) {
+            ExternalPropertyData data = comDef.properties.get(propertyValue.getString("key"));
+            if (!data.readonly) data.initData = propertyValue.getString("initData");
+            data.handlerName = propertyValue.getString("handlerName");
+        }
+
+        return comDef;
     }
 
 }
