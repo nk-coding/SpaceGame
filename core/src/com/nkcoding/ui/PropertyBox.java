@@ -105,6 +105,7 @@ public class PropertyBox extends WidgetGroup {
         //changed handler
         changedTextField.setX(style.spacing + bgLeftWidth);
         changedTextField.setY(posY);
+        changedTextField.setWidth(getWidth() - style.spacing - bgLeftWidth - bgRightWidth);
         posY += changedTextField.getHeight() + style.spacing;
         changedLabel.setX(style.spacing + bgLeftWidth);
         changedLabel.setY(posY);
@@ -114,6 +115,7 @@ public class PropertyBox extends WidgetGroup {
         if (!data.readonly) {
             valueTextField.setX(style.spacing + bgLeftWidth);
             valueTextField.setY(posY);
+            valueTextField.setWidth(getWidth() - style.spacing - bgLeftWidth - bgRightWidth);
             posY += valueTextField.getHeight() + style.spacing;
             valueLabel.setX(style.spacing + bgLeftWidth);
             valueLabel.setY(posY);

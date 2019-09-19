@@ -2,6 +2,7 @@ package com.nkcoding.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.ExtAssetManager;
@@ -21,6 +23,9 @@ import com.nkcoding.spacegame.SpaceGame;
 import com.nkcoding.spacegame.spaceship.ComponentDef;
 import com.nkcoding.spacegame.spaceship.ComponentType;
 import com.nkcoding.spacegame.spaceship.ShipDef;
+
+import java.io.IOException;
+import java.io.Writer;
 
 
 public class ShipBuilderScreen implements Screen {
@@ -54,7 +59,7 @@ public class ShipBuilderScreen implements Screen {
     private ScrollPane propertiesScrollPane;
 
     //Stack for the external properties for the selected Component
-    private VerticalGroup propertiesStack;
+    private VerticalGroup propertiesVerticalGroup;
 
     //ZoomScrollOane for the shipDesigner
     private ZoomScrollPane shipDesignerZoomScrollPane;
@@ -166,13 +171,14 @@ public class ShipBuilderScreen implements Screen {
         shipDesignerZoomScrollPane.setOverscroll(false, false);
 
         //propertiesStack
-        propertiesStack = new VerticalGroup();
-        propertiesStack.grow();
+        propertiesVerticalGroup = new VerticalGroup();
+        propertiesVerticalGroup.grow();
 
         //propertiesScrollPane
-        propertiesScrollPane = new CustomScrollPane(propertiesStack, scrollPaneStyle);
+        propertiesScrollPane = new CustomScrollPane(propertiesVerticalGroup, scrollPaneStyle);
         propertiesScrollPane.setFlickScroll(false);
         propertiesScrollPane.setScrollingDisabled(true, false);
+        propertiesScrollPane.setFadeScrollBars(false);
 
         //save Button
         saveButton = new ImageButton(imageButtonStyle);
@@ -295,12 +301,12 @@ public class ShipBuilderScreen implements Screen {
         //update the property stack
         //TODO add name stuff
         //TODO add better version
-        propertiesStack.clear();
+        propertiesVerticalGroup.clear();
         if (def != null) {
             def.properties.forEach((name, data) -> {
                 Container<PropertyBox> container = new Container<>(new PropertyBox(propertyBoxStyle, name, data));
                 container.pad(10, 10, 0, 10).fill();
-                propertiesStack.addActor(container);
+                propertiesVerticalGroup.addActor(container);
             });
         }
     }
@@ -346,6 +352,15 @@ public class ShipBuilderScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        //debug
+        Json json = new Json();
+        FileHandle handle = Gdx.files.local("saveGame.json");
+        try (Writer writer = handle.writer(false)) {
+            json.setWriter(writer);
+            shipDef.toJson(json);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

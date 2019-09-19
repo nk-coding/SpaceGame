@@ -1,5 +1,6 @@
 package com.nkcoding.spacegame.spaceship;
 
+import com.badlogic.gdx.utils.Json;
 import com.nkcoding.interpreter.compiler.DataTypes;
 
 public class ExternalPropertyData {
@@ -11,7 +12,7 @@ public class ExternalPropertyData {
 
     public String initData = "";
 
-    public String handlerName = null;
+    public String handlerName = "";
 
     /**
      * the default constructor
@@ -58,5 +59,13 @@ public class ExternalPropertyData {
             default: throw new RuntimeException("not implemented");
 
         }
+    }
+
+    public void toJson(Json json, String key) {
+        json.writeObjectStart();
+        json.writeValue("key", key);
+        if (!readonly) json.writeValue("initData", initData);
+        json.writeValue("handlerName", handlerName);
+        json.writeObjectEnd();
     }
 }

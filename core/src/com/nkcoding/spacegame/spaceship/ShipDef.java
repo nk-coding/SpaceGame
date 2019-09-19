@@ -1,5 +1,7 @@
 package com.nkcoding.spacegame.spaceship;
 
+import com.badlogic.gdx.utils.Json;
+
 import java.util.ArrayList;
 
 public class ShipDef {
@@ -86,6 +88,19 @@ public class ShipDef {
     public ShipDesignerHelper getShipDesignerHelper() {
         if (designerHelper == null) designerHelper = new ShipDesignerHelper();
         return designerHelper;
+    }
+
+    public void toJson(Json json) {
+        //write all the components
+        json.writeObjectStart();
+        json.writeArrayStart("comDefs");
+
+        for (ComponentDef comDef : componentDefs) {
+            comDef.toJson(json);
+        }
+
+        json.writeArrayEnd();
+        json.writeObjectEnd();
     }
 
 }

@@ -1,5 +1,6 @@
 package com.nkcoding.spacegame.spaceship;
 
+import com.badlogic.gdx.utils.Json;
 import com.nkcoding.interpreter.compiler.DataTypes;
 import com.nkcoding.spacegame.Asset;
 
@@ -177,6 +178,25 @@ public class ComponentDef {
         ExternalPropertyData data = properties.get(property.name);
         property.setInitValue(data.initData);
         //TODO implementation of changedMethodStatement probably with the SpaceSimulation's list of methods
+    }
+
+    public void toJson(Json json) {
+        json.writeObjectStart();
+        //write all the basic values
+        json.writeValue("type", getType());
+        json.writeValue("name", name);
+        json.writeValue("x", x);
+        json.writeValue("y", y);
+        json.writeValue("rotation", rotation);
+
+        ///write all the properties
+        json.writeArrayStart("properties");
+        for (Map.Entry<String, ExternalPropertyData> entry : properties.entrySet()) {
+            entry.getValue().toJson(json, entry.getKey());
+        }
+        json.writeArrayEnd();
+
+        json.writeObjectEnd();
     }
 
 }
