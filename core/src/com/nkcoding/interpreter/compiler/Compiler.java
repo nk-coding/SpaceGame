@@ -90,10 +90,10 @@ public class Compiler {
                 //here it really begins
                 //if it does not contain the return type, something must be wrong
                 if (!DataTypes.contains(returnType))
-                    throw new CompileException("Excepted: return type, found : " + returnType, text.getPosition().getClone());
+                    throw new CompileException("Expected: return type, found : " + returnType, text.getPosition().getClone());
                 //everything ok
                 //create a new methodDefinition
-                MethodDefinition def = new MethodDefinition(MethodType.Normal);
+                NormalMethodDefinition def = new NormalMethodDefinition(text.getPosition().getLine());
                 def.setReturnType(returnType);
                 //the method name
                 def.setName(text.getNextWord());

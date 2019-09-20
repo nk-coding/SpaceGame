@@ -14,7 +14,7 @@ public class MethodStatement implements Statement {
         return statements;
     }
 
-    private MethodDefinition definition;
+    private final MethodDefinition definition;
 
     public MethodDefinition getDefinition() {
         return definition;
