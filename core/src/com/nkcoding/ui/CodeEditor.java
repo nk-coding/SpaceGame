@@ -46,7 +46,7 @@ public class CodeEditor extends WidgetGroup {
      */
     public CodeEditor(TextField.TextFieldStyle textFieldStyle, ScrollPane.ScrollPaneStyle scrollPaneStyle, ColorParser codeParser) {
         this.textFieldStyle = textFieldStyle;
-        codeTextArea = new MultiColorTextArea("//this is just a test lol", textFieldStyle);
+        codeTextArea = new MultiColorTextArea("", textFieldStyle);
         codeScrollPane = new ScrollPane(codeTextArea, scrollPaneStyle);
         //st attributes on ScrollPane
         codeScrollPane.setFadeScrollBars(false);

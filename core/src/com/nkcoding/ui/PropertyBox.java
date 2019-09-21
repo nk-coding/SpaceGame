@@ -1,5 +1,6 @@
 package com.nkcoding.ui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -63,16 +64,32 @@ public class PropertyBox extends WidgetGroup {
         else nameLabel.setText(name);
         //init the changed handler stuff
         if (changedLabel == null) changedLabel = new Label("changed handler", style.labelStyle);
-        if (changedTextField == null) changedTextField = new TextField(data.handlerName, style.textFieldStyle);
+        if (changedTextField == null) {
+            changedTextField = new TextField(data.handlerName, style.textFieldStyle);
+            addActor(changedTextField);
+        }
         else changedTextField.setText(data.handlerName);
-        addActor(changedTextField);
+
         //init the value stuff if necessary
         if (!data.readonly) {
             if (valueLabel == null) valueLabel = new Label("value", style.labelStyle);
-            if (valueTextField == null) valueTextField = new TextField(data.initData, style.textFieldStyle);
+            if (valueTextField == null) {
+                valueTextField = new TextField(data.initData, style.textFieldStyle);
+                valueTextField.setTextFieldListener(new TextField.TextFieldListener() {
+                    @Override
+                    public void keyTyped(TextField textField, char c) {
+                        validateValue();
+                    }
+                });
+                addActor(valueTextField);
+            }
             else valueTextField.setText(data.initData);
         }
         invalidateHierarchy();
+    }
+
+    private void validateValue() {
+        valueTextField.getColor().set(data.verifyInit(valueTextField.getText()) ? style.legalInputColor : style.illegalInputColor);
     }
 
     @Override
@@ -166,6 +183,10 @@ public class PropertyBox extends WidgetGroup {
         public Label.LabelStyle labelStyle;
 
         public TextField.TextFieldStyle textFieldStyle;
+
+        public Color illegalInputColor;
+
+        public Color legalInputColor;
 
         public float spacing;
     }

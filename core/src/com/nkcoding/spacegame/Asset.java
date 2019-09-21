@@ -19,7 +19,8 @@ public enum Asset {
     SimpleBorder("textures/ui/simpleBorder.png"),
     CodeSymbol("textures/ui/codeSymbol.png"),
     SaveSymbol("textures/ui/saveSymbol.png"),
-    CloseSymbol("textures/ui/closeSymbol.png");
+    CloseSymbol("textures/ui/closeSymbol.png"),
+    Selection("textures/ui/selection.png");
 
     private String value;
 

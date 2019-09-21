@@ -21,10 +21,10 @@ public class Ship implements Simulated {
     }
 
     //the list of components which compose the ship
-    List<Component> components;
+    private List<Component> components;
 
     //the map of the components
-    Component[][] componentsMap;
+    private Component[][] componentsMap;
 
     //corresponds the order of the components to the order of the PowerLevel?
     private boolean isPowerLevelOrderCorrect = false;

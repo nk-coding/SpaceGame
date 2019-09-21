@@ -34,13 +34,14 @@ public class ExternalPropertyData {
         this(type, true);
     }
 
-    public boolean verifyInit() {
+    public boolean verifyInit(String init) {
         switch (type) {
             case DataTypes.Boolean:
-                return initData.equalsIgnoreCase("true") || initData.equalsIgnoreCase("false");
+                return init.equalsIgnoreCase("true") || init.equalsIgnoreCase("false");
             case DataTypes.Float:
                 try {
-                    Float.parseFloat(initData);
+                    if (init.isBlank()) return true;
+                    Float.parseFloat(init);
                     return true;
                 }
                 catch (Exception e) {
@@ -48,7 +49,8 @@ public class ExternalPropertyData {
                 }
             case DataTypes.Integer:
                 try {
-                    Integer.parseInt(initData);
+                    if (init.isBlank()) return true;
+                    Integer.parseInt(init);
                     return true;
                 }
                 catch (Exception e) {

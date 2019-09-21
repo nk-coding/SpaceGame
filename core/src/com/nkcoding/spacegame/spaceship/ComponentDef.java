@@ -168,6 +168,11 @@ public class ComponentDef {
         properties.put(RequestLevelKey, new ExternalPropertyData(DataTypes.Integer));
         properties.put(HasFullPowerKey, new ExternalPropertyData(DataTypes.Boolean));
         properties.put(PowerReceivedKey, new ExternalPropertyData(DataTypes.Float));
+        switch (info.type) {
+            case TestType:
+                properties.put(TestImp.ModifiableKey, new ExternalPropertyData(DataTypes.Float, false));
+                break;
+        }
         //TODO add all type specific properties
     }
 
