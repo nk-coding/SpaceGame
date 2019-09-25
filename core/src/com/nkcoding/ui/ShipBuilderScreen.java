@@ -233,13 +233,13 @@ public class ShipBuilderScreen implements Screen {
 
                 Image image = (Image)actor;
                 DragAndDrop.Payload payload = new DragAndDrop.Payload();
-                ComponentDef.ComponentInfo info = (ComponentDef.ComponentInfo)image.getUserObject();
-                payload.setObject(new ComponentDef(info));
+                ComponentType type = (ComponentType) image.getUserObject();
+                payload.setObject(new ComponentDef(type));
                 Image dragActor = new Image(image.getDrawable());
                 float componentSize = ShipDesigner.COMPONENT_SIZE * shipDesignerZoomScrollPane.getZoom();
                 dragActor.setSize(
-                         componentSize * info.width,
-                        componentSize * info.height);
+                         componentSize * type.width,
+                        componentSize * type.height);
                 payload.setDragActor(dragActor);
                 componentsDragAndDrop.setDragActorPosition(dragActor.getWidth() - componentSize / 2, -dragActor.getHeight() + componentSize / 2);
                 return payload;
@@ -332,11 +332,10 @@ public class ShipBuilderScreen implements Screen {
     private void initComponentsStack() {
         //at this point, this is (sadly) only the TestImp
         for (ComponentType type : ComponentType.values()) {
-            ComponentDef.ComponentInfo info = ComponentDef.componentInfos.get(type);
-            Image img = new Image(assetManager.getTexture(info.previewImg));
+            Image img = new Image(assetManager.getTexture(type.previewImg));
 
-            img.setUserObject(info);
-            componentsStack.add(img).width(ShipDesigner.COMPONENT_SIZE * info.width).height(ShipDesigner.COMPONENT_SIZE * info.height).pad(10, 10, 0, 10).top().left();
+            img.setUserObject(type);
+            componentsStack.add(img).width(ShipDesigner.COMPONENT_SIZE * type.width).height(ShipDesigner.COMPONENT_SIZE * type.height).pad(10, 10, 0, 10).top().left();
             componentsStack.row();
         }
     }

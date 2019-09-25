@@ -12,6 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Component {
+    
+    //region names for the ExternalProperties
+    public static final String HealthKey = "Health";
+    public static final String PowerRequestedKey = "PowerRequested";
+    public static final String RequestLevelKey = "RequestLevel";
+    public static final String HasFullPowerKey = "HasFullPower";
+    public static final String PowerReceivedKey = "PowerReceived";
+    //endregion
 
     //Type if the Component
     private final ComponentType type;
@@ -56,7 +64,7 @@ public abstract class Component {
     //health has to be stored again, because it changes during simulation
     //if it reaches zero, the component should be destroyed TODO implementation
     //should be initialized in constructor out of componentDef
-    public final IntProperty health = new IntProperty(true, true, ComponentDef.HealthKey) {
+    public final IntProperty health = new IntProperty(true, true, HealthKey) {
         @Override
         public void set(int value) {
             super.set(Math.max(value, 0));
@@ -76,7 +84,7 @@ public abstract class Component {
     //it could be set ingame, but also uses automatic stuff
 
     //power that component requests
-    public final FloatProperty powerRequested = new FloatProperty(true, true, ComponentDef.PowerRequestedKey) {
+    public final FloatProperty powerRequested = new FloatProperty(true, true, PowerRequestedKey) {
         @Override
         public void set(float value) {
             if (get() != value) ship.invalidatePowerDelivery();
@@ -85,7 +93,7 @@ public abstract class Component {
     };
 
     //how important is it to get the power
-    public final IntProperty requestLevel = new IntProperty(false, true, ComponentDef.RequestLevelKey) {
+    public final IntProperty requestLevel = new IntProperty(false, true, RequestLevelKey) {
         @Override
         public void set(int value) {
             if (get() != value) ship.invalidatePowerLevelOrder();
@@ -94,11 +102,11 @@ public abstract class Component {
     };
 
     //shows if the component get the full power (used to prevent issues with float rounding)
-    public final BooleanProperty hasFullPower = new BooleanProperty(true, true, ComponentDef.HasFullPowerKey);
+    public final BooleanProperty hasFullPower = new BooleanProperty(true, true, HasFullPowerKey);
 
 
     //how much power does it actually get
-    public final FloatProperty powerReceived = new FloatProperty(true, true, ComponentDef.PowerReceivedKey) {
+    public final FloatProperty powerReceived = new FloatProperty(true, true, PowerReceivedKey) {
         @Override
         public void set(float value) {
             super.set(value);

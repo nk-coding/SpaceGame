@@ -4,6 +4,9 @@ import com.badlogic.gdx.utils.Json;
 import com.nkcoding.interpreter.compiler.DataTypes;
 
 public class ExternalPropertyData {
+    /**the name of the property*/
+    public final String name;
+
     /**the type of the property*/
     public final String type;
 
@@ -19,9 +22,10 @@ public class ExternalPropertyData {
      * @param type the type of the property
      * @param readonly can the value be modified by the user
      */
-    public ExternalPropertyData(String type, boolean readonly) {
+    public ExternalPropertyData(String name, String type, boolean readonly) {
         //check if type is ok
         if (type.equals(DataTypes.Void)) throw new IllegalArgumentException("type cannot be " + DataTypes.Void);
+        this.name = name;
         this.type = type;
         this.readonly = readonly;
     }
@@ -30,8 +34,8 @@ public class ExternalPropertyData {
      * wrapper which sets readonly to true
      * @param type the type of the property
      */
-    public ExternalPropertyData(String type) {
-        this(type, true);
+    public ExternalPropertyData(String name, String type) {
+        this(name, type, true);
     }
 
     public boolean verifyInit(String init) {
@@ -69,5 +73,19 @@ public class ExternalPropertyData {
         if (!readonly) json.writeValue("initData", initData);
         json.writeValue("handlerName", handlerName);
         json.writeObjectEnd();
+    }
+
+    @Override
+    protected Object clone() {
+        return new ExternalPropertyData(name, type, readonly);
+    }
+
+    //readonly = true;
+    public static ExternalPropertyData of(String name, String type) {
+        return of(name, type, true);
+    }
+
+    public static ExternalPropertyData of(String name, String type, boolean readonly) {
+        return new ExternalPropertyData(name, type, readonly);
     }
 }
