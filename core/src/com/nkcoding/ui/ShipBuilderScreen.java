@@ -20,15 +20,19 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.nkcoding.interpreter.compiler.Compiler;
+import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.SpaceGame;
 import com.nkcoding.spacegame.spaceship.ComponentDef;
 import com.nkcoding.spacegame.spaceship.ComponentType;
+import com.nkcoding.spacegame.spaceship.ExternalPropertyData;
 import com.nkcoding.spacegame.spaceship.ShipDef;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 
 
 public class ShipBuilderScreen implements Screen {
@@ -66,6 +70,9 @@ public class ShipBuilderScreen implements Screen {
     //style for more propertyBoxes
     PropertyBox.PropertyBoxStyle propertyBoxStyle;
 
+    //compiler to check the code
+    private Compiler compiler;
+
     //normal (ship) view?
     private boolean isShipView = true;
 
@@ -83,11 +90,25 @@ public class ShipBuilderScreen implements Screen {
         }
         else shipDef = new ShipDef();
 
+        //create new compiler
+        //create the external method statements for the components
+        ArrayList<ExternalPropertyData> externalPropertyDatas = new ArrayList<>();
+        for(ComponentType com : ComponentType.values()) {
+            for(ExternalPropertyData data : com.propertyDefs) {
+                if (!externalPropertyDatas.contains(data)) {
+                    externalPropertyDatas.add(data);
+                }
+            }
+        }
+        MethodDefinition[] methodDefinitions = new MethodDefinition[externalPropertyDatas.size()];
+        for (ExternalPropertyData data : externalPropertyDatas) {
+
+        }
+
 
         this.spaceGame = spaceGame;
         this.spriteBatch = spaceGame.getBatch();
         this.assetManager = spaceGame.getAssetManager();
-
         //region create the stage with and all its components
         ScreenViewport viewport = new ScreenViewport();
         viewport.setUnitsPerPixel(0.6f / Gdx.graphics.getDensity());

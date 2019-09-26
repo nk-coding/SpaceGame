@@ -27,6 +27,12 @@ public class Compiler {
         stack = new CompilerStack();
     }
 
+    //updates the compiler
+    public void update(String[] lines) {
+        stack = new CompilerStack();
+        text = new ProgramTextWrapper(lines);
+    }
+
     //compile the stuff
     public MethodStatement[] compile() throws CompileException {
         //welcome to the compiler
