@@ -3,7 +3,7 @@ package com.nkcoding.spacegame.spaceship;
 import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.ScriptingEngine;
 
-public abstract class ExternalProperty {
+public abstract class ExternalProperty<T> {
 
     /**are setters allowed?*/
     public final boolean readonly;
@@ -37,5 +37,9 @@ public abstract class ExternalProperty {
     public abstract void startChangedHandler(ScriptingEngine engine);
 
     public abstract void setInitValue(String value);
+
+    public abstract void set(T value);
+
+    public abstract T get2();
 
 }

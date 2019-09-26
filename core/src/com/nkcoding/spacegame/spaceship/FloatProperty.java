@@ -2,7 +2,7 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.nkcoding.interpreter.ScriptingEngine;
 
-public class FloatProperty extends ExternalProperty {
+public class FloatProperty extends ExternalProperty<Float> {
     private float value = 0f;
 
     public float get() {
@@ -31,5 +31,15 @@ public class FloatProperty extends ExternalProperty {
         } catch (Exception e) {
             this.value = 0f;
         }
+    }
+
+    @Override
+    public void set(Float value) {
+        this.value = value;
+    }
+
+    @Override
+    public Float get2() {
+        return value;
     }
 }

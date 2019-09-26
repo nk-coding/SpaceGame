@@ -2,7 +2,7 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.nkcoding.interpreter.ScriptingEngine;
 
-public class BooleanProperty extends ExternalProperty {
+public class BooleanProperty extends ExternalProperty<Boolean> {
     private boolean value = false;
 
     public boolean get() {
@@ -27,5 +27,15 @@ public class BooleanProperty extends ExternalProperty {
     @Override
     public void setInitValue(String value) {
         this.value = value.equalsIgnoreCase("true");
+    }
+
+    @Override
+    public void set(Boolean value) {
+        this.value = value;
+    }
+
+    @Override
+    public Boolean get2() {
+        return value;
     }
 }

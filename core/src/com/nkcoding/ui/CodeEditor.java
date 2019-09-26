@@ -46,7 +46,7 @@ public class CodeEditor extends WidgetGroup {
      */
     public CodeEditor(TextField.TextFieldStyle textFieldStyle, ScrollPane.ScrollPaneStyle scrollPaneStyle, ColorParser codeParser) {
         this.textFieldStyle = textFieldStyle;
-        codeTextArea = new MultiColorTextArea("", textFieldStyle);
+        codeTextArea = new MultiColorTextArea("//you can write your code here", textFieldStyle);
         codeScrollPane = new ScrollPane(codeTextArea, scrollPaneStyle);
         //st attributes on ScrollPane
         codeScrollPane.setFadeScrollBars(false);
@@ -96,7 +96,7 @@ public class CodeEditor extends WidgetGroup {
             //draw line numbers
             float lineHight = font.getLineHeight();
             float offset = -font.getLineHeight() * codeTextArea.firstLineShowing + codeScrollPane.getVisualScrollY() + numbersAreaClip.height - textFieldStyle.background.getTopHeight();
-            int drawUntil = codeTextArea.linesShowing;
+            int drawUntil = Math.max(codeTextArea.linesShowing, 1);
             if (codeTextArea.getLines() < codeTextArea.firstLineShowing + codeTextArea.linesShowing)
                 drawUntil = codeTextArea.getLines() - codeTextArea.firstLineShowing;
 
@@ -127,6 +127,16 @@ public class CodeEditor extends WidgetGroup {
 
         //for the line numbers area
         numbersAreaClip = new Rectangle(0, 0, numbersAreaWidth, getHeight());
+    }
+
+    @Override
+    public float getPrefWidth() {
+        return Math.max(super.getPrefWidth(), 100);
+    }
+
+    @Override
+    public float getPrefHeight() {
+        return Math.max(super.getPrefHeight(), 100);
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.nkcoding.interpreter.ScriptingEngine;
 
-public class IntProperty extends ExternalProperty {
+public class IntProperty extends ExternalProperty<Integer> {
     private int value = 0;
 
     public int get() {
@@ -32,5 +32,15 @@ public class IntProperty extends ExternalProperty {
         catch (Exception e) {
             this.value = 0;
         }
+    }
+
+    @Override
+    public void set(Integer value) {
+        this.value = value;
+    }
+
+    @Override
+    public Integer get2() {
+        return value;
     }
 }

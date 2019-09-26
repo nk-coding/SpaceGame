@@ -2,6 +2,11 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.utils.Json;
 import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.MethodDefinition;
+import com.nkcoding.interpreter.compiler.MethodType;
+import com.nkcoding.interpreter.compiler.TypeNamePair;
+
+import java.util.Collection;
 
 public class ExternalPropertyData {
     /**the name of the property*/
@@ -64,6 +69,22 @@ public class ExternalPropertyData {
                 return true;
             default: throw new RuntimeException("not implemented");
 
+        }
+    }
+
+    //adds the external method definitions the list
+    public void addExternalMethodDefs(Collection<? super MethodDefinition> list) {
+        list.add(createExternalMethodDef(true));
+        if (!readonly) list.add(createExternalMethodDef(false));
+    }
+
+    //helper for addExternalMethodDef
+    private MethodDefinition createExternalMethodDef(boolean get) {
+        if (get) {
+            return new MethodDefinition(MethodType.External, "get" + name, type, new TypeNamePair("id", DataTypes.String));
+        }
+        else {
+            return new MethodDefinition(MethodType.External, "set" + name, DataTypes.Void, new TypeNamePair("value", type), new TypeNamePair("id", DataTypes.String));
         }
     }
 

@@ -3,13 +3,8 @@ package com.nkcoding.spacegame.spaceship;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.interpreter.ExternalMethodFuture;
-import com.nkcoding.interpreter.compiler.DataTypes;
-import com.nkcoding.interpreter.compiler.MethodDefinition;
-import com.nkcoding.interpreter.compiler.MethodType;
-import com.nkcoding.interpreter.compiler.TypeNamePair;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public abstract class Component {
     
@@ -59,12 +54,21 @@ public abstract class Component {
     boolean structureHelper = false;
 
     //it stores the shapes, so it can resit it if necessary and also remove it from the Ship
-    protected final ArrayList<Fixture> fixtures = new ArrayList<Fixture>();
+    protected final ArrayList<Fixture> fixtures = new ArrayList<>();
+
+    //List with all the components
+    private final ArrayList<ExternalProperty> properties = new ArrayList<>();
+
+    //registers a property to properties
+    protected <T extends ExternalProperty> T register(T property) {
+        properties.add(property);
+        return property;
+    }
 
     //health has to be stored again, because it changes during simulation
     //if it reaches zero, the component should be destroyed TODO implementation
     //should be initialized in constructor out of componentDef
-    public final IntProperty health = new IntProperty(true, true, HealthKey) {
+    public final IntProperty health = register(new IntProperty(true, true, HealthKey) {
         @Override
         public void set(int value) {
             super.set(Math.max(value, 0));
@@ -73,7 +77,7 @@ public abstract class Component {
                 destroy();
             }
         }
-    };
+    });
 
     private void destroy() {
         ship.destroyComponent(this);
@@ -84,35 +88,35 @@ public abstract class Component {
     //it could be set ingame, but also uses automatic stuff
 
     //power that component requests
-    public final FloatProperty powerRequested = new FloatProperty(true, true, PowerRequestedKey) {
+    public final FloatProperty powerRequested = register(new FloatProperty(true, true, PowerRequestedKey) {
         @Override
         public void set(float value) {
             if (get() != value) ship.invalidatePowerDelivery();
             super.set(value);
         }
-    };
+    });
 
     //how important is it to get the power
-    public final IntProperty requestLevel = new IntProperty(false, true, RequestLevelKey) {
+    public final IntProperty requestLevel = register(new IntProperty(false, true, RequestLevelKey) {
         @Override
         public void set(int value) {
             if (get() != value) ship.invalidatePowerLevelOrder();
             super.set(value);
         }
-    };
+    });
 
     //shows if the component get the full power (used to prevent issues with float rounding)
-    public final BooleanProperty hasFullPower = new BooleanProperty(true, true, HasFullPowerKey);
+    public final BooleanProperty hasFullPower = register(new BooleanProperty(true, true, HasFullPowerKey));
 
 
     //how much power does it actually get
-    public final FloatProperty powerReceived = new FloatProperty(true, true, PowerReceivedKey) {
+    public final FloatProperty powerReceived = register(new FloatProperty(true, true, PowerReceivedKey) {
         @Override
         public void set(float value) {
             super.set(value);
             hasFullPower.set(powerRequested.get() == powerReceived.get());
         }
-    };
+    });
 
     //constructor to force subclasses to implement important stuff
     protected Component(ComponentDef componentDef, Ship ship){
@@ -143,67 +147,49 @@ public abstract class Component {
         //TODO implementation
     }
 
-    private static MethodDefinition createExternalMethodDef(String name, String type, boolean get) {
-        if (get) {
-            return new MethodDefinition(MethodType.External, name, type, new TypeNamePair("id", DataTypes.String));
-        }
-        else {
-            return new MethodDefinition(MethodType.External, name, DataTypes.Void, new TypeNamePair("value", type), new TypeNamePair("id", DataTypes.String));
-        }
-    }
 
-    /**
-     * creates an array with all existing external methods
-     * @return the Array with the external method definitions
-     */
-    public static MethodDefinition[] getExternalMethods() {
-        //TODO add others
-        //register all external methods
-        List<MethodDefinition> externalMethods = new ArrayList<>();
-        //this class
-        createExternalMethodDefs(externalMethods);
 
-        return externalMethods.toArray(MethodDefinition[]::new);
-    }
+//    /**
+//     * creates an array with all existing external methods
+//     * @return the Array with the external method definitions
+//     */
+//    public static MethodDefinition[] getExternalMethods() {
+//        //TODO add others
+//        //register all external methods
+//        List<MethodDefinition> externalMethods = new ArrayList<>();
+//        //this class
+//        createExternalMethodDefs(externalMethods);
+//
+//        return externalMethods.toArray(MethodDefinition[]::new);
+//    }
 
-    public static void createExternalMethodDefs(List<MethodDefinition> externalMethods) {
-        //health
-        externalMethods.add(Component.createExternalMethodDef("getHealth", DataTypes.Integer, true));
-        //powerRequested
-        externalMethods.add(Component.createExternalMethodDef("getPowerRequested", DataTypes.Float, true));
-        //requestLevel
-        externalMethods.add(Component.createExternalMethodDef("getRequestLevel", DataTypes.Integer, true));
-        externalMethods.add(Component.createExternalMethodDef("setRequestLevel", DataTypes.Integer, false));
-        //hasFullPower
-        externalMethods.add(Component.createExternalMethodDef("getHasFullPower", DataTypes.Boolean, true));
-        //powerReceived
-        externalMethods.add(Component.createExternalMethodDef("getPowerReceived", DataTypes.Float, true));
-    }
+//    public static void createExternalMethodDefs(List<MethodDefinition> externalMethods) {
+//        //health
+//        externalMethods.add(Component.createExternalMethodDef("getHealth", DataTypes.Integer, true));
+//        //powerRequested
+//        externalMethods.add(Component.createExternalMethodDef("getPowerRequested", DataTypes.Float, true));
+//        //requestLevel
+//        externalMethods.add(Component.createExternalMethodDef("getRequestLevel", DataTypes.Integer, true));
+//        externalMethods.add(Component.createExternalMethodDef("setRequestLevel", DataTypes.Integer, false));
+//        //hasFullPower
+//        externalMethods.add(Component.createExternalMethodDef("getHasFullPower", DataTypes.Boolean, true));
+//        //powerReceived
+//        externalMethods.add(Component.createExternalMethodDef("getPowerReceived", DataTypes.Float, true));
+//    }
 
-    public void handleExternalMethod(ExternalMethodFuture future) {
-        switch (future.getName()) {
-            case "getHealth":
-                future.complete(health.get());
-                break;
-            case "getPowerRequested":
-                future.complete(powerRequested.get());
-                break;
-            case "getRequestLevel":
-                future.complete(requestLevel.get());
-                break;
-            case "setRequestLevel":
-                requestLevel.set((int)future.getParameters()[0]);
+    public boolean handleExternalMethod(ExternalMethodFuture future) {
+        ExternalProperty property = properties.stream().filter(prop -> future.getName().substring(3).equals(prop.name)).findFirst().orElse(null);
+        if (property != null) {
+            if (future.getName().charAt(0)=='g') {
+                future.complete(property.get2());
+            }
+            else {
+                property.set(future.getParameters()[0]);
                 future.complete(null);
-                break;
-            case "getHasFullPower":
-                future.complete(hasFullPower.get());
-                break;
-            case "getPowerReceived":
-                future.complete(powerReceived.get());
-                break;
-            default:
-                throw new IllegalArgumentException("can't handle " + future.getName());
+            }
+            return true;
         }
+        else return false;
     }
 }
 

@@ -249,7 +249,6 @@ public class Ship implements Simulated {
      * @param future the ExternalMethodFuture which contains name and parameters
      */
     public void handleExternalMethod(ExternalMethodFuture future) {
-        Component component = components.stream().filter(com -> com.getName().equals(future.getParameters()[future.getParameters().length - 1])).findFirst().orElse(null);
-        if (component != null) component.handleExternalMethod(future);
+        //components.stream().filter(com -> com.getName().equals(future.getParameters()[future.getParameters().length - 1])).findFirst().ifPresent(component -> component.handleExternalMethod(future));
     }
 }

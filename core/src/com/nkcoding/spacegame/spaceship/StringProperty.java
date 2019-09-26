@@ -2,7 +2,7 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.nkcoding.interpreter.ScriptingEngine;
 
-public class StringProperty extends ExternalProperty {
+public class StringProperty extends ExternalProperty<String> {
     private String value = "";
 
     public String get() {
@@ -11,6 +11,11 @@ public class StringProperty extends ExternalProperty {
 
     public void set(String value) {
         this.value = value;
+    }
+
+    @Override
+    public String get2() {
+        return value;
     }
 
     public StringProperty(boolean readonly, boolean notifyChanges, String name) {

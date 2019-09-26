@@ -33,6 +33,7 @@ import com.nkcoding.spacegame.spaceship.ShipDef;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class ShipBuilderScreen implements Screen {
@@ -92,18 +93,20 @@ public class ShipBuilderScreen implements Screen {
 
         //create new compiler
         //create the external method statements for the components
-        ArrayList<ExternalPropertyData> externalPropertyDatas = new ArrayList<>();
+        HashMap<String, ExternalPropertyData> externalPropertyDatas = new HashMap<>();
         for(ComponentType com : ComponentType.values()) {
             for(ExternalPropertyData data : com.propertyDefs) {
-                if (!externalPropertyDatas.contains(data)) {
-                    externalPropertyDatas.add(data);
+                if (!externalPropertyDatas.containsKey(data.name)) {
+                    externalPropertyDatas.put(data.name, data);
                 }
             }
         }
-        MethodDefinition[] methodDefinitions = new MethodDefinition[externalPropertyDatas.size()];
-        for (ExternalPropertyData data : externalPropertyDatas) {
-
+        ArrayList<MethodDefinition> methodDefinitions = new ArrayList<>();
+        for (ExternalPropertyData data : externalPropertyDatas.values()) {
+            data.addExternalMethodDefs(methodDefinitions);
         }
+        //create the new compiler
+        compiler = new Compiler(new String[0], methodDefinitions.toArray(MethodDefinition[]::new));
 
 
         this.spaceGame = spaceGame;
