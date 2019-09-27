@@ -20,6 +20,9 @@ public enum Asset {
     CodeSymbol("textures/ui/codeSymbol.png"),
     SaveSymbol("textures/ui/saveSymbol.png"),
     CloseSymbol("textures/ui/closeSymbol.png"),
+    OkSymbol("textures/ui/okSymbol.png"),
+    ErrorSymbol("textures/ui/errorSymbol.png"),
+    ActionNecessarySymbol("textures/ui/actionNecessarySymbol.png"),
     Selection("textures/ui/selection.png");
 
     private String value;
