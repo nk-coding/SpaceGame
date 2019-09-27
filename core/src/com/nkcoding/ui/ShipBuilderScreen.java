@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.spacegame.Asset;
@@ -138,9 +139,6 @@ public class ShipBuilderScreen implements Screen {
         //ZoomScrollPane
         ZoomScrollPane.ZoomScrollPaneStyle zoomScrollPaneStyle = new ZoomScrollPane.ZoomScrollPaneStyle(scrollPaneStyle);
 
-        //Button
-        ImageButton.ImageButtonStyle imageButtonStyle = new ImageButton.ImageButtonStyle();
-
         //Label
         Label.LabelStyle labelStyle = new Label.LabelStyle(assetManager.getBitmapFont(Asset.Consolas_18), new Color(0xffffffff));
 
@@ -243,7 +241,7 @@ public class ShipBuilderScreen implements Screen {
         //add all the main controls
         shipRootTable.add(componentsScrollPane).left().growY();
         shipRootTable.add(shipDesignerZoomScrollPane).grow();
-        shipRootTable.add(rightLayoutTable).right().width(200).growY();
+        shipRootTable.add(rightLayoutTable).right().width(250).growY();
 
 
         //region drag and drop for the Components
@@ -327,6 +325,8 @@ public class ShipBuilderScreen implements Screen {
 
         //region code editor ui
 
+        final CodeEditor codeEditor = new CodeEditor(textFieldStyle, scrollPaneStyle, new ScriptColorParser());;
+
         codeRootTable = new Table();
         codeRootTable.setFillParent(true);
         //switch button
@@ -338,12 +338,54 @@ public class ShipBuilderScreen implements Screen {
             }
         });
 
+
+        //error log
+        TextField errorLog = new TextField("", textFieldStyle);
+        errorLog.setDisabled(true);
+
+        //drawables for the checkButton
+        final Drawable checkButton_ok = assetManager.getDrawable(Asset.OkSymbol);
+        final Drawable checkButton_error = assetManager.getDrawable(Asset.ErrorSymbol);
+        final Drawable checkButton_actionNecessary = assetManager.getDrawable(Asset.ActionNecessarySymbol);
+        //check Button
+        final ImageButton checkButton = new ImageButton(checkButton_actionNecessary);
+        checkButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                //check if compiler has to check code again
+                if (checkButton.getStyle().imageUp == checkButton_error || checkButton.getStyle().imageUp == checkButton_actionNecessary) {
+                    compiler.update(codeEditor.getText().split("\\r?\\n"));
+                    try {
+                        errorLog.setText("");
+                        compiler.compile();
+                        ImageButton.ImageButtonStyle style = checkButton.getStyle();
+                        style.imageUp = checkButton_ok;
+                        checkButton.setStyle(style);
+                    } catch (CompileException e) {
+                        errorLog.setText(e.toString());
+                        ImageButton.ImageButtonStyle style = checkButton.getStyle();
+                        style.imageUp = checkButton_error;
+                        checkButton.setStyle(style);
+                    }
+                }
+            }
+        });
+
         //code editor
         //CodeEditor for the file with all methods
-        CodeEditor codeEditor = new CodeEditor(textFieldStyle, scrollPaneStyle, new ScriptColorParser());
+        codeEditor.setTextFieldListener((textFieldBase, c) -> {
+            if (checkButton.getStyle().imageUp != checkButton_actionNecessary) {
+                ImageButton.ImageButtonStyle style = checkButton.getStyle();
+                style.imageUp = checkButton_actionNecessary;
+                checkButton.setStyle(style);
+            }
+        });
 
-        codeRootTable.add(codeEditor).grow();
-        codeRootTable.add(closeButton).size(40, 40).bottom().pad(10);
+        codeRootTable.add(codeEditor).colspan(3).grow();
+        codeRootTable.row();
+        codeRootTable.add(errorLog).growX().pad(10);
+        codeRootTable.add(checkButton).size(40, 40).bottom().pad(10).right();
+        codeRootTable.add(closeButton).size(40, 40).bottom().pad(10).right();
 
 
         //endregion

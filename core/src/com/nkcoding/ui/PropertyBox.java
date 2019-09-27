@@ -75,12 +75,7 @@ public class PropertyBox extends WidgetGroup {
             if (valueLabel == null) valueLabel = new Label("value", style.labelStyle);
             if (valueTextField == null) {
                 valueTextField = new TextField(data.initData, style.textFieldStyle);
-                valueTextField.setTextFieldListener(new TextField.TextFieldListener() {
-                    @Override
-                    public void keyTyped(TextField textField, char c) {
-                        validateValue();
-                    }
-                });
+                valueTextField.setTextFieldListener((textField, c) -> validateValue());
                 addActor(valueTextField);
             }
             else valueTextField.setText(data.initData);
@@ -89,7 +84,7 @@ public class PropertyBox extends WidgetGroup {
     }
 
     private void validateValue() {
-        valueTextField.getColor().set(data.verifyInit(valueTextField.getText()) ? style.legalInputColor : style.illegalInputColor);
+        valueTextField.setColor(data.verifyInit(valueTextField.getText()) ? style.legalInputColor : style.illegalInputColor);
     }
 
     @Override

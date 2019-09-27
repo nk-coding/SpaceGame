@@ -7,7 +7,7 @@ public class ProgramTextWrapper {
     //-1 symbolizes that it should not be ignored at all
     private int[] ignoreAt;
 
-    private ProgramPosition position = new ProgramPosition(0,0);
+    private ProgramPosition position;
 
     public ProgramPosition getPosition() {
         return position.getClone();
@@ -16,6 +16,7 @@ public class ProgramTextWrapper {
     //at this time this is not checked, I will probably change this
     public void setPosition(ProgramPosition position) {
         this.position = position;
+        jumpIfNecessary();
     }
 
     //throws an IllegalOperationException if it is at the start
@@ -44,6 +45,8 @@ public class ProgramTextWrapper {
             boolean escaped = false;
             boolean lastIsStart = false;
             boolean done = false;
+
+            setPosition(new ProgramPosition(0, 0));
 
             for (int x = 0; x < line.length(); x++) {
                 if (!done) {

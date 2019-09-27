@@ -143,4 +143,14 @@ public class CodeEditor extends WidgetGroup {
     public boolean needsLayout() {
         return super.needsLayout() || codeScrollPane.needsLayout();
     }
+
+    /**adda a listener which handles TextArea updates*/
+    public void setTextFieldListener(TextFieldBase.TextFieldListener textFieldListener) {
+        codeTextArea.setTextFieldListener(textFieldListener);
+    }
+
+    /**get the text*/
+    public String getText() {
+        return codeTextArea.getText();
+    }
 }

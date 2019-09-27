@@ -18,9 +18,11 @@ public class CompileException extends Exception {
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("Error ");
-        sb.append(position.toString());
-        sb.append(": ");
+        sb.append("Error (");
+        sb.append(position.getLine() + 1);
+        sb.append(", ");
+        sb.append(position.getColumn());
+        sb.append("): ");
         sb.append(getMessage());
         return sb.toString();
     }

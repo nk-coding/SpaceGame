@@ -31,6 +31,8 @@ public class Compiler {
     public void update(String[] lines) {
         stack = new CompilerStack();
         text = new ProgramTextWrapper(lines);
+        actualMethod = null;
+        methods.setNormalMethods(new MethodStatement[0]);
     }
 
     //compile the stuff
