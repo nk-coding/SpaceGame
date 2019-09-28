@@ -655,7 +655,7 @@ public class Compiler {
                     return null;
             }
         }
-        else throw new CompileException("method" + methodName + "does not exist", text.getPosition());
+        else throw new CompileException("method " + methodName + " does not exist", text.getPosition());
     }
 
     //compiles a statement block

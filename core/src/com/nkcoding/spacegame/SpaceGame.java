@@ -19,6 +19,8 @@ public class SpaceGame extends Game {
 		return assetManager;
 	}
 
+	private SaveGameManager.SaveGame saveGame;
+
 	UITestScreen testScreen;
 	ShipBuilderScreen shipBuilderScreen;
 	
@@ -29,8 +31,10 @@ public class SpaceGame extends Game {
 		//probably load a loading screen here, but I don't care now
 		//load the resources
 		assetManager.loadAll();
+		//load saveGame
+		saveGame = SaveGameManager.load();
 		//testScreen = new UITestScreen(this);
-		shipBuilderScreen = new ShipBuilderScreen(this);
+		shipBuilderScreen = new ShipBuilderScreen(this, saveGame.shipDef);
 		setScreen(shipBuilderScreen);
 	}
 

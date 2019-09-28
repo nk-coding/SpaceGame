@@ -88,7 +88,10 @@ public class ShipDef {
     //the size of one unit in box2d
     public static final float UNIT_SIZE = 0.1f;
 
-    final ArrayList<ComponentDef> componentDefs = new ArrayList<>();
+    public final ArrayList<ComponentDef> componentDefs = new ArrayList<>();
+
+    //code for the script
+    public String code = "//write your own code here";
 
     //ShipDesignerHelper if one is attached
     private ShipDesignerHelper designerHelper = null;
@@ -99,23 +102,28 @@ public class ShipDef {
     }
 
     public void toJson(Json json) {
-        //write all the components
-        json.writeObjectStart();
-        json.writeArrayStart("comDefs");
+        json.writeObjectStart(this.getClass().getSimpleName());
 
+        //write all the components
+        json.writeArrayStart("comDefs");
         for (ComponentDef comDef : componentDefs) {
             comDef.toJson(json);
         }
-
         json.writeArrayEnd();
+
+        //write the code
+        json.writeValue("code", code);
         json.writeObjectEnd();
     }
 
     public static ShipDef fromJson(JsonValue value) {
         ShipDef shipDef = new ShipDef();
+        //load ShipDefs
         for (JsonValue componentValue : value.get("comDefs")) {
             shipDef.componentDefs.add(ComponentDef.fromJson(componentValue));
         }
+        //load code
+        shipDef.code = value.getString("code");
         return shipDef;
     }
 

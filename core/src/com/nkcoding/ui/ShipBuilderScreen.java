@@ -2,7 +2,6 @@ package com.nkcoding.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -16,23 +15,19 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.ExtAssetManager;
+import com.nkcoding.spacegame.SaveGameManager;
 import com.nkcoding.spacegame.SpaceGame;
 import com.nkcoding.spacegame.spaceship.ComponentDef;
 import com.nkcoding.spacegame.spaceship.ComponentType;
 import com.nkcoding.spacegame.spaceship.ExternalPropertyData;
 import com.nkcoding.spacegame.spaceship.ShipDef;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -67,6 +62,8 @@ public class ShipBuilderScreen implements Screen {
     //the main Designer for the Ship
     private ShipDesigner shipDesigner;
 
+    private final CodeEditor codeEditor;
+
     //endregion
 
     //style for more propertyBoxes
@@ -79,19 +76,12 @@ public class ShipBuilderScreen implements Screen {
     private boolean isShipView = true;
 
     //region data
-    private ShipDef shipDef;
+    public final ShipDef shipDef;
     //endregion
 
     //constructor
-    public ShipBuilderScreen(SpaceGame spaceGame) {
-        //debug
-        FileHandle saveGame = Gdx.files.local("saveGame.json");
-        if (saveGame.exists()) {
-            JsonReader jsonReader = new JsonReader();
-            shipDef = ShipDef.fromJson(jsonReader.parse(saveGame));
-        }
-        else shipDef = new ShipDef();
-
+    public ShipBuilderScreen(SpaceGame spaceGame, ShipDef shipDef) {
+        this.shipDef = shipDef;
         //create new compiler
         //create the external method statements for the components
         HashMap<String, ExternalPropertyData> externalPropertyDatas = new HashMap<>();
@@ -325,7 +315,8 @@ public class ShipBuilderScreen implements Screen {
 
         //region code editor ui
 
-        final CodeEditor codeEditor = new CodeEditor(textFieldStyle, scrollPaneStyle, new ScriptColorParser());;
+        codeEditor = new CodeEditor(textFieldStyle, scrollPaneStyle, new ScriptColorParser());
+        codeEditor.setText(shipDef.code);
 
         codeRootTable = new Table();
         codeRootTable.setFillParent(true);
@@ -411,6 +402,7 @@ public class ShipBuilderScreen implements Screen {
         //TODO add name stuff
         //TODO add better version
         propertiesVerticalGroup.getChildren().forEach(actor -> ((PropertyBox)((Container)actor).getActor()).save());
+
         propertiesVerticalGroup.clear();
         if (def != null) {
             def.properties.forEach((name, data) -> {
@@ -435,17 +427,11 @@ public class ShipBuilderScreen implements Screen {
         isShipView = !isShipView;
     }
 
+    //saves the current state
     private void save() {
-        //debug
-        Json json = new Json(JsonWriter.OutputType.json);
-        FileHandle handle = Gdx.files.local("saveGame.json");
-        try (Writer writer = handle.writer(false)) {
-            json.setWriter(writer);
-            shipDef.toJson(json);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+        shipDef.code = codeEditor.getText();
+        propertiesVerticalGroup.getChildren().forEach(actor -> ((PropertyBox)((Container)actor).getActor()).save());
+        SaveGameManager.save();
     }
 
 

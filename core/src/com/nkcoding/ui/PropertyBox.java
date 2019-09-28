@@ -18,6 +18,10 @@ public class PropertyBox extends WidgetGroup {
     //the style of this
     private PropertyBoxStyle style;
 
+    public PropertyBoxStyle getStyle() {
+        return style;
+    }
+
     //the Label for the Name
     private Label nameLabel;
 
@@ -76,6 +80,7 @@ public class PropertyBox extends WidgetGroup {
             if (valueTextField == null) {
                 valueTextField = new TextField(data.initData, style.textFieldStyle);
                 valueTextField.setTextFieldListener((textField, c) -> validateValue());
+                validateValue();
                 addActor(valueTextField);
             }
             else valueTextField.setText(data.initData);
@@ -91,6 +96,7 @@ public class PropertyBox extends WidgetGroup {
     public void draw(Batch batch, float parentAlpha) {
         validate();
         applyTransform(batch, computeTransform());
+        batch.setColor(getColor());
 
         //draw background if possible
         if (style.background != null) {
