@@ -153,4 +153,9 @@ public class CodeEditor extends WidgetGroup {
     public String getText() {
         return codeTextArea.getText();
     }
+
+    /**set the text*/
+    public void setText(String text) {
+        codeTextArea.setText(text);
+    }
 }
