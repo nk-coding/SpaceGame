@@ -18,6 +18,7 @@ public enum Asset {
     ScrollBarKnob("textures/ui/scrollBarKnob.png"),
     SimpleBorder("textures/ui/simpleBorder.png"),
     CodeSymbol("textures/ui/codeSymbol.png"),
+    CodeErrorSymbol("textures/ui/codeErrorSymbol.png"),
     SaveSymbol("textures/ui/saveSymbol.png"),
     CloseSymbol("textures/ui/closeSymbol.png"),
     OkSymbol("textures/ui/okSymbol.png"),

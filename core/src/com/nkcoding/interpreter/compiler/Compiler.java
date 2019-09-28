@@ -871,15 +871,22 @@ public class Compiler {
         ics.setStatements(compileStatementBlock());
         //check if there is an else block
         ProgramPosition beforePossibleElse = text.getPosition();
-        if (text.getNextWord().equals("else")) {
-            //there is an else condition
-            //just compile it
-            ics.setElseStatement(new StatementBlock(compileStatementBlock()));
+        try {
+            if (text.getNextWord().equals("else")) {
+                //there is an else condition
+                //just compile it
+                ics.setElseStatement(new StatementBlock(compileStatementBlock()));
+            }
+            else {
+                //reset position
+                text.setPosition(beforePossibleElse);
+            }
         }
-        else {
+        catch (CompileException e) {
             //reset position
             text.setPosition(beforePossibleElse);
         }
+
        return ics;
     }
 

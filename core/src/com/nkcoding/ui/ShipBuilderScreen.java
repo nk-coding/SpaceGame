@@ -16,9 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
+import com.nkcoding.interpreter.compiler.NormalMethodDefinition;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.SaveGameManager;
@@ -28,6 +30,7 @@ import com.nkcoding.spacegame.spaceship.ComponentType;
 import com.nkcoding.spacegame.spaceship.ExternalPropertyData;
 import com.nkcoding.spacegame.spaceship.ShipDef;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -35,34 +38,52 @@ import java.util.HashMap;
 public class ShipBuilderScreen implements Screen {
 
     //the game
-    private SpaceGame spaceGame;
+    private final SpaceGame spaceGame;
 
     //the stage
-    private Stage stage;
+    private final Stage stage;
 
     //fields from game
     //spriteBatch for the stage
-    private SpriteBatch spriteBatch;
+    private final SpriteBatch spriteBatch;
 
-    private ExtAssetManager assetManager;
+    private final ExtAssetManager assetManager;
 
     //the main tables
-    private Table shipRootTable;
-    private Table codeRootTable;
+    private final Table shipRootTable;
+    private final Table codeRootTable;
 
     //Stack for the possible components
-    private Table componentsStack;
+    private final Table componentsStack;
 
     //Stack for the external properties for the selected Component
-    private VerticalGroup propertiesVerticalGroup;
+    private final VerticalGroup propertiesVerticalGroup;
+
+    //temporary storage for PropertyBoxes which are not necessary because of a ComponentDef change
+    //the can be updated and used later
+    private final ArrayDeque<Actor> oldPropertyBoxes = new ArrayDeque<>();
 
     //ZoomScrollOane for the shipDesigner
-    private ZoomScrollPane shipDesignerZoomScrollPane;
+    private final ZoomScrollPane shipDesignerZoomScrollPane;
 
     //the main Designer for the Ship
-    private ShipDesigner shipDesigner;
+    private final ShipDesigner shipDesigner;
+
+    //button to switch views
+    private final Drawable switchButton_ok;
+    private final Drawable switchButton_error;
+    private final ImageButton switchButton;
 
     private final CodeEditor codeEditor;
+
+    //check Button
+    private final Drawable checkButton_ok;
+    private final Drawable checkButton_error;
+    private final Drawable checkButton_actionNecessary;
+    private final ImageButton checkButton;
+
+    //error log
+    private final TextField errorLog;
 
     //endregion
 
@@ -71,6 +92,10 @@ public class ShipBuilderScreen implements Screen {
 
     //compiler to check the code
     private Compiler compiler;
+
+    //the compiled code
+    private MethodStatement[] methods = new MethodStatement[0];
+    private HashMap<String, Integer> methodPositions = new HashMap<>();
 
     //normal (ship) view?
     private boolean isShipView = true;
@@ -148,6 +173,7 @@ public class ShipBuilderScreen implements Screen {
         //PropertyBox
         propertyBoxStyle = new PropertyBox.PropertyBoxStyle();
         propertyBoxStyle.background = background;
+        propertyBoxStyle.codeButtonDrawable = assetManager.getDrawable(Asset.CodeSymbol);
         propertyBoxStyle.textFieldStyle = textFieldStyle;
         propertyBoxStyle.illegalInputColor = new Color(0xff0000ff);
         propertyBoxStyle.legalInputColor = new Color(0xffffffff);
@@ -210,7 +236,9 @@ public class ShipBuilderScreen implements Screen {
 
         //switchButton
         //button which switches to code view
-        ImageButton switchButton = new ImageButton(assetManager.getDrawable(Asset.CodeSymbol));
+        switchButton_ok = assetManager.getDrawable(Asset.CodeSymbol);
+        switchButton_error = assetManager.getDrawable(Asset.CodeErrorSymbol);
+        switchButton = new ImageButton(switchButton_ok);
         switchButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -231,7 +259,7 @@ public class ShipBuilderScreen implements Screen {
         //add all the main controls
         shipRootTable.add(componentsScrollPane).left().growY();
         shipRootTable.add(shipDesignerZoomScrollPane).grow();
-        shipRootTable.add(rightLayoutTable).right().width(250).growY();
+        shipRootTable.add(rightLayoutTable).right().width(300).growY();
 
 
         //region drag and drop for the Components
@@ -331,33 +359,23 @@ public class ShipBuilderScreen implements Screen {
 
 
         //error log
-        TextField errorLog = new TextField("", textFieldStyle);
+        errorLog = new TextField("", textFieldStyle);
         errorLog.setDisabled(true);
 
         //drawables for the checkButton
-        final Drawable checkButton_ok = assetManager.getDrawable(Asset.OkSymbol);
-        final Drawable checkButton_error = assetManager.getDrawable(Asset.ErrorSymbol);
-        final Drawable checkButton_actionNecessary = assetManager.getDrawable(Asset.ActionNecessarySymbol);
+        checkButton_ok = assetManager.getDrawable(Asset.OkSymbol);
+        checkButton_error = assetManager.getDrawable(Asset.ErrorSymbol);
+        checkButton_actionNecessary = assetManager.getDrawable(Asset.ActionNecessarySymbol);
         //check Button
-        final ImageButton checkButton = new ImageButton(checkButton_actionNecessary);
+        checkButton = new ImageButton(checkButton_actionNecessary);
         checkButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //check if compiler has to check code again
                 if (checkButton.getStyle().imageUp == checkButton_error || checkButton.getStyle().imageUp == checkButton_actionNecessary) {
-                    compiler.update(codeEditor.getText().split("\\r?\\n"));
-                    try {
-                        errorLog.setText("");
-                        compiler.compile();
-                        ImageButton.ImageButtonStyle style = checkButton.getStyle();
-                        style.imageUp = checkButton_ok;
-                        checkButton.setStyle(style);
-                    } catch (CompileException e) {
-                        errorLog.setText(e.toString());
-                        ImageButton.ImageButtonStyle style = checkButton.getStyle();
-                        style.imageUp = checkButton_error;
-                        checkButton.setStyle(style);
-                    }
+                    long time = System.currentTimeMillis();
+                    parse(false);
+                    System.out.println(System.currentTimeMillis() - time);
                 }
             }
         });
@@ -381,6 +399,8 @@ public class ShipBuilderScreen implements Screen {
 
         //endregion
 
+        parse(true);
+
         //just some debugging
         shipRootTable.setDebug(false, true);
     }
@@ -399,32 +419,103 @@ public class ShipBuilderScreen implements Screen {
 
     private void selectedComponentChanged(ComponentDef def) {
         //update the property stack
-        //TODO add name stuff
-        //TODO add better version
-        propertiesVerticalGroup.getChildren().forEach(actor -> ((PropertyBox)((Container)actor).getActor()).save());
-
-        propertiesVerticalGroup.clear();
         if (def != null) {
-            def.properties.forEach((name, data) -> {
-                Container<PropertyBox> container = new Container<>(new PropertyBox(propertyBoxStyle, name, data));
-                container.pad(10, 10, 0, 10).fill();
-                propertiesVerticalGroup.addActor(container);
-            });
+            propertiesVerticalGroup.getChildren().forEach(actor -> ((PropertyBox)((Container)actor).getActor()).save());
+
+            int oldCount = propertiesVerticalGroup.getChildren().size;
+            int newCount = def.properties.size();
+            //remove PropertyBoxes if necessary
+            if (newCount < oldCount) {
+                for (int x = newCount; x < oldCount; x++) {
+                    oldPropertyBoxes.add(propertiesVerticalGroup.getChild(x));
+                }
+                propertiesVerticalGroup.getChildren().removeRange(newCount, oldCount - 1);
+            }
+
+
+            System.out.println(newCount == propertiesVerticalGroup.getChildren().size);
+            int x = 0;
+            for (ExternalPropertyData data : def.properties.values()) {
+                if (x < oldCount) {
+                    //the component exists
+                    Container container = (Container)propertiesVerticalGroup.getChild(x);
+                    PropertyBox propertyBox = (PropertyBox)container.getActor();
+                    propertyBox.update(data.name, data);
+                }
+                else {
+                    if (oldPropertyBoxes.isEmpty()) {
+                        //the component does not exist yet, and there is no one available on the stack
+                        Container<PropertyBox> container = new Container<>(new PropertyBox(propertyBoxStyle, data.name, data) {
+                            @Override
+                            public void codeButtonClicked() {
+                                methodPositions.forEach((s, l) -> System.out.println(s + ", " + l));
+                                if (methodPositions.containsKey(this.getHandlerName())) {
+                                    System.out.println(methodPositions.get(this.getHandlerName()));
+                                }
+                                else {
+                                    System.out.println("does not contain");
+                                }
+                            }
+                        });
+                        container.pad(10, 10, 0, 10).fill();
+                        propertiesVerticalGroup.addActor(container);
+                    }
+                    else {
+                        //the component does not exist yet, but there is one available on the stack
+                        Container container = (Container)oldPropertyBoxes.pop();
+                        PropertyBox propertyBox = (PropertyBox)container.getActor();
+                        propertyBox.update(data.name, data);
+                    }
+                }
+                x++;
+            }
         }
     }
 
     //switches the view
     private void switchView() {
-        //TODO complete implementation
         if(isShipView) {
             stage.addActor(codeRootTable);
             shipRootTable.remove();
         }
         else {
+            parse(true);
             stage.addActor(shipRootTable);
             codeRootTable.remove();
         }
         isShipView = !isShipView;
+    }
+
+    //compiles and updates error log
+    private void parse(boolean updateMethodsMap) {
+        compiler.update(codeEditor.getText().split("\\r?\\n"));
+        try {
+            errorLog.setText("");
+            methods = compiler.compile();
+            if (updateMethodsMap) {
+                System.out.println("updateMethodsMap");
+                //update the map, update references and remove old ones
+                methodPositions.clear();
+                for (MethodStatement statement : methods) {
+                    NormalMethodDefinition definition = ((NormalMethodDefinition)statement.getDefinition());
+                    methodPositions.put(definition.getName(), definition.getLine());
+                }
+            }
+            ImageButton.ImageButtonStyle style = checkButton.getStyle();
+            style.imageUp = checkButton_ok;
+            checkButton.setStyle(style);
+            style = switchButton.getStyle();
+            style.imageUp = switchButton_ok;
+            switchButton.setStyle(style);
+        } catch (CompileException e) {
+            errorLog.setText(e.toString());
+            ImageButton.ImageButtonStyle style = checkButton.getStyle();
+            style.imageUp = checkButton_error;
+            checkButton.setStyle(style);
+            style = switchButton.getStyle();
+            style.imageUp = switchButton_error;
+            switchButton.setStyle(style);
+        }
     }
 
     //saves the current state

@@ -2,9 +2,12 @@ package com.nkcoding.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.nkcoding.spacegame.spaceship.ExternalPropertyData;
 
@@ -37,6 +40,13 @@ public class PropertyBox extends WidgetGroup {
     //the TextField for "changed handler"
     private TextField changedTextField;
 
+    //the ImageButton which redirects to the code
+    private ImageButton codeImageButton;
+
+    protected String getHandlerName() {
+        return changedTextField.getText();
+    }
+
 
     public PropertyBox(PropertyBoxStyle style, String name, ExternalPropertyData data) {
         this.style = style;
@@ -58,21 +68,39 @@ public class PropertyBox extends WidgetGroup {
 
     /**saves the TextFields to the ExternalPropertyData, should be called before it is deleted*/
     public void save() {
-        if (!data.readonly) data.initData = valueTextField.getText();
-        data.handlerName = changedTextField.getText();
+        if (data != null) {
+            if (!data.readonly) data.initData = valueTextField.getText();
+            data.handlerName = changedTextField.getText();
+        }
     }
 
     private void init() {
         //init the name label
-        if (nameLabel == null) nameLabel = new Label(name, style.labelStyle);
+        if (nameLabel == null) {
+            nameLabel = new Label(name, style.labelStyle);
+            addActor(nameLabel);
+        }
         else nameLabel.setText(name);
         //init the changed handler stuff
-        if (changedLabel == null) changedLabel = new Label("changed handler", style.labelStyle);
+        if (changedLabel == null) {
+            changedLabel = new Label("changed handler", style.labelStyle);
+            addActor(changedLabel);
+        }
         if (changedTextField == null) {
             changedTextField = new TextField(data.handlerName, style.textFieldStyle);
             addActor(changedTextField);
         }
         else changedTextField.setText(data.handlerName);
+        if (codeImageButton == null) {
+            codeImageButton = new ImageButton(style.codeButtonDrawable);
+            codeImageButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    codeButtonClicked();
+                }
+            });
+            addActor(codeImageButton);
+        }
 
         //init the value stuff if necessary
         if (!data.readonly) {
@@ -106,17 +134,11 @@ public class PropertyBox extends WidgetGroup {
         nameLabel.draw(batch, parentAlpha);
         changedLabel.draw(batch, parentAlpha);
         changedTextField.draw(batch, parentAlpha);
+        codeImageButton.draw(batch, parentAlpha);
         if (!data.readonly) {
             valueLabel.draw(batch, parentAlpha);
             valueTextField.draw(batch, parentAlpha);
         }
-    }
-
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-        changedTextField.act(delta);
-        if (!data.readonly) valueTextField.act(delta);
     }
 
     @Override
@@ -133,7 +155,11 @@ public class PropertyBox extends WidgetGroup {
         //changed handler
         changedTextField.setX(style.spacing + bgLeftWidth);
         changedTextField.setY(posY);
-        changedTextField.setWidth(getWidth() - style.spacing - bgLeftWidth - bgRightWidth);
+        changedTextField.setWidth(getWidth() - style.spacing - bgLeftWidth - bgRightWidth - style.spacing - changedTextField.getHeight());
+        codeImageButton.setX(getWidth() - bgRightWidth - changedTextField.getHeight());
+        codeImageButton.setY(posY);
+        codeImageButton.setWidth(changedTextField.getHeight());
+        codeImageButton.setHeight(changedTextField.getHeight());
         posY += changedTextField.getHeight() + style.spacing;
         changedLabel.setX(style.spacing + bgLeftWidth);
         changedLabel.setY(posY);
@@ -178,8 +204,14 @@ public class PropertyBox extends WidgetGroup {
         return prefHeight;
     }
 
+    public void codeButtonClicked() {
+
+    }
+
     public static class PropertyBoxStyle {
         public Drawable background;
+
+        public Drawable codeButtonDrawable;
 
         public Label.LabelStyle labelStyle;
 
