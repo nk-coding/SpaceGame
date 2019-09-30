@@ -9,7 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.nkcoding.interpreter.compiler.NormalMethodDefinition;
 import com.nkcoding.spacegame.spaceship.ExternalPropertyData;
+
+import java.util.Map;
 
 public class PropertyBox extends WidgetGroup {
     //the name of the ExternalProperty
@@ -43,16 +46,20 @@ public class PropertyBox extends WidgetGroup {
     //the ImageButton which redirects to the code
     private ImageButton codeImageButton;
 
+    //Map with all the methods
+    private final Map<String, NormalMethodDefinition> methods;
+
     protected String getHandlerName() {
         return changedTextField.getText();
     }
 
 
-    public PropertyBox(PropertyBoxStyle style, String name, ExternalPropertyData data) {
+    public PropertyBox(PropertyBoxStyle style, String name, ExternalPropertyData data,
+                       Map<String, NormalMethodDefinition> methods) {
         this.style = style;
         this.name = name;
         this.data = data;
-        //setTouchable(Touchable.enabled);
+        this.methods = methods;
         init();
     }
 
@@ -88,6 +95,7 @@ public class PropertyBox extends WidgetGroup {
         }
         if (changedTextField == null) {
             changedTextField = new TextField(data.handlerName, style.textFieldStyle);
+            changedTextField.setTextFieldListener((textField, c) -> validateValue());
             addActor(changedTextField);
         }
         else changedTextField.setText(data.handlerName);
@@ -117,7 +125,11 @@ public class PropertyBox extends WidgetGroup {
     }
 
     private void validateValue() {
-        valueTextField.setColor(data.verifyInit(valueTextField.getText()) ? style.legalInputColor : style.illegalInputColor);
+        if (valueTextField != null)
+            valueTextField.setColor(data.verifyInit(valueTextField.getText())
+                    ? style.legalInputColor : style.illegalInputColor);
+        changedTextField.setColor(changedTextField.getText().equals("") || methods.containsKey(changedTextField.getText())
+                ? style.legalInputColor : style.illegalInputColor);
     }
 
     @Override

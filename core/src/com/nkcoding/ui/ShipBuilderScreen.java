@@ -95,7 +95,7 @@ public class ShipBuilderScreen implements Screen {
 
     //the compiled code
     private MethodStatement[] methods = new MethodStatement[0];
-    private HashMap<String, Integer> methodPositions = new HashMap<>();
+    private HashMap<String, NormalMethodDefinition> methodPositions = new HashMap<>();
 
     //normal (ship) view?
     private boolean isShipView = true;
@@ -445,7 +445,7 @@ public class ShipBuilderScreen implements Screen {
                 else {
                     if (oldPropertyBoxes.isEmpty()) {
                         //the component does not exist yet, and there is no one available on the stack
-                        Container<PropertyBox> container = new Container<>(new PropertyBox(propertyBoxStyle, data.name, data) {
+                        Container<PropertyBox> container = new Container<>(new PropertyBox(propertyBoxStyle, data.name, data, methodPositions) {
                             @Override
                             public void codeButtonClicked() {
                                 methodPositions.forEach((s, l) -> System.out.println(s + ", " + l));
@@ -498,7 +498,7 @@ public class ShipBuilderScreen implements Screen {
                 methodPositions.clear();
                 for (MethodStatement statement : methods) {
                     NormalMethodDefinition definition = ((NormalMethodDefinition)statement.getDefinition());
-                    methodPositions.put(definition.getName(), definition.getLine());
+                    methodPositions.put(definition.getName(), definition);
                 }
             }
             ImageButton.ImageButtonStyle style = checkButton.getStyle();
