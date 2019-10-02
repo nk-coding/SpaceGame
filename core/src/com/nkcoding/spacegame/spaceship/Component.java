@@ -53,8 +53,11 @@ public abstract class Component {
     //helper to check structural integrity
     boolean structureHelper = false;
 
-    //it stores the shapes, so it can resit it if necessary and also remove it from the Ship
-    protected final ArrayList<Fixture> fixtures = new ArrayList<>();
+    /**
+     * the fixture that represents the box
+     * other fixtures could be added as fields if necessary by sublasses
+     */
+    protected Fixture borderFixture;
 
     //List with all the components
     private final ArrayList<ExternalProperty> properties = new ArrayList<>();
@@ -64,6 +67,8 @@ public abstract class Component {
         properties.add(property);
         return property;
     }
+
+    //region properties
 
     //health has to be stored again, because it changes during simulation
     //if it reaches zero, the component should be destroyed TODO implementation
@@ -78,11 +83,6 @@ public abstract class Component {
             }
         }
     });
-
-    private void destroy() {
-        ship.destroyComponent(this);
-    }
-
 
     //the power system is complicated
     //it could be set ingame, but also uses automatic stuff
@@ -130,17 +130,31 @@ public abstract class Component {
 
     //the physics system
 
-    //add the shapes
-    //don't remove the old ones
-    public abstract void addFixtures();
+    /**
+     * add the fixtures
+     * this should be overwritten if a subclass defines more fixtures
+     * do NOT remove the old fixtures
+     */
+    public void addFixtures() {
+        ComponentType type = componentDef.getType();
+        this.borderFixture = ship.getBody().createFixture(componentDef.getShape(),
+                type.mass * ShipDef.UNIT_SIZE * ShipDef.UNIT_SIZE / type.width / type.height);
+    }
 
-    //remove the fixtures
+    /**
+     * removes the borderFixture
+     * should be overwritten, if other fixtures have to be removed
+     */
     public void removeFixtures(){
-        Body body = getShip().getBody();
-        for (Fixture f : fixtures){
-            body.destroyFixture(f);
-        }
-        fixtures.clear();
+        removeFixture(borderFixture);
+    }
+
+    /**
+     * removes a single fixture from the ship
+     * @param fixture the Fixture that should be removed
+     */
+    protected void removeFixture(Fixture fixture) {
+        getShip().getBody().destroyFixture(fixture);
     }
 
     void act (float time) {
@@ -148,34 +162,10 @@ public abstract class Component {
     }
 
 
+    private void destroy() {
+        ship.destroyComponent(this);
+    }
 
-//    /**
-//     * creates an array with all existing external methods
-//     * @return the Array with the external method definitions
-//     */
-//    public static MethodDefinition[] getExternalMethods() {
-//        //TODO add others
-//        //register all external methods
-//        List<MethodDefinition> externalMethods = new ArrayList<>();
-//        //this class
-//        createExternalMethodDefs(externalMethods);
-//
-//        return externalMethods.toArray(MethodDefinition[]::new);
-//    }
-
-//    public static void createExternalMethodDefs(List<MethodDefinition> externalMethods) {
-//        //health
-//        externalMethods.add(Component.createExternalMethodDef("getHealth", DataTypes.Integer, true));
-//        //powerRequested
-//        externalMethods.add(Component.createExternalMethodDef("getPowerRequested", DataTypes.Float, true));
-//        //requestLevel
-//        externalMethods.add(Component.createExternalMethodDef("getRequestLevel", DataTypes.Integer, true));
-//        externalMethods.add(Component.createExternalMethodDef("setRequestLevel", DataTypes.Integer, false));
-//        //hasFullPower
-//        externalMethods.add(Component.createExternalMethodDef("getHasFullPower", DataTypes.Boolean, true));
-//        //powerReceived
-//        externalMethods.add(Component.createExternalMethodDef("getPowerReceived", DataTypes.Float, true));
-//    }
 
     public boolean handleExternalMethod(ExternalMethodFuture future) {
         ExternalProperty property = properties.stream().filter(prop -> future.getName().substring(3).equals(prop.name)).findFirst().orElse(null);

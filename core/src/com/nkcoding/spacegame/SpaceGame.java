@@ -2,6 +2,7 @@ package com.nkcoding.spacegame;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.nkcoding.ui.RotationTestScreen;
 import com.nkcoding.ui.ShipBuilderScreen;
 import com.nkcoding.ui.UITestScreen;
 
@@ -23,6 +24,7 @@ public class SpaceGame extends Game {
 
 	UITestScreen testScreen;
 	ShipBuilderScreen shipBuilderScreen;
+	RotationTestScreen rotationTestScreen;
 	
 	@Override
 	public void create () {
@@ -34,8 +36,9 @@ public class SpaceGame extends Game {
 		//load saveGame
 		saveGame = SaveGameManager.load();
 		//testScreen = new UITestScreen(this);
-		shipBuilderScreen = new ShipBuilderScreen(this, saveGame.shipDef);
-		setScreen(shipBuilderScreen);
+		//shipBuilderScreen = new ShipBuilderScreen(this, saveGame.shipDef);
+		rotationTestScreen = new RotationTestScreen(this);
+		setScreen(rotationTestScreen);
 	}
 
 	@Override

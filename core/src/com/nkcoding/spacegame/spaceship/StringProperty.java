@@ -1,6 +1,7 @@
 package com.nkcoding.spacegame.spaceship;
 
 import com.nkcoding.interpreter.ScriptingEngine;
+import com.nkcoding.interpreter.compiler.DataTypes;
 
 public class StringProperty extends ExternalProperty<String> {
     private String value = "";
@@ -11,6 +12,7 @@ public class StringProperty extends ExternalProperty<String> {
 
     public void set(String value) {
         this.value = value;
+        changed(value);
     }
 
     @Override
@@ -19,7 +21,7 @@ public class StringProperty extends ExternalProperty<String> {
     }
 
     public StringProperty(boolean readonly, boolean notifyChanges, String name) {
-        super(readonly, notifyChanges, name);
+        super(readonly, notifyChanges, name, DataTypes.String);
     }
 
     @Override

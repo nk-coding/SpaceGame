@@ -1,5 +1,6 @@
 package com.nkcoding.spacegame.spaceship;
 
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.nkcoding.interpreter.compiler.DataTypes;
@@ -117,6 +118,10 @@ public class ComponentDef {
         ExternalPropertyData data = properties.get(property.name);
         property.setInitValue(data.initData);
         //TODO implementation of changedMethodStatement probably with the SpaceSimulation's list of methods
+    }
+
+    public PolygonShape getShape() {
+        return componentType.getShape(rotation % 2 == 1);
     }
 
     public void toJson(Json json) {
