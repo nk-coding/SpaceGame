@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -84,6 +85,9 @@ public class RotationTestScreen implements Screen, InputProcessor {
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.A) {
             mainGroup.setRotation(mainGroup.getRotation() + 10f);
+        }
+        if (keycode == Input.Keys.W) {
+            stage.getCamera().rotateAround(new Vector3(0,0,0), new Vector3(0,0,1), 10);
         }
         return false;
     }

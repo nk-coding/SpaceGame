@@ -49,7 +49,7 @@ public class SpaceGame extends Game {
 	@Override
 	public void dispose () {
 		//testScreen.dispose();
-		shipBuilderScreen.dispose();
+		//shipBuilderScreen.dispose();
 		assetManager.dispose();
 		batch.dispose();
 	}

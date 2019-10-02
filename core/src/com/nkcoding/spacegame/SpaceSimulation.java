@@ -81,6 +81,6 @@ public class SpaceSimulation{
     //implementation for Simulated
     public void draw(SpriteBatch batch) {
         //draw ships
-        ships.forEach(ship -> ship.draw(batch));
+        //TODO
     }
 }

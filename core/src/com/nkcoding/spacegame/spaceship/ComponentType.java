@@ -57,12 +57,6 @@ public enum ComponentType {
         this.height = height;
         this.health = health;
         this.mass = mass;
-
-        //create the Shapes
-        normalShape = new PolygonShape();
-        normalShape.setAsBox(ShipDef.UNIT_SIZE * width, ShipDef.UNIT_SIZE * height);
-        rotatedShape = new PolygonShape();
-        rotatedShape.setAsBox(ShipDef.UNIT_SIZE * height, ShipDef.UNIT_SIZE * width);
     }
 
     //sets width and height to 1
@@ -76,6 +70,19 @@ public enum ComponentType {
      * @return the PolygonShape representing this Component
      */
     public PolygonShape getShape(boolean rotated) {
-        return rotated ? rotatedShape : normalShape;
+        if (rotated) {
+            if (rotatedShape == null) {
+                rotatedShape = new PolygonShape();
+                rotatedShape.setAsBox(ShipDef.UNIT_SIZE * height, ShipDef.UNIT_SIZE * width);
+            }
+            return rotatedShape;
+        }
+        else {
+            if (normalShape == null) {
+                normalShape = new PolygonShape();
+                normalShape.setAsBox(ShipDef.UNIT_SIZE * width, ShipDef.UNIT_SIZE * height);
+            }
+            return normalShape;
+        }
     }
 }

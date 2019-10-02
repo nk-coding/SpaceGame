@@ -2,11 +2,12 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 
 import java.util.ArrayList;
 
-public abstract class Component {
+public abstract class Component extends Actor {
     
     //region names for the ExternalProperties
     public static final String HealthKey = "Health";
@@ -123,6 +124,7 @@ public abstract class Component {
         //set the final variables
         this.type = componentDef.getType();
         this.componentDef = componentDef;
+        setShip(ship);
 
         //set health
         health.set(componentDef.getHealth());
@@ -156,11 +158,6 @@ public abstract class Component {
     protected void removeFixture(Fixture fixture) {
         getShip().getBody().destroyFixture(fixture);
     }
-
-    void act (float time) {
-        //TODO implementation
-    }
-
 
     private void destroy() {
         ship.destroyComponent(this);

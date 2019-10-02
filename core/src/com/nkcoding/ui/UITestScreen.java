@@ -144,16 +144,7 @@ public class UITestScreen implements Screen {
 		//CodeEditor editor = new CodeEditor(textFieldStyle, scrollPaneStyle, new ScriptColorParser());
 
 		//table.add(editor).grow();
-		SimpleZoomableWidget simpleZoomableWidget = new SimpleZoomableWidget(new SpriteDrawable(new Sprite(badlogic)),
-				1, 1, 2000f);
 
-		ZoomScrollPane.ZoomScrollPaneStyle zspStyle = new ZoomScrollPane.ZoomScrollPaneStyle();
-		zspStyle.vScrollKnob = new SpriteDrawable(new Sprite(scrollBarThumb));
-		zspStyle.vScroll = new SpriteDrawable(new Sprite(newScrollBarBackground));
-		zspStyle.hScrollKnob = new SpriteDrawable(new Sprite(scrollBarThumb));
-		zspStyle.hScroll = new SpriteDrawable(new Sprite(newScrollBarBackground));
-
-		ZoomScrollPane zsp = new ZoomScrollPane(simpleZoomableWidget, zspStyle);
 		//table.add(zsp).grow();
 
 		//add some useless Strings to the list

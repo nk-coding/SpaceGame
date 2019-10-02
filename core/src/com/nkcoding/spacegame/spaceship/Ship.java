@@ -2,8 +2,8 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.nkcoding.interpreter.ExternalMethodFuture;
-import com.nkcoding.spacegame.Simulated;
 import com.nkcoding.spacegame.SpaceSimulation;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Ship implements Simulated {
+public class Ship extends Group {
 
     //the body which represents the Ship in box2d
     private Body body;
@@ -51,14 +51,7 @@ public class Ship implements Simulated {
         //init the map
         componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];
         for (ComponentDef comDef : def.componentDefs) {
-            Component component = comDef.createComponent(this);
-            components.add(component);
-            //add to map
-            for (int _x = comDef.getX(); _x < (comDef.getX() + comDef.getRealWidth()); _x++){
-                for (int _y = comDef.getY(); _y < (comDef.getY() + comDef.getRealHeight()); _y++){
-                    componentsMap[_x][_y] = component;
-                }
-            }
+            createComponent(comDef);
         }
     }
 
@@ -73,12 +66,24 @@ public class Ship implements Simulated {
         //init the map
         componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];
         for (Component component : components) {
-            ComponentDef comDef = component.getComponentDef();
-            //add to map
-            for (int _x = comDef.getX(); _x < (comDef.getX() + comDef.getRealWidth()); _x++){
-                for (int _y = comDef.getY(); _y < (comDef.getY() + comDef.getRealHeight()); _y++){
-                    componentsMap[_x][_y] = component;
-                }
+            addToMap(component);
+        }
+    }
+
+    void createComponent(ComponentDef comDef) {
+        Component component = comDef.createComponent(this);
+        //this also creates the fixtures
+        components.add(component);
+        addActor(component);
+        addToMap(component);
+    }
+
+    void addToMap(Component component) {
+        ComponentDef comDef = component.getComponentDef();
+        //add to map
+        for (int _x = comDef.getX(); _x < (comDef.getX() + comDef.getRealWidth()); _x++){
+            for (int _y = comDef.getY(); _y < (comDef.getY() + comDef.getRealHeight()); _y++){
+                componentsMap[_x][_y] = component;
             }
         }
     }
@@ -237,11 +242,6 @@ public class Ship implements Simulated {
         for (Component component : components) {
             component.act(time);
         }
-    }
-
-    @Override
-    public void draw(SpriteBatch batch) {
-
     }
 
     /**
