@@ -22,6 +22,7 @@ public enum Asset {
     SaveSymbol("textures/ui/saveSymbol.png"),
     CloseSymbol("textures/ui/closeSymbol.png"),
     OkSymbol("textures/ui/okSymbol.png"),
+    RotateSymbol("textures/ui/rotateSymbol.png"),
     ErrorSymbol("textures/ui/errorSymbol.png"),
     ActionNecessarySymbol("textures/ui/actionNecessarySymbol.png"),
     Selection("textures/ui/selection.png");

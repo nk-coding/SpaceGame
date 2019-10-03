@@ -72,15 +72,19 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
     //the Texture shown when no component would be at this place
     private Texture noComponent;
 
+    //the Texture drawn when selecting something or if a component is selected
+    private Texture selection;
+
     //Consumer for when the selection changed
     private Consumer<ComponentDef> selectionChanged;
 
 
     //constructor with a shipDef
-    public ShipDesigner(ShipDef shipDef, ExtAssetManager assetManager, Texture noComponent, Consumer<ComponentDef> selectionChanged) {
+    public ShipDesigner(ShipDef shipDef, ExtAssetManager assetManager, Texture noComponent, Texture selection, Consumer<ComponentDef> selectionChanged) {
         this.shipDef = shipDef;
         this.assetManager = assetManager;
         this.noComponent = noComponent;
+        this.selection = selection;
         this.selectionChanged = selectionChanged;
 
         this.designerHelper = shipDef.getShipDesignerHelper();
@@ -111,8 +115,19 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
                             ((x == startDrawX && y == startDrawY) ||        //it is in the bottom left corner or
                                     (x == startDrawX && def.getY() == y) ||         //it is the left line and the y pos fits or
                                     (y == startDrawY && def.getX() == x)))) {       //it is bottom line and the x pos fits
-                        batch.draw(getComponentTexture(def), getX() + def.getX() * componentSize, getY() + getHeight() - (def.getY() + 1) * componentSize,
-                                def.getWidth() * componentSize, def.getHeight() * componentSize);
+                        if (def == getSelectedComponent()) {
+                            //draw selection and a smaller component
+                            batch.draw(selection, getX() + def.getX() * componentSize, getY() + getHeight() - (def.getY() + 1) * componentSize,
+                                    def.getWidth() * componentSize, def.getHeight() * componentSize);
+                            batch.draw(getComponentTexture(def), getX() + def.getX() * componentSize + 0.1f * componentSize,
+                                    getY() + getHeight() - (def.getY() + 1) * componentSize + 0.1f * componentSize,
+                                    (def.getWidth() - 0.2f) * componentSize , (def.getHeight() - 0.2f) * componentSize);
+                        }
+                        else {
+                            //draw component normal
+                            batch.draw(getComponentTexture(def), getX() + def.getX() * componentSize, getY() + getHeight() - (def.getY() + 1) * componentSize,
+                                    def.getWidth() * componentSize, def.getHeight() * componentSize);
+                        }
                     }
                 }
                 else {

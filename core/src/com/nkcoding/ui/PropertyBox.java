@@ -90,8 +90,11 @@ public class PropertyBox extends WidgetGroup {
         else nameLabel.setText(name);
         //init the changed handler stuff
         if (changedLabel == null) {
-            changedLabel = new Label("changed handler", style.labelStyle);
+            changedLabel = new Label("handler: " + data.type, style.labelStyle);
             addActor(changedLabel);
+        }
+        else {
+            changedLabel.setText("handler: " + data.type);
         }
         if (changedTextField == null) {
             changedTextField = new TextField(data.handlerName, style.textFieldStyle);
@@ -121,6 +124,7 @@ public class PropertyBox extends WidgetGroup {
             }
             else valueTextField.setText(data.initData);
         }
+        validateValue();
         invalidateHierarchy();
     }
 

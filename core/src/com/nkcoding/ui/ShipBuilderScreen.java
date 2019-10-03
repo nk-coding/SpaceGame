@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.compiler.CompileException;
@@ -75,6 +76,12 @@ public class ShipBuilderScreen implements Screen {
     private final ImageButton switchButton;
 
     private final CodeEditor codeEditor;
+
+    //the table with the component / ship name
+    private final Table basicInfoTable;
+    private final Label componentNameLabel;
+    private final ImageButton rotateButton;
+    private final TextField nameTextField;
 
     //check Button
     private final Drawable checkButton_ok;
@@ -155,7 +162,8 @@ public class ShipBuilderScreen implements Screen {
         ZoomScrollPane.ZoomScrollPaneStyle zoomScrollPaneStyle = new ZoomScrollPane.ZoomScrollPaneStyle(scrollPaneStyle);
 
         //Label
-        Label.LabelStyle labelStyle = new Label.LabelStyle(assetManager.getBitmapFont(Asset.Consolas_18), new Color(0xffffffff));
+        Label.LabelStyle labelStyleSmall = new Label.LabelStyle(assetManager.getBitmapFont(Asset.Consolas_18), new Color(0xffffffff));
+        Label.LabelStyle labelStyleBig = new Label.LabelStyle(assetManager.getBitmapFont(Asset.Consolas_32), new Color(0xffffffff));
 
         //TextField
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
@@ -177,7 +185,7 @@ public class ShipBuilderScreen implements Screen {
         propertyBoxStyle.textFieldStyle = textFieldStyle;
         propertyBoxStyle.illegalInputColor = new Color(0xff0000ff);
         propertyBoxStyle.legalInputColor = new Color(0xffffffff);
-        propertyBoxStyle.labelStyle = labelStyle;
+        propertyBoxStyle.labelStyle = labelStyleSmall;
         propertyBoxStyle.spacing = 10f;
 
         //endregion
@@ -206,14 +214,44 @@ public class ShipBuilderScreen implements Screen {
 
 
         //shipDesigner
-        shipDesigner = new ShipDesigner(shipDef, assetManager, assetManager.getTexture(Asset.NoComponent), this::selectedComponentChanged);
+        shipDesigner = new ShipDesigner(shipDef, assetManager, assetManager.getTexture(Asset.NoComponent), assetManager.getTexture(Asset.Selection), this::selectedComponentChanged);
         shipDesignerZoomScrollPane = new ZoomScrollPane(shipDesigner, zoomScrollPaneStyle);
         shipDesignerZoomScrollPane.setFlickScroll(false);
         shipDesignerZoomScrollPane.setFadeScrollBars(false);
         shipDesignerZoomScrollPane.setOverscroll(false, false);
 
-        //propertiesStack
+        //basicInfoTable
+        componentNameLabel = new Label("Ship", labelStyleBig);
+
+        rotateButton = new ImageButton(assetManager.getDrawable(Asset.RotateSymbol));
+        //rotateButton.setVisible(false);
+        rotateButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                //TODO implementation
+            }
+        });
+
+        final Label nameLabel  = new Label("Name", labelStyleSmall);
+
+        nameTextField = new TextField("", textFieldStyle);
+
+        basicInfoTable = new Table();
+        basicInfoTable.setBackground(background);
+        basicInfoTable.pad(10, 10, 10, 10);
+        basicInfoTable.add(componentNameLabel).growX().left();
+        basicInfoTable.add(rotateButton).size(40, 40).right();
+        basicInfoTable.row();
+        basicInfoTable.add(nameLabel).left().colspan(2).pad(10,10,10,0);
+        basicInfoTable.row();
+        basicInfoTable.add(nameTextField).left().colspan(2).pad(0,10,10,0);
+
+        final Container<Table> basicInfoContainer = new Container<>(basicInfoTable).pad(10, 10, 0, 10).fillX();
+
+
+        //propertiesVerticalGroup
         propertiesVerticalGroup = new VerticalGroup();
+        propertiesVerticalGroup.addActor(basicInfoContainer);
         propertiesVerticalGroup.grow();
 
         //propertiesScrollPane
@@ -222,7 +260,6 @@ public class ShipBuilderScreen implements Screen {
         propertiesScrollPane.setFlickScroll(false);
         propertiesScrollPane.setScrollingDisabled(true, false);
         propertiesScrollPane.setFadeScrollBars(false);
-
 
         //save Button
         //button which saves (and probably closes?)
@@ -420,25 +457,29 @@ public class ShipBuilderScreen implements Screen {
     private void selectedComponentChanged(ComponentDef def) {
         //update the property stack
         if (def != null) {
-            propertiesVerticalGroup.getChildren().forEach(actor -> ((PropertyBox)((Container)actor).getActor()).save());
+            SnapshotArray<Actor> children = propertiesVerticalGroup.getChildren();
+            //TODO implementation save nameTable
+            for (int x = 1; x < children.size; x++) {
+                Actor actor = children.get(x);
+                ((PropertyBox)((Container)actor).getActor()).save();
+            }
 
-            int oldCount = propertiesVerticalGroup.getChildren().size;
+            int oldCount = propertiesVerticalGroup.getChildren().size - 1;
             int newCount = def.properties.size();
             //remove PropertyBoxes if necessary
             if (newCount < oldCount) {
                 for (int x = newCount; x < oldCount; x++) {
-                    oldPropertyBoxes.add(propertiesVerticalGroup.getChild(x));
+                    oldPropertyBoxes.add(propertiesVerticalGroup.getChild(x + 1));
                 }
-                propertiesVerticalGroup.getChildren().removeRange(newCount, oldCount - 1);
+                propertiesVerticalGroup.getChildren().removeRange(newCount + 1, oldCount);
             }
 
 
-            System.out.println(newCount == propertiesVerticalGroup.getChildren().size);
             int x = 0;
             for (ExternalPropertyData data : def.properties.values()) {
                 if (x < oldCount) {
                     //the component exists
-                    Container container = (Container)propertiesVerticalGroup.getChild(x);
+                    Container container = (Container)propertiesVerticalGroup.getChild(x + 1);
                     PropertyBox propertyBox = (PropertyBox)container.getActor();
                     propertyBox.update(data.name, data);
                 }
@@ -522,7 +563,12 @@ public class ShipBuilderScreen implements Screen {
     //saves the current state
     private void save() {
         shipDef.code = codeEditor.getText();
-        propertiesVerticalGroup.getChildren().forEach(actor -> ((PropertyBox)((Container)actor).getActor()).save());
+        SnapshotArray<Actor> children = propertiesVerticalGroup.getChildren();
+        //TODO implementation save nameTable
+        for (int x = 1; x < children.size; x++) {
+            Actor actor = children.get(x);
+            ((PropertyBox)((Container)actor).getActor()).save();
+        }
         SaveGameManager.save();
     }
 
