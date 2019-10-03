@@ -7,6 +7,7 @@ import com.nkcoding.interpreter.compiler.MethodType;
 import com.nkcoding.interpreter.compiler.TypeNamePair;
 
 import java.util.Collection;
+import java.util.Map;
 
 public class ExternalPropertyData {
     /**the name of the property*/
@@ -71,6 +72,27 @@ public class ExternalPropertyData {
 
         }
     }
+
+    /**
+     * checks if the method exists and has the correct signature
+     * @param methods map with all methods
+     * @return true if everything is ok
+     */
+    public boolean verifyHandler(String handlerName, Map<String, ? extends MethodDefinition> methods) {
+        //TODO check for correct type
+        return handlerName.equals("") || methods.containsKey(handlerName);
+    }
+
+    /**
+     * checks for correct handler and init
+     * @param methods map with all methods
+     * @return true if everything is ok
+     */
+    public boolean verify(Map<String, ? extends MethodDefinition> methods) {
+        return (readonly || verifyInit(this.initData)) && verifyHandler(this.handlerName, methods);
+    }
+
+
 
     //adds the external method definitions the list
     public void addExternalMethodDefs(Collection<? super MethodDefinition> list) {

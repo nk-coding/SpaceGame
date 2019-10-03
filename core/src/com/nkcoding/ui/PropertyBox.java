@@ -98,7 +98,7 @@ public class PropertyBox extends WidgetGroup {
         }
         if (changedTextField == null) {
             changedTextField = new TextField(data.handlerName, style.textFieldStyle);
-            changedTextField.setTextFieldListener((textField, c) -> validateValue());
+            changedTextField.setTextFieldListener((textField, c) -> verify());
             addActor(changedTextField);
         }
         else changedTextField.setText(data.handlerName);
@@ -118,21 +118,21 @@ public class PropertyBox extends WidgetGroup {
             if (valueLabel == null) valueLabel = new Label("value", style.labelStyle);
             if (valueTextField == null) {
                 valueTextField = new TextField(data.initData, style.textFieldStyle);
-                valueTextField.setTextFieldListener((textField, c) -> validateValue());
-                validateValue();
+                valueTextField.setTextFieldListener((textField, c) -> verify());
+                verify();
                 addActor(valueTextField);
             }
             else valueTextField.setText(data.initData);
         }
-        validateValue();
+        verify();
         invalidateHierarchy();
     }
 
-    private void validateValue() {
+    public void verify() {
         if (valueTextField != null)
             valueTextField.setColor(data.verifyInit(valueTextField.getText())
                     ? style.legalInputColor : style.illegalInputColor);
-        changedTextField.setColor(changedTextField.getText().equals("") || methods.containsKey(changedTextField.getText())
+        changedTextField.setColor(data.verifyHandler(changedTextField.getText(), methods)
                 ? style.legalInputColor : style.illegalInputColor);
     }
 

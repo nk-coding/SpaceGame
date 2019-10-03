@@ -2,8 +2,10 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.nkcoding.interpreter.compiler.MethodDefinition;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ShipDef {
     public class ShipDesignerHelper{
@@ -93,12 +95,66 @@ public class ShipDef {
     //code for the script
     public String code = "//write your own code here";
 
+    //every Ship needs a name
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    //is everything ok  -> is the ship usable
+    private boolean validated = false;
+
+    public boolean getValidated() {
+        return validated;
+    }
+
+    public void setValidated(boolean validated) {
+        this.validated = validated;
+    }
+
     //ShipDesignerHelper if one is attached
     private ShipDesignerHelper designerHelper = null;
 
     public ShipDesignerHelper getShipDesignerHelper() {
         if (designerHelper == null) designerHelper = new ShipDesignerHelper();
         return designerHelper;
+    }
+
+    /**
+     * get the component with the name name
+     * @param name case sensitive name of the component
+     * @return the ComponentDef or null if it does not exist
+     */
+    public ComponentDef getComponent(String name) {
+        return componentDefs.stream().filter(def -> def.getName().equals(name)).findFirst().orElse(null);
+    }
+
+    /**
+     * checks if two components have the same name
+     * @return true if everything is ok
+     */
+    public boolean verifyComponentNames() {
+        long noDuplicates = componentDefs.stream().map(ComponentDef::getName).filter(e -> !e.equals("")).distinct().count();
+        long duplicates = componentDefs.stream().map(ComponentDef::getName).filter(e -> !e.equals("")).count();
+        return noDuplicates == duplicates;
+    }
+
+    /**
+     * checks the properties for all components
+     * @param methods map with all methods
+     * @return true if everything is ok
+     */
+    public boolean verifyComponentProperties(Map<String, ? extends MethodDefinition> methods) {
+        boolean result = true;
+        for (ComponentDef def : componentDefs) {
+            result &= def.verifyProperties(methods);
+        }
+        return result;
     }
 
     public void toJson(Json json) {
@@ -113,6 +169,8 @@ public class ShipDef {
 
         //write the code
         json.writeValue("code", code);
+        json.writeValue("name", name);
+        json.writeValue("validated", validated);
         json.writeObjectEnd();
     }
 
@@ -124,6 +182,8 @@ public class ShipDef {
         }
         //load code
         shipDef.code = value.getString("code");
+        shipDef.name = value.getString("name");
+        shipDef.validated = value.getBoolean("validated");
         return shipDef;
     }
 

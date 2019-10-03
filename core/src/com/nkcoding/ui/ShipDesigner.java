@@ -13,7 +13,7 @@ import com.nkcoding.spacegame.spaceship.ComponentType;
 import com.nkcoding.spacegame.spaceship.ShipDef;
 
 import java.util.HashMap;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class ShipDesigner extends Widget implements Zoomable, Disposable {
 
@@ -46,9 +46,11 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
     }
 
     private void setSelectedComponent(int x, int y) {
+        ComponentDef oldSelected = getSelectedComponent();
         selectedComponentX = x;
         selectedComponentY = y;
-        selectionChanged.accept(getSelectedComponent());
+        ComponentDef newSelected = getSelectedComponent();
+        if (oldSelected != newSelected) selectionChanged.accept(newSelected, oldSelected);
     }
 
     //where how much should it draw
@@ -76,11 +78,11 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
     private Texture selection;
 
     //Consumer for when the selection changed
-    private Consumer<ComponentDef> selectionChanged;
+    private BiConsumer<ComponentDef, ComponentDef> selectionChanged;
 
 
     //constructor with a shipDef
-    public ShipDesigner(ShipDef shipDef, ExtAssetManager assetManager, Texture noComponent, Texture selection, Consumer<ComponentDef> selectionChanged) {
+    public ShipDesigner(ShipDef shipDef, ExtAssetManager assetManager, Texture noComponent, Texture selection, BiConsumer<ComponentDef, ComponentDef> selectionChanged) {
         this.shipDef = shipDef;
         this.assetManager = assetManager;
         this.noComponent = noComponent;
@@ -98,6 +100,13 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
                 return true;
             }
         });
+    }
+
+    /**
+     * tries to rotate the selected component
+     */
+    public void rotateSelectedComponent() {
+        //TODO implementation
     }
 
     @Override

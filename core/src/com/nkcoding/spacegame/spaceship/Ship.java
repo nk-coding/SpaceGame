@@ -1,6 +1,5 @@
 package com.nkcoding.spacegame.spaceship;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.nkcoding.interpreter.ExternalMethodFuture;
@@ -249,6 +248,8 @@ public class Ship extends Group {
      * @param future the ExternalMethodFuture which contains name and parameters
      */
     public void handleExternalMethod(ExternalMethodFuture future) {
+        //TODO find out why this was not active
+        //probably because different futures could exist
         //components.stream().filter(com -> com.getName().equals(future.getParameters()[future.getParameters().length - 1])).findFirst().ifPresent(component -> component.handleExternalMethod(future));
     }
 }

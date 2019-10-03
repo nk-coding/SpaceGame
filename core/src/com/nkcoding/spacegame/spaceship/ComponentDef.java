@@ -3,8 +3,7 @@ package com.nkcoding.spacegame.spaceship;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import com.nkcoding.interpreter.compiler.DataTypes;
-import com.nkcoding.interpreter.compiler.TypeNamePair;
+import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.spacegame.Asset;
 
 import java.util.LinkedHashMap;
@@ -122,6 +121,18 @@ public class ComponentDef {
 
     public PolygonShape getShape() {
         return componentType.getShape(rotation % 2 == 1);
+    }
+
+    /**
+     * verifies all ExternalPropertyDatas
+     * @return true if everything is ok
+     */
+    public boolean verifyProperties(Map<String, ? extends MethodDefinition> methods) {
+        boolean result = true;
+        for (ExternalPropertyData data : properties.values()) {
+            result &= data.verify(methods);
+        }
+        return result;
     }
 
     public void toJson(Json json) {

@@ -31,9 +31,7 @@ import com.nkcoding.spacegame.spaceship.ComponentType;
 import com.nkcoding.spacegame.spaceship.ExternalPropertyData;
 import com.nkcoding.spacegame.spaceship.ShipDef;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 
 public class ShipBuilderScreen implements Screen {
@@ -224,17 +222,21 @@ public class ShipBuilderScreen implements Screen {
         componentNameLabel = new Label("Ship", labelStyleBig);
 
         rotateButton = new ImageButton(assetManager.getDrawable(Asset.RotateSymbol));
-        //rotateButton.setVisible(false);
+        rotateButton.setVisible(false);
         rotateButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                //TODO implementation
+                shipDesigner.rotateSelectedComponent();
             }
         });
 
-        final Label nameLabel  = new Label("Name", labelStyleSmall);
+        final Label nameLabel  = new Label("name", labelStyleSmall);
 
-        nameTextField = new TextField("", textFieldStyle);
+        nameTextField = new TextField(shipDef.getName(), textFieldStyle);
+        nameTextField.setTextFieldListener((textField, c) -> {
+            ComponentDef def = shipDef.getComponent(nameTextField.getText());
+            nameTextField.setColor((def == null || def == shipDesigner.getSelectedComponent()) ? new Color(0xffffffff) : new Color(0xff0000ff));
+        });
 
         basicInfoTable = new Table();
         basicInfoTable.setBackground(background);
@@ -244,7 +246,7 @@ public class ShipBuilderScreen implements Screen {
         basicInfoTable.row();
         basicInfoTable.add(nameLabel).left().colspan(2).pad(10,10,10,0);
         basicInfoTable.row();
-        basicInfoTable.add(nameTextField).left().colspan(2).pad(0,10,10,0);
+        basicInfoTable.add(nameTextField).left().colspan(2).pad(0,10,10,0).fillX();
 
         final Container<Table> basicInfoContainer = new Container<>(basicInfoTable).pad(10, 10, 0, 10).fillX();
 
@@ -454,63 +456,76 @@ public class ShipBuilderScreen implements Screen {
         }
     }
 
-    private void selectedComponentChanged(ComponentDef def) {
+    private void selectedComponentChanged(ComponentDef newDef, ComponentDef oldDef) {
+        //save
+        saveComponentDef(oldDef);
         //update the property stack
-        if (def != null) {
-            SnapshotArray<Actor> children = propertiesVerticalGroup.getChildren();
-            //TODO implementation save nameTable
-            for (int x = 1; x < children.size; x++) {
-                Actor actor = children.get(x);
-                ((PropertyBox)((Container)actor).getActor()).save();
+        Map<String, ExternalPropertyData> properties;
+        if (newDef != null) {
+            properties = newDef.properties;
+            nameTextField.setText(newDef.getName());
+            componentNameLabel.setText(newDef.getType().toString());
+            rotateButton.setVisible(true);
+        }
+        else {
+            //TODO implementation ship properties
+            properties = new LinkedHashMap<>();
+            nameTextField.setText(shipDef.getName());
+            componentNameLabel.setText("Ship");
+            rotateButton.setVisible(false);
+        }
+
+        int oldCount = propertiesVerticalGroup.getChildren().size - 1;
+        int newCount = properties.size();
+        //remove PropertyBoxes if necessary
+        if (newCount < oldCount) {
+            Actor[] actors = new Actor[oldCount - newCount];
+            for (int x = newCount; x < oldCount; x++) {
+                actors[x - newCount] = propertiesVerticalGroup.getChild(x + 1);
             }
-
-            int oldCount = propertiesVerticalGroup.getChildren().size - 1;
-            int newCount = def.properties.size();
-            //remove PropertyBoxes if necessary
-            if (newCount < oldCount) {
-                for (int x = newCount; x < oldCount; x++) {
-                    oldPropertyBoxes.add(propertiesVerticalGroup.getChild(x + 1));
-                }
-                propertiesVerticalGroup.getChildren().removeRange(newCount + 1, oldCount);
+            for (Actor actor : actors) {
+                propertiesVerticalGroup.removeActor(actor);
+                oldPropertyBoxes.add(actor);
             }
+        }
 
 
-            int x = 0;
-            for (ExternalPropertyData data : def.properties.values()) {
-                if (x < oldCount) {
-                    //the component exists
-                    Container container = (Container)propertiesVerticalGroup.getChild(x + 1);
-                    PropertyBox propertyBox = (PropertyBox)container.getActor();
-                    propertyBox.update(data.name, data);
+        int x = 0;
+        for (ExternalPropertyData data : properties.values()) {
+            if (x < oldCount) {
+                //the component exists
+                Container container = (Container)propertiesVerticalGroup.getChild(x + 1);
+                PropertyBox propertyBox = (PropertyBox)container.getActor();
+                propertyBox.update(data.name, data);
+            }
+            else {
+                if (oldPropertyBoxes.isEmpty()) {
+                    //the component does not exist yet, and there is no one available on the stack
+                    Container<PropertyBox> container = new Container<>(new PropertyBox(propertyBoxStyle, data.name, data, methodPositions) {
+                        @Override
+                        public void codeButtonClicked() {
+                            methodPositions.forEach((s, l) -> System.out.println(s + ", " + l));
+                            if (methodPositions.containsKey(this.getHandlerName())) {
+                                switchView();
+                                codeEditor.moveTo(methodPositions.get(this.getHandlerName()).getLine());
+                            }
+                            else {
+                                //TODO implementation create new method
+                            }
+                        }
+                    });
+                    container.pad(10, 10, 0, 10).fill();
+                    propertiesVerticalGroup.addActor(container);
                 }
                 else {
-                    if (oldPropertyBoxes.isEmpty()) {
-                        //the component does not exist yet, and there is no one available on the stack
-                        Container<PropertyBox> container = new Container<>(new PropertyBox(propertyBoxStyle, data.name, data, methodPositions) {
-                            @Override
-                            public void codeButtonClicked() {
-                                methodPositions.forEach((s, l) -> System.out.println(s + ", " + l));
-                                if (methodPositions.containsKey(this.getHandlerName())) {
-                                    switchView();
-                                    codeEditor.moveTo(methodPositions.get(this.getHandlerName()).getLine());
-                                }
-                                else {
-                                    System.out.println("does not contain");
-                                }
-                            }
-                        });
-                        container.pad(10, 10, 0, 10).fill();
-                        propertiesVerticalGroup.addActor(container);
-                    }
-                    else {
-                        //the component does not exist yet, but there is one available on the stack
-                        Container container = (Container)oldPropertyBoxes.pop();
-                        PropertyBox propertyBox = (PropertyBox)container.getActor();
-                        propertyBox.update(data.name, data);
-                    }
+                    //the component does not exist yet, but there is one available on the stack
+                    Container container = (Container)oldPropertyBoxes.pop();
+                    PropertyBox propertyBox = (PropertyBox)container.getActor();
+                    propertyBox.update(data.name, data);
+                    propertiesVerticalGroup.addActor(container);
                 }
-                x++;
             }
+            x++;
         }
     }
 
@@ -522,14 +537,21 @@ public class ShipBuilderScreen implements Screen {
         }
         else {
             parse(true);
+
             stage.addActor(shipRootTable);
             codeRootTable.remove();
+            //update PropertyBoxes
+            SnapshotArray<Actor> children = propertiesVerticalGroup.getChildren();
+            for (int x = 1; x < children.size; x++) {
+                Actor actor = children.get(x);
+                ((PropertyBox)((Container)actor).getActor()).verify();
+            }
         }
         isShipView = !isShipView;
     }
 
     //compiles and updates error log
-    private void parse(boolean updateMethodsMap) {
+    private boolean parse(boolean updateMethodsMap) {
         compiler.update(codeEditor.getText().split("\\r?\\n"));
         try {
             errorLog.setText("");
@@ -549,6 +571,7 @@ public class ShipBuilderScreen implements Screen {
             style = switchButton.getStyle();
             style.imageUp = switchButton_ok;
             switchButton.setStyle(style);
+            return true;
         } catch (CompileException e) {
             errorLog.setText(e.toString());
             ImageButton.ImageButtonStyle style = checkButton.getStyle();
@@ -557,18 +580,39 @@ public class ShipBuilderScreen implements Screen {
             style = switchButton.getStyle();
             style.imageUp = switchButton_error;
             switchButton.setStyle(style);
+            return false;
+        }
+    }
+
+    //saves the verticalPropertiesGroup
+    private void saveComponentDef(ComponentDef def) {
+        SnapshotArray<Actor> children = propertiesVerticalGroup.getChildren();
+        //save name
+        if (def != null) {
+            def.setName(nameTextField.getText());
+        }
+        else {
+            shipDef.setName(nameTextField.getText());
+        }
+
+        for (int x = 1; x < children.size; x++) {
+            Actor actor = children.get(x);
+            ((PropertyBox)((Container)actor).getActor()).save();
         }
     }
 
     //saves the current state
     private void save() {
         shipDef.code = codeEditor.getText();
-        SnapshotArray<Actor> children = propertiesVerticalGroup.getChildren();
-        //TODO implementation save nameTable
-        for (int x = 1; x < children.size; x++) {
-            Actor actor = children.get(x);
-            ((PropertyBox)((Container)actor).getActor()).save();
-        }
+        saveComponentDef(shipDesigner.getSelectedComponent());
+
+        //verify the ship
+        boolean code = parse(true);
+        boolean componentProperties = shipDef.verifyComponentProperties(methodPositions);
+        boolean componentNames = shipDef.verifyComponentNames();
+        System.out.printf("code: %b, properties: %b, names: %b%n", code, componentProperties, componentNames);
+        //TODO check ship properties
+        shipDef.setValidated(code && componentProperties && componentNames);
         SaveGameManager.save();
     }
 
