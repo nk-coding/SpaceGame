@@ -1,18 +1,15 @@
 package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
 import com.nkcoding.interpreter.compiler.DataTypes;
-import com.nkcoding.interpreter.compiler.TypeNamePair;
 import com.nkcoding.spacegame.Asset;
 
 import java.util.function.BiFunction;
 
-import static com.nkcoding.spacegame.spaceship.ExternalPropertyData.of;
 import static com.nkcoding.spacegame.spaceship.Component.*;
 
 public enum ComponentType {
-    TestType(TestImp::new, 2, 1, 100, 100, Asset.Badlogic),
+    TestType(TestImp::new, 2, 3, 100, 100, Asset.Badlogic),
     BasicHull(TestImp::new, Asset.BasicHull);
 
     //the width of the component

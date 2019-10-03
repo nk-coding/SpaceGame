@@ -73,6 +73,40 @@ public class ShipDef {
             return result;
         }
 
+        //tries to rotate a component
+        public void rotateComponent(ComponentDef def) {
+            int x = def.getX();
+            int y = def.getY();
+            int rotation = def.getRotation();
+
+            for (int i = 0; i < 3; i++) {
+                rotation++;
+                rotation %= 4;
+                switch (rotation) {
+                    case 0:
+                        y += def.getWidth() - 1;
+                        break;
+                    case 1:
+                        x -= def.getHeight() - 1;
+                        break;
+                    case 2:
+                        x += def.getHeight() - 1;
+                        x -= def.getWidth() - 1;
+                        y -= def.getHeight() - 1;
+                        break;
+                    case 3:
+                        x += def.getWidth() - 1;
+                        y += def.getHeight() - 1;
+                        y -= def.getWidth() - 1;
+                        break;
+                }
+                if (tryMoveComponent(def, x ,y, rotation)) {
+                    moveComponent(def, x, y, rotation);
+                    return;
+                }
+            }
+        }
+
         //actually move component
         //this requires that TryMoveComponent was called immediately before
         //otherwise this might lead to unexpected behaviour

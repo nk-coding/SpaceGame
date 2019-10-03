@@ -29,8 +29,9 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
     //helper
     private ShipDef.ShipDesignerHelper designerHelper;
 
-    private int selectedComponentX = -1;
-    private int selectedComponentY = -1;
+    //private int selectedComponentX = -1;
+    //private int selectedComponentY = -1;
+    private ComponentDef selectedComponent;
 
     //region implementation of Zoomable
     //where should it start to draw
@@ -38,19 +39,19 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
     private int startDrawY = 0;
 
     public ComponentDef getSelectedComponent() {
-        return (selectedComponentX >= 0 && selectedComponentY >= 0) ? designerHelper.getComponent(selectedComponentX, selectedComponentY) : null;
+        //return (selectedComponentX >= 0 && selectedComponentY >= 0) ? designerHelper.getComponent(selectedComponentX, selectedComponentY) : null;
+        return selectedComponent;
     }
 
     public void setSelectedComponent(ComponentDef def) {
-        setSelectedComponent(def.getX(), def.getY());
+        ComponentDef oldSelected = getSelectedComponent();
+        this.selectedComponent = def;
+        ComponentDef newSelected = getSelectedComponent();
+        if (oldSelected != newSelected) selectionChanged.accept(newSelected, oldSelected);
     }
 
     private void setSelectedComponent(int x, int y) {
-        ComponentDef oldSelected = getSelectedComponent();
-        selectedComponentX = x;
-        selectedComponentY = y;
-        ComponentDef newSelected = getSelectedComponent();
-        if (oldSelected != newSelected) selectionChanged.accept(newSelected, oldSelected);
+        setSelectedComponent(designerHelper.getComponent(x, y));
     }
 
     //where how much should it draw
@@ -106,7 +107,7 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
      * tries to rotate the selected component
      */
     public void rotateSelectedComponent() {
-        //TODO implementation
+        designerHelper.rotateComponent(getSelectedComponent());
     }
 
     @Override
@@ -124,24 +125,89 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
                             ((x == startDrawX && y == startDrawY) ||        //it is in the bottom left corner or
                                     (x == startDrawX && def.getY() == y) ||         //it is the left line and the y pos fits or
                                     (y == startDrawY && def.getX() == x)))) {       //it is bottom line and the x pos fits
+                        Texture texture = getComponentTexture(def);
                         if (def == getSelectedComponent()) {
                             //draw selection and a smaller component
-                            batch.draw(selection, getX() + def.getX() * componentSize, getY() + getHeight() - (def.getY() + 1) * componentSize,
-                                    def.getWidth() * componentSize, def.getHeight() * componentSize);
-                            batch.draw(getComponentTexture(def), getX() + def.getX() * componentSize + 0.1f * componentSize,
-                                    getY() + getHeight() - (def.getY() + 1) * componentSize + 0.1f * componentSize,
-                                    (def.getWidth() - 0.2f) * componentSize , (def.getHeight() - 0.2f) * componentSize);
+                            batch.draw(selection, getX() + def.getX() * componentSize, getY() + def.getY() * componentSize,
+                                    def.getRealWidth() * componentSize, def.getRealHeight() * componentSize);
+                            switch (def.getRotation()) {
+                                case 0:
+                                    batch.draw(texture,
+                                            getX() + def.getX() * componentSize + 0.1f * componentSize,
+                                            getY() + def.getY() * componentSize + 0.1f * componentSize,
+                                            0f, 0f,
+                                            (def.getWidth() - 0.2f) * componentSize , (def.getHeight() - 0.2f) * componentSize,
+                                            1f, 1f, def.getRotation() * 90, 0,0,texture.getWidth(),texture.getHeight(),false, false);
+                                    break;
+                                case 1:
+                                    batch.draw(texture,
+                                            getX() + (def.getX() + def.getRealWidth()) * componentSize - 0.1f * componentSize,
+                                            getY() + def.getY() * componentSize + 0.1f * componentSize,
+                                            0f, 0f,
+                                            (def.getWidth() - 0.2f) * componentSize , (def.getHeight() - 0.2f) * componentSize,
+                                            1f, 1f, def.getRotation() * 90, 0,0,texture.getWidth(),texture.getHeight(),false, false);
+                                    break;
+                                case 2:
+                                    batch.draw(texture,
+                                            getX() + (def.getX() + def.getRealWidth()) * componentSize - 0.1f * componentSize,
+                                            getY() + (def.getY() + def.getRealHeight()) * componentSize - 0.1f * componentSize,
+                                            0f, 0f,
+                                            (def.getWidth() - 0.2f) * componentSize , (def.getHeight() - 0.2f) * componentSize,
+                                            1f, 1f, def.getRotation() * 90, 0,0,texture.getWidth(),texture.getHeight(),false, false);
+                                    break;
+                                case 3:
+                                    batch.draw(texture,
+                                            getX() + def.getX() * componentSize + 0.1f * componentSize,
+                                            getY() + (def.getY() + def.getRealHeight()) * componentSize - 0.1f * componentSize,
+                                            0f, 0f,
+                                            (def.getWidth() - 0.2f) * componentSize , (def.getHeight() - 0.2f) * componentSize,
+                                            1f, 1f, def.getRotation() * 90, 0,0,texture.getWidth(),texture.getHeight(),false, false);
+                                    break;
+                            }
+
                         }
                         else {
                             //draw component normal
-                            batch.draw(getComponentTexture(def), getX() + def.getX() * componentSize, getY() + getHeight() - (def.getY() + 1) * componentSize,
-                                    def.getWidth() * componentSize, def.getHeight() * componentSize);
+                            switch (def.getRotation()) {
+                                case 0:
+                                    batch.draw(texture,
+                                            getX() + def.getX() * componentSize,
+                                            getY() + def.getY() * componentSize,
+                                            0f, 0f,
+                                            (def.getWidth()) * componentSize , (def.getHeight()) * componentSize,
+                                            1f, 1f, def.getRotation() * 90, 0,0,texture.getWidth(),texture.getHeight(),false, false);
+                                    break;
+                                case 1:
+                                    batch.draw(texture,
+                                            getX() + (def.getX() + def.getRealWidth()) * componentSize,
+                                            getY() + def.getY() * componentSize,
+                                            0f, 0f,
+                                            (def.getWidth()) * componentSize , (def.getHeight()) * componentSize,
+                                            1f, 1f, def.getRotation() * 90, 0,0,texture.getWidth(),texture.getHeight(),false, false);
+                                    break;
+                                case 2:
+                                    batch.draw(texture,
+                                            getX() + (def.getX() + def.getRealWidth()) * componentSize,
+                                            getY() + (def.getY() + def.getRealHeight()) * componentSize,
+                                            0f, 0f,
+                                            (def.getWidth()) * componentSize , (def.getHeight()) * componentSize,
+                                            1f, 1f, def.getRotation() * 90, 0,0,texture.getWidth(),texture.getHeight(),false, false);
+                                    break;
+                                case 3:
+                                    batch.draw(texture,
+                                            getX() + def.getX() * componentSize,
+                                            getY() + (def.getY() + def.getRealHeight()) * componentSize,
+                                            0f, 0f,
+                                            (def.getWidth()) * componentSize , (def.getHeight()) * componentSize,
+                                            1f, 1f, def.getRotation() * 90, 0,0,texture.getWidth(),texture.getHeight(),false, false);
+                                    break;
+                            }
                         }
                     }
                 }
                 else {
                     //draw the noComponent Texture
-                    batch.draw(noComponent, getX() + x * componentSize, getY() + getHeight() - (y + 1) * componentSize, componentSize, componentSize);
+                    batch.draw(noComponent, getX() + x * componentSize, getY() + y * componentSize, componentSize, componentSize);
                 }
             }
         }
@@ -169,7 +235,7 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
 
     //calculates the y index
     private int calculateYIndex(float y){
-        return (int)((getHeight() - y) / (COMPONENT_SIZE * zoom));
+        return (int)(y / (COMPONENT_SIZE * zoom));
     }
 
     @Override
@@ -180,7 +246,7 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
         }
         float componentSize = COMPONENT_SIZE * zoom;
         startDrawX = Math.max((int)(cullingArea.x / componentSize), 0);
-        startDrawY = Math.max((int)((getPrefHeight() - cullingArea.y - cullingArea.height) / componentSize), 0);
+        startDrawY = Math.max((int)(cullingArea.y / componentSize), 0);
         amountDrawX = Math.min(ShipDef.MAX_SIZE - startDrawX, (int)(cullingArea.width / componentSize) + 2);
         amountDrawY = Math.min(ShipDef.MAX_SIZE - startDrawY, (int)(cullingArea.height / componentSize) + 2);
         //it seems that it is not necessary to call invalidate because setWidth calls sizeChanged which calls invalidate
