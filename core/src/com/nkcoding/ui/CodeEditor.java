@@ -158,4 +158,9 @@ public class CodeEditor extends WidgetGroup {
     public void setText(String text) {
         codeTextArea.setText(text);
     }
+
+    /**moves the scrollPane to a specific position*/
+    public void moveTo(int line) {
+        codeScrollPane.scrollTo(0, codeTextArea.getPrefHeight() - textFieldStyle.font.getLineHeight() * line, 0, 0);
+    }
 }

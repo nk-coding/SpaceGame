@@ -450,7 +450,8 @@ public class ShipBuilderScreen implements Screen {
                             public void codeButtonClicked() {
                                 methodPositions.forEach((s, l) -> System.out.println(s + ", " + l));
                                 if (methodPositions.containsKey(this.getHandlerName())) {
-                                    System.out.println(methodPositions.get(this.getHandlerName()));
+                                    switchView();
+                                    codeEditor.moveTo(methodPositions.get(this.getHandlerName()).getLine());
                                 }
                                 else {
                                     System.out.println("does not contain");

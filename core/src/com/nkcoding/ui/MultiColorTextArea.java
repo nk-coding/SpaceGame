@@ -159,7 +159,6 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     public void moveCursorLine (int line) {
         if (line < 0) {
             cursorLine = 0;
-            //System.out.println("set cursorLine in moveCurserLine.1");
             cursor = 0;
             moveOffset = -1;
         } else if (line >= getLines()) {
@@ -169,14 +168,12 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
                 moveOffset = -1;
             }
             cursorLine = newLine;
-            //System.out.println("set cursorLine in moveCurserLine.2");
         } else if (line != cursorLine) {
             if (moveOffset < 0) {
                 moveOffset = linesBreak.size <= cursorLine * 2 ? 0
                         : glyphPositions.get(cursor) - glyphPositions.get(linesBreak.get(cursorLine * 2));
             }
             cursorLine = line;
-            //System.out.println("set cursorLine in moveCurserLine.3");
             cursor = cursorLine * 2 >= linesBreak.size ? text.length() : linesBreak.get(cursorLine * 2);
             while (cursor < text.length() && cursor <= linesBreak.get(cursorLine * 2 + 1) - 1
                     && glyphPositions.get(cursor) - glyphPositions.get(linesBreak.get(cursorLine * 2)) < moveOffset) {

@@ -36,9 +36,9 @@ public class SpaceGame extends Game {
 		//load saveGame
 		saveGame = SaveGameManager.load();
 		//testScreen = new UITestScreen(this);
-		//shipBuilderScreen = new ShipBuilderScreen(this, saveGame.shipDef);
-		rotationTestScreen = new RotationTestScreen(this);
-		setScreen(rotationTestScreen);
+		shipBuilderScreen = new ShipBuilderScreen(this, saveGame.shipDef);
+		//rotationTestScreen = new RotationTestScreen(this);
+		setScreen(shipBuilderScreen);
 	}
 
 	@Override
