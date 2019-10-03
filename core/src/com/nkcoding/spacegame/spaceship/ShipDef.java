@@ -67,7 +67,7 @@ public class ShipDef {
                 for (int _y = y; _y < (y + height); _y++){
                     //check if it is in range
                     //check if there is no component or (the not moved) same
-                    result = result && (_x < MAX_SIZE && _y < MAX_SIZE && (componentsMap[_x][_y] == null || componentsMap[_x][_y] == componentDef));
+                    result = result && (_x < MAX_SIZE && _x >= 0 && _y >= 0 && _y < MAX_SIZE && (componentsMap[_x][_y] == null || componentsMap[_x][_y] == componentDef));
                 }
             }
             return result;
