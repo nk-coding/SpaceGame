@@ -5,12 +5,16 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.spacegame.SpaceSimulation;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class Ship extends PropertyGroup {
+public class Ship extends Group implements ExternalPropertyHandler {
+    private HashMap<String, ExternalProperty> properties = new HashMap<>();
+
+    @Override
+    public Map<String, ExternalProperty> getProperties() {
+        return null;
+    }
 
     //the body which represents the Ship in box2d
     private Body body;
@@ -239,7 +243,7 @@ public class Ship extends PropertyGroup {
             isPowerRequestDifferent = false;
         }
         //property changed
-        for (ExternalProperty property : properties) {
+        for (ExternalProperty property : getProperties().values()) {
             property.startChangedHandler(this.spaceSimulation.getScriptingEngine());
         }
         //call act on all components

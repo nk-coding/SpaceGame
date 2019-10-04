@@ -7,8 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public abstract class Component extends PropertyActor {
+public abstract class Component extends Actor implements ExternalPropertyHandler {
     
     //region names for the ExternalProperties
     public static final String HealthKey = "Health";
@@ -17,6 +19,14 @@ public abstract class Component extends PropertyActor {
     public static final String HasFullPowerKey = "HasFullPower";
     public static final String PowerReceivedKey = "PowerReceived";
     //endregion
+
+
+    private HashMap<String, ExternalProperty> properties = new HashMap<>();
+
+    @Override
+    public Map<String, ExternalProperty> getProperties() {
+        return null;
+    }
 
     //Type if the Component
     private final ComponentType type;
@@ -159,7 +169,7 @@ public abstract class Component extends PropertyActor {
     @Override
     public void act(float delta) {
         super.act(delta);
-        for (ExternalProperty property : properties) {
+        for (ExternalProperty property : getProperties().values()) {
             property.startChangedHandler(ship.getSpaceSimulation().getScriptingEngine());
         }
     }
