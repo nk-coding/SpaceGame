@@ -335,12 +335,25 @@ public class ShipBuilderScreen implements Screen {
                     payload.setObject(def);
                     float componentSize = ShipDesigner.COMPONENT_SIZE * shipDesignerZoomScrollPane.getZoom();
                     Image dragActor = new Image(assetManager.getTexture(def.getPreviewImage()));
-                    dragActor.setRotation(def.getRotation());
+                    dragActor.setRotation(def.getRotation() * 90);
                     dragActor.setSize(
                             componentSize * def.getWidth(),
                             componentSize * def.getHeight());
                     payload.setDragActor(dragActor);
-                    componentsDragAndDrop.setDragActorPosition(dragActor.getWidth() - componentSize / 2, - componentSize / 2);
+                    switch (def.getRotation()) {
+                        case 0:
+                            componentsDragAndDrop.setDragActorPosition(componentSize * (def.getWidth() - 0.5f),-componentSize / 2);
+                            break;
+                        case 1:
+                            componentsDragAndDrop.setDragActorPosition(componentSize * (def.getWidth() + def.getHeight() - 0.5f),-componentSize/2);
+                            break;
+                        case 2:
+                            componentsDragAndDrop.setDragActorPosition(componentSize * (2 * def.getWidth() - 0.5f),componentSize * (def.getHeight() - 0.5f));
+                            break;
+                        case 3:
+                            componentsDragAndDrop.setDragActorPosition(componentSize * (def.getHeight() - def.getWidth() + 0.5f),componentSize * (def.getWidth() - 0.5f));
+                            break;
+                    }
                     return payload;
                 }
                 else return null;
