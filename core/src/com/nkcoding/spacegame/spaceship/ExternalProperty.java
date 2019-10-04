@@ -42,8 +42,4 @@ public abstract class ExternalProperty<T> {
 
     public abstract T get2();
 
-    public void changed(T value) {
-        //TODO implementation
-    }
-
 }

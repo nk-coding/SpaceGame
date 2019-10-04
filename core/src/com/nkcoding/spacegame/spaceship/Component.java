@@ -1,5 +1,6 @@
 package com.nkcoding.spacegame.spaceship;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -154,5 +155,18 @@ public abstract class Component extends PropertyActor {
         ship.destroyComponent(this);
     }
 
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        for (ExternalProperty property : properties) {
+            property.startChangedHandler(ship.getSpaceSimulation().getScriptingEngine());
+        }
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+    }
 }
 

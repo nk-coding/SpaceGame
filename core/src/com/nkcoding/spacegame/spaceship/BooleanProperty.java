@@ -12,7 +12,7 @@ public class BooleanProperty extends ExternalProperty<Boolean> {
 
     public void set(boolean value) {
         this.value = value;
-        changed(value);
+        changed = true;
     }
 
     public BooleanProperty(boolean readonly, boolean notifyChanges, String name) {
@@ -34,7 +34,7 @@ public class BooleanProperty extends ExternalProperty<Boolean> {
     @Override
     public void set(Boolean value) {
         this.value = value;
-        changed(value);
+        changed = true;
     }
 
     @Override

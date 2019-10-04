@@ -1,12 +1,16 @@
 package com.nkcoding.spacegame;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.spacegame.spaceship.Component;
+import com.nkcoding.spacegame.spaceship.ExternalPropertyHandler;
 import com.nkcoding.spacegame.spaceship.Ship;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SpaceSimulation{
     public static final float SCALE_FACTOR = 350f;
@@ -14,8 +18,15 @@ public class SpaceSimulation{
     //list with all ships
     private ArrayList<Ship> ships = new ArrayList<>();
 
-    //handles all the script stuff for the ship(s)
+    //handles all the ExternalPropertyHandlers
     private ScriptingEngine scriptingEngine;
+
+    public ScriptingEngine getScriptingEngine() {
+        return scriptingEngine;
+    }
+
+    //map with all objects that can receive futures
+    private HashMap<String, ExternalPropertyHandler> propertyHandlers = new HashMap<>();
 
     //constructor
     public SpaceSimulation() {
@@ -27,26 +38,40 @@ public class SpaceSimulation{
      * @param ship the Ship to add
      */
     public void addShip(Ship ship) {
-        //TODO implementation
         ships.add(ship);
+        propertyHandlers.put(ship.getName(), ship);
+        for (Actor child : ship.getChildren()) {
+            if (child instanceof ExternalPropertyHandler) {
+                ExternalPropertyHandler handler = (ExternalPropertyHandler)child;
+                propertyHandlers.put(handler.getName(), handler);
+            }
+        }
     }
 
     /**remove a ship
      * @param ship the Ship to remove
      */
     public void removeShip(Ship ship) {
-        //TODO implementation
         ships.remove(ship);
+        propertyHandlers.remove(ship.getName());
+        for (Actor child : ship.getChildren()) {
+            if (child instanceof ExternalPropertyHandler) {
+                ExternalPropertyHandler handler = (ExternalPropertyHandler)child;
+                propertyHandlers.remove(handler.getName());
+            }
+        }
     }
 
 
-    //implementation for Simulated
+    //calls act on all ships
+    //deals with ExternalMethodFutures
     public void act(float time) {
         //handle all external Methods
         while (!scriptingEngine.getFutureQueue().isEmpty()) {
             ExternalMethodFuture future = scriptingEngine.getFutureQueue().poll();
-            for (Ship ship : ships) {
-                //if (!future.isDone()) ship.handleExternalMethod(future);
+            ExternalPropertyHandler handler = propertyHandlers.get(future.getParameters()[0]);
+            if (handler != null) {
+                handler.handleExternalMethod(future);
             }
             //complete future manually if none of the ships completed it
             if (!future.isDone()) {

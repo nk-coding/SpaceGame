@@ -10,7 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Ship extends Group {
+public class Ship extends PropertyGroup {
 
     //the body which represents the Ship in box2d
     private Body body;
@@ -165,6 +165,7 @@ public class Ship extends Group {
 
     @Override
     public void act(float time) {
+        super.act(time);
         //check structure if necessary
         if (isStructureCheckNecessary) {
             checkStructure();
@@ -237,19 +238,14 @@ public class Ship extends Group {
             }
             isPowerRequestDifferent = false;
         }
+        //property changed
+        for (ExternalProperty property : properties) {
+            property.startChangedHandler(this.spaceSimulation.getScriptingEngine());
+        }
         //call act on all components
         for (Component component : components) {
             component.act(time);
         }
     }
 
-//    /**
-//     * get or set the value
-//     * @param future the ExternalMethodFuture which contains name and parameters
-//     */
-//    public void handleExternalMethod(ExternalMethodFuture future) {
-//        //TODO find out why this was not active
-//        //probably because different futures could exist
-//        //components.stream().filter(com -> com.getName().equals(future.getParameters()[future.getParameters().length - 1])).findFirst().ifPresent(component -> component.handleExternalMethod(future));
-//    }
 }

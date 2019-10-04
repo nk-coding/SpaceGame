@@ -12,7 +12,7 @@ public class FloatProperty extends ExternalProperty<Float> {
 
     public void set(float value) {
         this.value = value;
-        changed(value);
+        changed = true;
     }
 
     public FloatProperty(boolean readonly, boolean notifyChanges, String name) {
@@ -38,7 +38,7 @@ public class FloatProperty extends ExternalProperty<Float> {
     @Override
     public void set(Float value) {
         this.value = value;
-        changed(value);
+        changed = true;
     }
 
     @Override

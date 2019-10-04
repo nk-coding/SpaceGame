@@ -12,7 +12,7 @@ public class StringProperty extends ExternalProperty<String> {
 
     public void set(String value) {
         this.value = value;
-        changed(value);
+        changed = true;
     }
 
     @Override
