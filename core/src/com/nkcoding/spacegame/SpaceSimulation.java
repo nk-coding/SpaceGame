@@ -46,7 +46,7 @@ public class SpaceSimulation{
         while (!scriptingEngine.getFutureQueue().isEmpty()) {
             ExternalMethodFuture future = scriptingEngine.getFutureQueue().poll();
             for (Ship ship : ships) {
-                if (!future.isDone()) ship.handleExternalMethod(future);
+                //if (!future.isDone()) ship.handleExternalMethod(future);
             }
             //complete future manually if none of the ships completed it
             if (!future.isDone()) {

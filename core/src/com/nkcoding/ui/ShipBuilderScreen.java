@@ -234,9 +234,9 @@ public class ShipBuilderScreen implements Screen {
 
         nameTextField = new TextField(shipDef.getName(), textFieldStyle);
         nameTextField.setTextFieldListener((textField, c) -> {
-            ComponentDef def = shipDef.getComponent(nameTextField.getText());
-            nameTextField.setColor((def == null || def == shipDesigner.getSelectedComponent()) ? new Color(0xffffffff) : new Color(0xff0000ff));
+            verifyName();
         });
+        verifyName();
 
         basicInfoTable = new Table();
         basicInfoTable.setBackground(background);
@@ -502,7 +502,6 @@ public class ShipBuilderScreen implements Screen {
             }
         }
 
-
         int x = 0;
         for (ExternalPropertyData data : properties.values()) {
             if (x < oldCount) {
@@ -540,6 +539,15 @@ public class ShipBuilderScreen implements Screen {
             }
             x++;
         }
+
+        //validate the color of the nameTextField
+        verifyName();
+    }
+
+    //checks if the name is ok
+    private void verifyName() {
+        nameTextField.setColor(shipDef.verifyComponentName(shipDesigner.getSelectedComponent(), nameTextField.getText()) ?
+                new Color(0xffffffff) : new Color(0xff0000ff));
     }
 
     //switches the view
@@ -622,10 +630,10 @@ public class ShipBuilderScreen implements Screen {
         //verify the ship
         boolean code = parse(true);
         boolean componentProperties = shipDef.verifyComponentProperties(methodPositions);
-        boolean componentNames = shipDef.verifyComponentNames();
-        System.out.printf("code: %b, properties: %b, names: %b%n", code, componentProperties, componentNames);
+        boolean names = shipDef.verifyNames();
+        System.out.printf("code: %b, properties: %b, names: %b%n", code, componentProperties, names);
         //TODO check ship properties
-        shipDef.setValidated(code && componentProperties && componentNames);
+        shipDef.setValidated(code && componentProperties && names);
         SaveGameManager.save();
     }
 

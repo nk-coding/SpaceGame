@@ -172,10 +172,26 @@ public class ShipDef {
      * checks if two components have the same name
      * @return true if everything is ok
      */
-    public boolean verifyComponentNames() {
+    public boolean verifyNames() {
         long noDuplicates = componentDefs.stream().map(ComponentDef::getName).filter(e -> !e.equals("")).distinct().count();
         long duplicates = componentDefs.stream().map(ComponentDef::getName).filter(e -> !e.equals("")).count();
-        return noDuplicates == duplicates;
+        boolean shipName = getComponent(this.name) == null;
+        return noDuplicates == duplicates && shipName;
+    }
+
+    /**
+     * checks if the name already exists, it is ok if the same ComponentDef already uses the name
+     * @param def the ComponentDef that will use the name
+     * @param name the name to check
+     * @return true if the name is not used or used by def
+     */
+    public boolean verifyComponentName(ComponentDef def, String name) {
+        if (!name.equals(this.name)) {
+            if (name.equals("")) return true;
+            ComponentDef nameDef = getComponent(name);
+            return nameDef == null || nameDef == def;
+        }
+        else return false;
     }
 
     /**

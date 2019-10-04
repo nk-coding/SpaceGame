@@ -243,13 +243,13 @@ public class Ship extends Group {
         }
     }
 
-    /**
-     * get or set the value
-     * @param future the ExternalMethodFuture which contains name and parameters
-     */
-    public void handleExternalMethod(ExternalMethodFuture future) {
-        //TODO find out why this was not active
-        //probably because different futures could exist
-        //components.stream().filter(com -> com.getName().equals(future.getParameters()[future.getParameters().length - 1])).findFirst().ifPresent(component -> component.handleExternalMethod(future));
-    }
+//    /**
+//     * get or set the value
+//     * @param future the ExternalMethodFuture which contains name and parameters
+//     */
+//    public void handleExternalMethod(ExternalMethodFuture future) {
+//        //TODO find out why this was not active
+//        //probably because different futures could exist
+//        //components.stream().filter(com -> com.getName().equals(future.getParameters()[future.getParameters().length - 1])).findFirst().ifPresent(component -> component.handleExternalMethod(future));
+//    }
 }

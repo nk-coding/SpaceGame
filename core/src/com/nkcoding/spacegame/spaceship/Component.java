@@ -7,7 +7,7 @@ import com.nkcoding.interpreter.ExternalMethodFuture;
 
 import java.util.ArrayList;
 
-public abstract class Component extends Actor {
+public abstract class Component extends PropertyActor {
     
     //region names for the ExternalProperties
     public static final String HealthKey = "Health";
@@ -59,15 +59,6 @@ public abstract class Component extends Actor {
      * other fixtures could be added as fields if necessary by sublasses
      */
     protected Fixture borderFixture;
-
-    //List with all the components
-    private final ArrayList<ExternalProperty> properties = new ArrayList<>();
-
-    //registers a property to properties
-    protected <T extends ExternalProperty> T register(T property) {
-        properties.add(property);
-        return property;
-    }
 
     //region properties
 
@@ -163,20 +154,5 @@ public abstract class Component extends Actor {
         ship.destroyComponent(this);
     }
 
-
-    public boolean handleExternalMethod(ExternalMethodFuture future) {
-        ExternalProperty property = properties.stream().filter(prop -> future.getName().substring(3).equals(prop.name)).findFirst().orElse(null);
-        if (property != null) {
-            if (future.getName().charAt(0)=='g') {
-                future.complete(property.get2());
-            }
-            else {
-                property.set(future.getParameters()[0]);
-                future.complete(null);
-            }
-            return true;
-        }
-        else return false;
-    }
 }
 
