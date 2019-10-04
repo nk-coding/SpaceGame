@@ -3,16 +3,16 @@ package com.nkcoding.spacegame.spaceship;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.MethodStatement;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 public interface ExternalPropertyHandler {
     String getName();
 
     Map<String, ExternalProperty> getProperties();
 
-    default void initProperties(Set<ExternalPropertyData> datas, Map<String, MethodStatement> methods) {
+    //init ExternalProperties with the given ExternalPropertyData
+    default void initProperties(Collection<ExternalPropertyData> datas, Map<String, MethodStatement> methods) {
         Map<String, ExternalProperty> properties = getProperties();
         for (ExternalPropertyData data : datas) {
             ExternalProperty property = properties.get(data.name);
@@ -20,6 +20,18 @@ public interface ExternalPropertyHandler {
                 if(!property.readonly) property.setInitValue(data.initData);
                 if (!data.handlerName.equals(""))
                     property.setChangedMethodStatement(methods.get(data.handlerName));
+            }
+        }
+    }
+
+    //init the ExternalProperties with the ExternalProperties
+    default void initProperties(Collection<ExternalProperty> toClone) {
+        Map<String, ExternalProperty> properties = getProperties();
+        for (ExternalProperty clone : toClone) {
+            ExternalProperty property = properties.get(clone.name);
+            if (property != null) {
+                property.set(clone.get2());
+                property.setChangedMethodStatement(clone.getChangedMethodStatement());
             }
         }
     }

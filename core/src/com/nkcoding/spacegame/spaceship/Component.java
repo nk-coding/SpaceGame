@@ -1,12 +1,9 @@
 package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.nkcoding.interpreter.ExternalMethodFuture;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +22,7 @@ public abstract class Component extends Actor implements ExternalPropertyHandler
 
     @Override
     public Map<String, ExternalProperty> getProperties() {
-        return null;
+        return properties;
     }
 
     //Type if the Component

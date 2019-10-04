@@ -2,8 +2,11 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.nkcoding.interpreter.ExternalMethodFuture;
+import com.nkcoding.interpreter.MethodStatement;
+import com.nkcoding.interpreter.compiler.CompileException;
+import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.spacegame.SpaceSimulation;
+import com.nkcoding.interpreter.compiler.Compiler;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -13,7 +16,7 @@ public class Ship extends Group implements ExternalPropertyHandler {
 
     @Override
     public Map<String, ExternalProperty> getProperties() {
-        return null;
+        return properties;
     }
 
     //the body which represents the Ship in box2d
@@ -47,14 +50,29 @@ public class Ship extends Group implements ExternalPropertyHandler {
 
     //construct Ship out of ShipDef (public constructor)
     public Ship(ShipDef def, SpaceSimulation spaceSimulation) {
+        if (!def.getValidated()) throw new IllegalArgumentException("shipDef is not validated");
         //set simulation
         this.spaceSimulation = spaceSimulation;
+        //compile the script
+        Compiler compiler = new Compiler(def.code);
+        MethodStatement[] statements = null;
+        try {
+            statements = compiler.compile();
+        } catch (CompileException e) {
+            e.printStackTrace();
+        }
+        HashMap<String, MethodStatement> methods = new HashMap<>();
+        for (MethodStatement statement : statements) {
+            methods.put(statement.getDefinition().getName(), statement);
+        }
+        //init the externalProperties
+        this.initProperties(null/*TODO*/, methods);
         //init new list with all the components
         components = new ArrayList<>(def.componentDefs.size());
         //init the map
         componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];
         for (ComponentDef comDef : def.componentDefs) {
-            createComponent(comDef);
+            createComponent(comDef, methods);
         }
     }
 
@@ -64,6 +82,8 @@ public class Ship extends Group implements ExternalPropertyHandler {
         //TODO implementation
         //set space simulation
         this.spaceSimulation = oldShip.getSpaceSimulation();
+        //init the externalProperties
+        this.initProperties(oldShip.getProperties().values());
         //set the components
         this.components = components;
         //init the map
@@ -73,8 +93,9 @@ public class Ship extends Group implements ExternalPropertyHandler {
         }
     }
 
-    void createComponent(ComponentDef comDef) {
+    void createComponent(ComponentDef comDef, Map<String, MethodStatement> methods) {
         Component component = comDef.createComponent(this);
+        component.initProperties(comDef.properties.values(), methods);
         //this also creates the fixtures
         components.add(component);
         addActor(component);
