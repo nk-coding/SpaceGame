@@ -53,7 +53,7 @@ public abstract class Component extends Actor implements ExternalPropertyHandler
     }
 
     void setShip(Ship ship){
-        removeFixtures();
+        if (ship != null) removeFixtures();
         this.ship = ship;
         addFixtures();
         //TODO other implementation stuff (probably graphical stuff)

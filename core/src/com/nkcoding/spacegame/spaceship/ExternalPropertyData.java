@@ -123,11 +123,16 @@ public class ExternalPropertyData {
         return new ExternalPropertyData(name, type, readonly);
     }
 
-    //readonly = true;
+    /**
+     * wrapper for new ExternalPropertyData(name, type, readonly = true)
+     */
     public static ExternalPropertyData of(String name, String type) {
         return of(name, type, true);
     }
 
+    /**
+     * wrapper for new ExternalPropertyData(name, type, readonly)
+     */
     public static ExternalPropertyData of(String name, String type, boolean readonly) {
         return new ExternalPropertyData(name, type, readonly);
     }

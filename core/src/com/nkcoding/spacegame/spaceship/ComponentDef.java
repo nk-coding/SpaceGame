@@ -105,8 +105,6 @@ public class ComponentDef {
         for (ExternalPropertyData data : type.propertyDefs) {
             properties.put(data.name, (ExternalPropertyData)data.clone());
         }
-
-        //TODO change whatever this does
     }
 
     public Component createComponent(Ship ship) {

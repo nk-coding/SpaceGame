@@ -12,6 +12,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Ship extends Group implements ExternalPropertyHandler {
+    //region keys for the properties
+    public static final String KeyPressedKey = "KeyPressed";
+    //endregion
+
     private HashMap<String, ExternalProperty> properties = new HashMap<>();
 
     @Override
@@ -47,6 +51,11 @@ public class Ship extends Group implements ExternalPropertyHandler {
     public SpaceSimulation getSpaceSimulation() {
         return spaceSimulation;
     }
+
+    //region properties
+    //virtual property when a key is pressed
+    StringProperty keyPressed = register(new StringProperty(true, true, KeyPressedKey));
+    //endregion
 
     //construct Ship out of ShipDef (public constructor)
     public Ship(ShipDef def, SpaceSimulation spaceSimulation) {
@@ -85,24 +94,31 @@ public class Ship extends Group implements ExternalPropertyHandler {
         //init the externalProperties
         this.initProperties(oldShip.getProperties().values());
         //set the components
-        this.components = components;
+        this.components = new ArrayList<>(components.size());
         //init the map
         componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];
         for (Component component : components) {
-            addToMap(component);
+            addComponent(component);
+            component.setShip(this);
         }
     }
 
-    void createComponent(ComponentDef comDef, Map<String, MethodStatement> methods) {
+    private void createComponent(ComponentDef comDef, Map<String, MethodStatement> methods) {
         Component component = comDef.createComponent(this);
         component.initProperties(comDef.properties.values(), methods);
         //this also creates the fixtures
-        components.add(component);
+        addComponent(component);
         addActor(component);
-        addToMap(component);
     }
 
-    void addToMap(Component component) {
+    /**
+     * adds a Component to this ship
+     * handles Actor.addActor, components, componentsMap
+     * @param component the Component to add
+     */
+    private void addComponent(Component component) {
+        components.add(component);
+        addActor(component);
         ComponentDef comDef = component.getComponentDef();
         //add to map
         for (int _x = comDef.getX(); _x < (comDef.getX() + comDef.getRealWidth()); _x++){
@@ -112,10 +128,29 @@ public class Ship extends Group implements ExternalPropertyHandler {
         }
     }
 
-    //destroy a component (called by a component if it health 0)
-    //check structural integrity afterwards
-    void destroyComponent(Component component){
+    /**
+     * removes a Component from this ship
+     * handles Actor.removeActor, components, componentsMap
+     * @param component the Component to add
+     */
+    private void removeComponent(Component component) {
         components.remove(component);
+        removeActor(component);
+        //remove from map
+        ComponentDef comDef = component.getComponentDef();
+        for (int _x = comDef.getX(); _x < (comDef.getX() + comDef.getRealWidth()); _x++){
+            for (int _y = comDef.getY(); _y < (comDef.getY() + comDef.getRealHeight()); _y++){
+                componentsMap[_x][_y] = null;
+            }
+        }
+    }
+
+    /**
+     * removes a component and performs a structure check if necessary
+     * @param component the Component to destroy
+     */
+    void destroyComponent(Component component){
+        removeComponent(component);
         isStructureCheckNecessary = true;
     }
 
@@ -124,16 +159,11 @@ public class Ship extends Group implements ExternalPropertyHandler {
         checkStructureRec(components.get(0));
         List<Component> otherComponents = components.stream().filter(com -> !com.structureHelper).collect(Collectors.toList());
         //remove other components
-        components.removeAll(otherComponents);
-       for (int x = 0; x < ShipDef.MAX_SIZE; x++) {
-           for (int y = 0; y < ShipDef.MAX_SIZE; y++) {
-               if (componentsMap[x][y] != null && !componentsMap[x][y].structureHelper) componentsMap[x][y] = null;
-           }
-       }
-       //reset remaining
-       components.forEach(component -> component.structureHelper = false);
-       //create new ship
-       spaceSimulation.addShip(new Ship(this, otherComponents));
+        components.stream().filter(component -> !component.structureHelper).forEach(this::removeComponent);
+        //reset remaining
+        components.forEach(component -> component.structureHelper = false);
+        //create new ship
+        spaceSimulation.addShip(new Ship(this, otherComponents));
     }
 
     //checks the structure recursive (helper for checkStructure())

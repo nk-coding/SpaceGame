@@ -2,10 +2,15 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.nkcoding.interpreter.compiler.DataTypes;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static com.nkcoding.spacegame.spaceship.Ship.*;
+import static com.nkcoding.spacegame.spaceship.ExternalPropertyData.*;
 
 public class ShipDef {
     public class ShipDesignerHelper{
@@ -159,6 +164,15 @@ public class ShipDef {
         return designerHelper;
     }
 
+    /**HashMap with all the ExternalPropertyData*/
+    public final LinkedHashMap<String, ExternalPropertyData> properties = new LinkedHashMap<>();
+
+    //the main Constructor
+    public ShipDef() {
+        //add all the properties
+        properties.put(KeyPressedKey, of(KeyPressedKey, DataTypes.String));
+    }
+
     /**
      * get the component with the name name
      * @param name case sensitive name of the component
@@ -191,7 +205,7 @@ public class ShipDef {
             ComponentDef nameDef = getComponent(name);
             return nameDef == null || nameDef == def;
         }
-        else return false;
+        else return def == null;
     }
 
     /**
@@ -221,6 +235,14 @@ public class ShipDef {
         json.writeValue("code", code);
         json.writeValue("name", name);
         json.writeValue("validated", validated);
+
+        ///write all the properties
+        json.writeArrayStart("properties");
+        for (Map.Entry<String, ExternalPropertyData> entry : properties.entrySet()) {
+            entry.getValue().toJson(json, entry.getKey());
+        }
+        json.writeArrayEnd();
+
         json.writeObjectEnd();
     }
 
@@ -234,6 +256,14 @@ public class ShipDef {
         shipDef.code = value.getString("code");
         shipDef.name = value.getString("name");
         shipDef.validated = value.getBoolean("validated");
+
+        //init all properties
+        for (JsonValue propertyValue : value.get("properties")) {
+            ExternalPropertyData data = shipDef.properties.get(propertyValue.getString("key"));
+            if (!data.readonly) data.initData = propertyValue.getString("initData");
+            data.handlerName = propertyValue.getString("handlerName");
+        }
+
         return shipDef;
     }
 

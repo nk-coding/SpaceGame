@@ -452,9 +452,7 @@ public class ShipBuilderScreen implements Screen {
         //endregion
 
         parse(true);
-
-        //just some debugging
-        shipRootTable.setDebug(false, true);
+        selectedComponentChanged(null, null);
     }
 
     //helper method to add all components to the componentsStack
@@ -464,7 +462,9 @@ public class ShipBuilderScreen implements Screen {
             Image img = new Image(assetManager.getTexture(type.previewImg));
 
             img.setUserObject(type);
-            componentsStack.add(img).width(ShipDesigner.COMPONENT_SIZE * type.width).height(ShipDesigner.COMPONENT_SIZE * type.height).pad(10, 10, 0, 10).top().left();
+            componentsStack.add(img).width(ShipDesigner.COMPONENT_SIZE * type.width)
+                    .height(ShipDesigner.COMPONENT_SIZE * type.height)
+                    .pad(10, 10, 0, 10).top().left();
             componentsStack.row();
         }
     }
@@ -481,8 +481,7 @@ public class ShipBuilderScreen implements Screen {
             rotateButton.setVisible(true);
         }
         else {
-            //TODO implementation ship properties
-            properties = new LinkedHashMap<>();
+            properties = shipDef.properties;
             nameTextField.setText(shipDef.getName());
             componentNameLabel.setText("Ship");
             rotateButton.setVisible(false);
