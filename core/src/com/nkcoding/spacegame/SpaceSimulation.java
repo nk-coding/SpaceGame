@@ -1,69 +1,105 @@
 package com.nkcoding.spacegame;
 
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.interpreter.compiler.DataTypes;
-import com.nkcoding.spacegame.spaceship.Component;
 import com.nkcoding.spacegame.spaceship.ExternalPropertyHandler;
-import com.nkcoding.spacegame.spaceship.Ship;
+import com.nkcoding.spacegame.spaceship.Simulated;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
-public class SpaceSimulation{
+public class SpaceSimulation implements InputProcessor {
     public static final float SCALE_FACTOR = 350f;
 
-    //list with all ships
-    private ArrayList<Ship> ships = new ArrayList<>();
+    //list with all simulateds
+    private final ArrayList<Simulated> simulateds = new ArrayList<>();
+
+    //list with all simulated that receive key events
+    private final ArrayList<Simulated> keyHandlers = new ArrayList<>();
+
+    //map with all objects that can receive futures
+    private final HashMap<String, ExternalPropertyHandler> propertyHandlers = new HashMap<>();
 
     //handles all the ExternalPropertyHandlers
-    private ScriptingEngine scriptingEngine;
+    private final ScriptingEngine scriptingEngine;
 
     public ScriptingEngine getScriptingEngine() {
         return scriptingEngine;
     }
 
-    //map with all objects that can receive futures
-    private HashMap<String, ExternalPropertyHandler> propertyHandlers = new HashMap<>();
+    //AssetManager to load the resources
+    private final ExtAssetManager assetManager;
+
+    public ExtAssetManager getAssetManager() {
+        return assetManager;
+    }
+
+    //World for Box2D
+    //this is the physics simulation
+    private final World world;
+
+    public World getWorld() {
+        return world;
+    }
 
     //constructor
-    public SpaceSimulation() {
+    public SpaceSimulation(SpaceGame spaceGame) {
+        //set Batch and assetManager
+        assetManager = spaceGame.getAssetManager();
         //init scriptingEngine
         scriptingEngine = new ScriptingEngine();
+        //init the world
+        world = new World(new Vector2(0, 0), true);
+        //TODO set contact listeners
     }
 
-    /**add a ship
-     * @param ship the Ship to add
+    /**add a simulated
+     * @param simulated the Simulated to add
      */
-    public void addShip(Ship ship) {
-        ships.add(ship);
-        propertyHandlers.put(ship.getName(), ship);
-        for (Actor child : ship.getChildren()) {
-            if (child instanceof ExternalPropertyHandler) {
-                ExternalPropertyHandler handler = (ExternalPropertyHandler)child;
-                propertyHandlers.put(handler.getName(), handler);
-            }
+    public void addSimulated(Simulated simulated) {
+        simulateds.add(simulated);
+    }
+
+    /**remove a simulated
+     * @param simulated the Simulated to remove
+     */
+    public void removeSimulated(Simulated simulated) {
+        simulateds.remove(simulated);
+    }
+
+    /**
+     * adds a ExternalPropertyHandler
+     * @param handler the handler to add
+     */
+    public void addExternalPropertyHandler(ExternalPropertyHandler handler) {
+        propertyHandlers.put(handler.getName(), handler);
+    }
+
+    /**
+     * removes an ExternalPropertyHandler
+     * @param handler the handler to remove
+     */
+    public void removeExternalPropertyHandler(ExternalPropertyHandler handler) {
+        propertyHandlers.remove(handler.getName());
+    }
+
+    public void updateReceivesKeyInput(Simulated simulated) {
+        if (simulated.isReceivesKeyInput()) {
+            keyHandlers.add(simulated);
+        }
+        else {
+            keyHandlers.remove(simulated);
         }
     }
 
-    /**remove a ship
-     * @param ship the Ship to remove
-     */
-    public void removeShip(Ship ship) {
-        ships.remove(ship);
-        propertyHandlers.remove(ship.getName());
-        for (Actor child : ship.getChildren()) {
-            if (child instanceof ExternalPropertyHandler) {
-                ExternalPropertyHandler handler = (ExternalPropertyHandler)child;
-                propertyHandlers.remove(handler.getName());
-            }
-        }
-    }
 
-
-    //calls act on all ships
+    //calls act on all simulateds
     //deals with ExternalMethodFutures
     public void act(float time) {
         //handle all external Methods
@@ -73,7 +109,7 @@ public class SpaceSimulation{
             if (handler != null) {
                 handler.handleExternalMethod(future);
             }
-            //complete future manually if none of the ships completed it
+            //complete future manually if none of the simulateds completed it
             if (!future.isDone()) {
                 System.out.println("no module completed " + future.toString());
                 switch (future.getType()) {
@@ -97,15 +133,66 @@ public class SpaceSimulation{
                 }
             }
         }
-        for (Ship ship : ships) {
-            //call act on ships
-            ship.act(time);
+        //call step on the world
+        world.step(time, 6, 2);
+        for (Simulated simulated : simulateds) {
+            //call act on simulateds
+            simulated.act(time);
         }
     }
 
-    //implementation for Simulated
     public void draw(SpriteBatch batch) {
-        //draw ships
-        //TODO
+        //draw simulateds
+        for (Simulated simulated : simulateds) simulated.draw(batch);
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        Iterator<Simulated> iter = keyHandlers.iterator();
+        boolean handled = false;
+        while (iter.hasNext() && !handled) {
+            handled = iter.next().keyDown(keycode);
+        }
+        return handled;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        Iterator<Simulated> iter = keyHandlers.iterator();
+        boolean handled = false;
+        while (iter.hasNext() && !handled) {
+            handled = iter.next().keyUp(keycode);
+        }
+        return handled;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
     }
 }

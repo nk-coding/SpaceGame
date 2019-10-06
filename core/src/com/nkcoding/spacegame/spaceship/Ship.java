@@ -1,18 +1,19 @@
 package com.nkcoding.spacegame.spaceship;
 
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.compiler.CompileException;
-import com.nkcoding.spacegame.SpaceSimulation;
 import com.nkcoding.interpreter.compiler.Compiler;
+import com.nkcoding.spacegame.SpaceSimulation;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Ship extends Group implements ExternalPropertyHandler {
+public class Ship extends Simulated implements ExternalPropertyHandler {
     //region keys for the properties
-    public static final String KeyPressedKey = "KeyPressed";
+    public static final String KeyDownKey = "KeyDown";
+    public static final String KeyUpKey = "KeyUp";
     //endregion
 
     private HashMap<String, ExternalProperty> properties = new HashMap<>();
@@ -20,13 +21,6 @@ public class Ship extends Group implements ExternalPropertyHandler {
     @Override
     public Map<String, ExternalProperty> getProperties() {
         return properties;
-    }
-
-    //the body which represents the Ship in box2d
-    private Body body;
-
-    public  Body getBody(){
-        return body;
     }
 
     //the list of components which compose the ship
@@ -44,23 +38,27 @@ public class Ship extends Group implements ExternalPropertyHandler {
     //is a structure check necessary
     private boolean isStructureCheckNecessary = true;
 
-    //the simulation which handles this ship
-    private SpaceSimulation spaceSimulation;
+    //the name
+    private String name;
 
-    public SpaceSimulation getSpaceSimulation() {
-        return spaceSimulation;
+    @Override
+    public String getName() {
+        return name;
     }
 
     //region properties
     //virtual property when a key is pressed
-    StringProperty keyPressed = register(new StringProperty(true, true, KeyPressedKey));
+    public final StringProperty keyDown = register(new StringProperty(true, true, KeyDownKey));
+    //virtual property when key is released
+    public final StringProperty keyUp = register(new StringProperty(true, true, KeyUpKey));
     //endregion
 
     //construct Ship out of ShipDef (public constructor)
     public Ship(ShipDef def, SpaceSimulation spaceSimulation) {
+        super(spaceSimulation);
         if (!def.getValidated()) throw new IllegalArgumentException("shipDef is not validated");
-        //set simulation
-        this.spaceSimulation = spaceSimulation;
+        //receives key inputs
+        setReceivesKeyInput(true);
         //compile the script
         Compiler compiler = new Compiler(def.code);
         MethodStatement[] statements = null;
@@ -87,9 +85,10 @@ public class Ship extends Group implements ExternalPropertyHandler {
     //package-private constructor to construct Ship out of components (used to split up a ship)
     //pass other ship to copy important stuff (external method stuff etc.)
     Ship(Ship oldShip, List<Component> components) {
+        super(oldShip.getSpaceSimulation());
+        //receives key inputs
+        setReceivesKeyInput(true);
         //TODO implementation
-        //set space simulation
-        this.spaceSimulation = oldShip.getSpaceSimulation();
         //init the externalProperties
         this.initProperties(oldShip.getProperties().values());
         //set the components
@@ -116,33 +115,12 @@ public class Ship extends Group implements ExternalPropertyHandler {
     private void addComponent(Component component) {
         ComponentDef def = component.getComponentDef();
         components.add(component);
-        addActor(component);
+        getSpaceSimulation().addExternalPropertyHandler(component);
         //add to map
         for (int _x = def.getX(); _x < (def.getX() + def.getRealWidth()); _x++){
             for (int _y = def.getY(); _y < (def.getY() + def.getRealHeight()); _y++){
                 componentsMap[_x][_y] = component;
             }
-        }
-
-        //set position and rotation
-        component.setRotation(90 * def.getRotation());
-        switch(def.getRotation()) {
-            case 0:
-                component.setX(ShipDef.UNIT_SIZE * def.getX());
-                component.setY(ShipDef.UNIT_SIZE * def.getY());
-                break;
-            case 1:
-                component.setX(ShipDef.UNIT_SIZE * (def.getX() + def.getRealWidth()));
-                component.setY(ShipDef.UNIT_SIZE * def.getY());
-                break;
-            case 2:
-                component.setX(ShipDef.UNIT_SIZE * (def.getX() + def.getRealWidth()));
-                component.setY(ShipDef.UNIT_SIZE * (def.getY() + def.getRealHeight()));
-                break;
-            case 3:
-                component.setX(ShipDef.UNIT_SIZE * def.getX());
-                component.setY(ShipDef.UNIT_SIZE * (def.getY() + def.getRealHeight()));
-                break;
         }
     }
 
@@ -153,7 +131,7 @@ public class Ship extends Group implements ExternalPropertyHandler {
      */
     private void removeComponent(Component component) {
         components.remove(component);
-        removeActor(component);
+        getSpaceSimulation().removeExternalPropertyHandler(component);
         //remove from map
         ComponentDef comDef = component.getComponentDef();
         for (int _x = comDef.getX(); _x < (comDef.getX() + comDef.getRealWidth()); _x++){
@@ -181,7 +159,7 @@ public class Ship extends Group implements ExternalPropertyHandler {
         //reset remaining
         components.forEach(component -> component.structureHelper = false);
         //create new ship
-        spaceSimulation.addShip(new Ship(this, otherComponents));
+        getSpaceSimulation().addSimulated(new Ship(this, otherComponents));
     }
 
     //checks the structure recursive (helper for checkStructure())
@@ -232,6 +210,23 @@ public class Ship extends Group implements ExternalPropertyHandler {
     void invalidatePowerDelivery() {
         isPowerRequestDifferent = true;
     }
+
+    //endregion
+
+    //region key input
+
+    @Override
+    public boolean keyDown(int keycode) {
+        keyDown.set(Input.Keys.toString(keycode));
+        return true;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        keyUp.set(Input.Keys.toString(keycode));
+        return true;
+    }
+
 
     //endregion
 
@@ -313,7 +308,7 @@ public class Ship extends Group implements ExternalPropertyHandler {
         }
         //property changed
         for (ExternalProperty property : getProperties().values()) {
-            property.startChangedHandler(this.spaceSimulation.getScriptingEngine());
+            property.startChangedHandler(getSpaceSimulation().getScriptingEngine());
         }
         //call act on all components
         for (Component component : components) {
@@ -321,4 +316,9 @@ public class Ship extends Group implements ExternalPropertyHandler {
         }
     }
 
+    @Override
+    public void draw(Batch batch) {
+        super.draw(batch);
+        for (Component component : components) component.draw(batch);
+    }
 }

@@ -9,8 +9,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.nkcoding.spacegame.spaceship.Ship.*;
-import static com.nkcoding.spacegame.spaceship.ExternalPropertyData.*;
+import static com.nkcoding.spacegame.spaceship.ExternalPropertyData.of;
+import static com.nkcoding.spacegame.spaceship.Ship.KeyDownKey;
+import static com.nkcoding.spacegame.spaceship.Ship.KeyUpKey;
 
 public class ShipDef {
     public class ShipDesignerHelper{
@@ -170,7 +171,8 @@ public class ShipDef {
     //the main Constructor
     public ShipDef() {
         //add all the properties
-        properties.put(KeyPressedKey, of(KeyPressedKey, DataTypes.String));
+        properties.put(KeyDownKey, of(KeyDownKey, DataTypes.String));
+        properties.put(KeyUpKey, of(KeyUpKey, DataTypes.String));
     }
 
     /**

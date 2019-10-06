@@ -1,14 +1,16 @@
 package com.nkcoding.spacegame.spaceship;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.nkcoding.spacegame.ExtAssetManager;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Component extends Actor implements ExternalPropertyHandler {
+public abstract class Component implements ExternalPropertyHandler {
     
     //region names for the ExternalProperties
     public static final String HealthKey = "Health";
@@ -60,6 +62,11 @@ public abstract class Component extends Actor implements ExternalPropertyHandler
         //TODO other implementation stuff (probably graphical stuff)
     }
 
+    //get the ExtAssetManager
+    protected ExtAssetManager getAssetManager() {
+        return ship.getSpaceSimulation().getAssetManager();
+    }
+
     //helper to check structural integrity
     boolean structureHelper = false;
 
@@ -68,6 +75,12 @@ public abstract class Component extends Actor implements ExternalPropertyHandler
      * other fixtures could be added as fields if necessary by sublasses
      */
     protected Fixture borderFixture;
+
+    /**
+     * the default texture that will be drawn if draw is not overwritten
+     * uses the preview textures
+     */
+    protected Texture defaultTexture;
 
     //region properties
 
@@ -125,7 +138,7 @@ public abstract class Component extends Actor implements ExternalPropertyHandler
         this.type = componentDef.getType();
         this.componentDef = componentDef;
         setShip(ship);
-
+        defaultTexture = getAssetManager().getTexture(componentDef.getPreviewImage());
         //set health
         health.set(componentDef.getHealth());
     }
@@ -164,17 +177,45 @@ public abstract class Component extends Actor implements ExternalPropertyHandler
     }
 
 
-    @Override
     public void act(float delta) {
-        super.act(delta);
         for (ExternalProperty property : getProperties().values()) {
             property.startChangedHandler(ship.getSpaceSimulation().getScriptingEngine());
         }
     }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
+    //just a simple default draw implementation
+    public void draw(Batch batch) {
+        ComponentDef def = getComponentDef();
+        float rotation = 90 * def.getRotation();
+        float x = 0, y = 0;
+        switch(def.getRotation()) {
+            case 0:
+                x = ShipDef.UNIT_SIZE * def.getX();
+                y = ShipDef.UNIT_SIZE * def.getY();
+                break;
+            case 1:
+                x = ShipDef.UNIT_SIZE * (def.getX() + def.getRealWidth());
+                y = ShipDef.UNIT_SIZE * def.getY();
+                break;
+            case 2:
+                x = ShipDef.UNIT_SIZE * (def.getX() + def.getRealWidth());
+                y = ShipDef.UNIT_SIZE * (def.getY() + def.getRealHeight());
+                break;
+            case 3:
+                x = ShipDef.UNIT_SIZE * def.getX();
+                y = ShipDef.UNIT_SIZE * (def.getY() + def.getRealHeight());
+                break;
+        }
+        Vector2 drawPos = ship.localToWorldCoordinates(new Vector2(x, y));
+        batch.draw(defaultTexture,
+                drawPos.x, drawPos.y,
+                0, 0,
+                ShipDef.UNIT_SIZE * def.getWidth(), ShipDef.UNIT_SIZE * def.getHeight(),
+                1,1,
+                rotation + ship.getRotation() * MathUtils.radiansToDegrees,
+                0,0,
+                defaultTexture.getWidth(), defaultTexture.getHeight(),
+                false, false);
     }
 }
 
