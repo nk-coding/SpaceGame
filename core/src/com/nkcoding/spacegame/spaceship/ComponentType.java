@@ -65,7 +65,7 @@ public enum ComponentType {
      * @param rotated true if rotation == 90° || 270°
      * @return the PolygonShape representing this Component
      */
-    public PolygonShape getShape(boolean rotated) {
+    public PolygonShape getShape(boolean rotated, int posX, int posY) {
         //TODO
         if (shape == null) shape = new PolygonShape();
         if (rotated) {
