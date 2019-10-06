@@ -107,8 +107,17 @@ public class ComponentDef {
         }
     }
 
+    /**
+     * creates a component from the constructor in ComponentType
+     * sets height and width correctly
+     * @param ship the Ship of which the Component will be part of
+     * @return the new Component
+     */
     public Component createComponent(Ship ship) {
-        return componentType.constructor.apply(this, ship);
+        Component component = componentType.constructor.apply(this, ship);
+        component.setWidth(getWidth() * ShipDef.UNIT_SIZE);
+        component.setHeight(getHeight() * ShipDef.UNIT_SIZE);
+        return component;
     }
 
     public void initExternalProperty (ExternalProperty property) {

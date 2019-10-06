@@ -29,8 +29,6 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
     //helper
     private ShipDef.ShipDesignerHelper designerHelper;
 
-    //private int selectedComponentX = -1;
-    //private int selectedComponentY = -1;
     private ComponentDef selectedComponent;
 
     //region implementation of Zoomable
@@ -39,7 +37,6 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
     private int startDrawY = 0;
 
     public ComponentDef getSelectedComponent() {
-        //return (selectedComponentX >= 0 && selectedComponentY >= 0) ? designerHelper.getComponent(selectedComponentX, selectedComponentY) : null;
         return selectedComponent;
     }
 

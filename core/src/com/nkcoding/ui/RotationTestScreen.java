@@ -7,6 +7,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -26,7 +28,7 @@ public class RotationTestScreen implements Screen, InputProcessor {
         this.stage = new Stage(new ScreenViewport(), spaceGame.getBatch());
         assetManager = spaceGame.getAssetManager();
 
-        Gdx.input.setInputProcessor(this);
+        Gdx.input.setInputProcessor(stage);
 
         //new group with rotation
         mainGroup = new Group();
@@ -35,12 +37,20 @@ public class RotationTestScreen implements Screen, InputProcessor {
         image.setPosition(100, 100);
 
         Image image2 = new Image(assetManager.getDrawable(Asset.Badlogic));
+        image2.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                System.out.println("key down");
+                return super.keyDown(event, keycode);
+            }
+        });
         image.setSize(200,200);
         image.setPosition(300, 400);
 
         mainGroup.addActor(image);
         mainGroup.addActor(image2);
         stage.addActor(mainGroup);
+        stage.setKeyboardFocus(image2);
 
     }
 

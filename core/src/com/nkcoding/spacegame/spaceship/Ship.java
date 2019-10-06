@@ -4,7 +4,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.compiler.CompileException;
-import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.spacegame.SpaceSimulation;
 import com.nkcoding.interpreter.compiler.Compiler;
 
@@ -75,7 +74,7 @@ public class Ship extends Group implements ExternalPropertyHandler {
             methods.put(statement.getDefinition().getName(), statement);
         }
         //init the externalProperties
-        this.initProperties(null/*TODO*/, methods);
+        this.initProperties(def.properties.values(), methods);
         //init new list with all the components
         components = new ArrayList<>(def.componentDefs.size());
         //init the map
@@ -106,9 +105,7 @@ public class Ship extends Group implements ExternalPropertyHandler {
     private void createComponent(ComponentDef comDef, Map<String, MethodStatement> methods) {
         Component component = comDef.createComponent(this);
         component.initProperties(comDef.properties.values(), methods);
-        //this also creates the fixtures
         addComponent(component);
-        addActor(component);
     }
 
     /**
@@ -117,14 +114,35 @@ public class Ship extends Group implements ExternalPropertyHandler {
      * @param component the Component to add
      */
     private void addComponent(Component component) {
+        ComponentDef def = component.getComponentDef();
         components.add(component);
         addActor(component);
-        ComponentDef comDef = component.getComponentDef();
         //add to map
-        for (int _x = comDef.getX(); _x < (comDef.getX() + comDef.getRealWidth()); _x++){
-            for (int _y = comDef.getY(); _y < (comDef.getY() + comDef.getRealHeight()); _y++){
+        for (int _x = def.getX(); _x < (def.getX() + def.getRealWidth()); _x++){
+            for (int _y = def.getY(); _y < (def.getY() + def.getRealHeight()); _y++){
                 componentsMap[_x][_y] = component;
             }
+        }
+
+        //set position and rotation
+        component.setRotation(90 * def.getRotation());
+        switch(def.getRotation()) {
+            case 0:
+                component.setX(ShipDef.UNIT_SIZE * def.getX());
+                component.setY(ShipDef.UNIT_SIZE * def.getY());
+                break;
+            case 1:
+                component.setX(ShipDef.UNIT_SIZE * (def.getX() + def.getRealWidth()));
+                component.setY(ShipDef.UNIT_SIZE * def.getY());
+                break;
+            case 2:
+                component.setX(ShipDef.UNIT_SIZE * (def.getX() + def.getRealWidth()));
+                component.setY(ShipDef.UNIT_SIZE * (def.getY() + def.getRealHeight()));
+                break;
+            case 3:
+                component.setX(ShipDef.UNIT_SIZE * def.getX());
+                component.setY(ShipDef.UNIT_SIZE * (def.getY() + def.getRealHeight()));
+                break;
         }
     }
 
