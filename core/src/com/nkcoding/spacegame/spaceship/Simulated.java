@@ -3,6 +3,7 @@ package com.nkcoding.spacegame.spaceship;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.nkcoding.spacegame.SpaceSimulation;
 
 public class Simulated {
@@ -21,10 +22,17 @@ public class Simulated {
     }
 
     //the body which is used in Box3D
-    protected Body body;
+    protected final Body body;
 
     public Body getBody() {
         return body;
+    }
+
+    //the type of this object
+    public final BodyDef.BodyType bodyType;
+
+    public BodyDef.BodyType getBodyType() {
+        return bodyType;
     }
 
     private boolean receivesKeyInput = false;
@@ -70,8 +78,20 @@ public class Simulated {
     }
 
     //the default constructor
-    protected Simulated(SpaceSimulation spaceSimulation) {
+    protected Simulated(SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType) {
         this.spaceSimulation = spaceSimulation;
+        this.bodyType = bodyType;
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = bodyType;
+        bodyDef.position.set(0, 0);
+        this.body = spaceSimulation.getWorld().createBody(bodyDef);
+    }
+
+    //the bigger constructor
+    protected Simulated(SpaceSimulation spaceSimulation, BodyDef bodyDef) {
+        this.spaceSimulation = spaceSimulation;
+        this.bodyType = bodyDef.type;
+        this.body = spaceSimulation.getWorld().createBody(bodyDef);
     }
 
     /**

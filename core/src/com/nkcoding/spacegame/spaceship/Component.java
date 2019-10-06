@@ -59,7 +59,6 @@ public abstract class Component implements ExternalPropertyHandler {
         if (ship != null) removeFixtures();
         this.ship = ship;
         addFixtures();
-        //TODO other implementation stuff (probably graphical stuff)
     }
 
     //get the ExtAssetManager
