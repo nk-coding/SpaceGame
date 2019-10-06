@@ -18,7 +18,7 @@ import java.util.function.BiConsumer;
 public class ShipDesigner extends Widget implements Zoomable, Disposable {
 
     //default size of a single component
-    static final float COMPONENT_SIZE = 50f;
+    public static final float COMPONENT_SIZE = 50f;
 
     //ShipDef that contains all ComponentDefs
     private ShipDef shipDef;

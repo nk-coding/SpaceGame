@@ -1,4 +1,4 @@
-package com.nkcoding.ui;
+package com.nkcoding.spacegame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -30,8 +30,12 @@ import com.nkcoding.spacegame.spaceship.ComponentDef;
 import com.nkcoding.spacegame.spaceship.ComponentType;
 import com.nkcoding.spacegame.spaceship.ExternalPropertyData;
 import com.nkcoding.spacegame.spaceship.ShipDef;
+import com.nkcoding.ui.*;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ShipBuilderScreen implements Screen {

@@ -1,9 +1,12 @@
 package com.nkcoding.spacegame;
 
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.SnapshotArray;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.interpreter.compiler.DataTypes;
@@ -18,7 +21,7 @@ public class SpaceSimulation implements InputProcessor {
     public static final float SCALE_FACTOR = 350f;
 
     //list with all simulateds
-    private final ArrayList<Simulated> simulateds = new ArrayList<>();
+    private final SnapshotArray<Simulated> simulateds = new SnapshotArray<>();
 
     //list with all simulated that receive key events
     private final ArrayList<Simulated> keyHandlers = new ArrayList<>();
@@ -40,6 +43,20 @@ public class SpaceSimulation implements InputProcessor {
         return assetManager;
     }
 
+    //camera to draw stuff correctly
+    private OrthographicCamera camera;
+
+    //Simulated that the camera should follow
+    private Simulated cameraSimulated;
+
+    public Simulated getCameraSimulated() {
+        return cameraSimulated;
+    }
+
+    public void setCameraSimulated(Simulated cameraSimulated) {
+        this.cameraSimulated = cameraSimulated;
+    }
+
     //World for Box2D
     //this is the physics simulation
     private final World world;
@@ -47,6 +64,9 @@ public class SpaceSimulation implements InputProcessor {
     public World getWorld() {
         return world;
     }
+
+    //debug renderer for box2d
+    private Box2DDebugRenderer debugRenderer;
 
     //constructor
     public SpaceSimulation(SpaceGame spaceGame) {
@@ -57,6 +77,9 @@ public class SpaceSimulation implements InputProcessor {
         //init the world
         world = new World(new Vector2(0, 0), true);
         //TODO set contact listeners
+        //init camera
+        this.camera = new OrthographicCamera();
+        debugRenderer = new Box2DDebugRenderer();
     }
 
     /**add a simulated
@@ -70,7 +93,7 @@ public class SpaceSimulation implements InputProcessor {
      * @param simulated the Simulated to remove
      */
     public void removeSimulated(Simulated simulated) {
-        simulateds.remove(simulated);
+        simulateds.removeValue(simulated, true);
     }
 
     /**
@@ -139,11 +162,31 @@ public class SpaceSimulation implements InputProcessor {
             //call act on simulateds
             simulated.act(time);
         }
+        //update the camera
+        updateCamera();
     }
 
-    public void draw(SpriteBatch batch) {
+    public void draw(Batch batch) {
+        //update the batch
+        batch.setProjectionMatrix(camera.combined);
+        debugRenderer.render(world, batch.getProjectionMatrix().cpy());
         //draw simulateds
-        for (Simulated simulated : simulateds) simulated.draw(batch);
+        //for (Simulated simulated : simulateds) simulated.draw(batch);
+    }
+
+    //called when the screen is resized
+    public void resize(int width, int height) {
+        camera.viewportWidth = 3f;
+        camera.viewportHeight = 3f * height/width;
+        camera.update();
+    }
+
+    //updates the camera
+    public void updateCamera() {
+        Vector2 position = cameraSimulated.getPosition();
+        camera.position.x = position.x;
+        camera.position.y = position.y;
+        camera.update();
     }
 
     @Override

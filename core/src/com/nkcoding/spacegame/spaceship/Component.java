@@ -56,8 +56,9 @@ public abstract class Component implements ExternalPropertyHandler {
     }
 
     void setShip(Ship ship){
-        if (ship != null) removeFixtures();
+        if (this.ship != null) removeFixtures();
         this.ship = ship;
+        System.out.println("set ship");
         addFixtures();
     }
 
@@ -150,8 +151,8 @@ public abstract class Component implements ExternalPropertyHandler {
      * do NOT remove the old fixtures
      */
     public void addFixtures() {
-        ComponentType type = componentDef.getType();
-        this.borderFixture = ship.getBody().createFixture(componentDef.getShape(),
+        ComponentDef def = getComponentDef();
+        this.borderFixture = ship.getBody().createFixture(componentDef.getShape(def.getX(), def.getY()),
                 type.mass * ShipDef.UNIT_SIZE * ShipDef.UNIT_SIZE / type.width / type.height);
     }
 
@@ -168,7 +169,9 @@ public abstract class Component implements ExternalPropertyHandler {
      * @param fixture the Fixture that should be removed
      */
     protected void removeFixture(Fixture fixture) {
-        getShip().getBody().destroyFixture(fixture);
+        if (fixture != null)
+            getShip().getBody().destroyFixture(fixture);
+        else System.out.println("this fixture should not be null");
     }
 
     private void destroy() {

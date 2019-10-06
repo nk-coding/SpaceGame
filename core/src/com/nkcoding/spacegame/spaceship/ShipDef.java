@@ -181,7 +181,8 @@ public class ShipDef {
      * @return the ComponentDef or null if it does not exist
      */
     public ComponentDef getComponent(String name) {
-        return componentDefs.stream().filter(def -> def.getName().equals(name)).findFirst().orElse(null);
+        if (name.equals("")) return null;
+        else return componentDefs.stream().filter(def -> def.getName().equals(name)).findFirst().orElse(null);
     }
 
     /**
@@ -202,7 +203,7 @@ public class ShipDef {
      * @return true if the name is not used or used by def
      */
     public boolean verifyComponentName(ComponentDef def, String name) {
-        if (!name.equals(this.name)) {
+        if (!name.equals(this.name) || this.name.equals("")) {
             if (name.equals("")) return true;
             ComponentDef nameDef = getComponent(name);
             return nameDef == null || nameDef == def;

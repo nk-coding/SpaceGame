@@ -12,6 +12,7 @@ public class  TestImp extends Component {
 
     @Override
     public void addFixtures() {
+        super.addFixtures();
         //TODO implementation
     }
 

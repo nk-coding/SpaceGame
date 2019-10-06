@@ -18,8 +18,7 @@ public enum ComponentType {
     //the height of the component
     public final int height;
 
-    private PolygonShape normalShape;
-    private PolygonShape rotatedShape;
+    private PolygonShape shape;
 
     //the start health
     //this should never be a negative value or zero
@@ -67,19 +66,11 @@ public enum ComponentType {
      * @return the PolygonShape representing this Component
      */
     public PolygonShape getShape(boolean rotated) {
+        //TODO
+        if (shape == null) shape = new PolygonShape();
         if (rotated) {
-            if (rotatedShape == null) {
-                rotatedShape = new PolygonShape();
-                rotatedShape.setAsBox(ShipDef.UNIT_SIZE * height, ShipDef.UNIT_SIZE * width);
-            }
-            return rotatedShape;
+
         }
-        else {
-            if (normalShape == null) {
-                normalShape = new PolygonShape();
-                normalShape.setAsBox(ShipDef.UNIT_SIZE * width, ShipDef.UNIT_SIZE * height);
-            }
-            return normalShape;
-        }
+        return shape;
     }
 }

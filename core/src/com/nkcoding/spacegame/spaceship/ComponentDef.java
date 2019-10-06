@@ -115,8 +115,6 @@ public class ComponentDef {
      */
     public Component createComponent(Ship ship) {
         Component component = componentType.constructor.apply(this, ship);
-        component.setWidth(getWidth() * ShipDef.UNIT_SIZE);
-        component.setHeight(getHeight() * ShipDef.UNIT_SIZE);
         return component;
     }
 
@@ -126,8 +124,8 @@ public class ComponentDef {
         //TODO implementation of changedMethodStatement probably with the SpaceSimulation's list of methods
     }
 
-    public PolygonShape getShape() {
-        return componentType.getShape(rotation % 2 == 1);
+    public PolygonShape getShape(int posX, int posY) {
+        return componentType.getShape(rotation % 2 == 1, posX, posY);
     }
 
     /**

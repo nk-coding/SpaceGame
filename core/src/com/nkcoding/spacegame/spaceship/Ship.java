@@ -2,6 +2,7 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Compiler;
@@ -55,7 +56,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
 
     //construct Ship out of ShipDef (public constructor)
     public Ship(ShipDef def, SpaceSimulation spaceSimulation) {
-        super(spaceSimulation);
+        super(spaceSimulation, BodyDef.BodyType.DynamicBody);
         if (!def.getValidated()) throw new IllegalArgumentException("shipDef is not validated");
         //receives key inputs
         setReceivesKeyInput(true);
@@ -85,7 +86,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     //package-private constructor to construct Ship out of components (used to split up a ship)
     //pass other ship to copy important stuff (external method stuff etc.)
     Ship(Ship oldShip, List<Component> components) {
-        super(oldShip.getSpaceSimulation());
+        super(oldShip.getSpaceSimulation(), BodyDef.BodyType.DynamicBody);
         //receives key inputs
         setReceivesKeyInput(true);
         //TODO implementation
@@ -155,11 +156,11 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         checkStructureRec(components.get(0));
         List<Component> otherComponents = components.stream().filter(com -> !com.structureHelper).collect(Collectors.toList());
         //remove other components
-        components.stream().filter(component -> !component.structureHelper).forEach(this::removeComponent);
+        components.removeAll(otherComponents);
         //reset remaining
         components.forEach(component -> component.structureHelper = false);
         //create new ship
-        getSpaceSimulation().addSimulated(new Ship(this, otherComponents));
+        if (otherComponents.size() > 0) getSpaceSimulation().addSimulated(new Ship(this, otherComponents));
     }
 
     //checks the structure recursive (helper for checkStructure())
@@ -171,15 +172,15 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         if (comDef.getX() > 0) {
             //there is a left side
             for (int y = comDef.getY(); y < (comDef.getY() + comDef.getRealHeight()); y++) {
-                Component nextComponent = componentsMap[comDef.getX()][y - 1];
+                Component nextComponent = componentsMap[comDef.getX() - 1][y];
                 if (nextComponent != null && !nextComponent.structureHelper) checkStructureRec(nextComponent);
             }
         }
-        //check top side
+        //check bottom side
         if (comDef.getY() > 0) {
             //there is a top side
             for (int x = comDef.getX(); x < (comDef.getX() + comDef.getRealWidth()); x++) {
-                Component nextComponent = componentsMap[x - 1][comDef.getY()];
+                Component nextComponent = componentsMap[x][comDef.getY() - 1];
                 if (nextComponent != null && !nextComponent.structureHelper) checkStructureRec(nextComponent);
             }
         }
@@ -187,15 +188,15 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         if (comDef.getX() < (ShipDef.MAX_SIZE - 1)) {
             //there is a right side
             for (int y = comDef.getY(); y < (comDef.getY() + comDef.getRealHeight()); y++) {
-                Component nextComponent = componentsMap[comDef.getX()][y + 1];
+                Component nextComponent = componentsMap[comDef.getX() + comDef.getRealWidth()][y];
                 if (nextComponent != null && !nextComponent.structureHelper) checkStructureRec(nextComponent);
             }
         }
-        //check bottom side
+        //check top side
         if (comDef.getY() < (ShipDef.MAX_SIZE - 1)) {
             //there is a bottom side
             for (int x = comDef.getX(); x < (comDef.getX() + comDef.getRealWidth()); x++) {
-                Component nextComponent = componentsMap[x + 1][comDef.getY()];
+                Component nextComponent = componentsMap[x][comDef.getY() + comDef.getRealHeight()];
                 if (nextComponent != null && !nextComponent.structureHelper) checkStructureRec(nextComponent);
             }
         }
@@ -237,6 +238,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         //check structure if necessary
         if (isStructureCheckNecessary) {
             checkStructure();
+            isStructureCheckNecessary = false;
         }
         //check if power level order is correct
         if (!isPowerLevelOrderCorrect) {
