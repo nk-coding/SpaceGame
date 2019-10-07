@@ -80,6 +80,7 @@ public class SpaceSimulation implements InputProcessor {
         //init camera
         this.camera = new OrthographicCamera();
         debugRenderer = new Box2DDebugRenderer();
+        debugRenderer.setDrawVelocities(true);
     }
 
     /**add a simulated
@@ -169,25 +170,25 @@ public class SpaceSimulation implements InputProcessor {
     public void draw(Batch batch) {
         //update the batch
         batch.setProjectionMatrix(camera.combined);
-        //debugRenderer.render(world, batch.getProjectionMatrix().cpy());
+        debugRenderer.render(world, batch.getProjectionMatrix().cpy());
         //draw simulateds
-        for (Simulated simulated : simulateds) simulated.draw(batch);
+        //for (Simulated simulated : simulateds) simulated.draw(batch);
     }
 
     //called when the screen is resized
     public void resize(int width, int height) {
 
-        camera.viewportWidth = 3f;
-        camera.viewportHeight = 3f * height/width;
+        camera.viewportWidth = 5f;
+        camera.viewportHeight = 5f * height/width;
         camera.update();
     }
 
     //updates the camera
     public void updateCamera() {
-        Vector2 position = cameraSimulated.getPosition();
-        camera.position.x = position.x;
-        camera.position.y = position.y;
-        camera.update();
+//        Vector2 position = cameraSimulated.getPosition();
+//        camera.position.x = position.x;
+//        camera.position.y = position.y;
+//        camera.update();
     }
 
     @Override

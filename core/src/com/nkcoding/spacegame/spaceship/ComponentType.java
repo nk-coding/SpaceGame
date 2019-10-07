@@ -71,7 +71,6 @@ public enum ComponentType {
      * @return the PolygonShape representing this Component
      */
     public PolygonShape getShape(boolean rotated, int posX, int posY) {
-        //TODO
         if (shape == null) shape = new PolygonShape();
         float w, h;
         if (rotated) {
@@ -83,7 +82,7 @@ public enum ComponentType {
             h = height;
         }
         shape.setAsBox(w * ShipDef.UNIT_SIZE / 2, h * ShipDef.UNIT_SIZE / 2,
-                new Vector2(ShipDef.UNIT_SIZE * (w / 2 + posX), ShipDef.UNIT_SIZE + (h / 2 + posY)),0);
+                new Vector2(ShipDef.UNIT_SIZE * (w / 2 + posX), ShipDef.UNIT_SIZE * (h / 2 + posY)),0);
         return shape;
     }
 }
