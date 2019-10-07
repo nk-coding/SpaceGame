@@ -170,16 +170,16 @@ public class SpaceSimulation implements InputProcessor {
     public void draw(Batch batch) {
         //update the batch
         batch.setProjectionMatrix(camera.combined);
-        debugRenderer.render(world, batch.getProjectionMatrix().cpy());
+        //debugRenderer.render(world, batch.getProjectionMatrix().cpy());
         //draw simulateds
-        //for (Simulated simulated : simulateds) simulated.draw(batch);
+        for (Simulated simulated : simulateds) simulated.draw(batch);
     }
 
     //called when the screen is resized
     public void resize(int width, int height) {
 
-        camera.viewportWidth = 5f;
-        camera.viewportHeight = 5f * height/width;
+        camera.viewportWidth = 10f;
+        camera.viewportHeight = 10f * height/width;
         camera.update();
     }
 

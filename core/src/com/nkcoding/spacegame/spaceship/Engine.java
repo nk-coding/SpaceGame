@@ -25,10 +25,6 @@ public class Engine extends Component {
         final Body body = getShip().getBody();
         Vector2 pos = localToWorld(new Vector2(ShipDef.UNIT_SIZE / 2f, 0));
         Vector2 force = body.getWorldVector(new Vector2(0, strength));
-        if (strength > 0) {
-            System.out.println(pos);
-            System.out.println(force);;
-        }
-        body.applyForce(force, localToWorld(pos), true);
+        body.applyForce(force, pos, true);
     }
 }
