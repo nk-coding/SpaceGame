@@ -25,13 +25,6 @@ public class StringProperty extends ExternalProperty<String> {
     }
 
     @Override
-    public void startChangedHandler(ScriptingEngine engine) {
-        if (notifyChanges && changed && getChangedMethodStatement() != null) {
-            engine.runMethod(getChangedMethodStatement(), value);
-        }
-    }
-
-    @Override
     public void setInitValue(String value) {
         this.value = value;
     }

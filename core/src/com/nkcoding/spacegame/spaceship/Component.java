@@ -58,7 +58,6 @@ public abstract class Component implements ExternalPropertyHandler {
     void setShip(Ship ship){
         if (this.ship != null) removeFixtures();
         this.ship = ship;
-        System.out.println("set ship");
         addFixtures();
     }
 
@@ -189,26 +188,8 @@ public abstract class Component implements ExternalPropertyHandler {
     public void draw(Batch batch) {
         ComponentDef def = getComponentDef();
         float rotation = 90 * def.getRotation();
-        float x = 0, y = 0;
-        switch(def.getRotation()) {
-            case 0:
-                x = ShipDef.UNIT_SIZE * def.getX();
-                y = ShipDef.UNIT_SIZE * def.getY();
-                break;
-            case 1:
-                x = ShipDef.UNIT_SIZE * (def.getX() + def.getRealWidth());
-                y = ShipDef.UNIT_SIZE * def.getY();
-                break;
-            case 2:
-                x = ShipDef.UNIT_SIZE * (def.getX() + def.getRealWidth());
-                y = ShipDef.UNIT_SIZE * (def.getY() + def.getRealHeight());
-                break;
-            case 3:
-                x = ShipDef.UNIT_SIZE * def.getX();
-                y = ShipDef.UNIT_SIZE * (def.getY() + def.getRealHeight());
-                break;
-        }
-        Vector2 drawPos = ship.localToWorldCoordinates(new Vector2(x, y));
+
+        Vector2 drawPos = localToWorld(new Vector2(0,0));
         batch.draw(defaultTexture,
                 drawPos.x, drawPos.y,
                 0, 0,
@@ -219,5 +200,37 @@ public abstract class Component implements ExternalPropertyHandler {
                 defaultTexture.getWidth(), defaultTexture.getHeight(),
                 false, false);
     }
+
+    /**
+     * transforms a local point to world point
+     * @param local Vector2 that is modified
+     * @return the modified Vector2
+     */
+    public Vector2 localToWorld(Vector2 local) {
+        final float x = local.x;
+        final float y = local.y;
+        ComponentDef def = getComponentDef();
+        switch(def.getRotation()) {
+            case 0:
+                local.x = ShipDef.UNIT_SIZE * def.getX() + x;
+                local.y = ShipDef.UNIT_SIZE * def.getY() + y;
+                break;
+            case 1:
+                local.x = ShipDef.UNIT_SIZE * (def.getX() + def.getRealWidth()) - y;
+                local.y = ShipDef.UNIT_SIZE * def.getY() + x;
+                break;
+            case 2:
+                local.x = ShipDef.UNIT_SIZE * (def.getX() + def.getRealWidth()) - x;
+                local.y = ShipDef.UNIT_SIZE * (def.getY() + def.getRealHeight()) - y;
+                break;
+            case 3:
+                local.x = ShipDef.UNIT_SIZE * def.getX() + y;
+                local.y = ShipDef.UNIT_SIZE * (def.getY() + def.getRealHeight()) - x;
+                break;
+        }
+        return ship.localToWorldCoordinates(local);
+    }
+
+
 }
 

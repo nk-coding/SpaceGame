@@ -131,50 +131,53 @@ public class Simulated {
 
     /**
      * transforms local coordinates to world coordinates
-     * @param localCoordinates the Vector2 that is modified
+     * @param local the Vector2 that is modified
      * @return the modified Vector2
      */
-    public Vector2 localToWorldCoordinates(Vector2 localCoordinates) {
-        final float rotation = getRotation();
-        final Vector2 position = getPosition();
-        final float x = position.x;
-        final float y = position.y;
-        if (rotation == 0) {
-            localCoordinates.x += x;
-            localCoordinates.y += y;
-        }
-        else {
-            final float toX = localCoordinates.x;
-            final float toY = localCoordinates.y;
-            localCoordinates.x = x + (toX * cos + toY * sin);
-            localCoordinates.y = y + (toX * -sin + toY * cos);
-        }
+    public Vector2 localToWorldCoordinates(Vector2 local) {
 
-        return localCoordinates;
+//        final float rotation = getRotation();
+//        final Vector2 position = getPosition();
+//        final float x = position.x;
+//        final float y = position.y;
+//        if (rotation == 0) {
+//            localCoordinates.x += x;
+//            localCoordinates.y += y;
+//        }
+//        else {
+//            final float toX = localCoordinates.x;
+//            final float toY = localCoordinates.y;
+//            localCoordinates.x = x + (toX * cos + toY * sin);
+//            localCoordinates.y = y + (toX * -sin + toY * cos);
+//        }
+//
+//        return localCoordinates;
+        return body.getWorldPoint(local);
     }
 
     /**
      * transforms world coordinates to local coordinates
-     * @param worldCoordinates the Vector2 that is modified
+     * @param world the Vector2 that is modified
      * @return the modified Vector2
      */
-    public Vector2 worldToLocalCoordinates(Vector2 worldCoordinates) {
-        final float rotation = getRotation();
-        final Vector2 position = getPosition();
-        final float x = position.x;
-        final float y = position.y;
-        if (rotation == 0) {
-            worldCoordinates.x -= x;
-            worldCoordinates.y -= y;
-        }
-        else {
-            final float toX = worldCoordinates.x - x;
-            final float toY = worldCoordinates.y - y;
-            worldCoordinates.x = (toX * cos + toY * sin);
-            worldCoordinates.y = (toX * -sin + toY * cos);
-        }
-
-        return worldCoordinates;
+    public Vector2 worldToLocalCoordinates(Vector2 world) {
+//        final float rotation = getRotation();
+//        final Vector2 position = getPosition();
+//        final float x = position.x;
+//        final float y = position.y;
+//        if (rotation == 0) {
+//            worldCoordinates.x -= x;
+//            worldCoordinates.y -= y;
+//        }
+//        else {
+//            final float toX = worldCoordinates.x - x;
+//            final float toY = worldCoordinates.y - y;
+//            worldCoordinates.x = (toX * cos + toY * sin);
+//            worldCoordinates.y = (toX * -sin + toY * cos);
+//        }
+//
+//        return worldCoordinates;
+        return body.getLocalPoint(world);
     }
 
 

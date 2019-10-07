@@ -26,6 +26,7 @@ public class GameScreen implements Screen {
         this.batch = spaceGame.getBatch();
         //create and init spaceSimulation
         this.spaceSimulation = new SpaceSimulation(spaceGame);
+        Gdx.input.setInputProcessor(spaceSimulation);
         this.shipDef = shipDef;
         Ship ship = new Ship(shipDef, spaceSimulation);
         spaceSimulation.addSimulated(ship);

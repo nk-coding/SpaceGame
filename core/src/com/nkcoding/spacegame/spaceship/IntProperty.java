@@ -20,13 +20,6 @@ public class IntProperty extends ExternalProperty<Integer> {
     }
 
     @Override
-    public void startChangedHandler(ScriptingEngine engine) {
-        if (notifyChanges && changed && getChangedMethodStatement() != null) {
-            engine.runMethod(getChangedMethodStatement(), value);
-        }
-    }
-
-    @Override
     public void setInitValue(String value) {
         try {
             this.value = Integer.parseInt(value);

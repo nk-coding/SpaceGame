@@ -129,8 +129,10 @@ public class ShipBuilderScreen implements Screen {
         ArrayList<MethodDefinition> methodDefinitions = new ArrayList<>();
         for (ExternalPropertyData data : externalPropertyDatas.values()) {
             data.addExternalMethodDefs(methodDefinitions);
+
         }
         //create the new compiler
+
         compiler = new Compiler(new String[0], methodDefinitions.toArray(MethodDefinition[]::new));
 
 

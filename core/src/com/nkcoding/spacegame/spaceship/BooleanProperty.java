@@ -19,12 +19,6 @@ public class BooleanProperty extends ExternalProperty<Boolean> {
         super(readonly, notifyChanges, name, DataTypes.Boolean);
     }
 
-    @Override
-    public void startChangedHandler(ScriptingEngine engine) {
-        if (notifyChanges && changed && getChangedMethodStatement() != null) {
-            engine.runMethod(getChangedMethodStatement(), value);
-        }
-    }
 
     @Override
     public void setInitValue(String value) {

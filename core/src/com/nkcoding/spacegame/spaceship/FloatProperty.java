@@ -20,13 +20,6 @@ public class FloatProperty extends ExternalProperty<Float> {
     }
 
     @Override
-    public void startChangedHandler(ScriptingEngine engine) {
-        if (notifyChanges && changed && getChangedMethodStatement() != null) {
-            engine.runMethod(getChangedMethodStatement(), value);
-        }
-    }
-
-    @Override
     public void setInitValue(String value) {
         try {
             this.value = Float.parseFloat(value);

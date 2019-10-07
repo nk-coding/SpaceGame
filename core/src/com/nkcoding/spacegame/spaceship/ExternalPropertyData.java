@@ -97,7 +97,10 @@ public class ExternalPropertyData {
     //adds the external method definitions the list
     public void addExternalMethodDefs(Collection<? super MethodDefinition> list) {
         list.add(createExternalMethodDef(true));
-        if (!readonly) list.add(createExternalMethodDef(false));
+        if (!readonly) {
+            System.out.println("add " + createExternalMethodDef(false));
+            list.add(createExternalMethodDef(false));
+        }
     }
 
     //helper for addExternalMethodDef
@@ -106,7 +109,9 @@ public class ExternalPropertyData {
             return new MethodDefinition(MethodType.External, "get" + name, type, new TypeNamePair("id", DataTypes.String));
         }
         else {
-            return new MethodDefinition(MethodType.External, "set" + name, DataTypes.Void, new TypeNamePair("value", type), new TypeNamePair("id", DataTypes.String));
+            return new MethodDefinition(MethodType.External, "set" + name, DataTypes.Void,
+                    new TypeNamePair("id", DataTypes.String),
+                    new TypeNamePair("value", type));
         }
     }
 

@@ -34,7 +34,12 @@ public abstract class ExternalProperty<T> {
         this.name = name;
     }
 
-    public abstract void startChangedHandler(ScriptingEngine engine);
+    public void startChangedHandler(ScriptingEngine engine) {
+        if (notifyChanges && changed && getChangedMethodStatement() != null) {
+            engine.runMethod(getChangedMethodStatement(), get2());
+            changed = false;
+        }
+    }
 
     public abstract void setInitValue(String value);
 
