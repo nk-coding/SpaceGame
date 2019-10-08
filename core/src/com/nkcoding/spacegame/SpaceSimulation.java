@@ -102,6 +102,7 @@ public class SpaceSimulation implements InputProcessor {
      * @param handler the handler to add
      */
     public void addExternalPropertyHandler(ExternalPropertyHandler handler) {
+        System.out.println("add handler: " + handler.getName() + ", " + handler.getClass());
         propertyHandlers.put(handler.getName(), handler);
     }
 

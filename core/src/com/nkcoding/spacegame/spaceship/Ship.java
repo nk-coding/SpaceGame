@@ -15,6 +15,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     //region keys for the properties
     public static final String KeyDownKey = "KeyDown";
     public static final String KeyUpKey = "KeyUp";
+    public static final String AngularVelocityKey = "AngularVelocity";
     //endregion
 
     private HashMap<String, ExternalProperty> properties = new HashMap<>();
@@ -52,16 +53,20 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     public final StringProperty keyDown = register(new StringProperty(true, true, KeyDownKey));
     //virtual property when key is released
     public final StringProperty keyUp = register(new StringProperty(true, true, KeyUpKey));
+    //wrapper for the angularRotation from Body
+    public final FloatProperty angularVelocity = register(new FloatProperty(true, true, AngularVelocityKey));
     //endregion
 
     //construct Ship out of ShipDef (public constructor)
     public Ship(ShipDef def, SpaceSimulation spaceSimulation) {
         super(spaceSimulation, BodyDef.BodyType.DynamicBody);
+        name = def.getName();
+        spaceSimulation.addExternalPropertyHandler(this);
         if (!def.getValidated()) throw new IllegalArgumentException("shipDef is not validated");
         //receives key inputs
         setReceivesKeyInput(true);
         //compile the script
-        Compiler compiler = new Compiler(def.code);
+        Compiler compiler = new Compiler(def.code, def);
         MethodStatement[] statements = null;
         try {
             statements = compiler.compile();
@@ -87,6 +92,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     //pass other ship to copy important stuff (external method stuff etc.)
     Ship(Ship oldShip, List<Component> components) {
         super(oldShip.getSpaceSimulation(), BodyDef.BodyType.DynamicBody);
+        getSpaceSimulation().addExternalPropertyHandler(this);
         //receives key inputs
         setReceivesKeyInput(true);
         //TODO implementation
@@ -260,68 +266,11 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         }
         //update the power stuff
         if (isPowerRequestDifferent) {
-            //update how much power each component
-            //check how much power is available
-            float availablePower = 0f;
-            for (Component component : components) {
-                //check if it consumes or delivers power
-                if (component.powerRequested.get() < 0) {
-                    availablePower -= component.powerRequested.get();
-                }
-            }
-            float startAvailablePower = availablePower;
-            //now check for every level how much power each individual component gets
-            int i = 0;
-            while (i < components.size()) {
-                //is power available?
-                if (availablePower > 0) {
-                    //there is power available
-                    int i0 = i;
-                    int level = components.get(i).requestLevel.get();
-                    float levelPowerRequest = 0f;
-                    //check how much power is necessary for this level
-                    while (i < components.size() && components.get(i).requestLevel.get() == level) {
-                        if (components.get(i).powerRequested.get() > 0)
-                            levelPowerRequest += components.get(i).powerRequested.get();
-                        i++;
-                    }
-                    //is enough power available
-                    if (levelPowerRequest <= availablePower) {
-                        //enough power is available
-                        availablePower -= levelPowerRequest;
-                        for (int x = i0; x < i; x++) {
-                            components.get(x).powerReceived.set(components.get(x).powerRequested.get());
-                        }
-                    }
-                    else {
-                        //not enough power is available
-                        float fac = levelPowerRequest / availablePower;
-                        availablePower = 0f;
-                        for (int x = i0; x < i; x++) {
-                            components.get(x).powerReceived.set(components.get(x).powerRequested.get() * fac);
-                        }
-                    }
-                }
-                else {
-                    //no power is available, set all to 0
-                    while (i < components.size()) {
-                        components.get(i).powerReceived.set(0f);
-                        i++;
-                    }
-                }
-
-            }
-            System.out.println("at end: " + availablePower);
-            //update the components which deliverPower
-            float fac = (startAvailablePower - availablePower) / availablePower;
-            for (Component component : components) {
-                //check if it consumes or delivers power
-                if (component.powerRequested.get() < 0) {
-                    component.powerReceived.set(component.powerRequested.get() * fac);
-                }
-            }
+            updatePowerDistribution();
             isPowerRequestDifferent = false;
         }
+        //update properties
+        angularVelocity.set(body.getAngularVelocity());
         //property changed
         for (ExternalProperty property : getProperties().values()) {
             property.startChangedHandler(getSpaceSimulation().getScriptingEngine());
@@ -329,6 +278,70 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         //call act on all components
         for (Component component : components) {
             component.act(time);
+        }
+    }
+
+    //sets powerReceived on all components
+    private void updatePowerDistribution() {
+        //update how much power each component
+        //check how much power is available
+        float availablePower = 0f;
+        for (Component component : components) {
+            //check if it consumes or delivers power
+            if (component.powerRequested.get() < 0) {
+                availablePower -= component.powerRequested.get();
+            }
+        }
+        float startAvailablePower = availablePower;
+        //now check for every level how much power each individual component gets
+        int i = 0;
+        while (i < components.size()) {
+            //is power available?
+            if (availablePower > 0) {
+                //there is power available
+                int i0 = i;
+                int level = components.get(i).requestLevel.get();
+                float levelPowerRequest = 0f;
+                //check how much power is necessary for this level
+                while (i < components.size() && components.get(i).requestLevel.get() == level) {
+                    if (components.get(i).powerRequested.get() > 0)
+                        levelPowerRequest += components.get(i).powerRequested.get();
+                    i++;
+                }
+                //is enough power available
+                if (levelPowerRequest <= availablePower) {
+                    //enough power is available
+                    availablePower -= levelPowerRequest;
+                    for (int x = i0; x < i; x++) {
+                        components.get(x).powerReceived.set(components.get(x).powerRequested.get());
+                    }
+                }
+                else {
+                    //not enough power is available
+                    float fac = levelPowerRequest / availablePower;
+                    availablePower = 0f;
+                    for (int x = i0; x < i; x++) {
+                        components.get(x).powerReceived.set(components.get(x).powerRequested.get() * fac);
+                    }
+                }
+            }
+            else {
+                //no power is available, set all to 0
+                while (i < components.size()) {
+                    components.get(i).powerReceived.set(0f);
+                    i++;
+                }
+            }
+
+        }
+        System.out.println("at end: " + availablePower);
+        //update the components which deliverPower
+        float fac = (startAvailablePower - availablePower) / availablePower;
+        for (Component component : components) {
+            //check if it consumes or delivers power
+            if (component.powerRequested.get() < 0) {
+                component.powerReceived.set(component.powerRequested.get() * fac);
+            }
         }
     }
 

@@ -4,6 +4,7 @@ import com.nkcoding.interpreter.*;
 import com.nkcoding.interpreter.operators.*;
 import com.nkcoding.spacegame.spaceship.ComponentType;
 import com.nkcoding.spacegame.spaceship.ExternalPropertyData;
+import com.nkcoding.spacegame.spaceship.ShipDef;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +32,7 @@ public class Compiler {
     }
 
     //constructor with default methods
-    public Compiler(String text) {
+    public Compiler(String text, ShipDef def) {
         //create the external method statements for the components
         HashMap<String, ExternalPropertyData> externalPropertyDatas = new HashMap<>();
         for(ComponentType com : ComponentType.values()) {
@@ -39,6 +40,12 @@ public class Compiler {
                 if (!externalPropertyDatas.containsKey(data.name)) {
                     externalPropertyDatas.put(data.name, data);
                 }
+            }
+        }
+        //add from Ship
+        for (ExternalPropertyData data : def.properties.values()) {
+            if (!externalPropertyDatas.containsKey(data.name)) {
+                externalPropertyDatas.put(data.name, data);
             }
         }
         ArrayList<MethodDefinition> methodDefinitions = new ArrayList<>();

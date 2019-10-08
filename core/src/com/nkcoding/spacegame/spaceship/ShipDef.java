@@ -10,8 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.nkcoding.spacegame.spaceship.ExternalPropertyData.of;
-import static com.nkcoding.spacegame.spaceship.Ship.KeyDownKey;
-import static com.nkcoding.spacegame.spaceship.Ship.KeyUpKey;
+import static com.nkcoding.spacegame.spaceship.Ship.*;
 
 public class ShipDef {
     public class ShipDesignerHelper{
@@ -173,6 +172,7 @@ public class ShipDef {
         //add all the properties
         properties.put(KeyDownKey, of(KeyDownKey, DataTypes.String));
         properties.put(KeyUpKey, of(KeyUpKey, DataTypes.String));
+        properties.put(AngularVelocityKey, of(AngularVelocityKey, DataTypes.Float));
     }
 
     /**

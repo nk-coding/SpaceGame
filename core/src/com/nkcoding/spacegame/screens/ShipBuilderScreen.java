@@ -32,10 +32,7 @@ import com.nkcoding.spacegame.spaceship.ExternalPropertyData;
 import com.nkcoding.spacegame.spaceship.ShipDef;
 import com.nkcoding.ui.*;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 public class ShipBuilderScreen implements Screen {
@@ -118,22 +115,22 @@ public class ShipBuilderScreen implements Screen {
         this.shipDef = shipDef;
         //create new compiler
         //create the external method statements for the components
-        HashMap<String, ExternalPropertyData> externalPropertyDatas = new HashMap<>();
-        for(ComponentType com : ComponentType.values()) {
-            for(ExternalPropertyData data : com.propertyDefs) {
-                if (!externalPropertyDatas.containsKey(data.name)) {
-                    externalPropertyDatas.put(data.name, data);
-                }
-            }
-        }
-        ArrayList<MethodDefinition> methodDefinitions = new ArrayList<>();
-        for (ExternalPropertyData data : externalPropertyDatas.values()) {
-            data.addExternalMethodDefs(methodDefinitions);
-
-        }
-        //create the new compiler
-
-        compiler = new Compiler(new String[0], methodDefinitions.toArray(MethodDefinition[]::new));
+//        HashMap<String, ExternalPropertyData> externalPropertyDatas = new HashMap<>();
+//        for(ComponentType com : ComponentType.values()) {
+//            for(ExternalPropertyData data : com.propertyDefs) {
+//                if (!externalPropertyDatas.containsKey(data.name)) {
+//                    externalPropertyDatas.put(data.name, data);
+//                }
+//            }
+//        }
+//        ArrayList<MethodDefinition> methodDefinitions = new ArrayList<>();
+//        for (ExternalPropertyData data : externalPropertyDatas.values()) {
+//            data.addExternalMethodDefs(methodDefinitions);
+//
+//        }
+//        //create the new compiler
+//        System.out.println(Arrays.toString(methodDefinitions.toArray(MethodDefinition[]::new)));
+        compiler = new Compiler("", shipDef);
 
 
         this.spaceGame = spaceGame;
