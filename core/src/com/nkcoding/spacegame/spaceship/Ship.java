@@ -95,7 +95,6 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         getSpaceSimulation().addExternalPropertyHandler(this);
         //receives key inputs
         setReceivesKeyInput(true);
-        //TODO implementation
         //init the externalProperties
         this.initProperties(oldShip.getProperties().values());
         //set the components
@@ -334,7 +333,6 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
             }
 
         }
-        System.out.println("at end: " + availablePower);
         //update the components which deliverPower
         float fac = (startAvailablePower - availablePower) / availablePower;
         for (Component component : components) {

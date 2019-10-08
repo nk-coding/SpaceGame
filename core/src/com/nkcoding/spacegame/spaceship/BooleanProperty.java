@@ -11,7 +11,7 @@ public class BooleanProperty extends ExternalProperty<Boolean> {
     }
 
     public void set(boolean value) {
-        this.value = value;
+        if (this.value != value) changed = true;
         changed = true;
     }
 
@@ -27,8 +27,8 @@ public class BooleanProperty extends ExternalProperty<Boolean> {
 
     @Override
     public void set(Boolean value) {
+        if (this.value != value) changed = true;
         this.value = value;
-        changed = true;
     }
 
     @Override

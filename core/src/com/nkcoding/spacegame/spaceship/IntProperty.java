@@ -11,8 +11,8 @@ public class IntProperty extends ExternalProperty<Integer> {
     }
 
     public void set(int value) {
+        if (this.value != value) changed = true;
         this.value = value;
-        changed = true;
     }
 
     public IntProperty(boolean readonly, boolean notifyChanges, String name) {
@@ -31,8 +31,8 @@ public class IntProperty extends ExternalProperty<Integer> {
 
     @Override
     public void set(Integer value) {
+        if (this.value != value) changed = true;
         this.value = value;
-        changed = true;
     }
 
     @Override

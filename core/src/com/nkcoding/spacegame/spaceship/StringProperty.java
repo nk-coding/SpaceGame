@@ -1,6 +1,5 @@
 package com.nkcoding.spacegame.spaceship;
 
-import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.interpreter.compiler.DataTypes;
 
 public class StringProperty extends ExternalProperty<String> {
@@ -11,8 +10,8 @@ public class StringProperty extends ExternalProperty<String> {
     }
 
     public void set(String value) {
+        if (this.value.equals(value)) changed = true;
         this.value = value;
-        changed = true;
     }
 
     @Override

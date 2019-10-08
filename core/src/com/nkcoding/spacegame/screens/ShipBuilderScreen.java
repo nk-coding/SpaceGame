@@ -114,22 +114,6 @@ public class ShipBuilderScreen implements Screen {
     public ShipBuilderScreen(SpaceGame spaceGame, ShipDef shipDef) {
         this.shipDef = shipDef;
         //create new compiler
-        //create the external method statements for the components
-//        HashMap<String, ExternalPropertyData> externalPropertyDatas = new HashMap<>();
-//        for(ComponentType com : ComponentType.values()) {
-//            for(ExternalPropertyData data : com.propertyDefs) {
-//                if (!externalPropertyDatas.containsKey(data.name)) {
-//                    externalPropertyDatas.put(data.name, data);
-//                }
-//            }
-//        }
-//        ArrayList<MethodDefinition> methodDefinitions = new ArrayList<>();
-//        for (ExternalPropertyData data : externalPropertyDatas.values()) {
-//            data.addExternalMethodDefs(methodDefinitions);
-//
-//        }
-//        //create the new compiler
-//        System.out.println(Arrays.toString(methodDefinitions.toArray(MethodDefinition[]::new)));
         compiler = new Compiler("", shipDef);
 
 
