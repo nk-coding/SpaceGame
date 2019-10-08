@@ -21,6 +21,11 @@ public class Engine extends Component {
         applyForce(enginePower / 100f);
     }
 
+    @Override
+    protected boolean attachComponentAt(int x, int y, int side) {
+        return y == 1;
+    }
+
     public void applyForce(float strength){
         final Body body = getShip().getBody();
         Vector2 pos = localToWorld(new Vector2(ShipDef.UNIT_SIZE / 2f, 0));

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.utils.Align;
 import com.nkcoding.spacegame.ExtAssetManager;
 
 import java.util.HashMap;
@@ -19,6 +20,12 @@ public abstract class Component implements ExternalPropertyHandler {
     public static final String HasFullPowerKey = "HasFullPower";
     public static final String PowerReceivedKey = "PowerReceived";
     //endregion
+
+    //region sides
+    public static final int topSide = 0;
+    public static final int leftSide = 1;
+    public static final int bottomSide = 2;
+    public static final int rightSide = 3;
 
 
     private HashMap<String, ExternalProperty> properties = new HashMap<>();
@@ -184,6 +191,45 @@ public abstract class Component implements ExternalPropertyHandler {
         }
     }
 
+    /**
+     * tries to attach another Component at the specified position
+     * returns true, but can be overwritten by subclasses to implement new behavior
+     * do NOT call this direc
+     * @param x x pos of the attachment
+     * @param y y pos of the attachment
+     * @param side align of the attachment
+     * @return true if the component is allowed to attach
+     */
+    protected boolean attachComponentAt(int x, int y, int side) {
+        return true;
+    }
+
+    /**
+     * tries to attach another Component at the specified position
+     * calls attachComponentAt and calculates rotation
+     * @param x x pos of the attachment
+     * @param y y pos of the attachment
+     * @param side align of the attachment
+     * @return true if the component is allowed to attach
+     */
+    public final boolean attachComponentAtRaw(int x, int y, int side) {
+        final ComponentDef def = getComponentDef();
+        x -= def.getX();
+        y -= def.getY();
+        switch (def.getRotation()) {
+            case 0:
+                return attachComponentAt(x,y,side);
+            case 1:
+                return attachComponentAt(y, def.getHeight() - x, (side + 3) % 4);
+            case 2:
+                return attachComponentAt(def.getWidth() - x, def.getHeight() - y, (side + 2) % 4);
+            case 3:
+                return attachComponentAt(def.getHeight() - y, x, (side + 1) % 4);
+            default:
+                throw new IllegalArgumentException("side must be between 0 and 3");
+        }
+    }
+
     //just a simple default draw implementation
     public void draw(Batch batch) {
         ComponentDef def = getComponentDef();
@@ -230,7 +276,6 @@ public abstract class Component implements ExternalPropertyHandler {
         }
         return ship.localToWorldCoordinates(local);
     }
-
 
 }
 

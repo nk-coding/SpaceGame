@@ -173,7 +173,10 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
             //there is a left side
             for (int y = comDef.getY(); y < (comDef.getY() + comDef.getRealHeight()); y++) {
                 Component nextComponent = componentsMap[comDef.getX() - 1][y];
-                if (nextComponent != null && !nextComponent.structureHelper) checkStructureRec(nextComponent);
+                if (nextComponent != null && !nextComponent.structureHelper &&
+                nextComponent.attachComponentAtRaw(comDef.getX() - 1, y, Component.rightSide) &&
+                component.attachComponentAtRaw(comDef.getX(), y, Component.leftSide))
+                    checkStructureRec(nextComponent);
             }
         }
         //check bottom side
@@ -181,7 +184,10 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
             //there is a top side
             for (int x = comDef.getX(); x < (comDef.getX() + comDef.getRealWidth()); x++) {
                 Component nextComponent = componentsMap[x][comDef.getY() - 1];
-                if (nextComponent != null && !nextComponent.structureHelper) checkStructureRec(nextComponent);
+                if (nextComponent != null && !nextComponent.structureHelper &&
+                nextComponent.attachComponentAtRaw(x, comDef.getY() - 1, Component.topSide) &&
+                component.attachComponentAtRaw(x, comDef.getY(), Component.bottomSide))
+                    checkStructureRec(nextComponent);
             }
         }
         //check right side
@@ -189,7 +195,10 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
             //there is a right side
             for (int y = comDef.getY(); y < (comDef.getY() + comDef.getRealHeight()); y++) {
                 Component nextComponent = componentsMap[comDef.getX() + comDef.getRealWidth()][y];
-                if (nextComponent != null && !nextComponent.structureHelper) checkStructureRec(nextComponent);
+                if (nextComponent != null && !nextComponent.structureHelper &&
+                nextComponent.attachComponentAtRaw(comDef.getX() + comDef.getRealWidth(), y, Component.leftSide) &&
+                component.attachComponentAtRaw(comDef.getX() + comDef.getRealWidth() - 1, y, Component.rightSide))
+                    checkStructureRec(nextComponent);
             }
         }
         //check top side
@@ -197,7 +206,10 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
             //there is a bottom side
             for (int x = comDef.getX(); x < (comDef.getX() + comDef.getRealWidth()); x++) {
                 Component nextComponent = componentsMap[x][comDef.getY() + comDef.getRealHeight()];
-                if (nextComponent != null && !nextComponent.structureHelper) checkStructureRec(nextComponent);
+                if (nextComponent != null && !nextComponent.structureHelper &&
+                nextComponent.attachComponentAtRaw(x, comDef.getY() + comDef.getRealHeight(), Component.bottomSide) &&
+                component.attachComponentAtRaw(x, comDef.getY() + comDef.getRealHeight() - 1, Component.topSide))
+                    checkStructureRec(nextComponent);
             }
         }
     }
