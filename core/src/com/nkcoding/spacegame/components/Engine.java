@@ -1,7 +1,8 @@
-package com.nkcoding.spacegame.spaceship;
+package com.nkcoding.spacegame.components;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.nkcoding.spacegame.spaceship.*;
 
 public class Engine extends Component {
     public static final String EnginePowerKey = "EnginePower";
@@ -15,9 +16,12 @@ public class Engine extends Component {
     @Override
     public void act(float delta) {
         super.act(delta);
-        //TODO implement power system usage
         int enginePower = this.enginePower.get();
         enginePower = (enginePower < 0) ? 0 : (enginePower > 100) ? 100 : enginePower;
+        //update requested power
+        powerRequested.set(enginePower);
+        //System.out.println("received power: " + powerReceived.get());
+        enginePower = Math.min((int)powerReceived.get(), enginePower);
         applyForce(enginePower / 100f);
     }
 

@@ -266,7 +266,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
             for (Component component : components) {
                 //check if it consumes or delivers power
                 if (component.powerRequested.get() < 0) {
-                    availablePower -= component.powerReceived.get();
+                    availablePower -= component.powerRequested.get();
                 }
             }
             float startAvailablePower = availablePower;
@@ -281,7 +281,8 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
                     float levelPowerRequest = 0f;
                     //check how much power is necessary for this level
                     while (i < components.size() && components.get(i).requestLevel.get() == level) {
-                        levelPowerRequest += components.get(i).powerRequested.get();
+                        if (components.get(i).powerRequested.get() > 0)
+                            levelPowerRequest += components.get(i).powerRequested.get();
                         i++;
                     }
                     //is enough power available
@@ -310,6 +311,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
                 }
 
             }
+            System.out.println("at end: " + availablePower);
             //update the components which deliverPower
             float fac = (startAvailablePower - availablePower) / availablePower;
             for (Component component : components) {

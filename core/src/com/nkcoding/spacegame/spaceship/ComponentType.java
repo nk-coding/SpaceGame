@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.nkcoding.interpreter.compiler.DataTypes;
 import com.nkcoding.spacegame.Asset;
-import com.nkcoding.spacegame.spaceship.Engine;
+import com.nkcoding.spacegame.components.*;
 
 import java.util.function.BiFunction;
 
@@ -12,10 +12,10 @@ import static com.nkcoding.spacegame.spaceship.Component.*;
 import static com.nkcoding.spacegame.spaceship.ExternalPropertyData.*;
 
 public enum ComponentType {
-    TestType(TestImp::new, 2, 3, 100, 100, Asset.Badlogic),
     Engine(Engine::new, 1, 2, 100, 100, Asset.Engine,
-            of(com.nkcoding.spacegame.spaceship.Engine.EnginePowerKey, DataTypes.Integer, false)),
-    BasicHull(TestImp::new, Asset.BasicHull);
+            of(com.nkcoding.spacegame.components.Engine.EnginePowerKey, DataTypes.Integer, false)),
+    PowerCore(PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
+    BasicHull(BasicHull::new, Asset.BasicHull);
 
     //the width of the component
     public final int width;

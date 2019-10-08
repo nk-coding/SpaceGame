@@ -9,6 +9,7 @@ public enum Asset {
     //game
     BasicHull("textures/game/basicHull.png"),
     Engine("textures/game/engine.png"),
+    PowerCore("textures/game/powerCore.png"),
     //other
     Badlogic("textures/other/badlogic.jpg"),
     Numbers("textures/other/numbers.png"),
