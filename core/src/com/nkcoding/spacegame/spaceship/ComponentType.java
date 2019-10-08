@@ -13,7 +13,7 @@ import static com.nkcoding.spacegame.spaceship.ExternalPropertyData.*;
 
 public enum ComponentType {
     TestType(TestImp::new, 2, 3, 100, 100, Asset.Badlogic),
-    Engine(Engine::new, 1, 2, 100, 100, Asset.ErrorSymbol,
+    Engine(Engine::new, 1, 2, 100, 100, Asset.Engine,
             of(com.nkcoding.spacegame.spaceship.Engine.EnginePowerKey, DataTypes.Integer, false)),
     BasicHull(TestImp::new, Asset.BasicHull);
 

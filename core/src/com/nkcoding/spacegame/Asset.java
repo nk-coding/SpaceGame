@@ -8,6 +8,7 @@ public enum Asset {
     //textures
     //game
     BasicHull("textures/game/basicHull.png"),
+    Engine("textures/game/engine.png"),
     //other
     Badlogic("textures/other/badlogic.jpg"),
     Numbers("textures/other/numbers.png"),

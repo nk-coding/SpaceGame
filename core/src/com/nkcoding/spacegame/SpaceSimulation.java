@@ -178,8 +178,8 @@ public class SpaceSimulation implements InputProcessor {
     //called when the screen is resized
     public void resize(int width, int height) {
 
-        camera.viewportWidth = 10f;
-        camera.viewportHeight = 10f * height/width;
+        camera.viewportWidth = 7f;
+        camera.viewportHeight = 7f * height/width;
         camera.update();
     }
 
