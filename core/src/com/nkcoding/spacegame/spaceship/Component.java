@@ -22,10 +22,10 @@ public abstract class Component implements ExternalPropertyHandler {
     //endregion
 
     //region sides
-    public static final int topSide = 0;
-    public static final int leftSide = 1;
-    public static final int bottomSide = 2;
-    public static final int rightSide = 3;
+    public static final int TOP_SIDE = 0;
+    public static final int LEFT_SIDE = 1;
+    public static final int BOTTOM_SIDE = 2;
+    public static final int RIGHT_SIDE = 3;
 
 
     private HashMap<String, ExternalProperty> properties = new HashMap<>();
