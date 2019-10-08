@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Compiler;
+import com.nkcoding.interpreter.compiler.DataTypes;
 import com.nkcoding.spacegame.SpaceSimulation;
 
 import java.util.*;
@@ -50,9 +51,9 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
 
     //region properties
     //virtual property when a key is pressed
-    public final StringProperty keyDown = register(new StringProperty(true, true, KeyDownKey));
+    public final VirtualProperty<String> keyDown = register(new VirtualProperty<>(KeyDownKey, DataTypes.String));
     //virtual property when key is released
-    public final StringProperty keyUp = register(new StringProperty(true, true, KeyUpKey));
+    public final VirtualProperty<String> keyUp = register(new VirtualProperty<>(KeyUpKey, DataTypes.String));
     //wrapper for the angularRotation from Body
     public final FloatProperty angularVelocity = register(new FloatProperty(true, true, AngularVelocityKey));
     //endregion
