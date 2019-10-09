@@ -4,9 +4,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.nkcoding.interpreter.MethodStatement;
+import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.Program;
 import com.nkcoding.spacegame.SpaceSimulation;
 
 import java.util.*;
@@ -68,14 +70,16 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         setReceivesKeyInput(true);
         //compile the script
         Compiler compiler = new Compiler(def.code, def);
-        MethodStatement[] statements = null;
+        Program program = null;
         try {
-            statements = compiler.compile();
+            program = compiler.compile();
         } catch (CompileException e) {
             e.printStackTrace();
         }
+        //set Scripting engine
+        spaceSimulation.setScriptingEngine(new ScriptingEngine(program));
         HashMap<String, MethodStatement> methods = new HashMap<>();
-        for (MethodStatement statement : statements) {
+        for (MethodStatement statement : program.methods) {
             methods.put(statement.getDefinition().getName(), statement);
         }
         //init the externalProperties

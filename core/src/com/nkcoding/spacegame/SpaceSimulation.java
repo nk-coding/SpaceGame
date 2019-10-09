@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.SnapshotArray;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.Program;
 import com.nkcoding.spacegame.spaceship.ExternalPropertyHandler;
 import com.nkcoding.spacegame.spaceship.Simulated;
 
@@ -30,10 +31,14 @@ public class SpaceSimulation implements InputProcessor {
     private final HashMap<String, ExternalPropertyHandler> propertyHandlers = new HashMap<>();
 
     //handles all the ExternalPropertyHandlers
-    private final ScriptingEngine scriptingEngine;
+    private ScriptingEngine scriptingEngine;
 
     public ScriptingEngine getScriptingEngine() {
         return scriptingEngine;
+    }
+
+    public void setScriptingEngine(ScriptingEngine scriptingEngine) {
+        this.scriptingEngine = scriptingEngine;
     }
 
     //AssetManager to load the resources
@@ -72,8 +77,6 @@ public class SpaceSimulation implements InputProcessor {
     public SpaceSimulation(SpaceGame spaceGame) {
         //set Batch and assetManager
         assetManager = spaceGame.getAssetManager();
-        //init scriptingEngine
-        scriptingEngine = new ScriptingEngine();
         //init the world
         world = new World(new Vector2(0, 0), true);
         //TODO set contact listeners

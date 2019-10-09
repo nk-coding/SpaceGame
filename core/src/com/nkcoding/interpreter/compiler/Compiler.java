@@ -2,13 +2,17 @@ package com.nkcoding.interpreter.compiler;
 
 import com.nkcoding.interpreter.*;
 import com.nkcoding.interpreter.operators.*;
+import com.nkcoding.spacegame.spaceship.Component;
 import com.nkcoding.spacegame.spaceship.ComponentType;
 import com.nkcoding.spacegame.spaceship.ExternalPropertyData;
 import com.nkcoding.spacegame.spaceship.ShipDef;
+import com.nkcoding.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Compiler {
     //the ProgramTextWrapper that is normally used to handle the text
@@ -69,20 +73,19 @@ public class Compiler {
     }
 
     //compile the stuff
-    public MethodStatement[] compile() throws CompileException {
-        //welcome to the compiler
-        //this will be complicated, so it may take a while to complete this
-        //but it will be awesome!!!
-
+    public Program compile() throws CompileException {
         //get the Definitions for all methods in the program
-        MethodDefinition[] methodDefinitions = createMethodDefinitions();
+        Tuple<List<MethodDefinition>, ConcurrentHashMap<String, ConcurrentStackItem>> pair = createMethodDefinitions();
+        //pair.v2.values().forEach(System.out::println);
+        List<MethodDefinition> methodDefinitions = pair.v1;
+        //get the globalVariables
         //set the text position back to the start
         text.setPosition(new ProgramPosition(0, 0));
         //create the methodStatements that will be returned later
-        MethodStatement[] normalMethods = new MethodStatement[methodDefinitions.length];
-        for (int x = 0; x < methodDefinitions.length; x++) {
+        MethodStatement[] normalMethods = new MethodStatement[methodDefinitions.size()];
+        for (int x = 0; x < methodDefinitions.size(); x++) {
             //create the corrosponding method
-            normalMethods[x] = new MethodStatement(methodDefinitions[x]);
+            normalMethods[x] = new MethodStatement(methodDefinitions.get(x));
         }
         methods.setNormalMethods(normalMethods);
         //I can't believe I reached this point
@@ -110,11 +113,13 @@ public class Compiler {
             //end stack level
             stack.clearStackLevel();
         }
-        return normalMethods;
+        return new Program(normalMethods, pair.v2);
     }
 
     //create the MethodDefinitions for a complete program
-    private MethodDefinition[] createMethodDefinitions() throws CompileException{
+    private Tuple<List<MethodDefinition>, ConcurrentHashMap<String, ConcurrentStackItem>> createMethodDefinitions() throws CompileException{
+        //begin a stack level for global variables
+        stack.beginStackLevel();
         //list where all the definitions are stored in
         ArrayList<MethodDefinition> definitions = new ArrayList<>();
 
@@ -138,104 +143,117 @@ public class Compiler {
                 def.setReturnType(returnType);
                 //the method name
                 def.setName(text.getNextWord());
-                //check if the Name is already in use (support for overloading will be added later)
-                if (CompilerHelper.methodDefinitionsContainName(definitions, def.getName()) || methods.methodExists(def.getName()) != null)
-                    throw new CompileException("a method with the name " + def.getName() + " already exists", text.getPosition());
-                //check if name is keyword
-                if (CompilerHelper.isReservedKeyword(def.getName()))
-                    throw new CompileException("reserved keyword", text.getPosition());
-                //add it to the list
-                definitions.add(def);
                 //try get the bracket, if that is not possible throw an exception
                 try {
-                    char beginBracket = text.getNextNonWhitespaceChar(true);
-                    if (beginBracket != '(') {
-                        throw new CompileException("expected: ( found: " + beginBracket, text.getPosition());
+                    char beginChar = text.getNextNonWhitespaceChar(true);
+                    if (beginChar == '(') {
+                        //check if the Name is already in use (support for overloading will be added later)
+                        if (CompilerHelper.methodDefinitionsContainName(definitions, def.getName()) || methods.methodExists(def.getName()) != null)
+                            throw new CompileException("a method with the name " + def.getName() + " already exists", text.getPosition());
+                        //check if name is keyword
+                        if (CompilerHelper.isReservedKeyword(def.getName()))
+                            throw new CompileException("reserved keyword", text.getPosition());
+                        //add it to the list
+                        definitions.add(def);
+
+                        //check for Arguments
+                        boolean allArgumentsFound = false;
+                        ArrayList<TypeNamePair> pairs = new ArrayList<>();
+                        while (!allArgumentsFound) {
+                            try {
+                                char possibleEndBracket = text.getNextNonWhitespaceChar();
+                                if (possibleEndBracket == ')'){
+                                    //the end was found
+                                    //no more parameters
+                                    allArgumentsFound = true;
+                                }
+                                else {
+                                    //correct position
+                                    text.moveBackward();
+                                    //there is (or at least should be) a parameter
+                                    String parameterType = text.getNextWord();
+                                    //check if the type is correct
+                                    if (!DataTypes.containsDataType(parameterType))
+                                        throw new CompileException(parameterType + " is no correct DataType", text.getPosition());
+                                    //correct type was found, get name
+                                    TypeNamePair pair = new TypeNamePair(text.getNextWord(), parameterType);
+                                    //check if parameter name is already in use
+                                    if (CompilerHelper.typeNamePairsContainName(pairs, pair.getName()))
+                                        throw new CompileException("a parameter with the name " + pair.getName() + " already exists", text.getPosition());
+                                    //check if parameter name is reserved keyword
+                                    if (CompilerHelper.isReservedKeyword(pair.getName()))
+                                        throw new CompileException("reserved keyword", text.getPosition());
+                                    //add pair
+                                    pairs.add(pair);
+                                    //check if next char is a comma or and end bracket
+                                    //then everything is ok (the bracket will be recognized in the next loop, otherwise throw an Exception
+                                    char possibleComma = text.getNextNonWhitespaceChar(true);
+                                    if (possibleComma == ')')
+                                        allArgumentsFound = true;
+                                    else if (possibleComma != ',')
+                                        throw new CompileException("expected: ) found " + possibleComma, text.getPosition());
+                                }
+                            }
+                            catch (ProgramTextWrapper.EndReachedException e) {
+                                //no end bracket was found
+                                throw new CompileException("expected: ) found nothing", text.getPosition());
+                            }
+                        }
+                        //add the parameters
+                        def.setParameters(pairs.toArray(TypeNamePair[]::new));
+                        //skip the internal part of the method
+                        //this part will be checked later by the compiler, so do not waste to much effort here
+
+                        //shows how deep into brackets the program is at a specific time
+                        int bracketLevel = 0;
+                        //the next non whitespace char should be a opening bracket, otherwise the method has no body so throw an exception
+                        try {
+                            char methodBodyOpen = text.getNextNonWhitespaceChar();
+                            if (methodBodyOpen == '{') {
+                                //method found as expected
+                                bracketLevel++;
+                            }
+                            else {
+                                throw new CompileException("expected: { found: " + methodBodyOpen, text.getPosition());
+                            }
+                        }
+                        catch (ProgramTextWrapper.EndReachedException e) {
+                            //no body
+                            throw new CompileException("expected: { found: nothing", text.getPosition());
+                        }
+                        //continue until the end of the body is reached
+                        while (bracketLevel > 0){
+                            try {
+                                char nextBracket = text.skipUntil(true,'{', '}');
+                                if (nextBracket == '{') bracketLevel++;
+                                else bracketLevel--;
+                            }
+                            catch (ProgramTextWrapper.EndReachedException e) {
+                                throw new CompileException("expected: } found: nothing", text.getPosition());
+                            }
+                        }
+                    }
+                    else if (beginChar == ';') {
+                        if (stack.exists(def.getName())) {
+                            throw new CompileException("a global variable with the name " + def.getName() + " already exists", text.getPosition());
+                        }
+                        else if (CompilerHelper.isReservedKeyword(def.getName())) {
+                            throw new CompileException("expected: variable name found: reserved keyword", text.getPosition());
+                        }
+                        //add global variable
+                        stack.addToStack(def.getName(), def.getReturnType());
+                    }
+                    else {
+                        throw new CompileException("expected: ( or ; found: " + beginChar, text.getPosition());
                     }
                 }
                 catch (ProgramTextWrapper.EndReachedException e) {
                     //begin bracket not found
                     throw new CompileException("expected: ( found: nothing", text.getPosition());
                 }
-                //check for Arguments
-                boolean allArgumentsFound = false;
-                ArrayList<TypeNamePair> pairs = new ArrayList<>();
-                while (!allArgumentsFound) {
-                    try {
-                        char possibleEndBracket = text.getNextNonWhitespaceChar();
-                        if (possibleEndBracket == ')'){
-                            //the end was found
-                            //no more parameters
-                            allArgumentsFound = true;
-                        }
-                        else {
-                            //correct position
-                            text.moveBackward();
-                            //there is (or at least should be) a parameter
-                            String parameterType = text.getNextWord();
-                            //check if the type is correct
-                            if (!DataTypes.containsDataType(parameterType))
-                                throw new CompileException(parameterType + " is no correct DataType", text.getPosition());
-                            //correct type was found, get name
-                            TypeNamePair pair = new TypeNamePair(text.getNextWord(), parameterType);
-                            //check if parameter name is already in use
-                            if (CompilerHelper.typeNamePairsContainName(pairs, pair.getName()))
-                                throw new CompileException("a parameter with the name " + pair.getName() + " already exists", text.getPosition());
-                            //check if parameter name is reserved keyword
-                            if (CompilerHelper.isReservedKeyword(pair.getName()))
-                                throw new CompileException("reserved keyword", text.getPosition());
-                            //add pair
-                            pairs.add(pair);
-                            //check if next char is a comma or and end bracket
-                            //then everything is ok (the bracket will be recognized in the next loop, otherwise throw an Exception
-                            char possibleComma = text.getNextNonWhitespaceChar(true);
-                            if (possibleComma == ')')
-                                allArgumentsFound = true;
-                            else if (possibleComma != ',')
-                                throw new CompileException("expected: ) found " + possibleComma, text.getPosition());
-                        }
-                    }
-                    catch (ProgramTextWrapper.EndReachedException e) {
-                        //no end bracket was found
-                        throw new CompileException("expected: ) found nothing", text.getPosition());
-                    }
-                }
-                //add the parameters
-                def.setParameters(pairs.toArray(TypeNamePair[]::new));
-                //skip the internal part of the method
-                //this part will be checked later by the compiler, so do not waste to much effort here
-
-                //shows how deep into brackets the program is at a specific time
-                int bracketLevel = 0;
-                //the next non whitespace char should be a opening bracket, otherwise the method has no body so throw an exception
-                try {
-                    char methodBodyOpen = text.getNextNonWhitespaceChar();
-                    if (methodBodyOpen == '{') {
-                        //method found as expected
-                        bracketLevel++;
-                    }
-                    else {
-                        throw new CompileException("expected: { found: " + methodBodyOpen, text.getPosition());
-                    }
-                }
-                catch (ProgramTextWrapper.EndReachedException e) {
-                    //no body
-                    throw new CompileException("expected: { found: nothing", text.getPosition());
-                }
-                //continue until the end of the body is reached
-                while (bracketLevel > 0){
-                    try {
-                        char nextBracket = text.skipUntil(true,'{', '}');
-                        if (nextBracket == '{') bracketLevel++;
-                        else bracketLevel--;
-                    }
-                    catch (ProgramTextWrapper.EndReachedException e) {
-                        throw new CompileException("expected: } found: nothing", text.getPosition());
-                    }
-                }
             }
         }
-        return definitions.toArray(MethodDefinition[]::new);
+        return new Tuple<>(definitions, stack.getGlobalVariables());
     }
 
     //compiles a complete Expression
@@ -581,7 +599,7 @@ public class Compiler {
             catch (ProgramTextWrapper.EndReachedException e) {
                 throw new CompileException("expected: ) found: nothing", text.getPosition());
             }
-            if (!(possibleEnd == ')')) {
+            if (possibleEnd != ')') {
                 text.moveBackward();
                 //get all other arguments
                 boolean allArgumentsFound = false;
@@ -657,7 +675,7 @@ public class Compiler {
                         }
                 }
             }
-            //now return the correct expression for the correct
+
             switch (def.getMethodType()) {
                 case Normal:
                     MethodWrapperStatement methWrapper = new MethodWrapperStatement(def.getReturnType());
@@ -714,7 +732,9 @@ public class Compiler {
         //list of all the statements
         ArrayList<Statement> statements = new ArrayList<>();
         while (!allStatementsFound){
-            if (singleStatement) allStatementsFound = true;
+            if (singleStatement) {
+                allStatementsFound = true;
+            }
             //check if the end is reached
             char possibleEndBracket;
             try {
@@ -725,7 +745,7 @@ public class Compiler {
             }
             if (possibleEndBracket == '}') {
                 //it is over
-                if (singleStatement) throw new CompileException("ilegal character: }", text.getPosition());
+                if (singleStatement) throw new CompileException("illegal character: }", text.getPosition());
                 else {
                     allStatementsFound = true;
                 }
@@ -879,16 +899,16 @@ public class Compiler {
 
     //text is after the if word
     private Statement compileIfCondition() throws CompileException {
-       IfConditionStatement ics = new IfConditionStatement();
-       try {
-           char c = text.getNextNonWhitespaceChar();
-           if (c != '(') throw new CompileException("expected: ( found: " + c, text.getPosition());
-       }
-       catch (ProgramTextWrapper.EndReachedException e) {
-           throw new CompileException("expected: ( found: nothing", text.getPosition());
-       }
-       Expression possibleCondition = compileCompleteExpression();
-       //check if type is boolean
+        IfConditionStatement ics = new IfConditionStatement();
+        try {
+            char c = text.getNextNonWhitespaceChar();
+            if (c != '(') throw new CompileException("expected: ( found: " + c, text.getPosition());
+        }
+        catch (ProgramTextWrapper.EndReachedException e) {
+            throw new CompileException("expected: ( found: nothing", text.getPosition());
+        }
+        Expression possibleCondition = compileCompleteExpression();
+        //check if type is boolean
         if (!possibleCondition.getType().equals(DataTypes.Boolean))
             throw new CompileException("expected: expression of type boolean found: expression of type " + possibleCondition.getType(), text.getPosition());
         ics.setCondition(possibleCondition);
@@ -904,18 +924,21 @@ public class Compiler {
         ics.setStatements(compileStatementBlock());
         //check if there is an else block
         ProgramPosition beforePossibleElse = text.getPosition();
+        boolean foundElse = false;
         try {
-            if (text.getNextWord().equals("else")) {
-                //there is an else condition
-                //just compile it
-                ics.setElseStatement(new StatementBlock(compileStatementBlock()));
-            }
-            else {
-                //reset position
-                text.setPosition(beforePossibleElse);
-            }
+            String s = text.getNextWord();
+            foundElse = s.equals("else");
         }
         catch (CompileException e) {
+            //reset position
+            text.setPosition(beforePossibleElse);
+        }
+        if (foundElse) {
+            //there is an else condition
+            //just compile it
+            ics.setElseStatement(new StatementBlock(compileStatementBlock()));
+        }
+        else {
             //reset position
             text.setPosition(beforePossibleElse);
         }

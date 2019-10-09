@@ -98,7 +98,6 @@ public class ExternalPropertyData {
     public void addExternalMethodDefs(Collection<? super MethodDefinition> list) {
         list.add(createExternalMethodDef(true));
         if (!readonly) {
-            System.out.println("add " + createExternalMethodDef(false));
             list.add(createExternalMethodDef(false));
         }
     }

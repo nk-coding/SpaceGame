@@ -1,8 +1,10 @@
 package com.nkcoding.interpreter;
 
 import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.Program;
 import com.nkcoding.interpreter.compiler.TypeNamePair;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,16 +13,22 @@ public class ScriptingEngine {
 
     //Queue of all ExternMethodFutures, they will be executed on the main tread
     //therefore, this queue must be concurrent
-    private ConcurrentLinkedQueue<ExternalMethodFuture> futureQueue = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<ExternalMethodFuture> futureQueue = new ConcurrentLinkedQueue<>();
 
-    public ConcurrentLinkedQueue<ExternalMethodFuture> getFutureQueue() {
+    public final ConcurrentLinkedQueue<ExternalMethodFuture> getFutureQueue() {
         return futureQueue;
     }
+
+    final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables;
 
     //the ThreadPool where all scripts run
     //I probably replace this with a fixed size pool to reduce CPU performance impact, because these scripts run normally
     //at a relatively low priority
     private ExecutorService executor = Executors.newCachedThreadPool();
+
+    public ScriptingEngine(Program program) {
+        this.globalVariables = program.globalVariables;
+    }
 
     /**
      * call a method async

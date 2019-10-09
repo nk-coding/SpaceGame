@@ -11,7 +11,7 @@ public class Stack {
     //the stack level
     private int stackLevel = 0;
 
-    //the scriptingEngine is mainly used for the requestExternMethod
+    //the scriptingEngine is mainly used for the requestExternalMethod
     private ScriptingEngine scriptingEngine;
 
     //sets the debug mode
@@ -34,15 +34,12 @@ public class Stack {
     }
 
     public StackItem getFromStack(String name){
-        //System.out.println("stack: getFromStack, " + stackItems.size() + " items in stack");
         for (int x = stackItems.size() - 1; x >= 0; x--){
-            //System.out.println("stack: found item with name " + stackItems.get(x).getName());
             if (stackItems.get(x).getName().equals(name)){
-                //System.out.println("stack: found in stack");
                 return stackItems.get(x);
             }
         }
-        return null;
+        return scriptingEngine.globalVariables.get(name);
     }
 
 

@@ -1,6 +1,10 @@
 package com.nkcoding.interpreter.compiler;
 
+import com.nkcoding.interpreter.ConcurrentStackItem;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 //the CompilerStack exists because it is less run-time optimated than the real Stack
 //this mainly means that there are less generics
@@ -65,6 +69,34 @@ public class CompilerStack {
             if (stack.get(x).name.equals(name)) return  stack.get(x).type;
         }
         throw new IllegalArgumentException(name + " is not registered as a variable");
+    }
+
+    public ConcurrentHashMap<String, ConcurrentStackItem> getGlobalVariables() {
+        ConcurrentHashMap<String, ConcurrentStackItem> variables = new ConcurrentHashMap<>();
+
+        for (CompilerStackItem item : stack) {
+            ConcurrentStackItem v;
+            switch (item.type) {
+                case DataTypes.Boolean:
+                    v = new ConcurrentStackItem<>(DataTypes.Boolean, false);
+                    break;
+                case DataTypes.Float:
+                    v = new ConcurrentStackItem<>(DataTypes.Float, 0f);
+                    break;
+                case DataTypes.Integer:
+                    v = new ConcurrentStackItem<>(DataTypes.Integer, 0);
+                    break;
+                case DataTypes.String:
+                    v = new ConcurrentStackItem<>(DataTypes.String, "");
+                    break;
+                default:
+                    throw new UnsupportedOperationException("cannot handle DataType + " + item.type);
+            }
+            v.setName(item.name);
+            variables.put(item.name, v);
+        }
+
+        return variables;
     }
 
     @Override
