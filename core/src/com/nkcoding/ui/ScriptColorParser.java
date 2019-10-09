@@ -49,14 +49,20 @@ public class ScriptColorParser implements ColorParser {
                         if (!escaped) {
                             //not escaped
                             escaped = true;
-                        } //else escaped is ok
+                        }
+                        else {
+                            escaped = false;
+                        }
                     }
                     else if (c == '"') {
                         if (!escaped) {
                             //end of String
                             handler.addColorRegion(startPos, x, stringColor);
                             inString = false;
-                        } //else escaped is ok
+                        }
+                        else {
+                            escaped = false;
+                        }
                     }
                     else {
                         //reset escaped
