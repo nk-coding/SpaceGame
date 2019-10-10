@@ -173,6 +173,8 @@ public class ShipDef {
         properties.put(KeyDownKey, of(KeyDownKey, DataTypes.String));
         properties.put(KeyUpKey, of(KeyUpKey, DataTypes.String));
         properties.put(AngularVelocityKey, of(AngularVelocityKey, DataTypes.Float));
+        properties.put(VelocityKey, of(VelocityKey, DataTypes.Float));
+        properties.put(CameraFocusKey, of(CameraFocusKey, DataTypes.Boolean, false));
     }
 
     /**

@@ -2,6 +2,7 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.ScriptingEngine;
@@ -19,6 +20,8 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     public static final String KeyDownKey = "KeyDown";
     public static final String KeyUpKey = "KeyUp";
     public static final String AngularVelocityKey = "AngularVelocity";
+    public static final String VelocityKey = "Velocity";
+    public static final String CameraFocusKey = "CameraFocus";
     //endregion
 
     private HashMap<String, ExternalProperty> properties = new HashMap<>();
@@ -58,6 +61,16 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     public final VirtualProperty<String> keyUp = register(new VirtualProperty<>(KeyUpKey, DataTypes.String));
     //wrapper for the angularRotation from Body
     public final FloatProperty angularVelocity = register(new FloatProperty(true, true, AngularVelocityKey));
+    //wrapper for the velocity from Body
+    public final FloatProperty velocity = register(new FloatProperty( true, true, VelocityKey));
+    //focus from SpaceSimulation
+    public final BooleanProperty cameraFocus = register(new BooleanProperty(false, true, CameraFocusKey) {
+        @Override
+        public void set(boolean value) {
+            super.set(value);
+            if (value)getSpaceSimulation().setCameraSimulated(Ship.this);
+        }
+    });
     //endregion
 
     //construct Ship out of ShipDef (public constructor)
@@ -91,12 +104,19 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         for (ComponentDef comDef : def.componentDefs) {
             createComponent(comDef, methods);
         }
+        //init center pos
+        updateCenterPos();
     }
 
     //package-private constructor to construct Ship out of components (used to split up a ship)
     //pass other ship to copy important stuff (external method stuff etc.)
     Ship(Ship oldShip, List<Component> components) {
         super(oldShip.getSpaceSimulation(), BodyDef.BodyType.DynamicBody);
+        //check for new name
+        String nameStart = oldShip.getName();
+        while (getSpaceSimulation().containsExternalPropertyHandler(nameStart += "#"));
+        name = nameStart;
+        System.out.println(getName());
         getSpaceSimulation().addExternalPropertyHandler(this);
         //receives key inputs
         setReceivesKeyInput(true);
@@ -110,6 +130,8 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
             addComponent(component);
             component.setShip(this);
         }
+        //init center pos
+        updateCenterPos();
     }
 
     private void createComponent(ComponentDef comDef, Map<String, MethodStatement> methods) {
@@ -150,6 +172,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
                 componentsMap[_x][_y] = null;
             }
         }
+        updateCenterPos();
     }
 
     /**
@@ -250,8 +273,24 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         return true;
     }
 
+    @Override
+    public void setCameraFocus(boolean cameraFocus) {
+        System.out.println("set focus: " + name + ", " + cameraFocus);
+        this.cameraFocus.set(cameraFocus);
+    }
 
     //endregion
+
+    //update the center position
+    private void updateCenterPos() {
+        int minX = components.stream().mapToInt(component -> component.getComponentDef().getX()).min().orElse(0);
+        int maxX = components.stream().mapToInt(component -> (component.getComponentDef().getX() + component.getComponentDef().getRealWidth())).max().orElse(ShipDef.MAX_SIZE);
+        int minY = components.stream().mapToInt(component -> component.getComponentDef().getY()).min().orElse(0);
+        int maxY = components.stream().mapToInt(component -> (component.getComponentDef().getY() + component.getComponentDef().getRealHeight())).max().orElse(ShipDef.MAX_SIZE);
+        float posX = (minX + maxX) / 2f * ShipDef.UNIT_SIZE;
+        float posY = (minY + maxY) / 2f * ShipDef.UNIT_SIZE;
+        setCenterPosition(new Vector2(posX, posY));
+    }
 
 
     @Override

@@ -4,13 +4,11 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.interpreter.compiler.DataTypes;
-import com.nkcoding.interpreter.compiler.Program;
 import com.nkcoding.spacegame.spaceship.ExternalPropertyHandler;
 import com.nkcoding.spacegame.spaceship.Simulated;
 
@@ -59,6 +57,7 @@ public class SpaceSimulation implements InputProcessor {
     }
 
     public void setCameraSimulated(Simulated cameraSimulated) {
+        if (cameraSimulated != this.cameraSimulated && this.cameraSimulated != null) this.cameraSimulated.setCameraFocus(false);
         this.cameraSimulated = cameraSimulated;
     }
 
@@ -70,9 +69,6 @@ public class SpaceSimulation implements InputProcessor {
         return world;
     }
 
-    //debug renderer for box2d
-    private Box2DDebugRenderer debugRenderer;
-
     //constructor
     public SpaceSimulation(SpaceGame spaceGame) {
         //set Batch and assetManager
@@ -82,8 +78,6 @@ public class SpaceSimulation implements InputProcessor {
         //TODO set contact listeners
         //init camera
         this.camera = new OrthographicCamera();
-        debugRenderer = new Box2DDebugRenderer();
-        debugRenderer.setDrawVelocities(true);
     }
 
     /**add a simulated
@@ -114,6 +108,10 @@ public class SpaceSimulation implements InputProcessor {
      */
     public void removeExternalPropertyHandler(ExternalPropertyHandler handler) {
         propertyHandlers.remove(handler.getName());
+    }
+
+    public boolean containsExternalPropertyHandler(String str) {
+        return propertyHandlers.get(str) != null;
     }
 
     public void updateReceivesKeyInput(Simulated simulated) {
@@ -188,10 +186,13 @@ public class SpaceSimulation implements InputProcessor {
 
     //updates the camera
     public void updateCamera() {
-//        Vector2 position = cameraSimulated.getPosition();
-//        camera.position.x = position.x;
-//        camera.position.y = position.y;
-//        camera.update();
+        if (cameraSimulated != null) {
+            Vector2 position = cameraSimulated.localToWorldCoordinates(cameraSimulated.getCenterPosition());
+
+            camera.position.x = position.x;
+            camera.position.y = position.y;
+            camera.update();
+        }
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.nkcoding.spacegame.spaceship;
 
-import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.interpreter.compiler.DataTypes;
 
 public class FloatProperty extends ExternalProperty<Float> {
@@ -29,9 +28,8 @@ public class FloatProperty extends ExternalProperty<Float> {
     }
 
     @Override
-    public void set(Float value) {
-        if (this.value != value) changed = true;
-        this.value = value;
+    public final void set(Float value) {
+        set(value.floatValue());
     }
 
     @Override

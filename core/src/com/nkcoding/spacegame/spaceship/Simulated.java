@@ -57,10 +57,6 @@ public class Simulated {
         }
     }
 
-    //used to not-recalculate sin and cos multiple times
-    boolean sinCosCalculated = false;
-    float sin, cos;
-
     /**
      * get the position in box2D
      * @return body.getPosition()
@@ -75,6 +71,17 @@ public class Simulated {
      */
     public float getRotation() {
         return body.getAngle();
+    }
+
+    //center position for camera adjustment
+    private Vector2 centerPosition;
+
+    public Vector2 getCenterPosition() {
+        return  centerPosition;
+    }
+
+    public void setCenterPosition(Vector2 centerPosition) {
+        this.centerPosition = centerPosition;
     }
 
     //the default constructor
@@ -97,10 +104,9 @@ public class Simulated {
     /**
      * the default act method
      * a subclass must call this, otherwise positioning will not work
-     * @param delta
      */
     public void act(float delta) {
-        sinCosCalculated = false;
+
     }
 
     /**
@@ -120,14 +126,7 @@ public class Simulated {
         return false;
     }
 
-    /**
-     * updates sin and cos
-     */
-    protected void updateSinCos() {
-        sinCosCalculated = true;
-        sin = (float)Math.cos(getRotation());
-        cos = (float)Math.sin(getRotation());
-    }
+    public void setCameraFocus(boolean cameraFocus) {}
 
     /**
      * transforms local coordinates to world coordinates
@@ -135,23 +134,6 @@ public class Simulated {
      * @return the modified Vector2
      */
     public Vector2 localToWorldCoordinates(Vector2 local) {
-
-//        final float rotation = getRotation();
-//        final Vector2 position = getPosition();
-//        final float x = position.x;
-//        final float y = position.y;
-//        if (rotation == 0) {
-//            localCoordinates.x += x;
-//            localCoordinates.y += y;
-//        }
-//        else {
-//            final float toX = localCoordinates.x;
-//            final float toY = localCoordinates.y;
-//            localCoordinates.x = x + (toX * cos + toY * sin);
-//            localCoordinates.y = y + (toX * -sin + toY * cos);
-//        }
-//
-//        return localCoordinates;
         return body.getWorldPoint(local);
     }
 
@@ -161,22 +143,6 @@ public class Simulated {
      * @return the modified Vector2
      */
     public Vector2 worldToLocalCoordinates(Vector2 world) {
-//        final float rotation = getRotation();
-//        final Vector2 position = getPosition();
-//        final float x = position.x;
-//        final float y = position.y;
-//        if (rotation == 0) {
-//            worldCoordinates.x -= x;
-//            worldCoordinates.y -= y;
-//        }
-//        else {
-//            final float toX = worldCoordinates.x - x;
-//            final float toY = worldCoordinates.y - y;
-//            worldCoordinates.x = (toX * cos + toY * sin);
-//            worldCoordinates.y = (toX * -sin + toY * cos);
-//        }
-//
-//        return worldCoordinates;
         return body.getLocalPoint(world);
     }
 

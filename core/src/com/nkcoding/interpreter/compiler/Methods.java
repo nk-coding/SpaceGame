@@ -50,6 +50,7 @@ public class Methods {
                 {
                     return String.valueOf((boolean)obj[0]);
                 });
+
     }
 
     //returns the corresponding method definition or null if it does not exist yet

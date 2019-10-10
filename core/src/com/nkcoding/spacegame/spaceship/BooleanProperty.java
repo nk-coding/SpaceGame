@@ -1,6 +1,5 @@
 package com.nkcoding.spacegame.spaceship;
 
-import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.interpreter.compiler.DataTypes;
 
 public class BooleanProperty extends ExternalProperty<Boolean> {
@@ -26,9 +25,8 @@ public class BooleanProperty extends ExternalProperty<Boolean> {
     }
 
     @Override
-    public void set(Boolean value) {
-        if (this.value != value) changed = true;
-        this.value = value;
+    public final void set(Boolean value) {
+        set(value.booleanValue());
     }
 
     @Override
