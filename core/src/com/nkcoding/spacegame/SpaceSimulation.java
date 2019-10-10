@@ -172,6 +172,7 @@ public class SpaceSimulation implements InputProcessor {
         //debugRenderer.render(world, batch.getProjectionMatrix().cpy());
         //draw simulateds
         for (Simulated simulated : simulateds) simulated.draw(batch);
+        batch.flush();
     }
 
     //called when the screen is resized

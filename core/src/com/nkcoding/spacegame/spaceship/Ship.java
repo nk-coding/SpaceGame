@@ -120,7 +120,6 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         String nameStart = oldShip.getName();
         while (getSpaceSimulation().containsExternalPropertyHandler(nameStart += "#"));
         name = nameStart;
-        System.out.println(getName());
         getSpaceSimulation().addExternalPropertyHandler(this);
         //receives key inputs
         setReceivesKeyInput(true);
@@ -195,7 +194,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         checkStructureRec(components.get(0));
         List<Component> otherComponents = components.stream().filter(com -> !com.structureHelper).collect(Collectors.toList());
         //remove other components
-        components.removeAll(otherComponents);
+        otherComponents.forEach(this::removeComponent);
         //reset remaining
         components.forEach(component -> component.structureHelper = false);
         //create new ship

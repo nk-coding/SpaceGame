@@ -27,7 +27,8 @@ public enum Asset {
     RotateSymbol("textures/ui/rotateSymbol.png"),
     ErrorSymbol("textures/ui/errorSymbol.png"),
     ActionNecessarySymbol("textures/ui/actionNecessarySymbol.png"),
-    Selection("textures/ui/selection.png");
+    Selection("textures/ui/selection.png"),
+    BasicBackground("textures/ui/basicBackground.png");
 
     private String value;
 
