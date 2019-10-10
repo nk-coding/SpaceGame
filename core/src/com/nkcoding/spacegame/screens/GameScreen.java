@@ -25,10 +25,6 @@ public class GameScreen implements Screen {
     //Ship for the simulation
     private ShipDef shipDef;
 
-    //DEBUG
-    private Texture simpleBackground;
-    private SpriteBatch batch2;
-
     public GameScreen(SpaceGame spaceGame, ShipDef shipDef) {
         this.spaceGame = spaceGame;
         this.batch = spaceGame.getBatch();
@@ -39,8 +35,6 @@ public class GameScreen implements Screen {
         Ship ship = new Ship(shipDef, spaceSimulation);
         spaceSimulation.addSimulated(ship);
         spaceSimulation.setCameraSimulated(ship);
-        simpleBackground = spaceGame.getAssetManager().getTexture(Asset.BasicBackground);
-        batch2 = new SpriteBatch();
     }
 
     @Override
@@ -52,10 +46,6 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         spaceSimulation.act(delta);
-        //DEBUG
-        batch2.begin();
-        batch2.draw(simpleBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch2.end();
         batch.begin();
         spaceSimulation.draw(batch);
         batch.end();

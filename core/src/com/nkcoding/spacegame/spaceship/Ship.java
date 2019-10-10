@@ -294,7 +294,9 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         int maxY = components.stream().mapToInt(component -> (component.getComponentDef().getY() + component.getComponentDef().getRealHeight())).max().orElse(ShipDef.MAX_SIZE);
         float posX = (minX + maxX) / 2f * ShipDef.UNIT_SIZE;
         float posY = (minY + maxY) / 2f * ShipDef.UNIT_SIZE;
-        setCenterPosition(new Vector2(posX, posY));
+        centerPosition = new Vector2(posX, posY);
+        width = (maxX - minX) * ShipDef.UNIT_SIZE;
+        height = (maxY - minY) * ShipDef.UNIT_SIZE;
     }
 
 

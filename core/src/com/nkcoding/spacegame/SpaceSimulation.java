@@ -3,6 +3,7 @@ package com.nkcoding.spacegame;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -44,6 +45,9 @@ public class SpaceSimulation implements InputProcessor {
 
     //camera to draw stuff correctly
     private OrthographicCamera camera;
+
+    //set from resize, necessary for camera
+    private int width, height;
 
     //Simulated that the camera should follow
     private Simulated cameraSimulated;
@@ -122,7 +126,7 @@ public class SpaceSimulation implements InputProcessor {
     }
 
 
-    //calls act on all simulateds
+    //calls act on all Simulateds
     //deals with ExternalMethodFutures
     public void act(float time) {
         //handle all external Methods
@@ -177,19 +181,23 @@ public class SpaceSimulation implements InputProcessor {
 
     //called when the screen is resized
     public void resize(int width, int height) {
-
-        camera.viewportWidth = 7f;
-        camera.viewportHeight = 7f * height/width;
-        camera.update();
+        this.width = width;
+        this.height = height;
     }
 
     //updates the camera
     public void updateCamera() {
         if (cameraSimulated != null) {
             Vector2 position = cameraSimulated.localToWorldCoordinates(cameraSimulated.getCenterPosition());
+            //float rotation = -cameraSimulated.getRotation() * MathUtils.radiansToDegrees;
+            float length = cameraSimulated.getBody().getLinearVelocity().len() + 1;
+            float h = cameraSimulated.getHeight() / (0.15f / (length * length) + 0.08f);
+            //rotation += Math.atan(cameraSimulated.getBody().getAngularVelocity()) * 45;
 
+            camera.setToOrtho(false, h / height * width , h);
             camera.position.x = position.x;
             camera.position.y = position.y;
+            //camera.rotate(rotation);
             camera.update();
         }
     }

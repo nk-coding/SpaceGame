@@ -73,15 +73,23 @@ public class Simulated {
         return body.getAngle();
     }
 
-    //center position for camera adjustment
-    private Vector2 centerPosition;
+    //center position, width and height for camera adjustment
+    protected Vector2 centerPosition;
 
     public Vector2 getCenterPosition() {
         return  centerPosition;
     }
 
-    public void setCenterPosition(Vector2 centerPosition) {
-        this.centerPosition = centerPosition;
+    protected float width;
+
+    public float getWidth() {
+        return width;
+    }
+
+    protected float height;
+
+    public float getHeight(){
+        return height;
     }
 
     //the default constructor
