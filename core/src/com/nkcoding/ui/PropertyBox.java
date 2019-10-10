@@ -130,7 +130,7 @@ public class PropertyBox extends WidgetGroup {
 
     public void verify() {
         if (valueTextField != null)
-            valueTextField.setColor(data.verifyInit(valueTextField.getText())
+            valueTextField.setColor(valueTextField.getText().equals("") || data.verifyInit(valueTextField.getText())
                     ? style.legalInputColor : style.illegalInputColor);
         changedTextField.setColor(data.verifyHandler(changedTextField.getText(), methods)
                 ? style.legalInputColor : style.illegalInputColor);
