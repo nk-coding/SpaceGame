@@ -1,8 +1,10 @@
 package com.nkcoding.spacegame.spaceship;
 
+import com.nkcoding.interpreter.ConcurrentStackItem;
 import com.nkcoding.interpreter.ScriptingEngine;
 
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class VirtualProperty<T> extends ExternalProperty<T>{
     private LinkedList<T> updatedValues;
@@ -24,9 +26,9 @@ public class VirtualProperty<T> extends ExternalProperty<T>{
     }
 
     @Override
-    public void startChangedHandler(ScriptingEngine engine) {
+    public void startChangedHandler(ScriptingEngine engine, final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables) {
         while (!updatedValues.isEmpty()) {
-            engine.runMethod(getChangedMethodStatement(), updatedValues.pop());
+            engine.runMethod(getChangedMethodStatement(), globalVariables, updatedValues.pop());
         }
     }
 

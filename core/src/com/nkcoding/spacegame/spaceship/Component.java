@@ -184,11 +184,7 @@ public abstract class Component implements ExternalPropertyHandler {
         ship.destroyComponent(this);
     }
 
-
     public void act(float delta) {
-        for (ExternalProperty property : getProperties().values()) {
-            property.startChangedHandler(ship.getSpaceSimulation().getScriptingEngine());
-        }
     }
 
     /**

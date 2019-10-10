@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.nkcoding.interpreter.ConcurrentStackItem;
 import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.interpreter.compiler.CompileException;
@@ -13,6 +14,7 @@ import com.nkcoding.interpreter.compiler.Program;
 import com.nkcoding.spacegame.SpaceSimulation;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class Ship extends Simulated implements ExternalPropertyHandler {
@@ -54,6 +56,9 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         return name;
     }
 
+    //global variables
+    private final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables;
+
     //region properties
     //virtual property when a key is pressed
     public final VirtualProperty<String> keyDown = register(new VirtualProperty<>(KeyDownKey, DataTypes.String));
@@ -89,8 +94,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         } catch (CompileException e) {
             e.printStackTrace();
         }
-        //set Scripting engine
-        spaceSimulation.setScriptingEngine(new ScriptingEngine(program));
+        globalVariables = program.globalVariables;
         HashMap<String, MethodStatement> methods = new HashMap<>();
         for (MethodStatement statement : program.methods) {
             methods.put(statement.getDefinition().getName(), statement);
@@ -120,6 +124,8 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         getSpaceSimulation().addExternalPropertyHandler(this);
         //receives key inputs
         setReceivesKeyInput(true);
+        //set globalVariables
+        this.globalVariables = oldShip.globalVariables;
         //init the externalProperties
         this.initProperties(oldShip.getProperties().values());
         //set the components
@@ -316,11 +322,13 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         angularVelocity.set(body.getAngularVelocity());
         //property changed
         for (ExternalProperty property : getProperties().values()) {
-            property.startChangedHandler(getSpaceSimulation().getScriptingEngine());
+            property.startChangedHandler(getSpaceSimulation().getScriptingEngine(), globalVariables);
         }
         //call act on all components
         for (Component component : components) {
             component.act(time);
+            component.getProperties().values()
+                    .forEach(property -> property.startChangedHandler(getSpaceSimulation().getScriptingEngine(), globalVariables));
         }
     }
 

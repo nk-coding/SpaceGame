@@ -2,6 +2,7 @@ package com.nkcoding.interpreter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class Stack {
@@ -14,14 +15,19 @@ public class Stack {
     //the scriptingEngine is mainly used for the requestExternalMethod
     private ScriptingEngine scriptingEngine;
 
+    //map with all globalVariables
+    final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables;
+
     //sets the debug mode
     private boolean debugMode = false;
 
     //constructor
     //wants a initial capacity for the Stack
-    public Stack(int initialCapacity, ScriptingEngine scriptingEngine){
+    public Stack(int initialCapacity, ScriptingEngine scriptingEngine,
+                 final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables){
         stackItems = new ArrayList<StackItem>(initialCapacity);
         this.scriptingEngine = scriptingEngine;
+        this.globalVariables = globalVariables;
     }
 
     public <T> void addToStack(String name, T value, String type){
@@ -39,7 +45,7 @@ public class Stack {
                 return stackItems.get(x);
             }
         }
-        return scriptingEngine.globalVariables.get(name);
+        return globalVariables.get(name);
     }
 
 

@@ -19,28 +19,25 @@ public class ScriptingEngine {
         return futureQueue;
     }
 
-    final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables;
-
     //the ThreadPool where all scripts run
     //I probably replace this with a fixed size pool to reduce CPU performance impact, because these scripts run normally
     //at a relatively low priority
     private ExecutorService executor = Executors.newCachedThreadPool();
-
-    public ScriptingEngine(Program program) {
-        this.globalVariables = program.globalVariables;
-    }
 
     /**
      * call a method async
      * @param methodStatement the method that is invoked
      * @param parameters the parameters for the method
      */
-    public void runMethod(MethodStatement methodStatement, Object... parameters){
+    public void runMethod(MethodStatement methodStatement,
+                          final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables,
+                          Object... parameters) {
         //create the necessary stack
-        Stack stack = new Stack(10, this);
+        Stack stack = new Stack(10, this, globalVariables);
         //no parameters and that's ok
         if (methodStatement.getDefinition().getParameters().length == 0 && (parameters == null || parameters.length == 0)) {
             executor.submit(() -> {
+
                 stack.beginStackLevel();
                 try {
                     methodStatement.run(stack);

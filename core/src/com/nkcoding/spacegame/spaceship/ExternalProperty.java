@@ -1,7 +1,10 @@
 package com.nkcoding.spacegame.spaceship;
 
+import com.nkcoding.interpreter.ConcurrentStackItem;
 import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.ScriptingEngine;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class ExternalProperty<T> {
 
@@ -34,9 +37,9 @@ public abstract class ExternalProperty<T> {
         this.name = name;
     }
 
-    public void startChangedHandler(ScriptingEngine engine) {
+    public void startChangedHandler(ScriptingEngine engine, final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables) {
         if (notifyChanges && changed && getChangedMethodStatement() != null) {
-            engine.runMethod(getChangedMethodStatement(), get2());
+            engine.runMethod(getChangedMethodStatement(), globalVariables, get2());
             changed = false;
         }
     }

@@ -35,10 +35,6 @@ public class SpaceSimulation implements InputProcessor {
         return scriptingEngine;
     }
 
-    public void setScriptingEngine(ScriptingEngine scriptingEngine) {
-        this.scriptingEngine = scriptingEngine;
-    }
-
     //AssetManager to load the resources
     private final ExtAssetManager assetManager;
 
@@ -73,6 +69,8 @@ public class SpaceSimulation implements InputProcessor {
     public SpaceSimulation(SpaceGame spaceGame) {
         //set Batch and assetManager
         assetManager = spaceGame.getAssetManager();
+        //init scriptingEngine
+        scriptingEngine = new ScriptingEngine();
         //init the world
         world = new World(new Vector2(0, 0), true);
         //TODO set contact listeners
