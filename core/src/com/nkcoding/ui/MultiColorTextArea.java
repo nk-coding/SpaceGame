@@ -431,9 +431,6 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         int lineBreakIndex = 0;
         int colorsIndex = 0;
 
-        //simple constructor
-        ColorRegion() {}
-
         //constructor which sets a bit more
         ColorRegion(int lineBreakIndex, int colorsIndex) {
             this.lineBreakIndex = lineBreakIndex;
@@ -537,7 +534,6 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         if (index >= 0 && index + 1 < linesBreak.size && linesBreak.items[index] == cursor
                 && linesBreak.items[index + 1] == cursor) {
             cursorLine += count;
-            //System.out.println("set cursorLine in moveCursor");
             if (jump) {
                 super.moveCursor(forward, jump);
             }
@@ -547,7 +543,6 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         }
 
         updateCurrentLine();
-        //System.out.println("update from move cursor");
         updateScrollPane();
 
     }
@@ -576,7 +571,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
 
     public float getCursorY () {
         BitmapFont font = style.font;
-        return -(-font.getDescent() / 2 - (cursorLine /*- firstLineShowing */+ 1) * font.getLineHeight());
+        return -(-font.getDescent() / 2 - (cursorLine + 1) * font.getLineHeight());
     }
 
     @Override
@@ -753,7 +748,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
                             //check if there is a end bracket
                             boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == '}';
                             paste(" ".repeat(spaces + 3), false, true);
-                            paste("\n" + " ".repeat(spaces) + (endBracketExists ? "" : "}"), false, false);
+                            if (endBracketExists) paste("\n" + " ".repeat(spaces), false, false);
                         }
                         else {
                             // just a normal new line
