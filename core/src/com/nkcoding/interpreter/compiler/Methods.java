@@ -35,6 +35,12 @@ public class Methods {
                     System.out.println((String)obj[0]);
                     return null;
                 });
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "currentTimeMillis", DataTypes.Void),
+                (Function<Object[], Void>) obj ->
+                {
+                    System.out.println(System.currentTimeMillis());
+                    return null;
+                });
         predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "intToStr", DataTypes.String, new TypeNamePair("i", DataTypes.Integer)),
                 (Function<Object[], String>) obj ->
                 {
