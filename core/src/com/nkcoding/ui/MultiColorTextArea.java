@@ -181,8 +181,6 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
             }
             showCursor();
         }
-        //I dont't know if this works
-        updateScrollPane();
     }
 
 
@@ -199,6 +197,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
                 cursorLine = line;
             }
         }
+        updateScrollPane();
     }
 
     /** Scroll the text area to show the line of the cursor **/
@@ -503,7 +502,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
 
             //update position if necessary and possible
             //System.out.println("update form calculate offsets");
-            updateScrollPane();
+            //updateScrollPane();
 
             //if there is a color parser, now is the wright time
             if (colorParser != null) {
@@ -543,7 +542,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         }
 
         updateCurrentLine();
-        updateScrollPane();
+        //updateScrollPane();
 
     }
 
@@ -560,7 +559,6 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
 
 
     public float getCursorX () {
-        float cursorPosX;
         if (cursor >= glyphPositions.size) return 0;
         else if (cursorLine * 2 >= linesBreak.size) return 0;
         else if (cursor < 0) return 0;
@@ -610,10 +608,13 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         if (getParent() instanceof ScrollPane) {
             ScrollPane scrollPane = (ScrollPane)getParent();
             float posX = getCursorX();
-            if (posX > scrollPane.getScrollWidth() / 2) posX += 10;
-            if (posX < 30) posX = 0;
+            //just a hack, but it works fine
+            if (posX > 0) {
+                if (posX > scrollPane.getScrollWidth() / 2) posX += 10;
+                else if (posX < 100) posX = 0;
 
-            scrollPane.scrollTo(posX, getHeight() - getCursorY(), 0, style.font.getLineHeight());
+                scrollPane.scrollTo(posX, getHeight() - getCursorY(), 0, style.font.getLineHeight());
+            }
         }
     }
 
