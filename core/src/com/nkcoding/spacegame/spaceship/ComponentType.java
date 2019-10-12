@@ -14,6 +14,8 @@ import static com.nkcoding.spacegame.spaceship.ExternalPropertyData.*;
 public enum ComponentType {
     Engine(Engine::new, 1, 2, 100, 100, Asset.Engine,
             of(com.nkcoding.spacegame.components.Engine.EnginePowerKey, DataTypes.Integer, false)),
+    Cannon(Cannon::new, 1, 2, 100, 100, Asset.CloseSymbol,
+            of(com.nkcoding.spacegame.components.Cannon.IsShoothingKey, DataTypes.Boolean, false)),
     PowerCore(PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
     BasicHull(BasicHull::new, Asset.BasicHull);
 
