@@ -28,10 +28,12 @@ public class Cannon extends Component {
         lastFired += delta;
         if (lastFired > 1f && isShootingProperty.get()) {
             lastFired = 0;
+            float angle = getShip().getRotation() + getComponentDef().getRotation() * 90 * MathUtils.degreesToRadians;
             CannonBullet bullet = new CannonBullet(getShip().getSpaceSimulation(),
                     localToWorld(new Vector2(0.5f * ShipDef.UNIT_SIZE, 2f * ShipDef.UNIT_SIZE)),
-                    getShip().getRotation() + getComponentDef().getRotation() * 90 * MathUtils.degreesToRadians,
-                    0.1f, 3);
+                    angle,
+                    0.1f,
+                    getShip().getBody().getLinearVelocity().add(new Vector2(0, 2).rotateRad(angle)));
             getShip().getSpaceSimulation().addSimulated(bullet);
         }
     }
@@ -54,7 +56,7 @@ public class Cannon extends Component {
         //the length
         private float length;
 
-        protected CannonBullet(SpaceSimulation spaceSimulation, Vector2 pos, float angle, float length, float velocity) {
+        protected CannonBullet(SpaceSimulation spaceSimulation, Vector2 pos, float angle, float length, Vector2 velocity) {
             super(spaceSimulation, BodyDef.BodyType.KinematicBody);
             final Body body = getBody();
             body.setBullet(true);
@@ -62,7 +64,7 @@ public class Cannon extends Component {
             edgeShape.set(new Vector2(0,0), new Vector2(0, length));
             body.createFixture(edgeShape, 0f);
             body.setTransform(pos, angle);
-            body.setLinearVelocity(new Vector2(0, velocity).rotateRad(angle));
+            body.setLinearVelocity(velocity);
             this.texture = getSpaceSimulation().getAssetManager().getTexture(Asset.Bullet);
             this.length = length;
         }
