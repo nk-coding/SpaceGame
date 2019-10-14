@@ -58,6 +58,8 @@ public class Cannon extends Component {
         //the length
         private float length;
 
+        private boolean collided = false;
+
         protected CannonBullet(SpaceSimulation spaceSimulation, Vector2 pos, float angle, float length, Vector2 velocity) {
             super(spaceSimulation, BodyDef.BodyType.KinematicBody, 2);
             final Body body = getBody();
@@ -100,7 +102,8 @@ public class Cannon extends Component {
         public void beginContact(Simulated other, Fixture f1, Fixture f2) {
             getSpaceSimulation().removeSimulated(this);
             Object userData = f2.getUserData();
-            if (userData instanceof Component) {
+            if (userData instanceof Component && !collided) {
+                collided = true;
                 ((Component)userData).damageAt(f2, 100);
             }
         }

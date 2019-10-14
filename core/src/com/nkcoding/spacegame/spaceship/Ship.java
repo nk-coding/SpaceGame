@@ -119,6 +119,8 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         super(oldShip.getSpaceSimulation(), BodyDef.BodyType.DynamicBody, 1);
         Body oldBody = oldShip.getBody();
         getBody().setTransform(oldBody.getPosition(), oldBody.getAngle());
+        getBody().setLinearVelocity(oldBody.getLinearVelocity());
+        getBody().setAngularVelocity(oldBody.getAngularVelocity());
         //check for new name
         String nameStart = oldShip.getName();
         while (getSpaceSimulation().containsExternalPropertyHandler(nameStart += "#"));
