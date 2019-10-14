@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
@@ -77,7 +77,34 @@ public class SpaceSimulation implements InputProcessor {
         scriptingEngine = new ScriptingEngine();
         //init the world
         world = new World(new Vector2(0, 0), true);
-        //TODO set contact listeners
+        world.setContactListener(new ContactListener() {
+            @Override
+            public void beginContact(Contact contact) {
+                Simulated s1 = (Simulated)contact.getFixtureA().getBody().getUserData();
+                Simulated s2 = (Simulated)contact.getFixtureB().getBody().getUserData();
+                if (s1.getCollisionPriority() > s2.getCollisionPriority()) {
+                    s1.beginContact(s2, contact.getFixtureA(), contact.getFixtureB());
+                }
+                else {
+                    s2.beginContact(s1, contact.getFixtureB(), contact.getFixtureA());
+                }
+            }
+
+            @Override
+            public void endContact(Contact contact) {
+
+            }
+
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {
+
+            }
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {
+
+            }
+        });
         //init camera
         this.camera = new OrthographicCamera();
     }

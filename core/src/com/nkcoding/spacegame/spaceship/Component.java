@@ -160,6 +160,7 @@ public abstract class Component implements ExternalPropertyHandler {
         ComponentDef def = getComponentDef();
         this.borderFixture = ship.getBody().createFixture(componentDef.getShape(def.getX(), def.getY()),
                 type.mass * ShipDef.UNIT_SIZE * ShipDef.UNIT_SIZE / type.width / type.height);
+        borderFixture.setUserData(this);
     }
 
     /**
@@ -216,11 +217,11 @@ public abstract class Component implements ExternalPropertyHandler {
             case 0:
                 return attachComponentAt(x,y,side);
             case 1:
-                return attachComponentAt(y, def.getHeight() - x, (side + 3) % 4);
+                return attachComponentAt(y, def.getHeight() - x - 1, (side + 3) % 4);
             case 2:
-                return attachComponentAt(def.getWidth() - x, def.getHeight() - y, (side + 2) % 4);
+                return attachComponentAt(def.getWidth() - x - 1, def.getHeight() - y - 1, (side + 2) % 4);
             case 3:
-                return attachComponentAt(def.getHeight() - y, x, (side + 1) % 4);
+                return attachComponentAt(def.getHeight() - y - 1, x, (side + 1) % 4);
             default:
                 throw new IllegalArgumentException("side must be between 0 and 3");
         }
@@ -271,6 +272,10 @@ public abstract class Component implements ExternalPropertyHandler {
                 break;
         }
         return ship.localToWorldCoordinates(local);
+    }
+
+    public void damageAt(Fixture fixture, int damage) {
+        health.set(health.get() - damage);
     }
 
 }

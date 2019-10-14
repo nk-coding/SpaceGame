@@ -11,7 +11,7 @@ public class BooleanProperty extends ExternalProperty<Boolean> {
 
     public void set(boolean value) {
         if (this.value != value) changed = true;
-        changed = true;
+        this.value = value;
     }
 
     public BooleanProperty(boolean readonly, boolean notifyChanges, String name) {

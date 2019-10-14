@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.spacegame.SpaceSimulation;
 
 public class Simulated {
@@ -36,6 +37,12 @@ public class Simulated {
     }
 
     private boolean receivesKeyInput = false;
+
+    private int collisionPriority;
+
+    public int getCollisionPriority() {
+        return collisionPriority;
+    }
 
     /**
      * does this Simulated receive key input?
@@ -93,9 +100,10 @@ public class Simulated {
     }
 
     //the default constructor
-    protected Simulated(SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType) {
+    protected Simulated(SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority) {
         this.spaceSimulation = spaceSimulation;
         this.bodyType = bodyType;
+        this.collisionPriority = collisionPriority;
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = bodyType;
         bodyDef.position.set(0, 0);
@@ -104,9 +112,10 @@ public class Simulated {
     }
 
     //the bigger constructor
-    protected Simulated(SpaceSimulation spaceSimulation, BodyDef bodyDef) {
+    protected Simulated(SpaceSimulation spaceSimulation, BodyDef bodyDef, int collisionPriority) {
         this.spaceSimulation = spaceSimulation;
         this.bodyType = bodyDef.type;
+        this.collisionPriority = collisionPriority;
         this.body = spaceSimulation.getWorld().createBody(bodyDef);
         this.body.setUserData(this);
     }
@@ -156,5 +165,7 @@ public class Simulated {
         return body.getLocalPoint(world);
     }
 
+    public void beginContact(Simulated other, Fixture f1, Fixture f2) {
 
+    }
 }

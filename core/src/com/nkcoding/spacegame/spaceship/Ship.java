@@ -3,6 +3,7 @@ package com.nkcoding.spacegame.spaceship;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.nkcoding.interpreter.ConcurrentStackItem;
 import com.nkcoding.interpreter.MethodStatement;
@@ -80,7 +81,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
 
     //construct Ship out of ShipDef (public constructor)
     public Ship(ShipDef def, SpaceSimulation spaceSimulation) {
-        super(spaceSimulation, BodyDef.BodyType.DynamicBody);
+        super(spaceSimulation, BodyDef.BodyType.DynamicBody, 1);
         name = def.getName();
         spaceSimulation.addExternalPropertyHandler(this);
         if (!def.getValidated()) throw new IllegalArgumentException("shipDef is not validated");
@@ -115,7 +116,9 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     //package-private constructor to construct Ship out of components (used to split up a ship)
     //pass other ship to copy important stuff (external method stuff etc.)
     Ship(Ship oldShip, List<Component> components) {
-        super(oldShip.getSpaceSimulation(), BodyDef.BodyType.DynamicBody);
+        super(oldShip.getSpaceSimulation(), BodyDef.BodyType.DynamicBody, 1);
+        Body oldBody = oldShip.getBody();
+        getBody().setTransform(oldBody.getPosition(), oldBody.getAngle());
         //check for new name
         String nameStart = oldShip.getName();
         while (getSpaceSimulation().containsExternalPropertyHandler(nameStart += "#"));
@@ -191,14 +194,19 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
 
     //checks if the ship structure is intact or constructs partial ships otherwise
     private void checkStructure(){
-        checkStructureRec(components.get(0));
-        List<Component> otherComponents = components.stream().filter(com -> !com.structureHelper).collect(Collectors.toList());
-        //remove other components
-        otherComponents.forEach(this::removeComponent);
-        //reset remaining
-        components.forEach(component -> component.structureHelper = false);
-        //create new ship
-        if (otherComponents.size() > 0) getSpaceSimulation().addSimulated(new Ship(this, otherComponents));
+        if (components.size() > 0) {
+            checkStructureRec(components.get(0));
+            List<Component> otherComponents = components.stream().filter(com -> !com.structureHelper).collect(Collectors.toList());
+            //remove other components
+            otherComponents.forEach(this::removeComponent);
+            //reset remaining
+            components.forEach(component -> component.structureHelper = false);
+            //create new ship
+            if (otherComponents.size() > 0) getSpaceSimulation().addSimulated(new Ship(this, otherComponents));
+        }
+        else {
+            System.out.println("this ship has no component?!");
+        }
     }
 
     //checks the structure recursive (helper for checkStructure())

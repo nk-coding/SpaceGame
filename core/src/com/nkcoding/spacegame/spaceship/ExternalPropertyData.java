@@ -45,6 +45,7 @@ public class ExternalPropertyData {
     }
 
     public boolean verifyInit(String init) {
+        if (init.equals("")) return true;
         switch (type) {
             case DataTypes.Boolean:
                 return init.equalsIgnoreCase("true") || init.equalsIgnoreCase("false");

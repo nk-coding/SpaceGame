@@ -27,13 +27,16 @@ public class Engine extends Component {
 
     @Override
     protected boolean attachComponentAt(int x, int y, int side) {
+        if (y != 1) {
+            System.out.printf("x:%d, y:%d, side:%d%n", x,y,side);
+        }
         return y == 1;
     }
 
     public void applyForce(float strength){
         final Body body = getShip().getBody();
         Vector2 pos = localToWorld(new Vector2(ShipDef.UNIT_SIZE / 2f, 0));
-        Vector2 force = body.getWorldVector(new Vector2(0, strength));
+        Vector2 force = body.getWorldVector(new Vector2(0, strength).rotate(90 * getComponentDef().getRotation()));
         body.applyForce(force, pos, true);
     }
 }
