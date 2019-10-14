@@ -100,6 +100,7 @@ public class Simulated {
         bodyDef.type = bodyType;
         bodyDef.position.set(0, 0);
         this.body = spaceSimulation.getWorld().createBody(bodyDef);
+        this.body.setUserData(this);
     }
 
     //the bigger constructor
@@ -107,6 +108,7 @@ public class Simulated {
         this.spaceSimulation = spaceSimulation;
         this.bodyType = bodyDef.type;
         this.body = spaceSimulation.getWorld().createBody(bodyDef);
+        this.body.setUserData(this);
     }
 
     /**

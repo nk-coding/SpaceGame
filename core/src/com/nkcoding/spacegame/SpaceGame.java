@@ -3,14 +3,9 @@ package com.nkcoding.spacegame;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.nkcoding.interpreter.ScriptingEngine;
-import com.nkcoding.interpreter.compiler.CompileException;
-import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.spacegame.screens.GameScreen;
 import com.nkcoding.spacegame.screens.ShipBuilderScreen;
 import com.nkcoding.ui.UITestScreen;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 public class SpaceGame extends Game {
 	//one SpriteBatch for multiple Screens because heavy object
@@ -40,8 +35,6 @@ public class SpaceGame extends Game {
 		assetManager.loadAll();
 		//load saveGame
 		saveGame = SaveGameManager.load();
-
-
 		if (false) {
 			screen = new ShipBuilderScreen(this, saveGame.shipDef);
 		}
