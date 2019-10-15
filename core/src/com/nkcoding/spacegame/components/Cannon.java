@@ -5,16 +5,16 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.SpaceSimulation;
 import com.nkcoding.spacegame.spaceship.*;
+
 
 public class Cannon extends Component {
     public static final String IsShoothingKey = "IsShooting";
 
     //should the cannon fire?
-    public final BooleanProperty isShootingProperty = register(new BooleanProperty(false, true, IsShoothingKey));
+    protected final BooleanProperty isShootingProperty = register(new BooleanProperty(false, true, IsShoothingKey));
 
     private float lastFired = 0f;
 
