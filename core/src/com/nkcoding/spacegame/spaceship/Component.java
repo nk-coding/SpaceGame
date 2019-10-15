@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.utils.Align;
 import com.nkcoding.spacegame.ExtAssetManager;
+import com.nkcoding.spacegame.SpaceSimulation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -90,9 +91,11 @@ public abstract class Component implements ExternalPropertyHandler {
 
     //region properties
 
-    //health has to be stored again, because it changes during simulation
-    //if it reaches zero, the component should be destroyed TODO implementation
-    //should be initialized in constructor out of componentDef
+    /**
+     * health has to be stored again, because it changes during simulation
+     * if it reaches zero, the component should be destroyed
+     * should be initialized in constructor out of componentDef
+     */
     public final IntProperty health = register(new IntProperty(true, true, HealthKey) {
         @Override
         public void set(int value) {
@@ -104,10 +107,9 @@ public abstract class Component implements ExternalPropertyHandler {
         }
     });
 
-    //the power system is complicated
-    //it could be set ingame, but also uses automatic stuff
-
-    //power that component requests
+    /**
+     * power that component requests
+     */
     public final FloatProperty powerRequested = register(new FloatProperty(true, true, PowerRequestedKey) {
         @Override
         public void set(float value) {
@@ -116,7 +118,9 @@ public abstract class Component implements ExternalPropertyHandler {
         }
     });
 
-    //how important is it to get the power
+    /**
+     * how important is it to get the power
+     */
     public final IntProperty requestLevel = register(new IntProperty(false, true, RequestLevelKey) {
         @Override
         public void set(int value) {
@@ -125,11 +129,15 @@ public abstract class Component implements ExternalPropertyHandler {
         }
     });
 
-    //shows if the component get the full power (used to prevent issues with float rounding)
+    /**
+     * shows if the component get the full power (used to prevent issues with float rounding)
+     */
     public final BooleanProperty hasFullPower = register(new BooleanProperty(true, true, HasFullPowerKey));
 
 
-    //how much power does it actually get
+    /**
+     * how much power does it actually get
+     */
     public final FloatProperty powerReceived = register(new FloatProperty(true, true, PowerReceivedKey) {
         @Override
         public void set(float value) {
@@ -144,9 +152,32 @@ public abstract class Component implements ExternalPropertyHandler {
         this.type = componentDef.getType();
         this.componentDef = componentDef;
         setShip(ship);
-        defaultTexture = getAssetManager().getTexture(componentDef.getPreviewImage());
+        defaultTexture = getAssetManager().getTexture(componentDef.getDefaultTexture());
         //set health
         health.set(componentDef.getHealth());
+    }
+
+    //helper methods
+
+    /**
+     * @return getShip().getSpaceSimulation()
+     */
+    public SpaceSimulation getSpaceSimulation() {
+        return getShip().getSpaceSimulation();
+    }
+
+    /**
+     * @return the width including UNIT_SIZE
+     */
+    public float getWidth() {
+        return getComponentDef().getWidth() * ShipDef.UNIT_SIZE;
+    }
+
+    /**
+     * @return the height including UNIT_SIZE
+     */
+    public float getHeight() {
+        return getComponentDef().getHeight() * ShipDef.UNIT_SIZE;
     }
 
     //the physics system
@@ -181,7 +212,7 @@ public abstract class Component implements ExternalPropertyHandler {
         else System.out.println("this fixture should not be null");
     }
 
-    private void destroy() {
+    protected void destroy() {
         ship.destroyComponent(this);
     }
 
@@ -227,20 +258,36 @@ public abstract class Component implements ExternalPropertyHandler {
         }
     }
 
-    //just a simple default draw implementation
+    /**
+     * a simple draw implementation that draws the defaultTexture
+     * @param batch the Batch to draw on
+     */
     public void draw(Batch batch) {
-        ComponentDef def = getComponentDef();
-        float rotation = 90 * def.getRotation();
+        drawTexture(batch, defaultTexture, new Vector2(0, 0),
+                getWidth(), getHeight(), 0);
+    }
 
-        Vector2 drawPos = localToWorld(new Vector2(0,0));
-        batch.draw(defaultTexture,
+    /**
+     * draw a texture on the Component
+     * implements NO clipping
+     * @param batch the Batch to draw on
+     * @param texture the Texture to draw
+     * @param pos the not-normalized position where the Texture should be drawn
+     * @param width the non-normalized width
+     * @param height the non-normalized height
+     * @param degrees the angle in degrees
+     */
+    public void drawTexture(Batch batch, Texture texture, Vector2 pos, float width, float height, float degrees) {
+        ComponentDef def = getComponentDef();
+        Vector2 drawPos = localToWorld(pos);
+        batch.draw(texture,
                 drawPos.x, drawPos.y,
                 0, 0,
-                ShipDef.UNIT_SIZE * def.getWidth(), ShipDef.UNIT_SIZE * def.getHeight(),
+                width, height,
                 1,1,
-                rotation + ship.getRotation() * MathUtils.radiansToDegrees,
+                degrees + ship.getRotation() * MathUtils.radiansToDegrees + 90 * def.getRotation(),
                 0,0,
-                defaultTexture.getWidth(), defaultTexture.getHeight(),
+                texture.getWidth(), texture.getHeight(),
                 false, false);
     }
 
@@ -274,6 +321,11 @@ public abstract class Component implements ExternalPropertyHandler {
         return ship.localToWorldCoordinates(local);
     }
 
+    /**
+     * append some damage on the Component
+     * @param fixture the Fixture that was hit
+     * @param damage the amount of damage
+     */
     public void damageAt(Fixture fixture, int damage) {
         health.set(health.get() - damage);
     }

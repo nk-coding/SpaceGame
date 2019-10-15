@@ -31,12 +31,12 @@ public class Cannon extends Component {
         if (lastFired > 1f && isShootingProperty.get()) {
             lastFired = 0;
             float angle = getShip().getRotation() + getComponentDef().getRotation() * 90 * MathUtils.degreesToRadians;
-            CannonBullet bullet = new CannonBullet(getShip().getSpaceSimulation(),
+            CannonBullet bullet = new CannonBullet(getSpaceSimulation(),
                     localToWorld(new Vector2(0.5f * ShipDef.UNIT_SIZE, 2.3f * ShipDef.UNIT_SIZE)),
                     angle,
                     0.1f,
                     getShip().getBody().getLinearVelocity().add(new Vector2(0, 2).rotateRad(angle)));
-            getShip().getSpaceSimulation().addSimulated(bullet);
+            getSpaceSimulation().addSimulated(bullet);
         }
     }
 

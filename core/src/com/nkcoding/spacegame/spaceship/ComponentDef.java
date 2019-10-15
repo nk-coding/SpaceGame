@@ -77,8 +77,8 @@ public class ComponentDef {
     }
 
     //get the preview image file
-    public Asset getPreviewImage() {
-        return componentType.previewImg;
+    public Asset getDefaultTexture() {
+        return componentType.defaultTexture;
     }
 
     //name for the component

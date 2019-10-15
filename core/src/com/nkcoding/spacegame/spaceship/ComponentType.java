@@ -36,7 +36,7 @@ public enum ComponentType {
     public final BiFunction<ComponentDef, Ship, ? extends Component> constructor;
 
     //file position of the preview image
-    public final Asset previewImg;
+    public final Asset defaultTexture;
 
     //array with all the keys for the ExternalProperties
     public final ExternalPropertyData[] propertyDefs;
@@ -44,7 +44,8 @@ public enum ComponentType {
     //the mass of the Component
     public final float mass;
 
-    ComponentType(BiFunction<ComponentDef, Ship, ? extends Component> constructor, int width, int height, int health, float mass, Asset previewImg,
+    ComponentType(BiFunction<ComponentDef, Ship, ? extends Component> constructor, int width, int height,
+                  int health, float mass, Asset defaultTexture,
                   ExternalPropertyData... propertyDefs) {
         ExternalPropertyData[] newPropertyDefs = new ExternalPropertyData[propertyDefs.length + 5];
         System.arraycopy(propertyDefs, 0, newPropertyDefs,5, propertyDefs.length);
@@ -55,7 +56,7 @@ public enum ComponentType {
         newPropertyDefs[4] = new ExternalPropertyData(PowerReceivedKey, DataTypes.Float);
         this.propertyDefs = newPropertyDefs;
         this.constructor = constructor;
-        this.previewImg = previewImg;
+        this.defaultTexture = defaultTexture;
         this.width = width;
         this.height = height;
         this.health = health;

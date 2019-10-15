@@ -321,7 +321,7 @@ public class ShipBuilderScreen implements Screen {
                     DragAndDrop.Payload payload = new DragAndDrop.Payload();
                     payload.setObject(def);
                     float componentSize = ShipDesigner.COMPONENT_SIZE * shipDesignerZoomScrollPane.getZoom();
-                    Image dragActor = new Image(assetManager.getTexture(def.getPreviewImage()));
+                    Image dragActor = new Image(assetManager.getTexture(def.getDefaultTexture()));
                     dragActor.setRotation(def.getRotation() * 90);
                     dragActor.setSize(
                             componentSize * def.getWidth(),
@@ -446,7 +446,7 @@ public class ShipBuilderScreen implements Screen {
     private void initComponentsStack() {
         //at this point, this is (sadly) only the TestImp
         for (ComponentType type : ComponentType.values()) {
-            Image img = new Image(assetManager.getTexture(type.previewImg));
+            Image img = new Image(assetManager.getTexture(type.defaultTexture));
 
             img.setUserObject(type);
             componentsStack.add(img).width(ShipDesigner.COMPONENT_SIZE * type.width)

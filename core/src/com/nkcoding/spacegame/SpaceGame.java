@@ -35,7 +35,7 @@ public class SpaceGame extends Game {
 		assetManager.loadAll();
 		//load saveGame
 		saveGame = SaveGameManager.load();
-		if (true) {
+		if (false) {
 			screen = new ShipBuilderScreen(this, saveGame.shipDef);
 		}
 		else {

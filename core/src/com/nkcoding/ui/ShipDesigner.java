@@ -64,7 +64,7 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
 
     private Texture getComponentTexture(ComponentDef def) {
         if (!componentTextureMap.containsKey(def.getType())) {
-            componentTextureMap.put(def.getType(), assetManager.getTexture(def.getPreviewImage()));
+            componentTextureMap.put(def.getType(), assetManager.getTexture(def.getDefaultTexture()));
         }
         return componentTextureMap.get(def.getType());
     }
