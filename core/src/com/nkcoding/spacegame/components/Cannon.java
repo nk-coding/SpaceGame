@@ -46,7 +46,7 @@ public class Cannon extends Component {
     }
 
     /**
-     * represents a bullet of this cannon
+     * represents a bullet of this cannonS
      */
     public static class CannonBullet extends Simulated {
 

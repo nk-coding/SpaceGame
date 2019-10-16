@@ -19,6 +19,9 @@ public class ExternalPropertyData {
     /**can the value be modified by the user*/
     public final boolean readonly;
 
+    /**can the user get the value*/
+    public final boolean writeonly;
+
     public String initData = "";
 
     public String handlerName = "";
@@ -28,20 +31,31 @@ public class ExternalPropertyData {
      * @param type the type of the property
      * @param readonly can the value be modified by the user
      */
-    public ExternalPropertyData(String name, String type, boolean readonly) {
+    public ExternalPropertyData(String name, String type, boolean readonly, boolean writeonly) {
         //check if type is ok
         if (type.equals(DataTypes.Void)) throw new IllegalArgumentException("type cannot be " + DataTypes.Void);
         this.name = name;
         this.type = type;
         this.readonly = readonly;
+        this.writeonly = writeonly;
     }
 
     /**
-     * wrapper which sets readonly to true
+     * wrapper which sets writeonly to false
+     * @param name the name of the property
+     * @param type the type of the property
+     * @param readonly can the value be modified by the user
+     */
+    public ExternalPropertyData(String name, String type, boolean readonly) {
+        this(name, type, readonly, false);
+    }
+
+    /**
+     * wrapper which sets readonly to true and writeonly to false
      * @param type the type of the property
      */
     public ExternalPropertyData(String name, String type) {
-        this(name, type, true);
+        this(name, type, true, false);
     }
 
     public boolean verifyInit(String init) {
@@ -80,8 +94,15 @@ public class ExternalPropertyData {
      * @return true if everything is ok
      */
     public boolean verifyHandler(String handlerName, Map<String, ? extends MethodDefinition> methods) {
-        //TODO check for correct type
-        return handlerName.equals("") || methods.containsKey(handlerName);
+        boolean correctHandler = false;
+        MethodDefinition def = methods.get(handlerName);
+        if (def != null) {
+            if (def.getParameters().length == 1 && def.getParameters()[0].getDataType().equals(type)) {
+                correctHandler = true;
+            }
+        }
+
+        return handlerName.equals("") || correctHandler;
     }
 
     /**
@@ -97,9 +118,11 @@ public class ExternalPropertyData {
 
     //adds the external method definitions the list
     public void addExternalMethodDefs(Collection<? super MethodDefinition> list) {
-        list.add(createExternalMethodDef(true));
         if (!readonly) {
             list.add(createExternalMethodDef(false));
+        }
+        if (!writeonly) {
+            list.add(createExternalMethodDef(true));
         }
     }
 
@@ -125,7 +148,7 @@ public class ExternalPropertyData {
 
     @Override
     protected Object clone() {
-        return new ExternalPropertyData(name, type, readonly);
+        return new ExternalPropertyData(name, type, readonly, writeonly);
     }
 
     /**
@@ -140,5 +163,12 @@ public class ExternalPropertyData {
      */
     public static ExternalPropertyData of(String name, String type, boolean readonly) {
         return new ExternalPropertyData(name, type, readonly);
+    }
+
+    /**
+     * wrapper for new ExternalPropertyData(name, type, readonly, writeonly)
+     */
+    public static ExternalPropertyData of(String name, String type, boolean readonly, boolean writeonly) {
+        return new ExternalPropertyData(name, type, readonly, writeonly);
     }
 }

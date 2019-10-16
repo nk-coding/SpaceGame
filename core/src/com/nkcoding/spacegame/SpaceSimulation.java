@@ -4,6 +4,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -61,6 +62,9 @@ public class SpaceSimulation implements InputProcessor {
         this.cameraSimulated = cameraSimulated;
     }
 
+    //DEBUG
+    Box2DDebugRenderer debugRenderer;
+
     //World for Box2D
     //this is the physics simulation
     private final World world;
@@ -107,6 +111,7 @@ public class SpaceSimulation implements InputProcessor {
         });
         //init camera
         this.camera = new OrthographicCamera();
+        debugRenderer = new Box2DDebugRenderer();
     }
 
     /**add a simulated
@@ -202,8 +207,14 @@ public class SpaceSimulation implements InputProcessor {
         batch.setProjectionMatrix(camera.combined);
         //debugRenderer.render(world, batch.getProjectionMatrix().cpy());
         //draw simulateds
-        for (Simulated simulated : simulateds) simulated.draw(batch);
-        batch.flush();
+        if (false) {
+            for (Simulated simulated : simulateds) simulated.draw(batch);
+            batch.flush();
+        }
+        else {
+            debugRenderer.render(world, camera.combined);
+        }
+
     }
 
     //called when the screen is resized
