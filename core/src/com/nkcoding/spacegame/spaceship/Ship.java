@@ -69,11 +69,16 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     //wrapper for the velocity from Body
     public final FloatProperty velocity = register(new FloatProperty( true, true, VelocityKey));
     //focus from SpaceSimulation
-    public final BooleanProperty cameraFocus = register(new BooleanProperty(false, true, CameraFocusKey) {
+    public final VirtualProperty<Boolean> cameraFocus = register(new VirtualProperty<>(true, CameraFocusKey, DataTypes.Boolean) {
         @Override
-        public void set(boolean value) {
+        public void set(Boolean value) {
             super.set(value);
             if (value)getSpaceSimulation().setCameraSimulated(Ship.this);
+        }
+
+        @Override
+        public Boolean get2() {
+            return getSpaceSimulation().getCameraSimulated() == Ship.this;
         }
     });
     //endregion

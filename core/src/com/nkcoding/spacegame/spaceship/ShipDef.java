@@ -170,8 +170,8 @@ public class ShipDef {
     //the main Constructor
     public ShipDef() {
         //add all the properties
-        properties.put(KeyDownKey, of(KeyDownKey, DataTypes.String));
-        properties.put(KeyUpKey, of(KeyUpKey, DataTypes.String));
+        properties.put(KeyDownKey, of(KeyDownKey, DataTypes.String, true, true));
+        properties.put(KeyUpKey, of(KeyUpKey, DataTypes.String, true, true));
         properties.put(AngularVelocityKey, of(AngularVelocityKey, DataTypes.Float));
         properties.put(VelocityKey, of(VelocityKey, DataTypes.Float));
         properties.put(CameraFocusKey, of(CameraFocusKey, DataTypes.Boolean, false));
