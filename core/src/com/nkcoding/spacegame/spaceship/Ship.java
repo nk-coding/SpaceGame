@@ -135,7 +135,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         //set globalVariables
         this.globalVariables = oldShip.globalVariables;
         //init the externalProperties
-        this.initProperties(oldShip.getProperties().values());
+        this.cloneProperties(oldShip.getProperties().values());
         //set the components
         this.components = new ArrayList<>(components.size());
         //init the map

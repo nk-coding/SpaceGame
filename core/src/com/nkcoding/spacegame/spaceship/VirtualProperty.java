@@ -18,4 +18,10 @@ public abstract class VirtualProperty<T> extends ExternalProperty<T> {
 
     @Override
     public abstract T get2();
+
+    @Override
+    public void copyFrom(ExternalProperty<T> from) {
+        //don't copy value, because this does not make any sense for a virtual property
+        setChangedMethodStatement(from.getChangedMethodStatement());
+    }
 }

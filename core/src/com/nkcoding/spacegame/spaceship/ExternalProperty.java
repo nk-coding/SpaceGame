@@ -44,6 +44,16 @@ public abstract class ExternalProperty<T> {
         }
     }
 
+    /**
+     * a simple clone method
+     * should be overwritten, if cloning should be done differently or not at all
+     * @param from the ExternalProperty to clone
+     */
+    public void copyFrom(ExternalProperty<T> from) {
+        set(from.get2());
+        setChangedMethodStatement(from.getChangedMethodStatement());
+    }
+
     public abstract void setInitValue(String value);
 
     public abstract void set(T value);

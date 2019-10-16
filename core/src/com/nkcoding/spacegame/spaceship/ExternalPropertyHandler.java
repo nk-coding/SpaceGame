@@ -25,13 +25,12 @@ public interface ExternalPropertyHandler {
     }
 
     //init the ExternalProperties with the ExternalProperties
-    default void initProperties(Collection<ExternalProperty> toClone) {
+    default void cloneProperties(Collection<ExternalProperty> toClone) {
         Map<String, ExternalProperty> properties = getProperties();
         for (ExternalProperty clone : toClone) {
             ExternalProperty property = properties.get(clone.name);
             if (property != null) {
-                property.set(clone.get2());
-                property.setChangedMethodStatement(clone.getChangedMethodStatement());
+                property.copyFrom(clone);
             }
         }
     }
