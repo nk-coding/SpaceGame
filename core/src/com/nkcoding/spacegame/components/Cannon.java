@@ -27,7 +27,6 @@ public class Cannon extends Component {
     public void act(float delta) {
         super.act(delta);
         lastFired += delta;
-        //System.out.println(isShootingProperty.get());
         if (lastFired > 1f && isShootingProperty.get()) {
             lastFired = 0;
             float angle = getShip().getRotation() + getComponentDef().getRotation() * 90 * MathUtils.degreesToRadians;
@@ -46,7 +45,9 @@ public class Cannon extends Component {
         return y == 0;
     }
 
-    //represents a bullet of this cannon
+    /**
+     * represents a bullet of this cannon
+     */
     public static class CannonBullet extends Simulated {
 
         //the amount of time this bullet exists
