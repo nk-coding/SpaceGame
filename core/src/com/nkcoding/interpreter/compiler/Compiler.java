@@ -2,7 +2,6 @@ package com.nkcoding.interpreter.compiler;
 
 import com.nkcoding.interpreter.*;
 import com.nkcoding.interpreter.operators.*;
-import com.nkcoding.spacegame.spaceship.Component;
 import com.nkcoding.spacegame.spaceship.ComponentType;
 import com.nkcoding.spacegame.spaceship.ExternalPropertyData;
 import com.nkcoding.spacegame.spaceship.ShipDef;
@@ -104,7 +103,7 @@ public class Compiler {
             TypeNamePair[] parameters = normalMethods[x].getDefinition().getParameters();
             //add all parameters to stack
             for (TypeNamePair parameter : parameters) {
-                stack.addToStack(parameter.getName(), parameter.getDataType());
+                stack.addToStack(parameter.getName(), parameter.getType());
             }
             //set the actualMethod
             actualMethod = normalMethods[x].getDefinition();
@@ -635,7 +634,7 @@ public class Compiler {
             for (int x = 0; x < parameters.length; x++) {
                 switch (methodArguments.get(x).getType()) {
                     case DataTypes.Integer:
-                        switch (parameters[x].getDataType()) {
+                        switch (parameters[x].getType()) {
                             case DataTypes.Integer:
                                 //same type, everything ok
                                 arguments[x] = methodArguments.get(x);
@@ -646,11 +645,11 @@ public class Compiler {
                                 break;
                             default:
                                 //type does not fit, throw an exception
-                                throw new CompileException("type mismatch: int can not be casted implicitly to " + parameters[x].getDataType(), text.getPosition());
+                                throw new CompileException("type mismatch: int can not be casted implicitly to " + parameters[x].getType(), text.getPosition());
                         }
                         break;
                     case DataTypes.Float:
-                        switch (parameters[x].getDataType()) {
+                        switch (parameters[x].getType()) {
                             case DataTypes.Float:
                                 //same type, everything ok
                                 arguments[x] = methodArguments.get(x);
@@ -661,17 +660,17 @@ public class Compiler {
                                 break;
                             default:
                                 //type does not fit, throw an exception
-                                throw new CompileException("type mismatch: float can not be casted implicitly to " + parameters[x].getDataType(), text.getPosition());
+                                throw new CompileException("type mismatch: float can not be casted implicitly to " + parameters[x].getType(), text.getPosition());
                         }
                         break;
                     default:
-                        if (methodArguments.get(x).getType().equals(parameters[x].getDataType())){
+                        if (methodArguments.get(x).getType().equals(parameters[x].getType())){
                             //same type, ok
                             arguments[x] = methodArguments.get(x);
                         }
                         else {
                             //type does not fit, throw an exception
-                            throw new CompileException("type mismatch: " + methodArguments.get(x).getType() + " can not be casted implicitly to " + parameters[x].getDataType(), text.getPosition());
+                            throw new CompileException("type mismatch: " + methodArguments.get(x).getType() + " can not be casted implicitly to " + parameters[x].getType(), text.getPosition());
                         }
                 }
             }
@@ -684,7 +683,7 @@ public class Compiler {
                     Statement[] statements = new Statement[arguments.length];
                     for (int x = 0; x < arguments.length; x++){
                         //crate set value statements
-                        DefineValueStatement defineValueStatement = new DefineValueStatement(parameters[x].getDataType());
+                        DefineValueStatement defineValueStatement = new DefineValueStatement(parameters[x].getType());
                         defineValueStatement.setName(parameters[x].getName());
                         defineValueStatement.setValueExpression(arguments[x]);
                         statements[x] = defineValueStatement;

@@ -97,7 +97,7 @@ public class ExternalPropertyData {
         boolean correctHandler = false;
         MethodDefinition def = methods.get(handlerName);
         if (def != null) {
-            if (def.getParameters().length == 1 && def.getParameters()[0].getDataType().equals(type)) {
+            if (def.getParameters().length == 1 && def.getParameters()[0].getType().equals(type)) {
                 correctHandler = true;
             }
         }

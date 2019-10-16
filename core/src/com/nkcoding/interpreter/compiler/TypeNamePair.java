@@ -12,14 +12,14 @@ public class TypeNamePair {
         this.name = name;
     }
 
-    private String dataType;
+    private String type;
 
-    public String getDataType() {
-        return dataType;
+    public String getType() {
+        return type;
     }
 
-    public void setDataType(String dataType){
-        this.dataType = dataType;
+    public void setType(String type){
+        this.type = type;
     }
 
     //simple constructor
@@ -28,14 +28,14 @@ public class TypeNamePair {
     //constructor
     public TypeNamePair(String name, String dataType){
         this.name = name;
-        this.dataType = dataType;
+        this.type = dataType;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append('(');
-        sb.append(dataType);
+        sb.append(type);
         sb.append(", ");
         sb.append(name);
         sb.append(')');

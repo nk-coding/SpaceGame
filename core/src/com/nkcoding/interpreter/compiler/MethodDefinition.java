@@ -61,7 +61,7 @@ public class MethodDefinition {
         sb.append('(');
         for (int x = 0; x < parameters.length; x++) {
             if (x > 0) sb.append(", ");
-            sb.append(parameters[x].getDataType());
+            sb.append(parameters[x].getType());
             sb.append(' ');
             sb.append(parameters[x].getName());
         }
