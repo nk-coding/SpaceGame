@@ -340,8 +340,10 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         for (ExternalProperty property : getProperties().values()) {
             property.startChangedHandler(getSpaceSimulation().getScriptingEngine(), globalVariables);
         }
-        //call act on all components
-        for (Component component : List.copyOf(components)) {
+
+        //I know this is hacky, but it's the best I have
+        for (int x = components.size() - 1; x >= 0; x--) {
+            Component component = components.get(x);
             component.act(time);
             component.getProperties().values()
                     .forEach(property -> property.startChangedHandler(getSpaceSimulation().getScriptingEngine(), globalVariables));

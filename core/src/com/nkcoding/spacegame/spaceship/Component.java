@@ -76,6 +76,7 @@ public abstract class Component implements ExternalPropertyHandler {
     //helper to check structural integrity
     boolean structureHelper = false;
 
+
     /**
      * the fixture that represents the box
      * other fixtures could be added as fields if necessary by sublasses
