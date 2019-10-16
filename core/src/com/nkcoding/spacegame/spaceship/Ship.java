@@ -178,6 +178,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
      */
     private void removeComponent(Component component) {
         components.remove(component);
+        component.removeFixtures();
         getSpaceSimulation().removeExternalPropertyHandler(component);
         //remove from map
         ComponentDef comDef = component.getComponentDef();
@@ -193,7 +194,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
      * removes a component and performs a structure check if necessary
      * @param component the Component to destroy
      */
-    void destroyComponent(Component component){
+    void destroyComponent(Component component) {
         removeComponent(component);
         isStructureCheckNecessary = true;
     }
@@ -340,7 +341,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
             property.startChangedHandler(getSpaceSimulation().getScriptingEngine(), globalVariables);
         }
         //call act on all components
-        for (Component component : components) {
+        for (Component component : List.copyOf(components)) {
             component.act(time);
             component.getProperties().values()
                     .forEach(property -> property.startChangedHandler(getSpaceSimulation().getScriptingEngine(), globalVariables));

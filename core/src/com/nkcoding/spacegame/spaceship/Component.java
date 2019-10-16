@@ -64,7 +64,6 @@ public abstract class Component implements ExternalPropertyHandler {
     }
 
     void setShip(Ship ship){
-        if (this.ship != null) removeFixtures();
         this.ship = ship;
         addFixtures();
     }
@@ -94,18 +93,10 @@ public abstract class Component implements ExternalPropertyHandler {
     /**
      * health has to be stored again, because it changes during simulation
      * if it reaches zero, the component should be destroyed
+     * this check is done in act because of library issues
      * should be initialized in constructor out of componentDef
      */
-    public final IntProperty health = register(new IntProperty(true, true, HealthKey) {
-        @Override
-        public void set(int value) {
-            super.set(Math.max(value, 0));
-            if (get() == 0){
-                //destroy this component
-                destroy();
-            }
-        }
-    });
+    public final IntProperty health = register(new IntProperty(true, true, HealthKey));
 
     /**
      * power that component requests
@@ -217,6 +208,7 @@ public abstract class Component implements ExternalPropertyHandler {
     }
 
     public void act(float delta) {
+        if (health.get() <= 0) destroy();
     }
 
     /**
