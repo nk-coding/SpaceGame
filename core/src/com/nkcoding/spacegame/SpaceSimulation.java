@@ -126,6 +126,7 @@ public class SpaceSimulation implements InputProcessor {
      */
     public void removeSimulated(Simulated simulated) {
         simulateds.removeValue(simulated, true);
+        world.destroyBody(simulated.getBody());
     }
 
     /**

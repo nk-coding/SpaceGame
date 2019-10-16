@@ -80,7 +80,7 @@ public class Cannon extends Component {
             super.act(delta);
             //limit reach
             movingSince += delta;
-            if (movingSince > 10f) {
+            if (movingSince > 10f || collided) {
                 getSpaceSimulation().removeSimulated(this);
             }
         }
@@ -101,7 +101,6 @@ public class Cannon extends Component {
 
         @Override
         public void beginContact(Simulated other, Fixture f1, Fixture f2) {
-            getSpaceSimulation().removeSimulated(this);
             Object userData = f2.getUserData();
             if (userData instanceof Component && !collided) {
                 collided = true;
