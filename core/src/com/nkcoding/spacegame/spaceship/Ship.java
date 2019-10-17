@@ -36,6 +36,12 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     //the list of components which compose the ship
     private List<Component> components;
 
+    //copied list for iteration
+    private List<Component> iterationList;
+
+    //has the normal list changed
+    private boolean componentsChanged = true;
+
     //the map of the components
     private Component[][] componentsMap;
 
@@ -160,6 +166,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
      * @param component the Component to add
      */
     private void addComponent(Component component) {
+        componentsChanged = true;
         ComponentDef def = component.getComponentDef();
         components.add(component);
         getSpaceSimulation().addExternalPropertyHandler(component);
@@ -177,6 +184,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
      * @param component the Component to add
      */
     private void removeComponent(Component component) {
+        componentsChanged = true;
         components.remove(component);
         component.removeFixtures();
         getSpaceSimulation().removeExternalPropertyHandler(component);
@@ -318,6 +326,10 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     @Override
     public void act(float time) {
         super.act(time);
+        //check if list has changed
+        if (componentsChanged) {
+            iterationList = List.copyOf(components);
+        }
         //check structure if necessary
         if (isStructureCheckNecessary) {
             checkStructure();
@@ -342,8 +354,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         }
 
         //I know this is hacky, but it's the best I have
-        for (int x = components.size() - 1; x >= 0; x--) {
-            Component component = components.get(x);
+        for (Component component : iterationList) {
             component.act(time);
             component.getProperties().values()
                     .forEach(property -> property.startChangedHandler(getSpaceSimulation().getScriptingEngine(), globalVariables));
