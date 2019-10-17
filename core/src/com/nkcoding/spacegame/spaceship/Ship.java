@@ -151,7 +151,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         Body oldBody = oldShip.getBody();
         Body body = getBody();
         body.setTransform(oldBody.getPosition(), oldBody.getAngle());
-        body.setLinearVelocity(oldBody.getLinearVelocityFromLocalPoint(body.getLocalCenter()));
+        updateLinearVelocity(oldBody);
         body.setAngularVelocity(oldBody.getAngularVelocity());
     }
 
@@ -219,6 +219,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
             components.forEach(component -> component.structureHelper = false);
             //create new ship
             if (otherComponents.size() > 0) getSpaceSimulation().addSimulated(new Ship(this, otherComponents));
+            updateLinearVelocity(getBody());
         }
         else {
             System.out.println("this ship has no component?!");
@@ -323,6 +324,10 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         height = (maxY - minY) * ShipDef.UNIT_SIZE;
     }
 
+    //update the linear velocity, after some structure changes
+    private void updateLinearVelocity(Body oldBody) {
+        body.setLinearVelocity(oldBody.getLinearVelocityFromLocalPoint(body.getLocalCenter()));
+    }
 
     @Override
     public void act(float time) {

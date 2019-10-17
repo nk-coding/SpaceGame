@@ -208,7 +208,7 @@ public class SpaceSimulation implements InputProcessor {
         batch.setProjectionMatrix(camera.combined);
         //debugRenderer.render(world, batch.getProjectionMatrix().cpy());
         //draw simulateds
-        if (true) {
+        if (false) {
             for (Simulated simulated : simulateds) simulated.draw(batch);
             batch.flush();
         }
