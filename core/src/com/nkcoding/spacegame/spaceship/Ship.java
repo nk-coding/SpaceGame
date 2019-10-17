@@ -127,10 +127,6 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     //pass other ship to copy important stuff (external method stuff etc.)
     Ship(Ship oldShip, List<Component> components) {
         super(oldShip.getSpaceSimulation(), BodyDef.BodyType.DynamicBody, 1);
-        Body oldBody = oldShip.getBody();
-        getBody().setTransform(oldBody.getPosition(), oldBody.getAngle());
-        getBody().setLinearVelocity(oldBody.getLinearVelocity());
-        getBody().setAngularVelocity(oldBody.getAngularVelocity());
         //check for new name
         String nameStart = oldShip.getName();
         while (getSpaceSimulation().containsExternalPropertyHandler(nameStart += "#"));
@@ -152,6 +148,11 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         }
         //init center pos
         updateCenterPos();
+        Body oldBody = oldShip.getBody();
+        Body body = getBody();
+        body.setTransform(oldBody.getPosition(), oldBody.getAngle());
+        body.setLinearVelocity(oldBody.getLinearVelocityFromLocalPoint(body.getLocalCenter()));
+        body.setAngularVelocity(oldBody.getAngularVelocity());
     }
 
     private void createComponent(ComponentDef comDef, Map<String, MethodStatement> methods) {
