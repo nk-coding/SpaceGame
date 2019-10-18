@@ -17,6 +17,7 @@ public class PowerCore extends Component {
     @Override
     public void act(float delta) {
         super.act(delta);
+        //TODO explodes when too much power is not used
     }
 
     @Override

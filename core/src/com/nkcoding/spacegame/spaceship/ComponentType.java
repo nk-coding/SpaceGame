@@ -17,7 +17,9 @@ public enum ComponentType {
     Cannon(Cannon::new, 1, 2, 100, 100, Asset.CloseSymbol,
             of(com.nkcoding.spacegame.components.Cannon.IsShoothingKey, DataTypes.Boolean, false)),
     PowerCore(PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
-    BasicHull(BasicHull::new, Asset.BasicHull);
+    BasicHull(BasicHull::new, Asset.BasicHull),
+    ExplosiveCanister(ExplosiveCanister::new, 1, 1, 50, 50, Asset.ErrorSymbol,
+                      of(com.nkcoding.spacegame.components.ExplosiveCanister.ExplodeKey, DataTypes.Boolean, false));
 
     //the width of the component
     public final int width;
