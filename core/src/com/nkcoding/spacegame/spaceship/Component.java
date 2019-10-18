@@ -323,5 +323,13 @@ public abstract class Component implements ExternalPropertyHandler {
         health.set(health.get() - damage);
     }
 
+    protected void spawnExplosion(float endRadius, float damage, float time) {
+        Vector2 centerPos = localToWorld(new Vector2(getWidth() / 2, getHeight() / 2));
+        Explosion explosion = new Explosion(getSpaceSimulation(),
+                Math.min(getWidth() / 2 * 0.9f, getHeight() / 2 * 0.9f), endRadius, time,
+                centerPos, getShip().getBody().getLinearVelocityFromWorldPoint(centerPos), damage);
+        getSpaceSimulation().addSimulated(explosion);
+    }
+
 }
 

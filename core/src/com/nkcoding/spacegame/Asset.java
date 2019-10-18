@@ -11,6 +11,7 @@ public enum Asset {
     Engine("textures/game/engine.png"),
     PowerCore("textures/game/powerCore.png"),
     Bullet("textures/game/bullet.png"),
+    VerySimpleExplosion("textures/game/verySimpleExplosion.png"),
     //other
     Badlogic("textures/other/badlogic.jpg"),
     Numbers("textures/other/numbers.png"),

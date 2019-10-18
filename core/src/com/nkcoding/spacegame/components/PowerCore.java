@@ -3,6 +3,7 @@ package com.nkcoding.spacegame.components;
 import com.nkcoding.spacegame.spaceship.Component;
 import com.nkcoding.spacegame.spaceship.ComponentDef;
 import com.nkcoding.spacegame.spaceship.Ship;
+import com.nkcoding.spacegame.spaceship.ShipDef;
 
 public class PowerCore extends Component {
     /**
@@ -16,5 +17,11 @@ public class PowerCore extends Component {
     @Override
     public void act(float delta) {
         super.act(delta);
+    }
+
+    @Override
+    protected void destroy() {
+        super.destroy();
+        spawnExplosion(ShipDef.UNIT_SIZE * 3, 400, 1);
     }
 }
