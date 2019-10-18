@@ -65,10 +65,8 @@ public class Explosion extends Simulated {
     @Override
     public void beginContact(Simulated other, Fixture f1, Fixture f2) {
         super.beginContact(other, f1, f2);
-        System.out.println("explosion contact");
         Object userData = f2.getUserData();
         if (userData instanceof Component) {
-            System.out.println("foun");
             ((Component)userData).damageAt(f2, (int)(damage * (1 - ((currentRadius - startRadius) / (endRadius - startRadius)))));
         }
     }
