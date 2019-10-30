@@ -338,7 +338,7 @@ public class ShipBuilderScreen implements Screen {
                             componentsDragAndDrop.setDragActorPosition(componentSize * (2 * def.getWidth() - 0.5f),componentSize * (def.getHeight() - 0.5f));
                             break;
                         case 3:
-                            componentsDragAndDrop.setDragActorPosition(componentSize * (def.getHeight() - def.getWidth() + 0.5f),componentSize * (def.getWidth() - 0.5f));
+                            componentsDragAndDrop.setDragActorPosition(componentSize * (def.getHeight() - def.getWidth() - 0.5f),componentSize * (def.getWidth() - 0.5f));
                             break;
                     }
                     return payload;
