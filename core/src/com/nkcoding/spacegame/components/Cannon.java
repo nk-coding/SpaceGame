@@ -76,6 +76,8 @@ public class Cannon extends Component {
             body.setLinearVelocity(velocity);
             this.texture = getSpaceSimulation().getAssetManager().getTexture(Asset.Bullet);
             this.length = length;
+            this.centerPosition = new Vector2(0, length / 2);
+            this.radius = length / 2;
         }
 
         @Override

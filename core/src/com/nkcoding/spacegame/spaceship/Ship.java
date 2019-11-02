@@ -324,6 +324,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         centerPosition = new Vector2(posX, posY);
         width = (maxX - minX) * ShipDef.UNIT_SIZE;
         height = (maxY - minY) * ShipDef.UNIT_SIZE;
+        radius = (float) Math.sqrt(height * height + width * width);
     }
 
     //update the linear velocity, after some structure changes

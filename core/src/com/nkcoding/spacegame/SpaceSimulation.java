@@ -48,6 +48,10 @@ public class SpaceSimulation implements InputProcessor {
     //set from resize, necessary for camera
     private int width, height;
 
+    //center pos and radius, necessary for improved drawing
+    private Vector2 centerPos;
+    private float radius, scaledRadius;
+
     //Simulated that the camera should follow
     private Simulated cameraSimulated;
 
@@ -62,7 +66,7 @@ public class SpaceSimulation implements InputProcessor {
     }
 
     //DEBUG
-    Box2DDebugRenderer debugRenderer;
+    private Box2DDebugRenderer debugRenderer;
 
     //World for Box2D
     //this is the physics simulation
@@ -212,7 +216,15 @@ public class SpaceSimulation implements InputProcessor {
         //debugRenderer.render(world, batch.getProjectionMatrix().cpy());
         //draw simulateds
         if (true) {
-            for (Simulated simulated : simulateds) simulated.draw(batch);
+            for (Simulated simulated : simulateds) {
+                float maxAbs = simulated.getRadius() + scaledRadius;
+                float abs = simulated.localToWorldCoordinates(simulated.getCenterPosition()).sub(centerPos).len2();
+                if (abs < (maxAbs * maxAbs)) {
+                    simulated.draw(batch);
+                } else {
+                    System.out.println("do not draw " + simulated);
+                }
+            }
             batch.flush();
         } else {
             debugRenderer.render(world, camera.combined);
@@ -224,21 +236,20 @@ public class SpaceSimulation implements InputProcessor {
     public void resize(int width, int height) {
         this.width = width;
         this.height = height;
+        radius = (float) Math.sqrt(width * width + height * height) / 2.0f;
     }
 
     //updates the camera
     public void updateCamera() {
         if (cameraSimulated != null) {
-            Vector2 position = cameraSimulated.localToWorldCoordinates(cameraSimulated.getCenterPosition());
-            //float rotation = -cameraSimulated.getRotation() * MathUtils.radiansToDegrees;
+            centerPos = cameraSimulated.localToWorldCoordinates(cameraSimulated.getCenterPosition());
             float length = cameraSimulated.getBody().getLinearVelocity().len() + 1;
             float h = cameraSimulated.getHeight() / (0.15f / (length * length) + 0.08f);
-            //rotation += Math.atan(cameraSimulated.getBody().getAngularVelocity()) * 45;
 
+            scaledRadius = radius * h / height;
             camera.setToOrtho(false, h / height * width, h);
-            camera.position.x = position.x;
-            camera.position.y = position.y;
-            //camera.rotate(rotation);
+            camera.position.x = centerPos.x;
+            camera.position.y = centerPos.y;
             camera.update();
         }
     }

@@ -18,6 +18,8 @@ public class Simulated {
     protected Vector2 centerPosition;
     protected float width;
     protected float height;
+    //radius for drawing
+    protected float radius;
     //the SpaceSimulation of which this is part of
     private SpaceSimulation spaceSimulation;
     private boolean receivesKeyInput = false;
@@ -112,6 +114,10 @@ public class Simulated {
 
     public float getHeight() {
         return height;
+    }
+
+    public float getRadius() {
+        return radius;
     }
 
     /**
