@@ -28,15 +28,14 @@ public class ProgramTextWrapper {
             position.setLine(position.getLine() - 1);
             position.setColumn(lines[position.getLine()].length() - 1);
 
-        }
-        else {
+        } else {
             //middle of the line, just decrease column
             position.setColumn(position.getColumn() - 1);
         }
     }
 
     //constructor
-    public ProgramTextWrapper(String[] program){
+    public ProgramTextWrapper(String[] program) {
         this.lines = program;
         ignoreAt = new int[program.length];
         for (int i = 0; i < program.length; i++) {
@@ -53,14 +52,13 @@ public class ProgramTextWrapper {
                     char c = line.charAt(x);
                     switch (c) {
                         case '/':
-                            if (!inString){
+                            if (!inString) {
                                 //not in String
                                 if (lastIsStart) {
                                     //complete line escape
                                     done = true;
                                     ignoreAt[i] = x - 1;
-                                }
-                                else {
+                                } else {
                                     //could be start
                                     lastIsStart = true;
                                 }
@@ -72,13 +70,11 @@ public class ProgramTextWrapper {
                                 if (escaped) {
                                     //it is escaped, it's not the end of the String
                                     escaped = false;
-                                }
-                                else {
+                                } else {
                                     //it's not escaped, it's the end of the String
                                     inString = false;
                                 }
-                            }
-                            else {
+                            } else {
                                 //not in String, so it has to be the start
                                 inString = true;
                             }
@@ -103,7 +99,7 @@ public class ProgramTextWrapper {
     //returns the actual character and moves the position
     //returns a space char if it is something whitespace
     public char getNextChar() throws EndReachedException {
-        return  getNextChar(true);
+        return getNextChar(true);
     }
 
     //skips comments
@@ -126,8 +122,7 @@ public class ProgramTextWrapper {
             //return the character
             if (Character.isWhitespace(c)) return ' ';
             else return c;
-        }
-        else {
+        } else {
             if (movePosition) {
                 //move to begin of next line
                 position.setLine(position.getLine() + 1);
@@ -162,22 +157,19 @@ public class ProgramTextWrapper {
         ProgramPosition pos = position.getClone();
         StringBuilder sb = new StringBuilder();
         boolean foundRealCharacter = false;
-        while (!foundRealCharacter){
+        while (!foundRealCharacter) {
             try {
                 char c = getNextChar();
-                if (c == ' '){
+                if (c == ' ') {
                     //not found, continue searching
-                }
-                else if (Character.isLetterOrDigit(c) || c == '_') {
+                } else if (Character.isLetterOrDigit(c) || c == '_') {
                     foundRealCharacter = true;
                     sb.append(c);
-                }
-                else {
+                } else {
                     //found something different, throw a Exception
                     throw new CompileException("found illegal character : '" + c + '\'', position.getClone());
                 }
-            }
-            catch (EndReachedException e){
+            } catch (EndReachedException e) {
                 return null;
             }
         }
@@ -185,16 +177,14 @@ public class ProgramTextWrapper {
         while (!foundIllegalCharacter) {
             try {
                 char c = getNextChar();
-                if (Character.isLetterOrDigit(c)){
+                if (Character.isLetterOrDigit(c)) {
                     //append it, continue searching
                     sb.append(c);
-                }
-                else {
+                } else {
                     //stop searching
                     foundIllegalCharacter = true;
                 }
-            }
-            catch (EndReachedException e) {
+            } catch (EndReachedException e) {
                 //this is ok, just end the loop
                 foundIllegalCharacter = true;
             }
@@ -202,13 +192,13 @@ public class ProgramTextWrapper {
         if (!movePosition) setPosition(pos);
         else moveBackward();
 
-        return  sb.toString();
+        return sb.toString();
     }
 
     public ProgramPosition getNextPosition(char toFind, boolean movePosition) {
         ProgramPosition pos = position.getClone();
         boolean found = false;
-        while (!found){
+        while (!found) {
             try {
                 char c = getNextChar();
                 if (c == toFind) {
@@ -217,8 +207,7 @@ public class ProgramTextWrapper {
                     if (!movePosition) setPosition(pos);
                     return foundPos;
                 }
-            }
-            catch (EndReachedException e) {
+            } catch (EndReachedException e) {
                 //nothing was found
                 if (!movePosition) setPosition(pos);
                 return null;
@@ -235,7 +224,7 @@ public class ProgramTextWrapper {
 
     public char getNextNonWhitespaceChar(boolean movePosition) throws EndReachedException {
         ProgramPosition pos = position.getClone();
-        while (true){
+        while (true) {
             char c = getNextChar();
             if (c != ' ') {
                 if (!movePosition) setPosition(pos);
@@ -249,32 +238,28 @@ public class ProgramTextWrapper {
         return skipUntil(true, ignoreStrings, chars);
     }
 
-    public char skipUntil(boolean movePosition, boolean ignoreStrings, char... chars)  throws EndReachedException {
+    public char skipUntil(boolean movePosition, boolean ignoreStrings, char... chars) throws EndReachedException {
         ProgramPosition pos = position.getClone();
         boolean inString = false;
         boolean escape = false;
         while (true) {
             char c = getNextChar();
             if (ignoreStrings) {
-                if (c == '"'){
+                if (c == '"') {
                     if (escape) {
                         escape = false;
-                    }
-                    else {
+                    } else {
                         //end reached
                         inString = !inString;
                     }
-                }
-                else if (inString && c == '\\'){
+                } else if (inString && c == '\\') {
                     if (escape) {
                         escape = false;
-                    }
-                    else {
+                    } else {
                         escape = true;
                     }
-                }
-                else {
-                    if (escape) escape =false;
+                } else {
+                    if (escape) escape = false;
                     for (int x = 0; x < chars.length; x++) {
                         if (chars[x] == c) {
                             //found the correct char, end loop and return
@@ -283,8 +268,7 @@ public class ProgramTextWrapper {
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 for (int x = 0; x < chars.length; x++) {
                     if (chars[x] == c) {
                         //found the correct char, end loop and return
@@ -297,5 +281,6 @@ public class ProgramTextWrapper {
     }
 
 
-    public static class EndReachedException extends Exception {}
+    public static class EndReachedException extends Exception {
+    }
 }

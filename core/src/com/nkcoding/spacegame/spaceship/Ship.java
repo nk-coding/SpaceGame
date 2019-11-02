@@ -73,13 +73,13 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     //wrapper for the angularRotation from Body
     public final FloatProperty angularVelocity = register(new FloatProperty(true, true, AngularVelocityKey));
     //wrapper for the velocity from Body
-    public final FloatProperty velocity = register(new FloatProperty( true, true, VelocityKey));
+    public final FloatProperty velocity = register(new FloatProperty(true, true, VelocityKey));
     //focus from SpaceSimulation
     public final VirtualProperty<Boolean> cameraFocus = register(new VirtualProperty<>(true, CameraFocusKey, DataTypes.Boolean) {
         @Override
         public void set(Boolean value) {
             super.set(value);
-            if (value)getSpaceSimulation().setCameraSimulated(Ship.this);
+            if (value) getSpaceSimulation().setCameraSimulated(Ship.this);
         }
 
         @Override
@@ -129,7 +129,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         super(oldShip.getSpaceSimulation(), BodyDef.BodyType.DynamicBody, 1);
         //check for new name
         String nameStart = oldShip.getName();
-        while (getSpaceSimulation().containsExternalPropertyHandler(nameStart += "#"));
+        while (getSpaceSimulation().containsExternalPropertyHandler(nameStart += "#")) ;
         name = nameStart;
         getSpaceSimulation().addExternalPropertyHandler(this);
         //receives key inputs
@@ -164,6 +164,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     /**
      * adds a Component to this ship
      * handles Actor.addActor, components, componentsMap
+     *
      * @param component the Component to add
      */
     private void addComponent(Component component) {
@@ -172,8 +173,8 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         components.add(component);
         getSpaceSimulation().addExternalPropertyHandler(component);
         //add to map
-        for (int _x = def.getX(); _x < (def.getX() + def.getRealWidth()); _x++){
-            for (int _y = def.getY(); _y < (def.getY() + def.getRealHeight()); _y++){
+        for (int _x = def.getX(); _x < (def.getX() + def.getRealWidth()); _x++) {
+            for (int _y = def.getY(); _y < (def.getY() + def.getRealHeight()); _y++) {
                 componentsMap[_x][_y] = component;
             }
         }
@@ -182,6 +183,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     /**
      * removes a Component from this ship
      * handles Actor.removeActor, components, componentsMap
+     *
      * @param component the Component to add
      */
     private void removeComponent(Component component) {
@@ -191,8 +193,8 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         getSpaceSimulation().removeExternalPropertyHandler(component);
         //remove from map
         ComponentDef comDef = component.getComponentDef();
-        for (int _x = comDef.getX(); _x < (comDef.getX() + comDef.getRealWidth()); _x++){
-            for (int _y = comDef.getY(); _y < (comDef.getY() + comDef.getRealHeight()); _y++){
+        for (int _x = comDef.getX(); _x < (comDef.getX() + comDef.getRealWidth()); _x++) {
+            for (int _y = comDef.getY(); _y < (comDef.getY() + comDef.getRealHeight()); _y++) {
                 componentsMap[_x][_y] = null;
             }
         }
@@ -201,6 +203,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
 
     /**
      * removes a component and performs a structure check if necessary
+     *
      * @param component the Component to destroy
      */
     void destroyComponent(Component component) {
@@ -209,7 +212,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     }
 
     //checks if the ship structure is intact or constructs partial ships otherwise
-    private void checkStructure(){
+    private void checkStructure() {
         if (components.size() > 0) {
             checkStructureRec(components.get(0));
             List<Component> otherComponents = components.stream().filter(com -> !com.structureHelper).collect(Collectors.toList());
@@ -220,8 +223,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
             //create new ship
             if (otherComponents.size() > 0) getSpaceSimulation().addSimulated(new Ship(this, otherComponents));
             updateLinearVelocity(getBody());
-        }
-        else {
+        } else {
             System.out.println("this ship has no component?!");
         }
     }
@@ -237,8 +239,8 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
             for (int y = comDef.getY(); y < (comDef.getY() + comDef.getRealHeight()); y++) {
                 Component nextComponent = componentsMap[comDef.getX() - 1][y];
                 if (nextComponent != null && !nextComponent.structureHelper &&
-                nextComponent.attachComponentAtRaw(comDef.getX() - 1, y, Component.RIGHT_SIDE) &&
-                component.attachComponentAtRaw(comDef.getX(), y, Component.LEFT_SIDE))
+                        nextComponent.attachComponentAtRaw(comDef.getX() - 1, y, Component.RIGHT_SIDE) &&
+                        component.attachComponentAtRaw(comDef.getX(), y, Component.LEFT_SIDE))
                     checkStructureRec(nextComponent);
             }
         }
@@ -248,8 +250,8 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
             for (int x = comDef.getX(); x < (comDef.getX() + comDef.getRealWidth()); x++) {
                 Component nextComponent = componentsMap[x][comDef.getY() - 1];
                 if (nextComponent != null && !nextComponent.structureHelper &&
-                nextComponent.attachComponentAtRaw(x, comDef.getY() - 1, Component.TOP_SIDE) &&
-                component.attachComponentAtRaw(x, comDef.getY(), Component.BOTTOM_SIDE))
+                        nextComponent.attachComponentAtRaw(x, comDef.getY() - 1, Component.TOP_SIDE) &&
+                        component.attachComponentAtRaw(x, comDef.getY(), Component.BOTTOM_SIDE))
                     checkStructureRec(nextComponent);
             }
         }
@@ -259,8 +261,8 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
             for (int y = comDef.getY(); y < (comDef.getY() + comDef.getRealHeight()); y++) {
                 Component nextComponent = componentsMap[comDef.getX() + comDef.getRealWidth()][y];
                 if (nextComponent != null && !nextComponent.structureHelper &&
-                nextComponent.attachComponentAtRaw(comDef.getX() + comDef.getRealWidth(), y, Component.LEFT_SIDE) &&
-                component.attachComponentAtRaw(comDef.getX() + comDef.getRealWidth() - 1, y, Component.RIGHT_SIDE))
+                        nextComponent.attachComponentAtRaw(comDef.getX() + comDef.getRealWidth(), y, Component.LEFT_SIDE) &&
+                        component.attachComponentAtRaw(comDef.getX() + comDef.getRealWidth() - 1, y, Component.RIGHT_SIDE))
                     checkStructureRec(nextComponent);
             }
         }
@@ -270,8 +272,8 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
             for (int x = comDef.getX(); x < (comDef.getX() + comDef.getRealWidth()); x++) {
                 Component nextComponent = componentsMap[x][comDef.getY() + comDef.getRealHeight()];
                 if (nextComponent != null && !nextComponent.structureHelper &&
-                nextComponent.attachComponentAtRaw(x, comDef.getY() + comDef.getRealHeight(), Component.BOTTOM_SIDE) &&
-                component.attachComponentAtRaw(x, comDef.getY() + comDef.getRealHeight() - 1, Component.TOP_SIDE))
+                        nextComponent.attachComponentAtRaw(x, comDef.getY() + comDef.getRealHeight(), Component.BOTTOM_SIDE) &&
+                        component.attachComponentAtRaw(x, comDef.getY() + comDef.getRealHeight() - 1, Component.TOP_SIDE))
                     checkStructureRec(nextComponent);
             }
         }
@@ -401,8 +403,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
                     for (int x = i0; x < i; x++) {
                         components.get(x).powerReceived.set(components.get(x).powerRequested.get());
                     }
-                }
-                else {
+                } else {
                     //not enough power is available
                     float fac = levelPowerRequest / availablePower;
                     availablePower = 0f;
@@ -410,8 +411,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
                         components.get(x).powerReceived.set(components.get(x).powerRequested.get() * fac);
                     }
                 }
-            }
-            else {
+            } else {
                 //no power is available, set all to 0
                 while (i < components.size()) {
                     components.get(i).powerReceived.set(0f);

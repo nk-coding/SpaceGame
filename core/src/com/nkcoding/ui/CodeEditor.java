@@ -16,19 +16,29 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 public class CodeEditor extends WidgetGroup {
 
-    /**<code>ScrollPane</code> which contains the <code>MultiColorTextArea</code> which contains the code*/
+    /**
+     * <code>ScrollPane</code> which contains the <code>MultiColorTextArea</code> which contains the code
+     */
     private ScrollPane codeScrollPane;
 
-    /**<code>MultiColorTextArea</code> which contains the code*/
+    /**
+     * <code>MultiColorTextArea</code> which contains the code
+     */
     private MultiColorTextArea codeTextArea;
 
-    /**for the clip of the line numbers area*/
+    /**
+     * for the clip of the line numbers area
+     */
     private Rectangle numbersAreaClip;
 
-    /**font for the line numbers*/
+    /**
+     * font for the line numbers
+     */
     private BitmapFont font;
 
-    /**style for the MultiColorTextArea*/
+    /**
+     * style for the MultiColorTextArea
+     */
     private TextField.TextFieldStyle textFieldStyle;
 
     private final Color lineNumberColor = new Color(0x808080ff);
@@ -40,9 +50,10 @@ public class CodeEditor extends WidgetGroup {
 
     /**
      * the default constructor
-     * @param textFieldStyle    the style for the <code>MultiColorTextArea</code> which shows the code in this control
-     * @param scrollPaneStyle   the style for the <code>ScrollPane</code> used to scroll the code
-     * @param codeParser        used to color-format the code
+     *
+     * @param textFieldStyle  the style for the <code>MultiColorTextArea</code> which shows the code in this control
+     * @param scrollPaneStyle the style for the <code>ScrollPane</code> used to scroll the code
+     * @param codeParser      used to color-format the code
      */
     public CodeEditor(TextField.TextFieldStyle textFieldStyle, ScrollPane.ScrollPaneStyle scrollPaneStyle, ColorParser codeParser) {
         this.textFieldStyle = textFieldStyle;
@@ -68,7 +79,7 @@ public class CodeEditor extends WidgetGroup {
         Stage stage = getStage();
         if (stage == null) return;
 
-        int i = (int)Math.log10(codeTextArea.getLines());
+        int i = (int) Math.log10(codeTextArea.getLines());
         i++;
         if (i != maxLineNumberCharCount) {
             maxLineNumberCharCount = i;
@@ -102,7 +113,8 @@ public class CodeEditor extends WidgetGroup {
 
 
             for (int x = 0; x < drawUntil; x++) {
-                if (x + codeTextArea.firstLineShowing == codeTextArea.getCursorLine()) font.setColor(highlightLineNumberColor);
+                if (x + codeTextArea.firstLineShowing == codeTextArea.getCursorLine())
+                    font.setColor(highlightLineNumberColor);
                 else font.setColor(lineNumberColor);
 
                 String lineNumber = String.valueOf(x + codeTextArea.firstLineShowing + 1);
@@ -144,22 +156,30 @@ public class CodeEditor extends WidgetGroup {
         return super.needsLayout() || codeScrollPane.needsLayout();
     }
 
-    /**adda a listener which handles TextArea updates*/
+    /**
+     * adda a listener which handles TextArea updates
+     */
     public void setTextFieldListener(TextFieldBase.TextFieldListener textFieldListener) {
         codeTextArea.setTextFieldListener(textFieldListener);
     }
 
-    /**get the text*/
+    /**
+     * get the text
+     */
     public String getText() {
         return codeTextArea.getText();
     }
 
-    /**set the text*/
+    /**
+     * set the text
+     */
     public void setText(String text) {
         codeTextArea.setText(text);
     }
 
-    /**moves the scrollPane to a specific position*/
+    /**
+     * moves the scrollPane to a specific position
+     */
     public void moveTo(int line) {
         codeScrollPane.scrollTo(0, codeTextArea.getPrefHeight() - textFieldStyle.font.getLineHeight() * line, 0, 0);
     }

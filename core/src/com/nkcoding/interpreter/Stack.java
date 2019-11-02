@@ -24,13 +24,13 @@ public class Stack {
     //constructor
     //wants a initial capacity for the Stack
     public Stack(int initialCapacity, ScriptingEngine scriptingEngine,
-                 final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables){
+                 final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables) {
         stackItems = new ArrayList<StackItem>(initialCapacity);
         this.scriptingEngine = scriptingEngine;
         this.globalVariables = globalVariables;
     }
 
-    public <T> void addToStack(String name, T value, String type){
+    public <T> void addToStack(String name, T value, String type) {
         //System.out.println("stack: add to stack: " + name);
         StackItem<T> item = new StackItem<T>(type);
         item.setName(name);
@@ -39,9 +39,9 @@ public class Stack {
         stackItems.add(item);
     }
 
-    public StackItem getFromStack(String name){
-        for (int x = stackItems.size() - 1; x >= 0; x--){
-            if (stackItems.get(x).getName().equals(name)){
+    public StackItem getFromStack(String name) {
+        for (int x = stackItems.size() - 1; x >= 0; x--) {
+            if (stackItems.get(x).getName().equals(name)) {
                 return stackItems.get(x);
             }
         }
@@ -49,12 +49,12 @@ public class Stack {
     }
 
 
-    public void beginStackLevel(){
+    public void beginStackLevel() {
         stackLevel++;
         if (debugMode) System.out.println("begin stack level " + stackLevel);
     }
 
-    public void clearStackLevel(){
+    public void clearStackLevel() {
         if (debugMode) {
             System.out.println("clear stack level " + stackLevel);
             List<StackItem> itemsToRemove = stackItems.stream().filter(item -> item.getStackLevel() == stackLevel).collect(Collectors.toList());
@@ -67,7 +67,7 @@ public class Stack {
     }
 
     //should add this to the list on the main thread
-    public void requestExternalMethod(ExternalMethodFuture future){
+    public void requestExternalMethod(ExternalMethodFuture future) {
         scriptingEngine.getFutureQueue().add(future);
     }
 }

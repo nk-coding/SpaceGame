@@ -10,16 +10,24 @@ import java.util.Collection;
 import java.util.Map;
 
 public class ExternalPropertyData {
-    /**the name of the property*/
+    /**
+     * the name of the property
+     */
     public final String name;
 
-    /**the type of the property*/
+    /**
+     * the type of the property
+     */
     public final String type;
 
-    /**can the value be modified by the user*/
+    /**
+     * can the value be modified by the user
+     */
     public final boolean readonly;
 
-    /**can the user get the value*/
+    /**
+     * can the user get the value
+     */
     public final boolean writeonly;
 
     public String initData = "";
@@ -28,7 +36,8 @@ public class ExternalPropertyData {
 
     /**
      * the default constructor
-     * @param type the type of the property
+     *
+     * @param type     the type of the property
      * @param readonly can the value be modified by the user
      */
     public ExternalPropertyData(String name, String type, boolean readonly, boolean writeonly) {
@@ -42,8 +51,9 @@ public class ExternalPropertyData {
 
     /**
      * wrapper which sets writeonly to false
-     * @param name the name of the property
-     * @param type the type of the property
+     *
+     * @param name     the name of the property
+     * @param type     the type of the property
      * @param readonly can the value be modified by the user
      */
     public ExternalPropertyData(String name, String type, boolean readonly) {
@@ -52,6 +62,7 @@ public class ExternalPropertyData {
 
     /**
      * wrapper which sets readonly to true and writeonly to false
+     *
      * @param type the type of the property
      */
     public ExternalPropertyData(String name, String type) {
@@ -68,8 +79,7 @@ public class ExternalPropertyData {
                     if (init.isBlank()) return true;
                     Float.parseFloat(init);
                     return true;
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     return false;
                 }
             case DataTypes.Integer:
@@ -77,19 +87,20 @@ public class ExternalPropertyData {
                     if (init.isBlank()) return true;
                     Integer.parseInt(init);
                     return true;
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     return false;
                 }
             case DataTypes.String:
                 return true;
-            default: throw new RuntimeException("not implemented");
+            default:
+                throw new RuntimeException("not implemented");
 
         }
     }
 
     /**
      * checks if the method exists and has the correct signature
+     *
      * @param methods map with all methods
      * @return true if everything is ok
      */
@@ -107,13 +118,13 @@ public class ExternalPropertyData {
 
     /**
      * checks for correct handler and init
+     *
      * @param methods map with all methods
      * @return true if everything is ok
      */
     public boolean verify(Map<String, ? extends MethodDefinition> methods) {
         return (readonly || verifyInit(this.initData)) && verifyHandler(this.handlerName, methods);
     }
-
 
 
     //adds the external method definitions the list
@@ -130,8 +141,7 @@ public class ExternalPropertyData {
     private MethodDefinition createExternalMethodDef(boolean get) {
         if (get) {
             return new MethodDefinition(MethodType.External, "get" + name, type, new TypeNamePair("id", DataTypes.String));
-        }
-        else {
+        } else {
             return new MethodDefinition(MethodType.External, "set" + name, DataTypes.Void,
                     new TypeNamePair("id", DataTypes.String),
                     new TypeNamePair("value", type));

@@ -9,7 +9,7 @@ import com.nkcoding.spacegame.components.*;
 import java.util.function.BiFunction;
 
 import static com.nkcoding.spacegame.spaceship.Component.*;
-import static com.nkcoding.spacegame.spaceship.ExternalPropertyData.*;
+import static com.nkcoding.spacegame.spaceship.ExternalPropertyData.of;
 
 public enum ComponentType {
     Engine(Engine::new, 1, 2, 100, 100, Asset.Engine,
@@ -19,7 +19,7 @@ public enum ComponentType {
     PowerCore(PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
     BasicHull(BasicHull::new, Asset.BasicHull),
     ExplosiveCanister(ExplosiveCanister::new, 1, 1, 50, 50, Asset.ErrorSymbol,
-                      of(com.nkcoding.spacegame.components.ExplosiveCanister.ExplodeKey, DataTypes.Boolean, false));
+            of(com.nkcoding.spacegame.components.ExplosiveCanister.ExplodeKey, DataTypes.Boolean, false));
 
     //the width of the component
     public final int width;
@@ -50,7 +50,7 @@ public enum ComponentType {
                   int health, float mass, Asset defaultTexture,
                   ExternalPropertyData... propertyDefs) {
         ExternalPropertyData[] newPropertyDefs = new ExternalPropertyData[propertyDefs.length + 5];
-        System.arraycopy(propertyDefs, 0, newPropertyDefs,5, propertyDefs.length);
+        System.arraycopy(propertyDefs, 0, newPropertyDefs, 5, propertyDefs.length);
         newPropertyDefs[0] = new ExternalPropertyData(HealthKey, DataTypes.Float);
         newPropertyDefs[1] = new ExternalPropertyData(PowerRequestedKey, DataTypes.Float);
         newPropertyDefs[2] = new ExternalPropertyData(RequestLevelKey, DataTypes.Integer, false);
@@ -72,6 +72,7 @@ public enum ComponentType {
 
     /**
      * returns the correct Shape for the Component
+     *
      * @param rotated true if rotation == 90° || 270°
      * @return the PolygonShape representing this Component
      */
@@ -81,13 +82,12 @@ public enum ComponentType {
         if (rotated) {
             w = height;
             h = width;
-        }
-        else {
+        } else {
             w = width;
             h = height;
         }
         shape.setAsBox(w * ShipDef.UNIT_SIZE / 2, h * ShipDef.UNIT_SIZE / 2,
-                new Vector2(ShipDef.UNIT_SIZE * (w / 2 + posX), ShipDef.UNIT_SIZE * (h / 2 + posY)),0);
+                new Vector2(ShipDef.UNIT_SIZE * (w / 2 + posX), ShipDef.UNIT_SIZE * (h / 2 + posY)), 0);
         return shape;
     }
 }

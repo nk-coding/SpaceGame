@@ -1,6 +1,6 @@
 package com.nkcoding.interpreter.compiler;
 
-public class Operation implements Comparable<Operation>{
+public class Operation implements Comparable<Operation> {
     private OperatorType type;
 
     private int exp1;

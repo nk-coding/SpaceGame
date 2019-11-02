@@ -6,14 +6,14 @@ public class MethodWrapperStatement<T> implements Statement, Expression<T> {
 
     protected MethodStatement methodStatement;
 
-    public void setMethodStatement(MethodStatement methodStatement){
+    public void setMethodStatement(MethodStatement methodStatement) {
         this.methodStatement = methodStatement;
     }
 
     //normally used to init
     protected Statement[] initStatements = null;
 
-    public void setInitStatements(Statement[] initStatements){
+    public void setInitStatements(Statement[] initStatements) {
         this.initStatements = initStatements;
     }
 
@@ -35,7 +35,7 @@ public class MethodWrapperStatement<T> implements Statement, Expression<T> {
         //init the parameters
         if (initStatements != null) {
 
-            for (Statement statement : initStatements){
+            for (Statement statement : initStatements) {
                 try {
                     statement.run(stack);
                 } catch (ReturnException e) {
@@ -54,7 +54,7 @@ public class MethodWrapperStatement<T> implements Statement, Expression<T> {
             //that's ok
         }
         //save the result
-        T result = (type.equals(DataTypes.Void)) ? null : ((StackItem<T>)stack.getFromStack(name + "$result")).getResult(stack);
+        T result = (type.equals(DataTypes.Void)) ? null : ((StackItem<T>) stack.getFromStack(name + "$result")).getResult(stack);
         stack.clearStackLevel();
         return result;
     }

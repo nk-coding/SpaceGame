@@ -15,7 +15,9 @@ public class SaveGameManager {
     public static class SaveGame {
         public ShipDef shipDef;
 
-        /**constructor when file exists
+        /**
+         * constructor when file exists
+         *
          * @param file the FileHandle which contains the file
          */
         private SaveGame(FileHandle file) {
@@ -27,7 +29,8 @@ public class SaveGameManager {
             shipDef = ShipDef.fromJson(root.get(ShipDef.class.getSimpleName()));
         }
 
-        /**constructor when no file exists
+        /**
+         * constructor when no file exists
          */
         private SaveGame() {
             shipDef = new ShipDef();
@@ -40,8 +43,7 @@ public class SaveGameManager {
                 json.writeObjectStart();
                 shipDef.toJson(json);
                 json.writeObjectEnd();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -51,7 +53,9 @@ public class SaveGameManager {
 
     private static SaveGame saveGame = null;
 
-    /**loads a SaveGame*/
+    /**
+     * loads a SaveGame
+     */
     public static SaveGame load() {
         if (saveGame == null) {
             FileHandle handle = Gdx.files.local(SAVE_FILE_PATH);

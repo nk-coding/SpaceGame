@@ -5,7 +5,7 @@ import com.nkcoding.interpreter.compiler.DataTypes;
 
 public class AddStringOperation extends BinaryOperation<String> {
     @Override
-    public String getResult(Stack stack){
+    public String getResult(Stack stack) {
         return firstExpression.getResult(stack) + secondExpression.getResult(stack);
     }
 

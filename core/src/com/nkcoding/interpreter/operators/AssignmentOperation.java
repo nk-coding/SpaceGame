@@ -11,11 +11,10 @@ public class AssignmentOperation<T> extends UnaryOperation<T> implements Stateme
 
     private String type;
 
-    public AssignmentOperation(String name, String type){
+    public AssignmentOperation(String name, String type) {
         this.name = name;
         this.type = type;
     }
-
 
 
     @Override

@@ -32,7 +32,7 @@ public class Methods {
         predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "println", DataTypes.Void, new TypeNamePair("str", DataTypes.String)),
                 (Function<Object[], Void>) obj ->
                 {
-                    System.out.println((String)obj[0]);
+                    System.out.println((String) obj[0]);
                     return null;
                 });
         predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "currentTimeMillis", DataTypes.Void),
@@ -44,32 +44,31 @@ public class Methods {
         predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "intToStr", DataTypes.String, new TypeNamePair("i", DataTypes.Integer)),
                 (Function<Object[], String>) obj ->
                 {
-                    return String.valueOf((int)obj[0]);
+                    return String.valueOf((int) obj[0]);
                 });
         predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "floatToStr", DataTypes.String, new TypeNamePair("i", DataTypes.Float)),
                 (Function<Object[], String>) obj ->
                 {
-                    return String.valueOf((float)obj[0]);
+                    return String.valueOf((float) obj[0]);
                 });
         predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "boolToStr", DataTypes.String, new TypeNamePair("i", DataTypes.Boolean)),
                 (Function<Object[], String>) obj ->
                 {
-                    return String.valueOf((boolean)obj[0]);
+                    return String.valueOf((boolean) obj[0]);
                 });
 
     }
 
     //returns the corresponding method definition or null if it does not exist yet
-    public MethodDefinition methodExists(String name){
+    public MethodDefinition methodExists(String name) {
         MethodDefinition normalMethod = getNormalMethod(name);
         if (normalMethod != null) return normalMethod;
-        else{
+        else {
             Optional<MethodDefinition> externOpt = externMethods.stream().filter(def -> def.getName().equals(name)).findFirst();
             //check if it was found
             if (externOpt.isPresent()) {
                 return externOpt.get();
-            }
-            else {
+            } else {
                 Optional<MethodDefinition> predefOpt = predefinedMethods.keySet().stream().filter(def -> def.getName().equals(name)).findFirst();
                 //check if it was found
                 return predefOpt.orElse(null);
@@ -85,8 +84,8 @@ public class Methods {
     }
 
     //gets the statement for a normal method
-    public MethodStatement getNormalMethod(MethodDefinition def){
-        for (MethodStatement normalMethod : normalMethods){
+    public MethodStatement getNormalMethod(MethodDefinition def) {
+        for (MethodStatement normalMethod : normalMethods) {
             if (normalMethod.getDefinition() == def) return normalMethod;
         }
         return null;

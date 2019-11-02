@@ -63,7 +63,8 @@ public class PropertyBox extends WidgetGroup {
         init();
     }
 
-    /**updates this control to a new ExternalPropertyData
+    /**
+     * updates this control to a new ExternalPropertyData
      * automatically calls save()
      */
     public void update(String name, ExternalPropertyData data) {
@@ -73,7 +74,9 @@ public class PropertyBox extends WidgetGroup {
         init();
     }
 
-    /**saves the TextFields to the ExternalPropertyData, should be called before it is deleted*/
+    /**
+     * saves the TextFields to the ExternalPropertyData, should be called before it is deleted
+     */
     public void save() {
         if (data != null) {
             if (!data.readonly) data.initData = valueTextField.getText();
@@ -86,22 +89,19 @@ public class PropertyBox extends WidgetGroup {
         if (nameLabel == null) {
             nameLabel = new Label(name, style.labelStyle);
             addActor(nameLabel);
-        }
-        else nameLabel.setText(name);
+        } else nameLabel.setText(name);
         //init the changed handler stuff
         if (changedLabel == null) {
             changedLabel = new Label("handler: " + data.type, style.labelStyle);
             addActor(changedLabel);
-        }
-        else {
+        } else {
             changedLabel.setText("handler: " + data.type);
         }
         if (changedTextField == null) {
             changedTextField = new TextField(data.handlerName, style.textFieldStyle);
             changedTextField.setTextFieldListener((textField, c) -> verify());
             addActor(changedTextField);
-        }
-        else changedTextField.setText(data.handlerName);
+        } else changedTextField.setText(data.handlerName);
         if (codeImageButton == null) {
             codeImageButton = new ImageButton(style.codeButtonDrawable);
             codeImageButton.addListener(new ChangeListener() {
@@ -121,8 +121,7 @@ public class PropertyBox extends WidgetGroup {
                 valueTextField.setTextFieldListener((textField, c) -> verify());
                 verify();
                 addActor(valueTextField);
-            }
-            else valueTextField.setText(data.initData);
+            } else valueTextField.setText(data.initData);
         }
         verify();
         invalidateHierarchy();
@@ -203,7 +202,8 @@ public class PropertyBox extends WidgetGroup {
     public float getPrefHeight() {
         float prefHeight = 0;
         //border from background drawable if it exists
-        if (style.background != null) prefHeight += style.background.getTopHeight() + style.background.getBottomHeight();
+        if (style.background != null)
+            prefHeight += style.background.getTopHeight() + style.background.getBottomHeight();
         //name label
         prefHeight += nameLabel.getPrefHeight();
         prefHeight += style.spacing;

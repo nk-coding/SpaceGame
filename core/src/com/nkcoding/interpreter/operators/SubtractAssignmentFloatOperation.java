@@ -9,12 +9,12 @@ public class SubtractAssignmentFloatOperation extends SubtractFloatOperation imp
 
     private String name;
 
-    public SubtractAssignmentFloatOperation(String name){
+    public SubtractAssignmentFloatOperation(String name) {
         this.name = name;
     }
 
     @Override
-    public Float getResult(Stack stack){
+    public Float getResult(Stack stack) {
         Float res = super.getResult(stack);
         ((StackItem<Float>) stack.getFromStack(name)).setValue(res);
         return res;

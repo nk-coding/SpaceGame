@@ -1,9 +1,9 @@
 package com.nkcoding.interpreter;
 
-public class StackItem<T> implements Expression<T>{
+public class StackItem<T> implements Expression<T> {
     private String name;
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
@@ -13,17 +13,17 @@ public class StackItem<T> implements Expression<T>{
 
     private int stackLevel;
 
-    public int getStackLevel(){
+    public int getStackLevel() {
         return stackLevel;
     }
 
-    public void setStackLevel(int stackLevel){
+    public void setStackLevel(int stackLevel) {
         this.stackLevel = stackLevel;
     }
 
     private T value;
 
-    public void setValue(T value){
+    public void setValue(T value) {
         this.value = value;
     }
 
@@ -34,7 +34,7 @@ public class StackItem<T> implements Expression<T>{
     }
 
     @Override
-    public T getResult(Stack stack){
+    public T getResult(Stack stack) {
         return value;
     }
 

@@ -8,7 +8,7 @@ public class TypeNamePair {
         return name;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -18,15 +18,16 @@ public class TypeNamePair {
         return type;
     }
 
-    public void setType(String type){
+    public void setType(String type) {
         this.type = type;
     }
 
     //simple constructor
-    public TypeNamePair() {}
+    public TypeNamePair() {
+    }
 
     //constructor
-    public TypeNamePair(String name, String dataType){
+    public TypeNamePair(String name, String dataType) {
         this.name = name;
         this.type = dataType;
     }

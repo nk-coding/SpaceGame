@@ -12,7 +12,7 @@ public abstract class VirtualProperty<T> extends ExternalProperty<T> {
     }
 
     @Override
-    public void set(T value){
+    public void set(T value) {
         changed = true;
     }
 

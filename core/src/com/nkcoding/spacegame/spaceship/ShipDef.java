@@ -13,13 +13,13 @@ import static com.nkcoding.spacegame.spaceship.ExternalPropertyData.of;
 import static com.nkcoding.spacegame.spaceship.Ship.*;
 
 public class ShipDef {
-    public class ShipDesignerHelper{
+    public class ShipDesignerHelper {
         //default constructor
-        protected  ShipDesignerHelper() {
+        protected ShipDesignerHelper() {
             //init the componentsMap
             for (ComponentDef componentDef : componentDefs) {
-                for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++){
-                    for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++){
+                for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++) {
+                    for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++) {
                         componentsMap[_x][_y] = componentDef;
                     }
                 }
@@ -29,22 +29,22 @@ public class ShipDef {
         private ComponentDef[][] componentsMap = new ComponentDef[MAX_SIZE][MAX_SIZE];
 
         //locate component if there is one
-        public ComponentDef getComponent(int x, int y){
+        public ComponentDef getComponent(int x, int y) {
             return componentsMap[x][y];
         }
 
         //Add a component to componentsMap and componentsDefs
         //this requires that TryMoveComponent was called immediately before
         //otherwise this might lead to unexpected behaviour
-        public void addComponent(ComponentDef componentDef, int x, int y, int rotation){
+        public void addComponent(ComponentDef componentDef, int x, int y, int rotation) {
             componentDefs.add(componentDef);
             //update component
             componentDef.setRotation(rotation);
             componentDef.setX(x);
             componentDef.setY(y);
             //add new references
-            for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++){
-                for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++){
+            for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++) {
+                for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++) {
                     componentsMap[_x][_y] = componentDef;
                 }
             }
@@ -52,10 +52,10 @@ public class ShipDef {
 
         public void removeComponent(ComponentDef componentDef) {
             //delete the old references
-            if (componentDefs.contains(componentDef)){
+            if (componentDefs.contains(componentDef)) {
                 componentDefs.remove(componentDef);
-                for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++){
-                    for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++){
+                for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++) {
+                    for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++) {
                         componentsMap[_x][_y] = null;
                     }
                 }
@@ -63,13 +63,13 @@ public class ShipDef {
         }
 
         //is it possible to move a component to a specific position
-        public boolean tryMoveComponent(ComponentDef componentDef, int x, int y, int rotation){
+        public boolean tryMoveComponent(ComponentDef componentDef, int x, int y, int rotation) {
             //calculate resulting width and height
             int width = (rotation % 2 == 0) ? componentDef.getWidth() : componentDef.getHeight();
             int height = (rotation % 2 == 0) ? componentDef.getHeight() : componentDef.getWidth();
             boolean result = true;
-            for (int _x = x; _x < (x + width); _x++){
-                for (int _y = y; _y < (y + height); _y++){
+            for (int _x = x; _x < (x + width); _x++) {
+                for (int _y = y; _y < (y + height); _y++) {
                     //check if it is in range
                     //check if there is no component or (the not moved) same
                     result = result && (_x < MAX_SIZE && _x >= 0 && _y >= 0 && _y < MAX_SIZE && (componentsMap[_x][_y] == null || componentsMap[_x][_y] == componentDef));
@@ -105,7 +105,7 @@ public class ShipDef {
                         y -= def.getWidth() - 1;
                         break;
                 }
-                if (tryMoveComponent(def, x ,y, rotation)) {
+                if (tryMoveComponent(def, x, y, rotation)) {
                     moveComponent(def, x, y, rotation);
                     return;
                 }
@@ -115,7 +115,7 @@ public class ShipDef {
         //actually move component
         //this requires that TryMoveComponent was called immediately before
         //otherwise this might lead to unexpected behaviour
-        public void moveComponent(ComponentDef componentDef, int x, int y, int rotation){
+        public void moveComponent(ComponentDef componentDef, int x, int y, int rotation) {
             //delete the old references
             removeComponent(componentDef);
             //add new references
@@ -164,7 +164,9 @@ public class ShipDef {
         return designerHelper;
     }
 
-    /**HashMap with all the ExternalPropertyData*/
+    /**
+     * HashMap with all the ExternalPropertyData
+     */
     public final LinkedHashMap<String, ExternalPropertyData> properties = new LinkedHashMap<>();
 
     //the main Constructor
@@ -179,6 +181,7 @@ public class ShipDef {
 
     /**
      * get the component with the name name
+     *
      * @param name case sensitive name of the component
      * @return the ComponentDef or null if it does not exist
      */
@@ -189,6 +192,7 @@ public class ShipDef {
 
     /**
      * checks if two components have the same name
+     *
      * @return true if everything is ok
      */
     public boolean verifyNames() {
@@ -200,7 +204,8 @@ public class ShipDef {
 
     /**
      * checks if the name already exists, it is ok if the same ComponentDef already uses the name
-     * @param def the ComponentDef that will use the name
+     *
+     * @param def  the ComponentDef that will use the name
      * @param name the name to check
      * @return true if the name is not used or used by def
      */
@@ -209,12 +214,12 @@ public class ShipDef {
             if (name.equals("")) return true;
             ComponentDef nameDef = getComponent(name);
             return nameDef == null || nameDef == def;
-        }
-        else return def == null;
+        } else return def == null;
     }
 
     /**
      * checks the properties for all components
+     *
      * @param methods map with all methods
      * @return true if everything is ok
      */

@@ -48,8 +48,7 @@ public class Explosion extends Simulated {
         super.act(delta);
         if (currentRadius >= endRadius) {
             getSpaceSimulation().removeSimulated(this);
-        }
-        else {
+        } else {
             currentRadius += step * delta;
             sensorFixture.getShape().setRadius(currentRadius);
         }
@@ -67,7 +66,7 @@ public class Explosion extends Simulated {
         super.beginContact(other, f1, f2);
         Object userData = f2.getUserData();
         if (userData instanceof Component) {
-            ((Component)userData).damageAt(f2, (int)(damage * (1 - ((currentRadius - startRadius) / (endRadius - startRadius)))));
+            ((Component) userData).damageAt(f2, (int) (damage * (1 - ((currentRadius - startRadius) / (endRadius - startRadius)))));
         }
     }
 }

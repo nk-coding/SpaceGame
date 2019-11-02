@@ -10,13 +10,13 @@ public class CompileException extends Exception {
     }
 
     //constructor
-    public CompileException(String msg, ProgramPosition position){
+    public CompileException(String msg, ProgramPosition position) {
         super(msg);
         this.position = position;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Error (");
         sb.append(position.getLine() + 1);

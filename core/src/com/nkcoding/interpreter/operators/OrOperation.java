@@ -5,7 +5,7 @@ import com.nkcoding.interpreter.compiler.DataTypes;
 
 public class OrOperation extends BinaryOperation<Boolean> {
     @Override
-    public Boolean getResult(Stack stack){
+    public Boolean getResult(Stack stack) {
         return firstExpression.getResult(stack) || secondExpression.getResult(stack);
     }
 

@@ -4,7 +4,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.SpaceSimulation;
 import com.nkcoding.spacegame.spaceship.*;
@@ -66,7 +69,7 @@ public class Cannon extends Component {
             final Body body = getBody();
             body.setBullet(true);
             EdgeShape edgeShape = new EdgeShape();
-            edgeShape.set(new Vector2(0,0), new Vector2(0, length));
+            edgeShape.set(new Vector2(0, 0), new Vector2(0, length));
             Fixture fixture = body.createFixture(edgeShape, 0f);
             fixture.setSensor(true);
             body.setTransform(pos, angle);
@@ -92,9 +95,9 @@ public class Cannon extends Component {
                     drawPos.x, drawPos.y,
                     0, 0,
                     0.02f, length,
-                    1,1,
+                    1, 1,
                     getBody().getAngle() * MathUtils.radiansToDegrees,
-                    0,0,
+                    0, 0,
                     this.texture.getWidth(), this.texture.getHeight(),
                     false, false);
         }
@@ -104,7 +107,7 @@ public class Cannon extends Component {
             Object userData = f2.getUserData();
             if (userData instanceof Component && !collided) {
                 collided = true;
-                ((Component)userData).damageAt(f2, 100);
+                ((Component) userData).damageAt(f2, 100);
             }
         }
     }

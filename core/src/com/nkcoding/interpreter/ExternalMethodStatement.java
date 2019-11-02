@@ -5,7 +5,7 @@ public class ExternalMethodStatement<T> implements Statement, Expression<T> {
     //normally used to init
     protected Expression[] parameterExpressions = null;
 
-    public void setParameterExpressions(Expression[] parameterExpressions){
+    public void setParameterExpressions(Expression[] parameterExpressions) {
         this.parameterExpressions = parameterExpressions;
     }
 
@@ -24,13 +24,12 @@ public class ExternalMethodStatement<T> implements Statement, Expression<T> {
     @Override
     public T getResult(Stack stack) {
         Object[] parameters;
-        if (parameterExpressions != null){
+        if (parameterExpressions != null) {
             parameters = new Object[parameterExpressions.length];
-            for (int x = 0; x < parameters.length; x++){
+            for (int x = 0; x < parameters.length; x++) {
                 parameters[x] = parameterExpressions[x].getResult(stack);
             }
-        }
-        else{
+        } else {
             parameters = new Object[0];
         }
         ExternalMethodFuture future = new ExternalMethodFuture();
@@ -39,9 +38,8 @@ public class ExternalMethodStatement<T> implements Statement, Expression<T> {
         future.setType(type);
         stack.requestExternalMethod(future);
         try {
-            return (T)future.get();
-        }
-        catch (Exception e){
+            return (T) future.get();
+        } catch (Exception e) {
             System.out.println("Exception at extern method, " + name);
             return null;
         }

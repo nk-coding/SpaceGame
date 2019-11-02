@@ -22,8 +22,7 @@ public class IntProperty extends ExternalProperty<Integer> {
     public void setInitValue(String value) {
         try {
             this.value = Integer.parseInt(value);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             this.value = 0;
         }
     }

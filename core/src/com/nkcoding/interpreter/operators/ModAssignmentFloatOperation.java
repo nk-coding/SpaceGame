@@ -9,12 +9,12 @@ public class ModAssignmentFloatOperation extends ModFloatOperation implements St
 
     private String name;
 
-    public ModAssignmentFloatOperation(String name){
+    public ModAssignmentFloatOperation(String name) {
         this.name = name;
     }
 
     @Override
-    public Float getResult(Stack stack){
+    public Float getResult(Stack stack) {
         Float res = super.getResult(stack);
         ((StackItem<Float>) stack.getFromStack(name)).setValue(res);
         return res;

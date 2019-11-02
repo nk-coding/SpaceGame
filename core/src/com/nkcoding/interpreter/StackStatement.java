@@ -7,8 +7,7 @@ public abstract class StackStatement implements Statement {
         stack.beginStackLevel();
         try {
             runOverride(stack);
-        }
-        finally {
+        } finally {
             stack.clearStackLevel();
         }
     }

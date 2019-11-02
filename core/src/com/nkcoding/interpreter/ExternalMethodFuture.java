@@ -31,7 +31,7 @@ public class ExternalMethodFuture extends CompletableFuture<Object> {
         return parameters;
     }
 
-    public void setParameters(Object[] parameters){
+    public void setParameters(Object[] parameters) {
         this.parameters = parameters;
     }
 

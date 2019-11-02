@@ -1,9 +1,7 @@
 package com.nkcoding.ui;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Colors;
 import com.nkcoding.interpreter.compiler.CompilerHelper;
-import com.nkcoding.interpreter.compiler.ProgramTextWrapper;
 
 public class ScriptColorParser implements ColorParser {
 
@@ -33,8 +31,7 @@ public class ScriptColorParser implements ColorParser {
                     inComment = false;
                     handler.addColorRegion(startPos, x - 1, commentColor);
                 }
-            }
-            else {
+            } else {
                 //not in String, comment start, comment found
                 if (!inString && c == '/' && (x + 1) < str.length() && str.charAt(x + 1) == '/') {
                     // a wild comment was found
@@ -44,48 +41,41 @@ public class ScriptColorParser implements ColorParser {
                 //check for all the other stuff
                 else if (inString) {
                     //actual in String, this is the worst
-                    if (c == '\\'){
+                    if (c == '\\') {
                         //escape char
                         if (!escaped) {
                             //not escaped
                             escaped = true;
-                        }
-                        else {
+                        } else {
                             escaped = false;
                         }
-                    }
-                    else if (c == '"') {
+                    } else if (c == '"') {
                         if (!escaped) {
                             //end of String
                             handler.addColorRegion(startPos, x, stringColor);
                             inString = false;
-                        }
-                        else {
+                        } else {
                             escaped = false;
                         }
-                    }
-                    else {
+                    } else {
                         //reset escaped
                         escaped = false;
                     }
-                }
-                else if (inNumber) {
-                    if (! (Character.isDigit(c) || c == '.')) {
+                } else if (inNumber) {
+                    if (!(Character.isDigit(c) || c == '.')) {
                         //end of number
                         inNumber = false;
                         handler.addColorRegion(startPos, x - 1, numberColor);
                     }
-                }
-                else if (inPossibleNumber) {
+                } else if (inPossibleNumber) {
                     //something that started with a dot
                     //is only a number if there is a digit now
                     inPossibleNumber = false;
                     if (Character.isDigit(c)) {
                         inNumber = true;
                     }
-                }
-                else if (inWord) {
-                    if (! (Character.isLetterOrDigit(c) || c == '_')) {
+                } else if (inWord) {
+                    if (!(Character.isLetterOrDigit(c) || c == '_')) {
                         //end of word
                         inWord = false;
                         String subStr = str.substring(startPos, x);
@@ -93,8 +83,7 @@ public class ScriptColorParser implements ColorParser {
                             handler.addColorRegion(startPos, x - 1, keyWordColor);
                         }
                     }
-                }
-                else {
+                } else {
                     //the default behaviour, check for different stuff
                     if (!Character.isWhitespace(c)) {
                         //set start pos
@@ -102,14 +91,11 @@ public class ScriptColorParser implements ColorParser {
                         if (c == '"') {
                             //start of string
                             inString = true;
-                        }
-                        else if (c == '.') {
+                        } else if (c == '.') {
                             inPossibleNumber = true;
-                        }
-                        else if (Character.isDigit(c)) {
+                        } else if (Character.isDigit(c)) {
                             inNumber = true;
-                        }
-                        else if (Character.isLetter(c) || c == '_'){
+                        } else if (Character.isLetter(c) || c == '_') {
                             inWord = true;
                         }
                     }
@@ -125,8 +111,7 @@ public class ScriptColorParser implements ColorParser {
             if (CompilerHelper.isReservedKeyword(subStr)) {
                 handler.addColorRegion(startPos, str.length() - 1, keyWordColor);
             }
-        }
-        else if (inComment) {
+        } else if (inComment) {
             handler.addColorRegion(startPos, str.length() - 1, commentColor);
         }
     }

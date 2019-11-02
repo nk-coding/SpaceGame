@@ -8,96 +8,20 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.spacegame.SpaceSimulation;
 
 public class Simulated {
-    //the SpaceSimulation of which this is part of
-    private SpaceSimulation spaceSimulation;
-
-    public SpaceSimulation getSpaceSimulation() {
-        return spaceSimulation;
-    }
-
-    //is it active for simulation or not
-    protected boolean active = true;
-
-    public boolean getActive() {
-        return active;
-    }
-
-    //the body which is used in Box3D
-    protected final Body body;
-
-    public Body getBody() {
-        return body;
-    }
-
     //the type of this object
     public final BodyDef.BodyType bodyType;
-
-    public BodyDef.BodyType getBodyType() {
-        return bodyType;
-    }
-
-    private boolean receivesKeyInput = false;
-
-    private int collisionPriority;
-
-    public int getCollisionPriority() {
-        return collisionPriority;
-    }
-
-    /**
-     * does this Simulated receive key input?
-     * default is false
-     * */
-    public boolean isReceivesKeyInput() {
-        return receivesKeyInput && active;
-    }
-
-    /**
-     * does this Simulated receive key input?
-     * default is false
-     * */
-    public void setReceivesKeyInput(boolean receivesKeyInput) {
-        boolean old = this.receivesKeyInput;
-        this.receivesKeyInput = receivesKeyInput;
-        if (old != receivesKeyInput) {
-            spaceSimulation.updateReceivesKeyInput(this);
-        }
-    }
-
-    /**
-     * get the position in box2D
-     * @return body.getPosition()
-     */
-    public Vector2 getPosition() {
-        return body.getPosition();
-    }
-
-    /**
-     * get the rotation in radians
-     * @return body.getAngle()
-     */
-    public float getRotation() {
-        return body.getAngle();
-    }
-
+    //the body which is used in Box3D
+    protected final Body body;
+    //is it active for simulation or not
+    protected boolean active = true;
     //center position, width and height for camera adjustment
     protected Vector2 centerPosition;
-
-    public Vector2 getCenterPosition() {
-        return  centerPosition;
-    }
-
     protected float width;
-
-    public float getWidth() {
-        return width;
-    }
-
     protected float height;
-
-    public float getHeight(){
-        return height;
-    }
+    //the SpaceSimulation of which this is part of
+    private SpaceSimulation spaceSimulation;
+    private boolean receivesKeyInput = false;
+    private int collisionPriority;
 
     //the default constructor
     protected Simulated(SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority) {
@@ -120,6 +44,76 @@ public class Simulated {
         this.body.setUserData(this);
     }
 
+    public SpaceSimulation getSpaceSimulation() {
+        return spaceSimulation;
+    }
+
+    public boolean getActive() {
+        return active;
+    }
+
+    public Body getBody() {
+        return body;
+    }
+
+    public BodyDef.BodyType getBodyType() {
+        return bodyType;
+    }
+
+    public int getCollisionPriority() {
+        return collisionPriority;
+    }
+
+    /**
+     * does this Simulated receive key input?
+     * default is false
+     */
+    public boolean isReceivesKeyInput() {
+        return receivesKeyInput && active;
+    }
+
+    /**
+     * does this Simulated receive key input?
+     * default is false
+     */
+    public void setReceivesKeyInput(boolean receivesKeyInput) {
+        boolean old = this.receivesKeyInput;
+        this.receivesKeyInput = receivesKeyInput;
+        if (old != receivesKeyInput) {
+            spaceSimulation.updateReceivesKeyInput(this);
+        }
+    }
+
+    /**
+     * get the position in box2D
+     *
+     * @return body.getPosition()
+     */
+    public Vector2 getPosition() {
+        return body.getPosition();
+    }
+
+    /**
+     * get the rotation in radians
+     *
+     * @return body.getAngle()
+     */
+    public float getRotation() {
+        return body.getAngle();
+    }
+
+    public Vector2 getCenterPosition() {
+        return centerPosition;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
     /**
      * the default act method
      * a subclass must call this, otherwise positioning will not work
@@ -131,6 +125,7 @@ public class Simulated {
     /**
      * the default draw method
      * a subclass must overwrite this, it it wants to be drawn
+     *
      * @param batch the Batch to draw on
      */
     public void draw(Batch batch) {
@@ -145,10 +140,12 @@ public class Simulated {
         return false;
     }
 
-    public void setCameraFocus(boolean cameraFocus) {}
+    public void setCameraFocus(boolean cameraFocus) {
+    }
 
     /**
      * transforms local coordinates to world coordinates
+     *
      * @param local the Vector2 that is modified
      * @return the modified Vector2
      */
@@ -158,6 +155,7 @@ public class Simulated {
 
     /**
      * transforms world coordinates to local coordinates
+     *
      * @param world the Vector2 that is modified
      * @return the modified Vector2
      */

@@ -41,28 +41,44 @@ import java.util.ArrayList;
 
 public class MultiColorTextArea extends TextFieldBase implements ColorParserHandler, Cullable {
 
-    /** Array storing lines breaks positions **/
+    /**
+     * Array storing lines breaks positions
+     **/
     IntArray linesBreak;
 
-    /** Last text processed. This attribute is used to avoid unnecessary computations while calculating offsets **/
+    /**
+     * Last text processed. This attribute is used to avoid unnecessary computations while calculating offsets
+     **/
     private String lastText;
 
-    /** Current line for the cursor **/
+    /**
+     * Current line for the cursor
+     **/
     int cursorLine;
 
-    /** Index of the first line showed by the text area **/
+    /**
+     * Index of the first line showed by the text area
+     **/
     int firstLineShowing;
 
-    /** Number of lines showed by the text area **/
+    /**
+     * Number of lines showed by the text area
+     **/
     int linesShowing;
 
-    /** until which width it has to render*/
+    /**
+     * until which width it has to render
+     */
     private float renderUntilX = Float.POSITIVE_INFINITY;
 
-    /**the first ColorRegion which is important**/
+    /**
+     * the first ColorRegion which is important
+     **/
     private int firstRelevantColorArea;
 
-    /** Variable to maintain the x offset of the cursor when moving up and down. If it's set to -1, the offset is reset **/
+    /**
+     * Variable to maintain the x offset of the cursor when moving up and down. If it's set to -1, the offset is reset
+     **/
     float moveOffset;
 
     private float prefRows;
@@ -95,7 +111,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     }
 
     @Override
-    protected void initialize () {
+    protected void initialize() {
         super.initialize();
         writeEnters = true;
         linesBreak = new IntArray();
@@ -109,7 +125,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         colors = new ArrayList<>();
     }
 
-    protected int letterUnderCursor (float x) {
+    protected int letterUnderCursor(float x) {
         if (linesBreak.size > 0) {
             if (cursorLine * 2 >= linesBreak.size) {
                 return text.length();
@@ -129,15 +145,18 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         }
     }
 
-    /** Sets the preferred number of rows (lines) for this text area. Used to calculate preferred height */
-    public void setPrefRows (float prefRows) {
+    /**
+     * Sets the preferred number of rows (lines) for this text area. Used to calculate preferred height
+     */
+    public void setPrefRows(float prefRows) {
         this.prefRows = prefRows;
     }
 
     @Override
-    public float getPrefHeight () {
+    public float getPrefHeight() {
         float prefHeight = style.font.getLineHeight() * getLines();
-        if (style.background != null) prefHeight += (style.background.getBottomHeight() + style.background.getTopHeight());
+        if (style.background != null)
+            prefHeight += (style.background.getBottomHeight() + style.background.getTopHeight());
         return prefHeight;
     }
 
@@ -146,19 +165,25 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         return prefWidth + 10;
     }
 
-    /** Returns total number of lines that the text occupies **/
-    public int getLines () {
+    /**
+     * Returns total number of lines that the text occupies
+     **/
+    public int getLines() {
         return linesBreak.size / 2 + (newLineAtEnd() ? 1 : 0);
     }
 
-    /** Returns if there's a new line at then end of the text **/
-    public boolean newLineAtEnd () {
+    /**
+     * Returns if there's a new line at then end of the text
+     **/
+    public boolean newLineAtEnd() {
         return text.length() != 0
                 && (text.charAt(text.length() - 1) == ENTER_ANDROID || text.charAt(text.length() - 1) == ENTER_DESKTOP);
     }
 
-    /** Moves the cursor to the given number line **/
-    public void moveCursorLine (int line) {
+    /**
+     * Moves the cursor to the given number line
+     **/
+    public void moveCursorLine(int line) {
         if (line < 0) {
             cursorLine = 0;
             cursor = 0;
@@ -186,8 +211,10 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     }
 
 
-    /** Updates the current line, checking the cursor position in the text **/
-    void updateCurrentLine () {
+    /**
+     * Updates the current line, checking the cursor position in the text
+     **/
+    void updateCurrentLine() {
         int index = calculateCurrentLineIndex(cursor);
         int line = index / 2;
         // Special case when cursor moves to the beginning of the line from the end of another and a word
@@ -202,14 +229,18 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         updateScrollPane();
     }
 
-    /** Scroll the text area to show the line of the cursor **/
-    void showCursor () {
+    /**
+     * Scroll the text area to show the line of the cursor
+     **/
+    void showCursor() {
         updateCurrentLine();
     }
 
 
-    /** Calculates the text area line for the given cursor position **/
-    private int calculateCurrentLineIndex (int cursor) {
+    /**
+     * Calculates the text area line for the given cursor position
+     **/
+    private int calculateCurrentLineIndex(int cursor) {
         int index = 0;
         while (index < linesBreak.size && cursor > linesBreak.items[index]) {
             index++;
@@ -220,7 +251,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     // OVERRIDE from TextField
 
     @Override
-    protected void sizeChanged () {
+    protected void sizeChanged() {
         lastText = null; // Cause calculateOffsets to recalculate the line breaks.
 
         // The number of lines showed must be updated whenever the height is updated
@@ -231,16 +262,16 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     }
 
     @Override
-    protected float getTextY (BitmapFont font, Drawable background) {
+    protected float getTextY(BitmapFont font, Drawable background) {
         float textY = getHeight();
         if (background != null) {
-            textY = (int)(textY - background.getTopHeight());
+            textY = (int) (textY - background.getTopHeight());
         }
         return textY;
     }
 
     @Override
-    protected void drawSelection (Drawable selection, Batch batch, BitmapFont font, float x, float y) {
+    protected void drawSelection(Drawable selection, Batch batch, BitmapFont font, float x, float y) {
         int i = firstLineShowing * 2;
         int iMax = Math.min((firstLineShowing + linesShowing) * 2, linesBreak.size);
         float offsetY = firstLineShowing * font.getLineHeight();
@@ -270,7 +301,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     }
 
     @Override
-    protected void drawText (Batch batch, BitmapFont font, float x, float y) {
+    protected void drawText(Batch batch, BitmapFont font, float x, float y) {
         float offsetY = -firstLineShowing * font.getLineHeight();
         float offsetX = 0;
         //GlyphLayout for the calculation of the offsetX
@@ -286,8 +317,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
             if (region.newLineAfter) {
                 offsetY -= font.getLineHeight();
                 offsetX = 0;
-            }
-            else {
+            } else {
                 layout.setText(font, displayText.subSequence(region.startPos, region.endPos + 1));
                 offsetX += layout.width;
             }
@@ -313,8 +343,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         if (lineStart == -1 || cr.lineBreakIndex >= (firstLineShowing + linesShowing)) {
             if (debug) System.out.print("case 1, ");
             return false;
-        }
-        else {
+        } else {
             //case 2: last color region handled, so draw the rest of the line and continue with the next line
             if (colorStart == -1) {
                 if (debug) System.out.print("case 2, ");
@@ -324,8 +353,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
                 cr.newLineAfter = true;
 
                 cr.lineBreakIndex++;
-            }
-            else {
+            } else {
                 //case 3: there is a color region to handle, but it is after the current position
                 if (cr.endPos < colorStart - 1) {
                     //find out what is the end, the begin of the color region or the end of the current line
@@ -350,8 +378,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
                     }
                     //case 3.3: the color region starts where the line ends (this makes no sense, but who cares
                     //merge in future with case 3.1
-                    else
-                    {
+                    else {
                         if (debug) System.out.print("case 3.3, ");
                         cr.color = style.fontColor;
                         cr.startPos = cr.endPos + 1;
@@ -415,7 +442,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         int oldFirstLineShowing = firstLineShowing;
         firstLineShowing = (int) ((getHeight() - cullingArea.y - cullingArea.height) / style.font.getLineHeight());
         if (firstLineShowing < 0) firstLineShowing = 0;
-        linesShowing = (int)(cullingArea.height / style.font.getLineHeight());
+        linesShowing = (int) (cullingArea.height / style.font.getLineHeight());
         //correct possible error produced by rounding
         linesShowing += 2;
         renderUntilX = cullingArea.x + cullingArea.width;
@@ -444,7 +471,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     }
 
     @Override
-    protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
+    protected void drawCursor(Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
         float textOffset = cursor >= glyphPositions.size || cursorLine * 2 >= linesBreak.size ? 0
                 : glyphPositions.get(cursor) - glyphPositions.get(linesBreak.items[cursorLine * 2]);
         cursorPatch.draw(batch, x + textOffset + fontOffset + font.getData().cursorX,
@@ -453,7 +480,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     }
 
     @Override
-    protected void calculateOffsets () {
+    protected void calculateOffsets() {
         super.calculateOffsets();
         if (!this.text.equals(lastText)) {
             float newPrefWidth = 0f;
@@ -518,18 +545,18 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     }
 
     @Override
-    protected InputListener createInputListener () {
+    protected InputListener createInputListener() {
         return new TextAreaListener();
     }
 
     @Override
-    public void setSelection (int selectionStart, int selectionEnd) {
+    public void setSelection(int selectionStart, int selectionEnd) {
         super.setSelection(selectionStart, selectionEnd);
         updateCurrentLine();
     }
 
     @Override
-    protected void moveCursor (boolean forward, boolean jump) {
+    protected void moveCursor(boolean forward, boolean jump) {
         int count = forward ? 1 : -1;
         int index = (cursorLine * 2) + count;
         if (index >= 0 && index + 1 < linesBreak.size && linesBreak.items[index] == cursor
@@ -549,18 +576,18 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     }
 
     @Override
-    protected boolean continueCursor (int index, int offset) {
+    protected boolean continueCursor(int index, int offset) {
         int pos = calculateCurrentLineIndex(index + offset);
         return super.continueCursor(index, offset) && (pos < 0 || pos >= linesBreak.size - 2 || (linesBreak.items[pos + 1] != index)
                 || (linesBreak.items[pos + 1] == linesBreak.items[pos + 2]));
     }
 
-    public int getCursorLine () {
+    public int getCursorLine() {
         return cursorLine;
     }
 
 
-    public float getCursorX () {
+    public float getCursorX() {
         if (cursor >= glyphPositions.size) return 0;
         else if (cursorLine * 2 >= linesBreak.size) return 0;
         else if (cursor < 0) return 0;
@@ -569,7 +596,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         }
     }
 
-    public float getCursorY () {
+    public float getCursorY() {
         BitmapFont font = style.font;
         return -(-font.getDescent() / 2 - (cursorLine + 1) * font.getLineHeight());
     }
@@ -608,7 +635,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
 
     private void updateScrollPane() {
         if (getParent() instanceof ScrollPane) {
-            ScrollPane scrollPane = (ScrollPane)getParent();
+            ScrollPane scrollPane = (ScrollPane) getParent();
             float posX = getCursorX();
             //just a hack, but it works fine
             if (posX > 0) {
@@ -645,11 +672,13 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         return x;
     }
 
-    /** Input listener for the text area **/
+    /**
+     * Input listener for the text area
+     **/
     public class TextAreaListener extends TextFieldClickListener {
 
         @Override
-        protected void setCursorPosition (float x, float y) {
+        protected void setCursorPosition(float x, float y) {
             moveOffset = -1;
 
             Drawable background = style.background;
@@ -666,7 +695,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
                 y -= background.getTopHeight();
             }
 
-            cursorLine = (int)Math.floor((height - y) / font.getLineHeight()) /*+ firstLineShowing*/;
+            cursorLine = (int) Math.floor((height - y) / font.getLineHeight()) /*+ firstLineShowing*/;
             cursorLine = Math.max(0, Math.min(cursorLine, getLines() - 1));
 
             super.setCursorPosition(x, y);
@@ -674,7 +703,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         }
 
         @Override
-        public boolean keyDown (InputEvent event, int keycode) {
+        public boolean keyDown(InputEvent event, int keycode) {
             boolean result = super.keyDown(event, keycode);
             if (hasKeyboardFocus()) {
                 boolean repeat = false;
@@ -716,7 +745,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         }
 
         @Override
-        public boolean keyTyped (InputEvent event, char character) {
+        public boolean keyTyped(InputEvent event, char character) {
             //correct tab
             if (character == '\t') {
                 System.out.println("TAB");
@@ -752,8 +781,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
                             boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == '}';
                             paste(" ".repeat(spaces + 3), false, true);
                             if (endBracketExists) paste("\n" + " ".repeat(spaces), false, false);
-                        }
-                        else {
+                        } else {
                             // just a normal new line
                             paste(" ".repeat(spaces), false, true);
                         }
@@ -769,7 +797,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         }
 
         @Override
-        protected void goHome (boolean jump) {
+        protected void goHome(boolean jump) {
             if (jump) {
                 cursor = 0;
             } else if (cursorLine * 2 < linesBreak.size) {
@@ -778,7 +806,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         }
 
         @Override
-        protected void goEnd (boolean jump) {
+        protected void goEnd(boolean jump) {
             if (jump || cursorLine >= getLines()) {
                 cursor = text.length();
             } else if (cursorLine * 2 + 1 < linesBreak.size) {

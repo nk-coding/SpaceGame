@@ -10,7 +10,7 @@ public class StatementBlock extends StackStatement {
 
     @Override
     void runOverride(Stack stack) throws ReturnException {
-        for (Statement statement : statements){
+        for (Statement statement : statements) {
             statement.run(stack);
         }
     }

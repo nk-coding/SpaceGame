@@ -5,7 +5,7 @@ import com.nkcoding.interpreter.compiler.DataTypes;
 
 public class NegateFloatOperation extends UnaryOperation<Float> {
     @Override
-    public Float getResult(Stack stack){
+    public Float getResult(Stack stack) {
         return -firstExpression.getResult(stack);
     }
 

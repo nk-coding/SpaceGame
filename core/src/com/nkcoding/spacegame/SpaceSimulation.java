@@ -3,8 +3,6 @@ package com.nkcoding.spacegame;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -58,7 +56,8 @@ public class SpaceSimulation implements InputProcessor {
     }
 
     public void setCameraSimulated(Simulated cameraSimulated) {
-        if (cameraSimulated != this.cameraSimulated && this.cameraSimulated != null) this.cameraSimulated.setCameraFocus(false);
+        if (cameraSimulated != this.cameraSimulated && this.cameraSimulated != null)
+            this.cameraSimulated.setCameraFocus(false);
         this.cameraSimulated = cameraSimulated;
     }
 
@@ -84,12 +83,11 @@ public class SpaceSimulation implements InputProcessor {
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
-                Simulated s1 = (Simulated)contact.getFixtureA().getBody().getUserData();
-                Simulated s2 = (Simulated)contact.getFixtureB().getBody().getUserData();
+                Simulated s1 = (Simulated) contact.getFixtureA().getBody().getUserData();
+                Simulated s2 = (Simulated) contact.getFixtureB().getBody().getUserData();
                 if (s1.getCollisionPriority() > s2.getCollisionPriority()) {
                     s1.beginContact(s2, contact.getFixtureA(), contact.getFixtureB());
-                }
-                else {
+                } else {
                     s2.beginContact(s1, contact.getFixtureB(), contact.getFixtureA());
                 }
             }
@@ -114,14 +112,18 @@ public class SpaceSimulation implements InputProcessor {
         debugRenderer = new Box2DDebugRenderer();
     }
 
-    /**add a simulated
+    /**
+     * add a simulated
+     *
      * @param simulated the Simulated to add
      */
     public void addSimulated(Simulated simulated) {
         simulateds.add(simulated);
     }
 
-    /**remove a simulated
+    /**
+     * remove a simulated
+     *
      * @param simulated the Simulated to remove
      */
     public void removeSimulated(Simulated simulated) {
@@ -131,6 +133,7 @@ public class SpaceSimulation implements InputProcessor {
 
     /**
      * adds a ExternalPropertyHandler
+     *
      * @param handler the handler to add
      */
     public void addExternalPropertyHandler(ExternalPropertyHandler handler) {
@@ -139,6 +142,7 @@ public class SpaceSimulation implements InputProcessor {
 
     /**
      * removes an ExternalPropertyHandler
+     *
      * @param handler the handler to remove
      */
     public void removeExternalPropertyHandler(ExternalPropertyHandler handler) {
@@ -152,8 +156,7 @@ public class SpaceSimulation implements InputProcessor {
     public void updateReceivesKeyInput(Simulated simulated) {
         if (simulated.isReceivesKeyInput()) {
             keyHandlers.add(simulated);
-        }
-        else {
+        } else {
             keyHandlers.remove(simulated);
         }
     }
@@ -211,8 +214,7 @@ public class SpaceSimulation implements InputProcessor {
         if (true) {
             for (Simulated simulated : simulateds) simulated.draw(batch);
             batch.flush();
-        }
-        else {
+        } else {
             debugRenderer.render(world, camera.combined);
         }
 
@@ -233,7 +235,7 @@ public class SpaceSimulation implements InputProcessor {
             float h = cameraSimulated.getHeight() / (0.15f / (length * length) + 0.08f);
             //rotation += Math.atan(cameraSimulated.getBody().getAngularVelocity()) * 45;
 
-            camera.setToOrtho(false, h / height * width , h);
+            camera.setToOrtho(false, h / height * width, h);
             camera.position.x = position.x;
             camera.position.y = position.y;
             //camera.rotate(rotation);

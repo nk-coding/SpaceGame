@@ -27,7 +27,7 @@ public class Compiler {
     private MethodDefinition actualMethod;
 
     //constructor
-    public Compiler(String[] lines, MethodDefinition[] externMethods){
+    public Compiler(String[] lines, MethodDefinition[] externMethods) {
         text = new ProgramTextWrapper(lines);
         methods = new Methods();
         methods.addExternMethods(externMethods);
@@ -38,8 +38,8 @@ public class Compiler {
     public Compiler(String text, ShipDef def) {
         //create the external method statements for the components
         HashMap<String, ExternalPropertyData> externalPropertyDatas = new HashMap<>();
-        for(ComponentType com : ComponentType.values()) {
-            for(ExternalPropertyData data : com.propertyDefs) {
+        for (ComponentType com : ComponentType.values()) {
+            for (ExternalPropertyData data : com.propertyDefs) {
                 if (!externalPropertyDatas.containsKey(data.name)) {
                     externalPropertyDatas.put(data.name, data);
                 }
@@ -93,8 +93,7 @@ public class Compiler {
             try {
                 text.skipUntil(true, '{');
                 text.moveBackward();
-            }
-            catch (ProgramTextWrapper.EndReachedException e) {
+            } catch (ProgramTextWrapper.EndReachedException e) {
                 throw new IllegalStateException("ERROR: please check the compiler :/");
             }
             //start stack level
@@ -116,7 +115,7 @@ public class Compiler {
     }
 
     //create the MethodDefinitions for a complete program
-    private Tuple<List<MethodDefinition>, ConcurrentHashMap<String, ConcurrentStackItem>> createMethodDefinitions() throws CompileException{
+    private Tuple<List<MethodDefinition>, ConcurrentHashMap<String, ConcurrentStackItem>> createMethodDefinitions() throws CompileException {
         //begin a stack level for global variables
         stack.beginStackLevel();
         //list where all the definitions are stored in
@@ -124,14 +123,13 @@ public class Compiler {
 
         boolean endReached = false;
 
-        while (!endReached){
+        while (!endReached) {
             //return type expected
             String returnType = text.getNextWord();
             if (returnType == null) {
                 //nothing found, this is actually ok
                 endReached = true;
-            }
-            else {
+            } else {
                 //here it really begins
                 //if it does not contain the return type, something must be wrong
                 if (!DataTypes.contains(returnType))
@@ -161,12 +159,11 @@ public class Compiler {
                         while (!allArgumentsFound) {
                             try {
                                 char possibleEndBracket = text.getNextNonWhitespaceChar();
-                                if (possibleEndBracket == ')'){
+                                if (possibleEndBracket == ')') {
                                     //the end was found
                                     //no more parameters
                                     allArgumentsFound = true;
-                                }
-                                else {
+                                } else {
                                     //correct position
                                     text.moveBackward();
                                     //there is (or at least should be) a parameter
@@ -192,8 +189,7 @@ public class Compiler {
                                     else if (possibleComma != ',')
                                         throw new CompileException("expected: ) found " + possibleComma, text.getPosition());
                                 }
-                            }
-                            catch (ProgramTextWrapper.EndReachedException e) {
+                            } catch (ProgramTextWrapper.EndReachedException e) {
                                 //no end bracket was found
                                 throw new CompileException("expected: ) found nothing", text.getPosition());
                             }
@@ -211,42 +207,35 @@ public class Compiler {
                             if (methodBodyOpen == '{') {
                                 //method found as expected
                                 bracketLevel++;
-                            }
-                            else {
+                            } else {
                                 throw new CompileException("expected: { found: " + methodBodyOpen, text.getPosition());
                             }
-                        }
-                        catch (ProgramTextWrapper.EndReachedException e) {
+                        } catch (ProgramTextWrapper.EndReachedException e) {
                             //no body
                             throw new CompileException("expected: { found: nothing", text.getPosition());
                         }
                         //continue until the end of the body is reached
-                        while (bracketLevel > 0){
+                        while (bracketLevel > 0) {
                             try {
-                                char nextBracket = text.skipUntil(true,'{', '}');
+                                char nextBracket = text.skipUntil(true, '{', '}');
                                 if (nextBracket == '{') bracketLevel++;
                                 else bracketLevel--;
-                            }
-                            catch (ProgramTextWrapper.EndReachedException e) {
+                            } catch (ProgramTextWrapper.EndReachedException e) {
                                 throw new CompileException("expected: } found: nothing", text.getPosition());
                             }
                         }
-                    }
-                    else if (beginChar == ';') {
+                    } else if (beginChar == ';') {
                         if (stack.exists(def.getName())) {
                             throw new CompileException("a global variable with the name " + def.getName() + " already exists", text.getPosition());
-                        }
-                        else if (CompilerHelper.isReservedKeyword(def.getName())) {
+                        } else if (CompilerHelper.isReservedKeyword(def.getName())) {
                             throw new CompileException("expected: variable name found: reserved keyword", text.getPosition());
                         }
                         //add global variable
                         stack.addToStack(def.getName(), def.getReturnType());
-                    }
-                    else {
+                    } else {
                         throw new CompileException("expected: ( or ; found: " + beginChar, text.getPosition());
                     }
-                }
-                catch (ProgramTextWrapper.EndReachedException e) {
+                } catch (ProgramTextWrapper.EndReachedException e) {
                     //begin bracket not found
                     throw new CompileException("expected: ( found: nothing", text.getPosition());
                 }
@@ -276,7 +265,7 @@ public class Compiler {
                     //System.out.println("op1 is in list");
                     try {
                         char op2 = text.getNextChar();
-                        if (op2 == '='){
+                        if (op2 == '=') {
                             switch (op1) {
                                 case '+':
                                     operations.add(new Operation(OperatorType.AddAssign, expressions.size() - 1, expressions.size()));
@@ -302,8 +291,7 @@ public class Compiler {
                                 case '=':
                                     operations.add(new Operation(OperatorType.Equals, expressions.size() - 1, expressions.size()));
                             }
-                        }
-                        else {
+                        } else {
                             text.moveBackward();
                             switch (op1) {
                                 case '+':
@@ -331,15 +319,13 @@ public class Compiler {
                                     operations.add(new Operation(OperatorType.Assignment, expressions.size() - 1, expressions.size()));
                             }
                         }
-                    }
-                    catch (ProgramTextWrapper.EndReachedException e){
+                    } catch (ProgramTextWrapper.EndReachedException e) {
                         throw new CompileException("expected: expression found: nothing", text.getPosition());
                     }
-                }
-                else if (op1 == '&' || op1 == '|') {
+                } else if (op1 == '&' || op1 == '|') {
                     try {
                         char op2 = text.getNextChar();
-                        if (op2 == op1){
+                        if (op2 == op1) {
                             switch (op1) {
                                 case '&':
                                     operations.add(new Operation(OperatorType.And, expressions.size() - 1, expressions.size()));
@@ -348,21 +334,17 @@ public class Compiler {
                                     operations.add(new Operation(OperatorType.Or, expressions.size() - 1, expressions.size()));
                                     break;
                             }
-                        }
-                        else throw new CompileException("expected: " + op1 + " found: " + op2, text.getPosition());
+                        } else throw new CompileException("expected: " + op1 + " found: " + op2, text.getPosition());
 
-                    }
-                    catch (ProgramTextWrapper.EndReachedException e) {
+                    } catch (ProgramTextWrapper.EndReachedException e) {
                         throw new CompileException("expected: " + op1 + " found: nothing", text.getPosition());
                     }
-                }
-                else {
+                } else {
                     //no operator found
                     gotAllExpressions = true;
                     text.moveBackward();
                 }
-            }
-            catch (ProgramTextWrapper.EndReachedException e) {
+            } catch (ProgramTextWrapper.EndReachedException e) {
                 //this is not the problem here
                 gotAllExpressions = true;
             }
@@ -375,7 +357,7 @@ public class Compiler {
         //query the operations until all are finished
         Collections.sort(operations);
         Collections.reverse(operations);
-        for (Operation op : operations){
+        for (Operation op : operations) {
             Expression oldExp1 = expressions.get(op.getExp1());
             Expression oldExp2 = expressions.get(op.getExp2());
             Expression newExp = CompilerHelper.useOperator(oldExp1, oldExp2, op.getType(), text.getPosition()); //the position is temporary
@@ -396,8 +378,7 @@ public class Compiler {
             if (possibleUnaryMinus == '-') unaryMinus = true;
             else if (possibleUnaryMinus == '!') negateBoolean = true;
             else text.moveBackward(); //did not find an unaryMinus, so it's now the problem of the
-        }
-        catch (ProgramTextWrapper.EndReachedException e) {
+        } catch (ProgramTextWrapper.EndReachedException e) {
             //did not find an unary minus, but did not find anything else XD
             throw new CompileException("expected: expression, found: nothing", text.getPosition());
         }
@@ -407,13 +388,12 @@ public class Compiler {
         char firstOfMain;
         try {
             firstOfMain = text.getNextNonWhitespaceChar();
-        }
-        catch (ProgramTextWrapper.EndReachedException e){
+        } catch (ProgramTextWrapper.EndReachedException e) {
             throw new CompileException("expected: expression, found: nothing", text.getPosition());
         }
 
         //check for bracket region
-        if (firstOfMain == '('){
+        if (firstOfMain == '(') {
             //bracket region, compileCompleteExpression
             mainExpression = compileCompleteExpression();
             //check for end bracket
@@ -421,69 +401,58 @@ public class Compiler {
                 char possibleEndBracket = text.getNextNonWhitespaceChar();
                 if (possibleEndBracket != ')')
                     throw new CompileException("expected: ) found: " + possibleEndBracket, text.getPosition());
-            }
-            catch (ProgramTextWrapper.EndReachedException e) {
+            } catch (ProgramTextWrapper.EndReachedException e) {
                 throw new CompileException("expected: ) found: nothing", text.getPosition());
             }
-        }
-        else {
+        } else {
             //correct position
             text.moveBackward();
             if (firstOfMain == '"') {
                 //it is a raw String
                 mainExpression = new RawValueExpression<>(CompilerHelper.parseString(text), DataTypes.String);
-            }
-            else if (firstOfMain == '.') {
+            } else if (firstOfMain == '.') {
                 //this is a legal float
                 mainExpression = new RawValueExpression<>(CompilerHelper.parseFloat(text), DataTypes.Float);
-            }
-            else if (Character.isDigit(firstOfMain)) {
+            } else if (Character.isDigit(firstOfMain)) {
                 //it is a raw float or int, find it out with the exception
                 ProgramPosition pos = text.getPosition();
                 try {
                     int val = CompilerHelper.parseInt(text);
                     mainExpression = new RawValueExpression<>(val, DataTypes.Integer);
-                }
-                catch (CompilerHelper.WrongTypeException e) {
+                } catch (CompilerHelper.WrongTypeException e) {
                     //it was a float
                     //reset position and try again
                     text.setPosition(pos);
                     mainExpression = new RawValueExpression<>(CompilerHelper.parseFloat(text), DataTypes.Float);
                 }
-            }
-            else {
+            } else {
                 //it's not a float or an integer, so get the complete String
                 String exp = text.getNextWord();
                 //check if it is a raw boolean
                 if (exp.equals("true") || exp.equals("false")) {
                     //it is a raw boolean
                     mainExpression = new RawValueExpression<>(exp.equals("true"), DataTypes.Boolean);
-                }
-                else {
+                } else {
                     //check if it is a method or not
                     boolean isMethod = false;
                     try {
                         char next = text.getNextNonWhitespaceChar();
-                        if (next == '('){
+                        if (next == '(') {
                             isMethod = true;
-                        }
-                        else {
+                        } else {
                             text.moveBackward();
                         }
-                    }
-                    catch(ProgramTextWrapper.EndReachedException e) {
+                    } catch (ProgramTextWrapper.EndReachedException e) {
                         //in reality, this should never happen
                         //but this is not the problem of this method at this time
                     }
-                    if (!isMethod){
+                    if (!isMethod) {
                         //it must be a variable
                         if (stack.exists(exp)) {
                             //the variable exists, everything is ok
                             mainExpression = new GetValueExpression(exp, stack.getType(exp));
-                        }
-                        else throw new CompileException(exp + " is no known variable", text.getPosition());
-                    }
-                    else {
+                        } else throw new CompileException(exp + " is no known variable", text.getPosition());
+                    } else {
                         //it is a method
                         mainExpression = compileMethod(exp);
                     }
@@ -506,17 +475,14 @@ public class Compiler {
                     //check the type
                     if (possiblePostfixStart == '+') plusPostfix = true;
                     else minusPostfix = true;
-                }
-                else {
+                } else {
                     //correct position
                     text.setPosition(pos);
                 }
-            }
-            else {
+            } else {
                 text.setPosition(pos);
             }
-        }
-        catch (ProgramTextWrapper.EndReachedException e) {
+        } catch (ProgramTextWrapper.EndReachedException e) {
             //obviously, there is no postfix
             //correct the position
             text.setPosition(pos);
@@ -524,20 +490,20 @@ public class Compiler {
         //apply postfix if necessary
         if (plusPostfix || minusPostfix) {
             //check if the main expression is a variable
-            if(!(mainExpression instanceof GetValueExpression))
+            if (!(mainExpression instanceof GetValueExpression))
                 throw new CompileException("a postfix operator can only be used with a variable", text.getPosition());
-            GetValueExpression getValueExpression = (GetValueExpression)mainExpression;
+            GetValueExpression getValueExpression = (GetValueExpression) mainExpression;
             //check if mainExpression is of correct type
-            switch (mainExpression.getType()){
+            switch (mainExpression.getType()) {
                 case DataTypes.Integer:
                     AddAssignmentIntegerOperation aaio = new AddAssignmentIntegerOperation(getValueExpression.getName());
-                    aaio.setFirstExpression((Expression<Integer>)mainExpression);
+                    aaio.setFirstExpression((Expression<Integer>) mainExpression);
                     aaio.setSecondExpression(new RawValueExpression<Integer>(plusPostfix ? 1 : -1, DataTypes.Integer));
                     mainExpression = aaio;
                     break;
                 case DataTypes.Float:
                     AddAssignmentFloatOperation aado = new AddAssignmentFloatOperation(getValueExpression.getName());
-                    aado.setFirstExpression((Expression<Float>)mainExpression);
+                    aado.setFirstExpression((Expression<Float>) mainExpression);
                     aado.setSecondExpression(new RawValueExpression<Float>(plusPostfix ? 1f : -1f, DataTypes.Float));
                     mainExpression = aado;
                     break;
@@ -546,17 +512,17 @@ public class Compiler {
             }
         }
         //apply unary minus if necessary
-        if (unaryMinus){
+        if (unaryMinus) {
             //check if the main Expression is of correct type
-            switch (mainExpression.getType()){
+            switch (mainExpression.getType()) {
                 case DataTypes.Integer:
                     NegateIntegerOperation nio = new NegateIntegerOperation();
-                    nio.setFirstExpression((Expression<Integer>)mainExpression);
+                    nio.setFirstExpression((Expression<Integer>) mainExpression);
                     mainExpression = nio;
                     break;
                 case DataTypes.Float:
                     NegateFloatOperation ndo = new NegateFloatOperation();
-                    ndo.setFirstExpression((Expression<Float>)mainExpression);
+                    ndo.setFirstExpression((Expression<Float>) mainExpression);
                     mainExpression = ndo;
                     break;
                 default:
@@ -567,12 +533,11 @@ public class Compiler {
         //apply negateBoolean if necessary
         if (negateBoolean) {
             //check if the main Expression is of correct type
-            if (mainExpression.getType().equals(DataTypes.Boolean)){
+            if (mainExpression.getType().equals(DataTypes.Boolean)) {
                 NegateBooleanOperation nbo = new NegateBooleanOperation();
-                nbo.setFirstExpression((Expression<Boolean>)mainExpression);
+                nbo.setFirstExpression((Expression<Boolean>) mainExpression);
                 mainExpression = nbo;
-            }
-            else throw new CompileException("only a boolean expression can be negated", text.getPosition());
+            } else throw new CompileException("only a boolean expression can be negated", text.getPosition());
         }
         return mainExpression;
     }
@@ -594,8 +559,7 @@ public class Compiler {
             char possibleEnd;
             try {
                 possibleEnd = text.getNextNonWhitespaceChar();
-            }
-            catch (ProgramTextWrapper.EndReachedException e) {
+            } catch (ProgramTextWrapper.EndReachedException e) {
                 throw new CompileException("expected: ) found: nothing", text.getPosition());
             }
             if (possibleEnd != ')') {
@@ -608,8 +572,7 @@ public class Compiler {
                     //check if there are other arguments
                     try {
                         possibleEnd = text.getNextNonWhitespaceChar();
-                    }
-                    catch (ProgramTextWrapper.EndReachedException e) {
+                    } catch (ProgramTextWrapper.EndReachedException e) {
                         throw new CompileException("expected: ) found: nothing", text.getPosition());
                     }
                     switch (possibleEnd) {
@@ -641,7 +604,7 @@ public class Compiler {
                                 break;
                             case DataTypes.Float:
                                 //cast implicitly
-                                arguments[x] = new IntegerToFloatCast((Expression<Integer>)methodArguments.get(x));
+                                arguments[x] = new IntegerToFloatCast((Expression<Integer>) methodArguments.get(x));
                                 break;
                             default:
                                 //type does not fit, throw an exception
@@ -656,7 +619,7 @@ public class Compiler {
                                 break;
                             case DataTypes.Integer:
                                 //cast implicitly
-                                arguments[x] = new FloatToIntegerCast((Expression<Float>)methodArguments.get(x));
+                                arguments[x] = new FloatToIntegerCast((Expression<Float>) methodArguments.get(x));
                                 break;
                             default:
                                 //type does not fit, throw an exception
@@ -664,11 +627,10 @@ public class Compiler {
                         }
                         break;
                     default:
-                        if (methodArguments.get(x).getType().equals(parameters[x].getType())){
+                        if (methodArguments.get(x).getType().equals(parameters[x].getType())) {
                             //same type, ok
                             arguments[x] = methodArguments.get(x);
-                        }
-                        else {
+                        } else {
                             //type does not fit, throw an exception
                             throw new CompileException("type mismatch: " + methodArguments.get(x).getType() + " can not be casted implicitly to " + parameters[x].getType(), text.getPosition());
                         }
@@ -681,7 +643,7 @@ public class Compiler {
                     methWrapper.setName(def.getName());
                     methWrapper.setMethodStatement(methods.getNormalMethod(def));
                     Statement[] statements = new Statement[arguments.length];
-                    for (int x = 0; x < arguments.length; x++){
+                    for (int x = 0; x < arguments.length; x++) {
                         //crate set value statements
                         DefineValueStatement defineValueStatement = new DefineValueStatement(parameters[x].getType());
                         defineValueStatement.setName(parameters[x].getName());
@@ -704,8 +666,7 @@ public class Compiler {
                 default:
                     return null;
             }
-        }
-        else throw new CompileException("method " + methodName + " does not exist", text.getPosition());
+        } else throw new CompileException("method " + methodName + " does not exist", text.getPosition());
     }
 
     //compiles a statement block
@@ -723,23 +684,21 @@ public class Compiler {
                 singleStatement = true;
                 text.moveBackward();
             }
-        }
-        catch (ProgramTextWrapper.EndReachedException e) {
+        } catch (ProgramTextWrapper.EndReachedException e) {
             //not a single statement, but no statement at all XD
             throw new CompileException("expected: statement found: nothing", text.getPosition());
         }
         //list of all the statements
         ArrayList<Statement> statements = new ArrayList<>();
-        while (!allStatementsFound){
+        while (!allStatementsFound) {
             if (singleStatement) {
                 allStatementsFound = true;
             }
             //check if the end is reached
             char possibleEndBracket;
             try {
-                 possibleEndBracket= text.getNextNonWhitespaceChar();
-            }
-            catch (ProgramTextWrapper.EndReachedException e) {
+                possibleEndBracket = text.getNextNonWhitespaceChar();
+            } catch (ProgramTextWrapper.EndReachedException e) {
                 throw new CompileException("expected: " + (singleStatement ? "statement" : "}") + " found: nothing", text.getPosition());
             }
             if (possibleEndBracket == '}') {
@@ -748,8 +707,7 @@ public class Compiler {
                 else {
                     allStatementsFound = true;
                 }
-            }
-            else {
+            } else {
                 //reset position
                 text.moveBackward();
                 //here it really begins
@@ -757,8 +715,7 @@ public class Compiler {
                 char possibleStatementEnd;
                 try {
                     possibleStatementEnd = text.getNextNonWhitespaceChar();
-                }
-                catch (ProgramTextWrapper.EndReachedException e) {
+                } catch (ProgramTextWrapper.EndReachedException e) {
                     throw new CompileException("expected: ; found: nothing", text.getPosition());
                 }
                 //check if it is an empty statement, if yes just do nothing
@@ -768,8 +725,7 @@ public class Compiler {
                     ProgramPosition beforeSpecial = text.getPosition();
                     try {
                         special = text.getNextWord();
-                    }
-                    catch (CompileException e){
+                    } catch (CompileException e) {
                         //just assign an empty string, this is now the problem of compileSingleStatement
                         special = "";
                         text.setPosition(beforeSpecial);
@@ -791,8 +747,7 @@ public class Compiler {
                             try {
                                 char c = text.getNextNonWhitespaceChar();
                                 if (c != ';') throw new CompileException("expected: ; found " + c, text.getPosition());
-                            }
-                            catch (ProgramTextWrapper.EndReachedException e) {
+                            } catch (ProgramTextWrapper.EndReachedException e) {
                                 throw new CompileException("expected: ; found: nothing", text.getPosition());
                             }
                             break;
@@ -815,21 +770,19 @@ public class Compiler {
         ProgramPosition begin = text.getPosition();
         String firstWord;
         try {
-            firstWord  = text.getNextWord();
-        }
-        catch (CompileException e) {
+            firstWord = text.getNextWord();
+        } catch (CompileException e) {
             //this is a problem of compileCompleteExpression
             firstWord = "";
         }
         //handle all the default stuff
-        if (firstWord.equals("return")){
+        if (firstWord.equals("return")) {
             //check if returns are allowed
             if (!allowsReturn) throw new CompileException("return statement is not allowed here", text.getPosition());
             //check if the return type is void
-            if (actualMethod.getReturnType().equals(DataTypes.Void)){
+            if (actualMethod.getReturnType().equals(DataTypes.Void)) {
                 return new ReturnValueStatement(actualMethod, null);
-            }
-            else {
+            } else {
                 Expression assignToReturn = compileCompleteExpression();
                 //correct type if possible
                 if (actualMethod.getReturnType().equals(DataTypes.Integer) && assignToReturn.getType().equals(DataTypes.Float))
@@ -842,17 +795,19 @@ public class Compiler {
                 //everything is ok, return the expression
                 return new ReturnValueStatement(actualMethod, assignToReturn);
             }
-        }
-        else if (DataTypes.containsDataType(firstWord)){
+        } else if (DataTypes.containsDataType(firstWord)) {
             //it is a declaration of a variable
             //check if this is allowed here
-            if (!allowsDeclaration) throw new CompileException("it is not allowed to declare a variable here", text.getPosition());
+            if (!allowsDeclaration)
+                throw new CompileException("it is not allowed to declare a variable here", text.getPosition());
             //get the name of the variable
             String variableName = text.getNextWord();
             //check if name already exists
-            if (stack.exists(variableName)) throw new CompileException("a variable with the name " + variableName + " already exists", text.getPosition());
+            if (stack.exists(variableName))
+                throw new CompileException("a variable with the name " + variableName + " already exists", text.getPosition());
             //check if the name is a keyword
-            if (CompilerHelper.isReservedKeyword(variableName)) throw new CompileException("reserved keyword", text.getPosition());
+            if (CompilerHelper.isReservedKeyword(variableName))
+                throw new CompileException("reserved keyword", text.getPosition());
             //add variable
             //System.out.println("add to stack: " + variableName + ", " + firstWord);
             stack.addToStack(variableName, firstWord);
@@ -860,7 +815,7 @@ public class Compiler {
             Expression initExpression = null;
             try {
                 char possibleAssignment = text.getNextNonWhitespaceChar();
-                if (possibleAssignment == '='){
+                if (possibleAssignment == '=') {
                     //it is an assignment
                     initExpression = compileCompleteExpression();
                     //correct type if possible
@@ -872,13 +827,11 @@ public class Compiler {
                     if (!firstWord.equals(initExpression.getType()))
                         throw new CompileException("can't assign " + initExpression.getType() + " to " + firstWord, text.getPosition());
 
-                }
-                else {
+                } else {
                     //the statement ends after that
                     text.moveBackward();
                 }
-            }
-            catch (ProgramTextWrapper.EndReachedException e) {
+            } catch (ProgramTextWrapper.EndReachedException e) {
                 //this is no problem here (in reality it will be a problem, but not of this method)
             }
             //everything is correct, create and return the correct statement
@@ -886,12 +839,11 @@ public class Compiler {
             define.setName(variableName);
             define.setValueExpression(initExpression);
             return define;
-        }
-        else {
+        } else {
             //there is no other normal statement, so it also has to be an expression, so it's the problem of the expression compiler
             text.setPosition(begin);
             Expression fromExpressionCompiler = compileCompleteExpression();
-            if (fromExpressionCompiler instanceof Statement) return (Statement)fromExpressionCompiler;
+            if (fromExpressionCompiler instanceof Statement) return (Statement) fromExpressionCompiler;
             else throw new CompileException("expected: statement", begin);
         }
     }
@@ -902,8 +854,7 @@ public class Compiler {
         try {
             char c = text.getNextNonWhitespaceChar();
             if (c != '(') throw new CompileException("expected: ( found: " + c, text.getPosition());
-        }
-        catch (ProgramTextWrapper.EndReachedException e) {
+        } catch (ProgramTextWrapper.EndReachedException e) {
             throw new CompileException("expected: ( found: nothing", text.getPosition());
         }
         Expression possibleCondition = compileCompleteExpression();
@@ -915,8 +866,7 @@ public class Compiler {
         try {
             char c = text.getNextNonWhitespaceChar();
             if (c != ')') throw new CompileException("expected: ) found: " + c, text.getPosition());
-        }
-        catch (ProgramTextWrapper.EndReachedException e) {
+        } catch (ProgramTextWrapper.EndReachedException e) {
             throw new CompileException("expected: ) found: nothing", text.getPosition());
         }
         //assign a statement block
@@ -927,8 +877,7 @@ public class Compiler {
         try {
             String s = text.getNextWord();
             foundElse = s.equals("else");
-        }
-        catch (CompileException e) {
+        } catch (CompileException e) {
             //reset position
             text.setPosition(beforePossibleElse);
         }
@@ -936,13 +885,12 @@ public class Compiler {
             //there is an else condition
             //just compile it
             ics.setElseStatement(new StatementBlock(compileStatementBlock()));
-        }
-        else {
+        } else {
             //reset position
             text.setPosition(beforePossibleElse);
         }
 
-       return ics;
+        return ics;
     }
 
     //text is after the while word
@@ -952,8 +900,7 @@ public class Compiler {
         try {
             char c = text.getNextNonWhitespaceChar();
             if (c != '(') throw new CompileException("expected: ( found: " + c, text.getPosition());
-        }
-        catch (ProgramTextWrapper.EndReachedException e) {
+        } catch (ProgramTextWrapper.EndReachedException e) {
             throw new CompileException("expected: ( found: nothing", text.getPosition());
         }
         Expression possibleCondition = compileCompleteExpression();
@@ -965,8 +912,7 @@ public class Compiler {
         try {
             char c = text.getNextNonWhitespaceChar();
             if (c != ')') throw new CompileException("expected: ) found: " + c, text.getPosition());
-        }
-        catch (ProgramTextWrapper.EndReachedException e) {
+        } catch (ProgramTextWrapper.EndReachedException e) {
             throw new CompileException("expected: ) found: nothing", text.getPosition());
         }
         //get the body
@@ -984,15 +930,14 @@ public class Compiler {
         try {
             char c = text.getNextNonWhitespaceChar();
             if (c != '(') throw new CompileException("expected: ( found: " + c, text.getPosition());
-        }
-        catch (ProgramTextWrapper.EndReachedException e) {
+        } catch (ProgramTextWrapper.EndReachedException e) {
             throw new CompileException("expected: ( found: nothing", text.getPosition());
         }
         //try to get init statement
         Statement initStatement = null;
         try {
             char c = text.getNextNonWhitespaceChar();
-            if (c != ';'){
+            if (c != ';') {
                 //there is an init statement
                 text.moveBackward();
                 initStatement = compileSingleStatement(false, true);
@@ -1000,14 +945,13 @@ public class Compiler {
                 c = text.getNextNonWhitespaceChar();
                 if (c != ';') throw new CompileException("expected: ; found: " + c, text.getPosition());
             }
-        }
-        catch (ProgramTextWrapper.EndReachedException e) {
+        } catch (ProgramTextWrapper.EndReachedException e) {
             throw new CompileException("expected: ; found: nothing", text.getPosition());
         }
         Expression possibleCondition;
         try {
             char c = text.getNextNonWhitespaceChar();
-            if (c != ';'){
+            if (c != ';') {
                 //there is a condition
                 text.moveBackward();
                 possibleCondition = compileCompleteExpression();
@@ -1017,17 +961,16 @@ public class Compiler {
                 //check that there is the correct char now
                 c = text.getNextNonWhitespaceChar();
                 if (c != ';') throw new CompileException("expected: ; found: " + c, text.getPosition());
-            }
-            else throw new CompileException("expected: expression of type boolean found: nothing", text.getPosition());
-        }
-        catch (ProgramTextWrapper.EndReachedException e) {
+            } else
+                throw new CompileException("expected: expression of type boolean found: nothing", text.getPosition());
+        } catch (ProgramTextWrapper.EndReachedException e) {
             throw new CompileException("expected: ; found: nothing", text.getPosition());
         }
         //try to get step statement
         Statement stepStatement = null;
         try {
             char c = text.getNextNonWhitespaceChar();
-            if (c != ')'){
+            if (c != ')') {
                 //there is an init statement
                 text.moveBackward();
                 stepStatement = compileSingleStatement(false, false);
@@ -1035,8 +978,7 @@ public class Compiler {
                 c = text.getNextNonWhitespaceChar();
                 if (c != ')') throw new CompileException("expected: ) found: " + c, text.getPosition());
             }
-        }
-        catch (ProgramTextWrapper.EndReachedException e) {
+        } catch (ProgramTextWrapper.EndReachedException e) {
             throw new CompileException("expected: ) found: nothing", text.getPosition());
         }
         fls.setInitStatement(initStatement);

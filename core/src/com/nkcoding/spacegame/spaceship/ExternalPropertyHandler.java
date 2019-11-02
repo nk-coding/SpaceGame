@@ -17,7 +17,7 @@ public interface ExternalPropertyHandler {
         for (ExternalPropertyData data : datas) {
             ExternalProperty property = properties.get(data.name);
             if (property != null) {
-                if(!property.readonly) property.setInitValue(data.initData);
+                if (!property.readonly) property.setInitValue(data.initData);
                 if (!data.handlerName.equals(""))
                     property.setChangedMethodStatement(methods.get(data.handlerName));
             }
@@ -48,14 +48,12 @@ public interface ExternalPropertyHandler {
                 //it is a setter
                 property.set(future.getParameters()[1]);
                 future.complete(null);
-            }
-            else {
+            } else {
                 //it is a getter
                 future.complete(property.get2());
             }
             return true;
-        }
-        else return false;
+        } else return false;
     }
 
 

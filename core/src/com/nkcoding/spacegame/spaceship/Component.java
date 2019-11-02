@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.utils.Align;
 import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.SpaceSimulation;
 
@@ -13,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Component implements ExternalPropertyHandler {
-    
+
     //region names for the ExternalProperties
     public static final String HealthKey = "Health";
     public static final String PowerRequestedKey = "PowerRequested";
@@ -39,7 +38,7 @@ public abstract class Component implements ExternalPropertyHandler {
     //Type if the Component
     private final ComponentType type;
 
-    public ComponentType getType(){
+    public ComponentType getType() {
         return type;
     }
 
@@ -59,11 +58,11 @@ public abstract class Component implements ExternalPropertyHandler {
     //setter includes update stuff
     private Ship ship;
 
-    public Ship getShip(){
+    public Ship getShip() {
         return ship;
     }
 
-    void setShip(Ship ship){
+    void setShip(Ship ship) {
         this.ship = ship;
         addFixtures();
     }
@@ -139,7 +138,7 @@ public abstract class Component implements ExternalPropertyHandler {
     });
 
     //constructor to force subclasses to implement important stuff
-    protected Component(ComponentDef componentDef, Ship ship){
+    protected Component(ComponentDef componentDef, Ship ship) {
         //set the final variables
         this.type = componentDef.getType();
         this.componentDef = componentDef;
@@ -190,12 +189,13 @@ public abstract class Component implements ExternalPropertyHandler {
      * removes the borderFixture
      * should be overwritten, if other fixtures have to be removed
      */
-    public void removeFixtures(){
+    public void removeFixtures() {
         removeFixture(borderFixture);
     }
 
     /**
      * removes a single fixture from the ship
+     *
      * @param fixture the Fixture that should be removed
      */
     protected void removeFixture(Fixture fixture) {
@@ -216,8 +216,9 @@ public abstract class Component implements ExternalPropertyHandler {
      * tries to attach another Component at the specified position
      * returns true, but can be overwritten by subclasses to implement new behavior
      * do NOT call this direc
-     * @param x x pos of the attachment
-     * @param y y pos of the attachment
+     *
+     * @param x    x pos of the attachment
+     * @param y    y pos of the attachment
      * @param side align of the attachment
      * @return true if the component is allowed to attach
      */
@@ -228,8 +229,9 @@ public abstract class Component implements ExternalPropertyHandler {
     /**
      * tries to attach another Component at the specified position
      * calls attachComponentAt and calculates rotation
-     * @param x x pos of the attachment
-     * @param y y pos of the attachment
+     *
+     * @param x    x pos of the attachment
+     * @param y    y pos of the attachment
      * @param side align of the attachment
      * @return true if the component is allowed to attach
      */
@@ -239,7 +241,7 @@ public abstract class Component implements ExternalPropertyHandler {
         y -= def.getY();
         switch (def.getRotation()) {
             case 0:
-                return attachComponentAt(x,y,side);
+                return attachComponentAt(x, y, side);
             case 1:
                 return attachComponentAt(y, def.getHeight() - x - 1, (side + 3) % 4);
             case 2:
@@ -253,6 +255,7 @@ public abstract class Component implements ExternalPropertyHandler {
 
     /**
      * a simple draw implementation that draws the defaultTexture
+     *
      * @param batch the Batch to draw on
      */
     public void draw(Batch batch) {
@@ -263,11 +266,12 @@ public abstract class Component implements ExternalPropertyHandler {
     /**
      * draw a texture on the Component
      * implements NO clipping
-     * @param batch the Batch to draw on
+     *
+     * @param batch   the Batch to draw on
      * @param texture the Texture to draw
-     * @param pos the not-normalized position where the Texture should be drawn
-     * @param width the non-normalized width
-     * @param height the non-normalized height
+     * @param pos     the not-normalized position where the Texture should be drawn
+     * @param width   the non-normalized width
+     * @param height  the non-normalized height
      * @param degrees the angle in degrees
      */
     public void drawTexture(Batch batch, Texture texture, Vector2 pos, float width, float height, float degrees) {
@@ -277,15 +281,16 @@ public abstract class Component implements ExternalPropertyHandler {
                 drawPos.x, drawPos.y,
                 0, 0,
                 width, height,
-                1,1,
+                1, 1,
                 degrees + ship.getRotation() * MathUtils.radiansToDegrees + 90 * def.getRotation(),
-                0,0,
+                0, 0,
                 texture.getWidth(), texture.getHeight(),
                 false, false);
     }
 
     /**
      * transforms a local point to world point
+     *
      * @param local Vector2 that is modified
      * @return the modified Vector2
      */
@@ -293,7 +298,7 @@ public abstract class Component implements ExternalPropertyHandler {
         final float x = local.x;
         final float y = local.y;
         ComponentDef def = getComponentDef();
-        switch(def.getRotation()) {
+        switch (def.getRotation()) {
             case 0:
                 local.x = ShipDef.UNIT_SIZE * def.getX() + x;
                 local.y = ShipDef.UNIT_SIZE * def.getY() + y;
@@ -316,8 +321,9 @@ public abstract class Component implements ExternalPropertyHandler {
 
     /**
      * append some damage on the Component
+     *
      * @param fixture the Fixture that was hit
-     * @param damage the amount of damage
+     * @param damage  the amount of damage
      */
     public void damageAt(Fixture fixture, int damage) {
         health.set(health.get() - damage);

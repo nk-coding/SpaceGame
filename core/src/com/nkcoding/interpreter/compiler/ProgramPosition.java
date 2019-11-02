@@ -22,13 +22,13 @@ public class ProgramPosition {
     }
 
     //constructor
-    public ProgramPosition(int line, int column){
+    public ProgramPosition(int line, int column) {
         this.line = line;
         this.column = column;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append('(');
         sb.append(line);
@@ -38,7 +38,7 @@ public class ProgramPosition {
         return sb.toString();
     }
 
-    public ProgramPosition getClone(){
+    public ProgramPosition getClone() {
         return new ProgramPosition(line, column);
     }
 

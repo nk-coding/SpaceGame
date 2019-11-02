@@ -9,12 +9,12 @@ public class DivideAssignmentIntegerOperation extends DivideIntegerOperation imp
 
     private String name;
 
-    public DivideAssignmentIntegerOperation(String name){
+    public DivideAssignmentIntegerOperation(String name) {
         this.name = name;
     }
 
     @Override
-    public Integer getResult(Stack stack){
+    public Integer getResult(Stack stack) {
         Integer res = super.getResult(stack);
         ((StackItem<Integer>) stack.getFromStack(name)).setValue(res);
         return res;

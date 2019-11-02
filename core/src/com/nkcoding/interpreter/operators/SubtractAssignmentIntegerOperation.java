@@ -9,12 +9,12 @@ public class SubtractAssignmentIntegerOperation extends SubtractIntegerOperation
 
     private String name;
 
-    public SubtractAssignmentIntegerOperation(String name){
+    public SubtractAssignmentIntegerOperation(String name) {
         this.name = name;
     }
 
     @Override
-    public Integer getResult(Stack stack){
+    public Integer getResult(Stack stack) {
         Integer res = super.getResult(stack);
         ((StackItem<Integer>) stack.getFromStack(name)).setValue(res);
         return res;

@@ -4,7 +4,7 @@ public class MethodDefinition {
 
     private TypeNamePair[] parameters;
 
-    public void setParameters(TypeNamePair[] parameters){
+    public void setParameters(TypeNamePair[] parameters) {
         this.parameters = parameters;
     }
 

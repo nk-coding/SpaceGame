@@ -3,7 +3,6 @@ package com.nkcoding.interpreter.compiler;
 import com.nkcoding.interpreter.ConcurrentStackItem;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 //the CompilerStack exists because it is less run-time optimated than the real Stack
@@ -57,16 +56,16 @@ public class CompilerStack {
     }
 
     public boolean exists(String name) {
-        for(int x = stack.size() - 1; x >= 0; x--) {
-            if (stack.get(x).name.equals(name)) return  true;
+        for (int x = stack.size() - 1; x >= 0; x--) {
+            if (stack.get(x).name.equals(name)) return true;
         }
         return false;
     }
 
     //should call exist before, otherwise it may throws an IllegalArgumentException
     public String getType(String name) {
-        for(int x = stack.size() - 1; x >= 0; x--) {
-            if (stack.get(x).name.equals(name)) return  stack.get(x).type;
+        for (int x = stack.size() - 1; x >= 0; x--) {
+            if (stack.get(x).name.equals(name)) return stack.get(x).type;
         }
         throw new IllegalArgumentException(name + " is not registered as a variable");
     }

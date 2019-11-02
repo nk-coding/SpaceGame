@@ -6,7 +6,7 @@ public class MethodStatement implements Statement {
 
     protected Statement[] statements;
 
-    public void setStatements(Statement[] statements){
+    public void setStatements(Statement[] statements) {
         this.statements = statements;
     }
 
@@ -29,7 +29,7 @@ public class MethodStatement implements Statement {
     public void run(Stack stack) throws ReturnException {
         //the stack stuff is done in a wrapper
         //System.out.println("run method statement");
-        for (Statement statement : statements){
+        for (Statement statement : statements) {
             statement.run(stack);
         }
     }

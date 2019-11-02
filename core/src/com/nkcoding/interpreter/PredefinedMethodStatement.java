@@ -7,7 +7,7 @@ public class PredefinedMethodStatement<T> implements Statement, Expression<T> {
     //normally used to init
     protected Expression[] parameterExpressions = null;
 
-    public void setParameterExpressions(Expression[] parameterExpressions){
+    public void setParameterExpressions(Expression[] parameterExpressions) {
         this.parameterExpressions = parameterExpressions;
     }
 
@@ -19,7 +19,7 @@ public class PredefinedMethodStatement<T> implements Statement, Expression<T> {
 
     protected Function<Object[], T> predefinedMethod;
 
-    public void setPredefinedMethod(Function<Object[], T> predefinedMethod){
+    public void setPredefinedMethod(Function<Object[], T> predefinedMethod) {
         this.predefinedMethod = predefinedMethod;
     }
 
@@ -32,13 +32,12 @@ public class PredefinedMethodStatement<T> implements Statement, Expression<T> {
     @Override
     public T getResult(Stack stack) {
         Object[] parameters;
-        if (parameterExpressions != null){
+        if (parameterExpressions != null) {
             parameters = new Object[parameterExpressions.length];
-            for (int x = 0; x < parameters.length; x++){
+            for (int x = 0; x < parameters.length; x++) {
                 parameters[x] = parameterExpressions[x].getResult(stack);
             }
-        }
-        else{
+        } else {
             parameters = new Object[0];
         }
         return predefinedMethod.apply(parameters);

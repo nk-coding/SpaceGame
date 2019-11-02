@@ -6,7 +6,7 @@ import com.nkcoding.interpreter.ScriptingEngine;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class NotifyProperty<T> extends ExternalProperty<T>{
+public class NotifyProperty<T> extends ExternalProperty<T> {
     private LinkedList<T> updatedValues;
 
     public NotifyProperty(String name, String type) {

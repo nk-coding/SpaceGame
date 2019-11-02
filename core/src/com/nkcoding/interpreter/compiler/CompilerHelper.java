@@ -12,11 +12,11 @@ import java.util.List;
 
 public class CompilerHelper {
     //array with all the reserved keywords
-    private static final String[] keywords = new String[] {"int", "float", "boolean", "void", "if", "else", "for", "while", "return", "null", "true", "false"};
+    private static final String[] keywords = new String[]{"int", "float", "boolean", "void", "if", "else", "for", "while", "return", "null", "true", "false"};
 
     //checks if a name is already in a list of MethodDefinition
     public static boolean methodDefinitionsContainName(List<MethodDefinition> methodDefinitions, String name) {
-        for (MethodDefinition def : methodDefinitions){
+        for (MethodDefinition def : methodDefinitions) {
             if (def.getName().equals(name)) return true;
         }
         return false;
@@ -36,8 +36,7 @@ public class CompilerHelper {
         try {
             char c = text.getNextChar();
             if (c != '"') throw new IllegalArgumentException();
-        }
-        catch (ProgramTextWrapper.EndReachedException e) {
+        } catch (ProgramTextWrapper.EndReachedException e) {
             throw new IllegalArgumentException();
         }
         StringBuilder sb = new StringBuilder();
@@ -46,33 +45,28 @@ public class CompilerHelper {
         while (!endReached) {
             try {
                 char next = text.getNextChar();
-                if (next == '\\'){
+                if (next == '\\') {
                     if (escape) {
                         //escaped, so add it
                         sb.append(next);
                         escape = false;
-                    }
-                    else {
+                    } else {
                         escape = true;
                     }
-                }
-                else if (next == '"'){
+                } else if (next == '"') {
                     if (escape) {
                         //escaped, so add it
                         sb.append(next);
                         escape = false;
-                    }
-                    else {
+                    } else {
                         //end reached
                         endReached = true;
                     }
-                }
-                else {
+                } else {
                     if (escape) throw new CompileException(next + " can not be escaped", text.getPosition());
                     sb.append(next);
                 }
-            }
-            catch (ProgramTextWrapper.EndReachedException e) {
+            } catch (ProgramTextWrapper.EndReachedException e) {
                 throw new CompileException("expeted: \" found: nothing", text.getPosition());
             }
         }
@@ -93,16 +87,14 @@ public class CompilerHelper {
                     endReached = true;
                     text.moveBackward();
                 }
-            }
-            catch (ProgramTextWrapper.EndReachedException e) {
+            } catch (ProgramTextWrapper.EndReachedException e) {
                 //this is not the problem of this method
                 endReached = true;
             }
         }
         try {
             return Integer.parseInt(sb.toString());
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new CompileException(e.toString(), text.getPosition());
         }
     }
@@ -116,31 +108,28 @@ public class CompilerHelper {
             try {
                 char c = text.getNextChar();
                 if (Character.isDigit(c)) sb.append(c);
-                else if (c == '.' && !dotFound){
+                else if (c == '.' && !dotFound) {
                     dotFound = true;
                     sb.append(c);
-                }
-                else{
+                } else {
                     endReached = true;
                     text.moveBackward();
                 }
-            }
-            catch (ProgramTextWrapper.EndReachedException e) {
+            } catch (ProgramTextWrapper.EndReachedException e) {
                 //this is not the problem of this method
                 endReached = true;
             }
         }
         try {
             return Float.parseFloat(sb.toString());
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new CompileException(e.toString(), text.getPosition());
         }
     }
 
     //get the priority of an operation
     public static int getPriority(OperatorType type) {
-        switch(type) {
+        switch (type) {
             case Multiply:
             case Divide:
             case Mod:
@@ -181,7 +170,7 @@ public class CompilerHelper {
             //it is an assignment operation, so check if the first expression is a GetValueExpression
             if (!(exp1 instanceof GetValueExpression))
                 throw new CompileException("can only assign to a variable", pos);
-            String variableName = ((GetValueExpression)exp1).getName();
+            String variableName = ((GetValueExpression) exp1).getName();
             //correct type if possible
             switch (exp1.getType()) {
                 case DataTypes.Integer:
@@ -269,8 +258,7 @@ public class CompilerHelper {
             binaryOperation.setFirstExpression(exp1);
             binaryOperation.setSecondExpression(exp2);
             return binaryOperation;
-        }
-        else {
+        } else {
             //correct the type if possible
             if (exp1.getType().equals(DataTypes.Integer) && exp2.getType().equals(DataTypes.Float))
                 exp1 = new IntegerToFloatCast(exp1);
@@ -281,7 +269,7 @@ public class CompilerHelper {
                 throw new CompileException(exp1.getType() + "can't be castet implicitly to " + exp2.getType(), pos);
             BinaryOperation binaryOperation = null;
             BinaryExpressionBase binExBase;
-            switch(op){
+            switch (op) {
                 case Add:
                     switch (exp1.getType()) {
                         case DataTypes.Float:
@@ -346,42 +334,42 @@ public class CompilerHelper {
                     }
                     break;
                 case Equals:
-                    binExBase =  new EqualsOperation();
+                    binExBase = new EqualsOperation();
                     binExBase.setFirstExpression(exp1);
                     binExBase.setSecondExpression(exp2);
-                    return (Expression)binExBase;
+                    return (Expression) binExBase;
                 case Unequals:
-                    binExBase =  new UnequalsOperation();
+                    binExBase = new UnequalsOperation();
                     binExBase.setFirstExpression(exp1);
                     binExBase.setSecondExpression(exp2);
-                    return (Expression)binExBase;
+                    return (Expression) binExBase;
                 case Greater:
                     switch (exp1.getType()) {
                         case DataTypes.Float:
-                            binExBase =  new GreaterFloatOperation();
+                            binExBase = new GreaterFloatOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
-                            return (Expression)binExBase;
+                            return (Expression) binExBase;
                         case DataTypes.Integer:
-                            binExBase =  new GreaterIntegerOperation();
+                            binExBase = new GreaterIntegerOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
-                            return (Expression)binExBase;
+                            return (Expression) binExBase;
                         default:
                             throw new CompileException("you can't use this operator with a " + exp1.getType(), pos);
                     }
                 case GreaterEquals:
                     switch (exp1.getType()) {
                         case DataTypes.Float:
-                            binExBase =  new GreaterEqualsFloatOperation();
+                            binExBase = new GreaterEqualsFloatOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
-                            return (Expression)binExBase;
+                            return (Expression) binExBase;
                         case DataTypes.Integer:
-                            binExBase =  new GreaterEqualsIntegerOperation();
+                            binExBase = new GreaterEqualsIntegerOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
-                            return (Expression)binExBase;
+                            return (Expression) binExBase;
                         case DataTypes.String:
                         default:
                             throw new CompileException("you can't use this operator with a " + exp1.getType(), pos);
@@ -389,30 +377,30 @@ public class CompilerHelper {
                 case Lesser:
                     switch (exp1.getType()) {
                         case DataTypes.Float:
-                            binExBase =  new LesserFloatOperation();
+                            binExBase = new LesserFloatOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
-                            return (Expression)binExBase;
+                            return (Expression) binExBase;
                         case DataTypes.Integer:
-                            binExBase =  new LesserIntegerOperation();
+                            binExBase = new LesserIntegerOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
-                            return (Expression)binExBase;
+                            return (Expression) binExBase;
                         default:
                             throw new CompileException("you can't use this operator with a " + exp1.getType(), pos);
                     }
                 case LesserEquals:
                     switch (exp1.getType()) {
                         case DataTypes.Float:
-                            binExBase =  new LesserEqualsFloatOperation();
+                            binExBase = new LesserEqualsFloatOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
-                            return (Expression)binExBase;
+                            return (Expression) binExBase;
                         case DataTypes.Integer:
-                            binExBase =  new LesserEqualsIntegerOperation();
+                            binExBase = new LesserEqualsIntegerOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
-                            return (Expression)binExBase;
+                            return (Expression) binExBase;
                         default:
                             throw new CompileException("you can't use this operator with a " + exp1.getType(), pos);
                     }
@@ -437,7 +425,7 @@ public class CompilerHelper {
             }
             binaryOperation.setFirstExpression(exp1);
             binaryOperation.setSecondExpression(exp2);
-            return  binaryOperation;
+            return binaryOperation;
         }
     }
 
@@ -449,10 +437,11 @@ public class CompilerHelper {
     }
 
     //checks if a String is a reserved keyword
-    public static boolean isReservedKeyword(String str){
+    public static boolean isReservedKeyword(String str) {
         return Arrays.asList(keywords).contains(str);
     }
 
-    public static class WrongTypeException extends Exception {}
+    public static class WrongTypeException extends Exception {
+    }
 
 }

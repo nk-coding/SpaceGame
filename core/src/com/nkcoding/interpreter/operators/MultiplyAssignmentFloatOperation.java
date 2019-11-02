@@ -9,12 +9,12 @@ public class MultiplyAssignmentFloatOperation extends MultiplyFloatOperation imp
 
     private String name;
 
-    public MultiplyAssignmentFloatOperation(String name){
+    public MultiplyAssignmentFloatOperation(String name) {
         this.name = name;
     }
 
     @Override
-    public Float getResult(Stack stack){
+    public Float getResult(Stack stack) {
         Float res = super.getResult(stack);
         ((StackItem<Float>) stack.getFromStack(name)).setValue(res);
         return res;

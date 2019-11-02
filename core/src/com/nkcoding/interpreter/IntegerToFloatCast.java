@@ -11,7 +11,7 @@ public class IntegerToFloatCast implements Expression<Float> {
 
     @Override
     public Float getResult(Stack stack) {
-        return (float)toCast.getResult(stack);
+        return (float) toCast.getResult(stack);
     }
 
     @Override

@@ -8,19 +8,29 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class ExternalProperty<T> {
 
-    /**are setters allowed?*/
+    /**
+     * are setters allowed?
+     */
     public final boolean readonly;
 
-    /**should changed be notified?*/
+    /**
+     * should changed be notified?
+     */
     public final boolean notifyChanges;
 
-    /**the name of the property*/
+    /**
+     * the name of the property
+     */
     public final String name;
 
-    /**method that is called when property is changed and notifyChange is activated*/
+    /**
+     * method that is called when property is changed and notifyChange is activated
+     */
     private MethodStatement changedMethodStatement = null;
 
-    /**is the value changed*/
+    /**
+     * is the value changed
+     */
     protected boolean changed = false;
 
     public MethodStatement getChangedMethodStatement() {
@@ -47,6 +57,7 @@ public abstract class ExternalProperty<T> {
     /**
      * a simple clone method
      * should be overwritten, if cloning should be done differently or not at all
+     *
      * @param from the ExternalProperty to clone
      */
     public void copyFrom(ExternalProperty<T> from) {

@@ -10,7 +10,7 @@ public class GetValueExpression<T> implements Expression<T> {
 
     private String type;
 
-    public GetValueExpression(String name, String type){
+    public GetValueExpression(String name, String type) {
         this.name = name;
         this.type = type;
     }
@@ -18,7 +18,7 @@ public class GetValueExpression<T> implements Expression<T> {
     @Override
     public T getResult(Stack stack) {
         //System.out.println("try get value: " + name);
-        return ((StackItem<T>)stack.getFromStack(name)).getResult(stack);
+        return ((StackItem<T>) stack.getFromStack(name)).getResult(stack);
     }
 
     @Override

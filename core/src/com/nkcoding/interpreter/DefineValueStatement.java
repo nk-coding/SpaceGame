@@ -12,7 +12,7 @@ public class DefineValueStatement<T> implements Statement {
 
     protected Expression<T> valueExpression = null;
 
-    public void setValueExpression(Expression<T> valueExpression){
+    public void setValueExpression(Expression<T> valueExpression) {
         this.valueExpression = valueExpression;
     }
 
@@ -25,11 +25,11 @@ public class DefineValueStatement<T> implements Statement {
 
     @Override
     public void run(Stack stack) throws ReturnException {
-        stack.addToStack(name, valueExpression != null ? valueExpression.getResult(stack) : (T)getAlternativeValue(), type);
+        stack.addToStack(name, valueExpression != null ? valueExpression.getResult(stack) : (T) getAlternativeValue(), type);
     }
 
-    private Object getAlternativeValue(){
-        switch(type) {
+    private Object getAlternativeValue() {
+        switch (type) {
             case DataTypes.Float:
                 return (float) 0;
             case DataTypes.Integer:

@@ -9,12 +9,12 @@ public class AddAssignmentFloatOperation extends AddFloatOperation implements St
 
     private String name;
 
-    public AddAssignmentFloatOperation(String name){
+    public AddAssignmentFloatOperation(String name) {
         this.name = name;
     }
 
     @Override
-    public Float getResult(Stack stack){
+    public Float getResult(Stack stack) {
         Float res = super.getResult(stack);
         ((StackItem<Float>) stack.getFromStack(name)).setValue(res);
         return res;
