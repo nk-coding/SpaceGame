@@ -15,9 +15,11 @@ import com.nkcoding.spacegame.spaceship.Simulated;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 public class SpaceSimulation implements InputProcessor {
     public static final float SCALE_FACTOR = 350f;
+    public static final float TILE_SIZE = 0.5f;
 
     //list with all simulateds
     private final SnapshotArray<Simulated> simulateds = new SnapshotArray<>();
@@ -44,6 +46,9 @@ public class SpaceSimulation implements InputProcessor {
 
     //camera to draw stuff correctly
     private OrthographicCamera camera;
+
+    //tiles that must be drawn
+    List<int[]> tilesToDraw = new ArrayList<>();
 
     //set from resize, necessary for camera
     private int width, height;
@@ -216,6 +221,7 @@ public class SpaceSimulation implements InputProcessor {
         //debugRenderer.render(world, batch.getProjectionMatrix().cpy());
         //draw simulateds
         if (true) {
+            drawBackground(batch);
             for (Simulated simulated : simulateds) {
                 float maxAbs = simulated.getRadius() + scaledRadius;
                 float abs = simulated.localToWorldCoordinates(simulated.getCenterPosition()).sub(centerPos).len2();
@@ -232,6 +238,14 @@ public class SpaceSimulation implements InputProcessor {
 
     }
 
+    private void drawBackground(Batch batch) {
+        for (int[] val : tilesToDraw) {
+            for (int y = val[1]; y < val[2]; y++) {
+                batch.draw(assetManager.getTexture(Asset.NoComponent), val[0] * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            }
+        }
+    }
+
     //called when the screen is resized
     public void resize(int width, int height) {
         this.width = width;
@@ -245,12 +259,32 @@ public class SpaceSimulation implements InputProcessor {
             centerPos = cameraSimulated.localToWorldCoordinates(cameraSimulated.getCenterPosition());
             float length = cameraSimulated.getBody().getLinearVelocity().len() + 1;
             float h = cameraSimulated.getHeight() / (0.15f / (length * length) + 0.08f);
+            float w = h / height * width;
 
             scaledRadius = radius * h / height;
-            camera.setToOrtho(false, h / height * width, h);
+            camera.setToOrtho(false, w, h);
             camera.position.x = centerPos.x;
             camera.position.y = centerPos.y;
             camera.update();
+
+            //CHANGE THIS WHEN ROTATION IS APPLIED!!!!!!!
+            int x1 = (int) Math.floor((centerPos.x - w / 2) / TILE_SIZE);
+            int y1 = (int) Math.floor((centerPos.y - h / 2) / TILE_SIZE);
+            int x2 = (int) Math.floor((centerPos.x + w / 2) / TILE_SIZE);
+            int y2 = (int) Math.floor((centerPos.y + h / 2) / TILE_SIZE);
+            int deltaX = x2 - x1 + 2;
+            while (tilesToDraw.size() > deltaX) {
+                tilesToDraw.remove(deltaX);
+            }
+            while (tilesToDraw.size() < deltaX) {
+                tilesToDraw.add(new int[3]);
+            }
+            for (int x = 0; x < deltaX; x++) {
+                int[] val = tilesToDraw.get(x);
+                val[0] = x + x1;
+                val[1] = y1;
+                val[2] = y2 + 1;
+            }
         }
     }
 
