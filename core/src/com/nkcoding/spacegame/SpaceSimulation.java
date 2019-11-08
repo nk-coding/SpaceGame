@@ -227,8 +227,6 @@ public class SpaceSimulation implements InputProcessor {
                 float abs = simulated.localToWorldCoordinates(simulated.getCenterPosition()).sub(centerPos).len2();
                 if (abs < (maxAbs * maxAbs)) {
                     simulated.draw(batch);
-                } else {
-                    System.out.println("do not draw " + simulated);
                 }
             }
             batch.flush();
