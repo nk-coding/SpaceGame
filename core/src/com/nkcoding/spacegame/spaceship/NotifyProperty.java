@@ -9,8 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class NotifyProperty<T> extends ExternalProperty<T> {
     private LinkedList<T> updatedValues;
 
-    public NotifyProperty(String name, String type) {
-        super(true, true, name, type);
+    public NotifyProperty(String name) {
+        super(true, true, name);
         updatedValues = new LinkedList<>();
     }
 

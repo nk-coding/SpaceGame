@@ -15,7 +15,7 @@ public class CompilerStack {
         String name;
 
         //the type of the variable
-        String type;
+        DataType type;
 
         //the stack level
         int stackLevel;
@@ -24,7 +24,7 @@ public class CompilerStack {
         //this is necessary to throw exceptions correctly
         //not implemented yet
 
-        CompilerStackItem(String name, String type, int stackLevel) {
+        CompilerStackItem(String name, DataType type, int stackLevel) {
             this.name = name;
             this.type = type;
             this.stackLevel = stackLevel;
@@ -51,7 +51,7 @@ public class CompilerStack {
     }
 
     //should chack exists before
-    public void addToStack(String name, String type) {
+    public void addToStack(String name, DataType type) {
         stack.add(new CompilerStackItem(name, type, stackLevel));
     }
 
@@ -63,7 +63,7 @@ public class CompilerStack {
     }
 
     //should call exist before, otherwise it may throws an IllegalArgumentException
-    public String getType(String name) {
+    public DataType getType(String name) {
         for (int x = stack.size() - 1; x >= 0; x--) {
             if (stack.get(x).name.equals(name)) return stack.get(x).type;
         }
@@ -75,18 +75,18 @@ public class CompilerStack {
 
         for (CompilerStackItem item : stack) {
             ConcurrentStackItem v;
-            switch (item.type) {
-                case DataTypes.Boolean:
-                    v = new ConcurrentStackItem<>(DataTypes.Boolean, false);
+            switch (item.type.name) {
+                case DataType.BOOLEAN_KW:
+                    v = new ConcurrentStackItem<>(DataType.BOOLEAN, false);
                     break;
-                case DataTypes.Float:
-                    v = new ConcurrentStackItem<>(DataTypes.Float, 0f);
+                case DataType.FLOAT_KW:
+                    v = new ConcurrentStackItem<>(DataType.FLOAT, 0f);
                     break;
-                case DataTypes.Integer:
-                    v = new ConcurrentStackItem<>(DataTypes.Integer, 0);
+                case DataType.INTEGER_KW:
+                    v = new ConcurrentStackItem<>(DataType.INTEGER, 0);
                     break;
-                case DataTypes.String:
-                    v = new ConcurrentStackItem<>(DataTypes.String, "");
+                case DataType.STRING_KW:
+                    v = new ConcurrentStackItem<>(DataType.STRING, "");
                     break;
                 default:
                     throw new UnsupportedOperationException("cannot handle DataType + " + item.type);

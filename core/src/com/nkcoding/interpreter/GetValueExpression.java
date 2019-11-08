@@ -1,5 +1,7 @@
 package com.nkcoding.interpreter;
 
+import com.nkcoding.interpreter.compiler.DataType;
+
 public class GetValueExpression<T> implements Expression<T> {
 
     private String name;
@@ -8,9 +10,9 @@ public class GetValueExpression<T> implements Expression<T> {
         return name;
     }
 
-    private String type;
+    private DataType type;
 
-    public GetValueExpression(String name, String type) {
+    public GetValueExpression(String name, DataType type) {
         this.name = name;
         this.type = type;
     }
@@ -22,7 +24,7 @@ public class GetValueExpression<T> implements Expression<T> {
     }
 
     @Override
-    public String getType() {
+    public DataType getType() {
         return type;
     }
 }

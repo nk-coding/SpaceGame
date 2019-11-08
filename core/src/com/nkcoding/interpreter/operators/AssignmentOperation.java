@@ -4,14 +4,15 @@ import com.nkcoding.interpreter.ReturnException;
 import com.nkcoding.interpreter.Stack;
 import com.nkcoding.interpreter.StackItem;
 import com.nkcoding.interpreter.Statement;
+import com.nkcoding.interpreter.compiler.DataType;
 
 //technically a BinaryOperator, but it is implemented via UnaryOperator because the first is always a StackItem
 public class AssignmentOperation<T> extends UnaryOperation<T> implements Statement {
     private String name;
 
-    private String type;
+    private DataType type;
 
-    public AssignmentOperation(String name, String type) {
+    public AssignmentOperation(String name, DataType type) {
         this.name = name;
         this.type = type;
     }
@@ -31,7 +32,7 @@ public class AssignmentOperation<T> extends UnaryOperation<T> implements Stateme
 
 
     @Override
-    public String getType() {
+    public DataType getType() {
         return type;
     }
 }

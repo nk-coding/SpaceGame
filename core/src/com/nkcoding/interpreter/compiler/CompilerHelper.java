@@ -164,20 +164,20 @@ public class CompilerHelper {
     //create an expression out of two expressions and an operator
     public static Expression useOperator(Expression exp1, Expression exp2, OperatorType op, ProgramPosition pos) throws CompileException {
         //check for void
-        if (exp1.getType().equals(DataTypes.Void) || exp2.getType().equals(DataTypes.Void))
-            throw new CompileException("expected: expression found statement", pos);
+//        if (exp1.getType().equals(DataType.Void) || exp2.getType().equals(DataType.Void))
+//            throw new CompileException("expected: expression found statement", pos);
         if (isAssignmentOperation(op)) {
             //it is an assignment operation, so check if the first expression is a GetValueExpression
             if (!(exp1 instanceof GetValueExpression))
                 throw new CompileException("can only assign to a variable", pos);
             String variableName = ((GetValueExpression) exp1).getName();
             //correct type if possible
-            switch (exp1.getType()) {
-                case DataTypes.Integer:
-                    if (exp2.getType().equals(DataTypes.Float)) exp2 = new FloatToIntegerCast(exp2);
+            switch (exp1.getType().name) {
+                case DataType.INTEGER_KW:
+                    if (exp2.getType().equals(DataType.FLOAT)) exp2 = new FloatToIntegerCast(exp2);
                     break;
-                case DataTypes.Float:
-                    if (exp2.getType().equals(DataTypes.Integer)) exp2 = new IntegerToFloatCast(exp2);
+                case DataType.FLOAT_KW:
+                    if (exp2.getType().equals(DataType.INTEGER)) exp2 = new IntegerToFloatCast(exp2);
                     break;
             }
             //check if type is now correct
@@ -187,14 +187,14 @@ public class CompilerHelper {
             BinaryOperation binaryOperation = null;
             switch (op) {
                 case AddAssign:
-                    switch (exp1.getType()) {
-                        case DataTypes.Float:
+                    switch (exp1.getType().name) {
+                        case DataType.FLOAT_KW:
                             binaryOperation = new AddAssignmentFloatOperation(variableName);
                             break;
-                        case DataTypes.Integer:
+                        case DataType.INTEGER_KW:
                             binaryOperation = new AddAssignmentIntegerOperation(variableName);
                             break;
-                        case DataTypes.String:
+                        case DataType.STRING_KW:
                             binaryOperation = new AddAssignmentStringOperation(variableName);
                             break;
                         default:
@@ -202,11 +202,11 @@ public class CompilerHelper {
                     }
                     break;
                 case SubtractAssign:
-                    switch (exp1.getType()) {
-                        case DataTypes.Float:
+                    switch (exp1.getType().name) {
+                        case DataType.FLOAT_KW:
                             binaryOperation = new SubtractAssignmentFloatOperation(variableName);
                             break;
-                        case DataTypes.Integer:
+                        case DataType.INTEGER_KW:
                             binaryOperation = new SubtractAssignmentIntegerOperation(variableName);
                             break;
                         default:
@@ -214,11 +214,11 @@ public class CompilerHelper {
                     }
                     break;
                 case MultiplyAssign:
-                    switch (exp1.getType()) {
-                        case DataTypes.Float:
+                    switch (exp1.getType().name) {
+                        case DataType.FLOAT_KW:
                             binaryOperation = new MultiplyAssignmentFloatOperation(variableName);
                             break;
-                        case DataTypes.Integer:
+                        case DataType.INTEGER_KW:
                             binaryOperation = new MultiplyAssignmentIntegerOperation(variableName);
                             break;
                         default:
@@ -226,11 +226,11 @@ public class CompilerHelper {
                     }
                     break;
                 case DivideAssign:
-                    switch (exp1.getType()) {
-                        case DataTypes.Float:
+                    switch (exp1.getType().name) {
+                        case DataType.FLOAT_KW:
                             binaryOperation = new DivideAssignmentFloatOperation(variableName);
                             break;
-                        case DataTypes.Integer:
+                        case DataType.INTEGER_KW:
                             binaryOperation = new DivideAssignmentIntegerOperation(variableName);
                             break;
                         default:
@@ -238,11 +238,11 @@ public class CompilerHelper {
                     }
                     break;
                 case ModAssign:
-                    switch (exp1.getType()) {
-                        case DataTypes.Float:
+                    switch (exp1.getType().name) {
+                        case DataType.FLOAT_KW:
                             binaryOperation = new ModAssignmentFloatOperation(variableName);
                             break;
-                        case DataTypes.Integer:
+                        case DataType.INTEGER_KW:
                             binaryOperation = new ModAssignmentIntegerOperation(variableName);
                             break;
                         default:
@@ -260,9 +260,9 @@ public class CompilerHelper {
             return binaryOperation;
         } else {
             //correct the type if possible
-            if (exp1.getType().equals(DataTypes.Integer) && exp2.getType().equals(DataTypes.Float))
+            if (exp1.getType().equals(DataType.INTEGER) && exp2.getType().equals(DataType.FLOAT))
                 exp1 = new IntegerToFloatCast(exp1);
-            else if (exp1.getType().equals(DataTypes.Float) && exp2.getType().equals(DataTypes.Integer))
+            else if (exp1.getType().equals(DataType.FLOAT) && exp2.getType().equals(DataType.INTEGER))
                 exp2 = new IntegerToFloatCast(exp2);
             //now check the type
             if (!exp1.getType().equals(exp2.getType()))
@@ -271,14 +271,14 @@ public class CompilerHelper {
             BinaryExpressionBase binExBase;
             switch (op) {
                 case Add:
-                    switch (exp1.getType()) {
-                        case DataTypes.Float:
+                    switch (exp1.getType().name) {
+                        case DataType.FLOAT_KW:
                             binaryOperation = new AddFloatOperation();
                             break;
-                        case DataTypes.Integer:
+                        case DataType.INTEGER_KW:
                             binaryOperation = new AddIntegerOperation();
                             break;
-                        case DataTypes.String:
+                        case DataType.STRING_KW:
                             binaryOperation = new AddStringOperation();
                             break;
                         default:
@@ -286,11 +286,11 @@ public class CompilerHelper {
                     }
                     break;
                 case Subtract:
-                    switch (exp1.getType()) {
-                        case DataTypes.Float:
+                    switch (exp1.getType().name) {
+                        case DataType.FLOAT_KW:
                             binaryOperation = new SubtractFloatOperation();
                             break;
-                        case DataTypes.Integer:
+                        case DataType.INTEGER_KW:
                             binaryOperation = new SubtractIntegerOperation();
                             break;
                         default:
@@ -298,11 +298,11 @@ public class CompilerHelper {
                     }
                     break;
                 case Multiply:
-                    switch (exp1.getType()) {
-                        case DataTypes.Float:
+                    switch (exp1.getType().name) {
+                        case DataType.FLOAT_KW:
                             binaryOperation = new MultiplyFloatOperation();
                             break;
-                        case DataTypes.Integer:
+                        case DataType.INTEGER_KW:
                             binaryOperation = new MultiplyIntegerOperation();
                             break;
                         default:
@@ -310,11 +310,11 @@ public class CompilerHelper {
                     }
                     break;
                 case Divide:
-                    switch (exp1.getType()) {
-                        case DataTypes.Float:
+                    switch (exp1.getType().name) {
+                        case DataType.FLOAT_KW:
                             binaryOperation = new DivideFloatOperation();
                             break;
-                        case DataTypes.Integer:
+                        case DataType.INTEGER_KW:
                             binaryOperation = new DivideIntegerOperation();
                             break;
                         default:
@@ -322,11 +322,11 @@ public class CompilerHelper {
                     }
                     break;
                 case Mod:
-                    switch (exp1.getType()) {
-                        case DataTypes.Float:
+                    switch (exp1.getType().name) {
+                        case DataType.FLOAT_KW:
                             binaryOperation = new ModFloatOperation();
                             break;
-                        case DataTypes.Integer:
+                        case DataType.INTEGER_KW:
                             binaryOperation = new ModIntegerOperation();
                             break;
                         default:
@@ -344,13 +344,13 @@ public class CompilerHelper {
                     binExBase.setSecondExpression(exp2);
                     return (Expression) binExBase;
                 case Greater:
-                    switch (exp1.getType()) {
-                        case DataTypes.Float:
+                    switch (exp1.getType().name) {
+                        case DataType.FLOAT_KW:
                             binExBase = new GreaterFloatOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
                             return (Expression) binExBase;
-                        case DataTypes.Integer:
+                        case DataType.INTEGER_KW:
                             binExBase = new GreaterIntegerOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
@@ -359,29 +359,29 @@ public class CompilerHelper {
                             throw new CompileException("you can't use this operator with a " + exp1.getType(), pos);
                     }
                 case GreaterEquals:
-                    switch (exp1.getType()) {
-                        case DataTypes.Float:
+                    switch (exp1.getType().name) {
+                        case DataType.FLOAT_KW:
                             binExBase = new GreaterEqualsFloatOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
                             return (Expression) binExBase;
-                        case DataTypes.Integer:
+                        case DataType.INTEGER_KW:
                             binExBase = new GreaterEqualsIntegerOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
                             return (Expression) binExBase;
-                        case DataTypes.String:
+                        case DataType.STRING_KW:
                         default:
                             throw new CompileException("you can't use this operator with a " + exp1.getType(), pos);
                     }
                 case Lesser:
-                    switch (exp1.getType()) {
-                        case DataTypes.Float:
+                    switch (exp1.getType().name) {
+                        case DataType.FLOAT_KW:
                             binExBase = new LesserFloatOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
                             return (Expression) binExBase;
-                        case DataTypes.Integer:
+                        case DataType.INTEGER_KW:
                             binExBase = new LesserIntegerOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
@@ -390,13 +390,13 @@ public class CompilerHelper {
                             throw new CompileException("you can't use this operator with a " + exp1.getType(), pos);
                     }
                 case LesserEquals:
-                    switch (exp1.getType()) {
-                        case DataTypes.Float:
+                    switch (exp1.getType().name) {
+                        case DataType.FLOAT_KW:
                             binExBase = new LesserEqualsFloatOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
                             return (Expression) binExBase;
-                        case DataTypes.Integer:
+                        case DataType.INTEGER_KW:
                             binExBase = new LesserEqualsIntegerOperation();
                             binExBase.setFirstExpression(exp1);
                             binExBase.setSecondExpression(exp2);
@@ -405,8 +405,8 @@ public class CompilerHelper {
                             throw new CompileException("you can't use this operator with a " + exp1.getType(), pos);
                     }
                 case Or:
-                    switch (exp1.getType()) {
-                        case DataTypes.Boolean:
+                    switch (exp1.getType().name) {
+                        case DataType.BOOLEAN_KW:
                             binaryOperation = new OrOperation();
                             break;
                         default:
@@ -414,8 +414,8 @@ public class CompilerHelper {
                     }
                     break;
                 case And:
-                    switch (exp1.getType()) {
-                        case DataTypes.Boolean:
+                    switch (exp1.getType().name) {
+                        case DataType.BOOLEAN_KW:
                             binaryOperation = new AndOperation();
                             break;
                         default:

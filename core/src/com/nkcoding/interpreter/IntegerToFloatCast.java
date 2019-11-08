@@ -1,6 +1,6 @@
 package com.nkcoding.interpreter;
 
-import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.DataType;
 
 public class IntegerToFloatCast implements Expression<Float> {
     private Expression<Integer> toCast;
@@ -15,7 +15,7 @@ public class IntegerToFloatCast implements Expression<Float> {
     }
 
     @Override
-    public String getType() {
-        return DataTypes.Float;
+    public DataType getType() {
+        return DataType.FLOAT;
     }
 }

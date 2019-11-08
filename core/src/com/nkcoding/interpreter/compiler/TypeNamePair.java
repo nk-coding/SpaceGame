@@ -12,13 +12,13 @@ public class TypeNamePair {
         this.name = name;
     }
 
-    private String type;
+    private DataType type;
 
-    public String getType() {
+    public DataType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(DataType type) {
         this.type = type;
     }
 
@@ -27,7 +27,7 @@ public class TypeNamePair {
     }
 
     //constructor
-    public TypeNamePair(String name, String dataType) {
+    public TypeNamePair(String name, DataType dataType) {
         this.name = name;
         this.type = dataType;
     }

@@ -1,7 +1,7 @@
 package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.utils.Json;
-import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.interpreter.compiler.MethodType;
 import com.nkcoding.interpreter.compiler.TypeNamePair;
@@ -18,7 +18,7 @@ public class ExternalPropertyData {
     /**
      * the type of the property
      */
-    public final String type;
+    public final DataType type;
 
     /**
      * can the value be modified by the user
@@ -40,9 +40,9 @@ public class ExternalPropertyData {
      * @param type     the type of the property
      * @param readonly can the value be modified by the user
      */
-    public ExternalPropertyData(String name, String type, boolean readonly, boolean writeonly) {
+    public ExternalPropertyData(String name, DataType type, boolean readonly, boolean writeonly) {
         //check if type is ok
-        if (type.equals(DataTypes.Void)) throw new IllegalArgumentException("type cannot be " + DataTypes.Void);
+        if (type.equals(DataType.VOID)) throw new IllegalArgumentException("type cannot be " + DataType.VOID_KW);
         this.name = name;
         this.type = type;
         this.readonly = readonly;
@@ -56,7 +56,7 @@ public class ExternalPropertyData {
      * @param type     the type of the property
      * @param readonly can the value be modified by the user
      */
-    public ExternalPropertyData(String name, String type, boolean readonly) {
+    public ExternalPropertyData(String name, DataType type, boolean readonly) {
         this(name, type, readonly, false);
     }
 
@@ -65,16 +65,16 @@ public class ExternalPropertyData {
      *
      * @param type the type of the property
      */
-    public ExternalPropertyData(String name, String type) {
+    public ExternalPropertyData(String name, DataType type) {
         this(name, type, true, false);
     }
 
     public boolean verifyInit(String init) {
         if (init.equals("")) return true;
-        switch (type) {
-            case DataTypes.Boolean:
+        switch (type.name) {
+            case DataType.BOOLEAN_KW:
                 return init.equalsIgnoreCase("true") || init.equalsIgnoreCase("false");
-            case DataTypes.Float:
+            case DataType.FLOAT_KW:
                 try {
                     if (init.isBlank()) return true;
                     Float.parseFloat(init);
@@ -82,7 +82,7 @@ public class ExternalPropertyData {
                 } catch (Exception e) {
                     return false;
                 }
-            case DataTypes.Integer:
+            case DataType.INTEGER_KW:
                 try {
                     if (init.isBlank()) return true;
                     Integer.parseInt(init);
@@ -90,7 +90,7 @@ public class ExternalPropertyData {
                 } catch (Exception e) {
                     return false;
                 }
-            case DataTypes.String:
+            case DataType.STRING_KW:
                 return true;
             default:
                 throw new RuntimeException("not implemented");
@@ -140,10 +140,10 @@ public class ExternalPropertyData {
     //helper for addExternalMethodDef
     private MethodDefinition createExternalMethodDef(boolean get) {
         if (get) {
-            return new MethodDefinition(MethodType.External, "get" + name, type, new TypeNamePair("id", DataTypes.String));
+            return new MethodDefinition(MethodType.External, "get" + name, type, new TypeNamePair("id", DataType.STRING));
         } else {
-            return new MethodDefinition(MethodType.External, "set" + name, DataTypes.Void,
-                    new TypeNamePair("id", DataTypes.String),
+            return new MethodDefinition(MethodType.External, "set" + name, DataType.VOID,
+                    new TypeNamePair("id", DataType.STRING),
                     new TypeNamePair("value", type));
         }
     }
@@ -164,21 +164,21 @@ public class ExternalPropertyData {
     /**
      * wrapper for new ExternalPropertyData(name, type, readonly = true)
      */
-    public static ExternalPropertyData of(String name, String type) {
+    public static ExternalPropertyData of(String name, DataType type) {
         return of(name, type, true);
     }
 
     /**
      * wrapper for new ExternalPropertyData(name, type, readonly)
      */
-    public static ExternalPropertyData of(String name, String type, boolean readonly) {
+    public static ExternalPropertyData of(String name, DataType type, boolean readonly) {
         return new ExternalPropertyData(name, type, readonly);
     }
 
     /**
      * wrapper for new ExternalPropertyData(name, type, readonly, writeonly)
      */
-    public static ExternalPropertyData of(String name, String type, boolean readonly, boolean writeonly) {
+    public static ExternalPropertyData of(String name, DataType type, boolean readonly, boolean writeonly) {
         return new ExternalPropertyData(name, type, readonly, writeonly);
     }
 }

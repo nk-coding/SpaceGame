@@ -1,6 +1,6 @@
 package com.nkcoding.interpreter;
 
-import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.DataType;
 
 public class MethodWrapperStatement<T> implements Statement, Expression<T> {
 
@@ -23,9 +23,9 @@ public class MethodWrapperStatement<T> implements Statement, Expression<T> {
         this.name = name;
     }
 
-    private String type;
+    private DataType type;
 
-    public MethodWrapperStatement(String type) {
+    public MethodWrapperStatement(DataType type) {
         this.type = type;
     }
 
@@ -46,7 +46,7 @@ public class MethodWrapperStatement<T> implements Statement, Expression<T> {
         }
         //init result value
         //don't do it if it has no return type
-        if (!type.equals(DataTypes.Void)) stack.<T>addToStack(name + "$result", null, type);
+        if (!type.equals(DataType.VOID)) stack.<T>addToStack(name + "$result", null, type);
         //run the method
         try {
             methodStatement.run(stack);
@@ -54,7 +54,7 @@ public class MethodWrapperStatement<T> implements Statement, Expression<T> {
             //that's ok
         }
         //save the result
-        T result = (type.equals(DataTypes.Void)) ? null : ((StackItem<T>) stack.getFromStack(name + "$result")).getResult(stack);
+        T result = (type.equals(DataType.VOID)) ? null : ((StackItem<T>) stack.getFromStack(name + "$result")).getResult(stack);
         stack.clearStackLevel();
         return result;
     }
@@ -66,7 +66,7 @@ public class MethodWrapperStatement<T> implements Statement, Expression<T> {
 
 
     @Override
-    public String getType() {
+    public DataType getType() {
         return type;
     }
 }

@@ -1,7 +1,7 @@
 package com.nkcoding.interpreter.operators;
 
 import com.nkcoding.interpreter.Stack;
-import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.DataType;
 
 public class ModFloatOperation extends BinaryOperation<Float> {
     @Override
@@ -10,7 +10,7 @@ public class ModFloatOperation extends BinaryOperation<Float> {
     }
 
     @Override
-    public String getType() {
-        return DataTypes.Float;
+    public DataType getType() {
+        return DataType.FLOAT;
     }
 }

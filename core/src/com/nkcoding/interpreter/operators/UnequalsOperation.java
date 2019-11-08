@@ -2,7 +2,7 @@ package com.nkcoding.interpreter.operators;
 
 import com.nkcoding.interpreter.Expression;
 import com.nkcoding.interpreter.Stack;
-import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.DataType;
 
 public class UnequalsOperation<T> extends BinaryExpressionBase<T> implements Expression<Boolean> {
 
@@ -12,8 +12,8 @@ public class UnequalsOperation<T> extends BinaryExpressionBase<T> implements Exp
     }
 
     @Override
-    public String getType() {
-        return DataTypes.Boolean;
+    public DataType getType() {
+        return DataType.BOOLEAN;
     }
 }
 

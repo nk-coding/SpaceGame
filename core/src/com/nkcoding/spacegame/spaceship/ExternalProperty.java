@@ -41,7 +41,7 @@ public abstract class ExternalProperty<T> {
         this.changedMethodStatement = changedMethodStatement;
     }
 
-    public ExternalProperty(boolean readonly, boolean notifyChanges, String name, String type) {
+    public ExternalProperty(boolean readonly, boolean notifyChanges, String name) {
         this.readonly = readonly;
         this.notifyChanges = notifyChanges;
         this.name = name;

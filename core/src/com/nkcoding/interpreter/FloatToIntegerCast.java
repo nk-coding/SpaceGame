@@ -1,5 +1,7 @@
 package com.nkcoding.interpreter;
 
+import com.nkcoding.interpreter.compiler.DataType;
+
 public class FloatToIntegerCast implements Expression<Integer> {
     private Expression<Float> toCast;
 
@@ -13,7 +15,7 @@ public class FloatToIntegerCast implements Expression<Integer> {
     }
 
     @Override
-    public String getType() {
-        return null;
+    public DataType getType() {
+        return DataType.INTEGER;
     }
 }

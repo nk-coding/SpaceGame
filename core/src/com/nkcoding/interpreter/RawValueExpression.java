@@ -1,12 +1,14 @@
 package com.nkcoding.interpreter;
 
+import com.nkcoding.interpreter.compiler.DataType;
+
 public class RawValueExpression<T> implements Expression<T> {
 
     private final T value;
 
-    private String type;
+    private DataType type;
 
-    public RawValueExpression(T value, String type) {
+    public RawValueExpression(T value, DataType type) {
         this.value = value;
         this.type = type;
     }
@@ -18,7 +20,7 @@ public class RawValueExpression<T> implements Expression<T> {
     }
 
     @Override
-    public String getType() {
+    public DataType getType() {
         return type;
     }
 }

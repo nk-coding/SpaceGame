@@ -1,5 +1,7 @@
 package com.nkcoding.interpreter;
 
+import com.nkcoding.interpreter.compiler.DataType;
+
 import java.util.function.Function;
 
 public class PredefinedMethodStatement<T> implements Statement, Expression<T> {
@@ -23,9 +25,9 @@ public class PredefinedMethodStatement<T> implements Statement, Expression<T> {
         this.predefinedMethod = predefinedMethod;
     }
 
-    private String type;
+    private DataType type;
 
-    public PredefinedMethodStatement(String type) {
+    public PredefinedMethodStatement(DataType type) {
         this.type = type;
     }
 
@@ -50,7 +52,7 @@ public class PredefinedMethodStatement<T> implements Statement, Expression<T> {
 
 
     @Override
-    public String getType() {
+    public DataType getType() {
         return type;
     }
 }

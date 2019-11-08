@@ -1,6 +1,6 @@
 package com.nkcoding.interpreter;
 
-import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.DataType;
 
 public class DefineValueStatement<T> implements Statement {
 
@@ -16,9 +16,9 @@ public class DefineValueStatement<T> implements Statement {
         this.valueExpression = valueExpression;
     }
 
-    private String type;
+    private DataType type;
 
-    public DefineValueStatement(String type) {
+    public DefineValueStatement(DataType type) {
         this.type = type;
     }
 
@@ -29,17 +29,17 @@ public class DefineValueStatement<T> implements Statement {
     }
 
     private Object getAlternativeValue() {
-        switch (type) {
-            case DataTypes.Float:
+        switch (type.name) {
+            case DataType.FLOAT_KW:
                 return (float) 0;
-            case DataTypes.Integer:
+            case DataType.INTEGER_KW:
                 return 0;
-            case DataTypes.Boolean:
+            case DataType.BOOLEAN_KW:
                 return false;
-            case DataTypes.String:
+            case DataType.STRING_KW:
                 return "";
             default:
-                throw new IllegalStateException("missing a data type");
+                throw new IllegalStateException("cannot create alternative value");
         }
     }
 }

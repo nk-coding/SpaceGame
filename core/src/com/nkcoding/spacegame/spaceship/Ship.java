@@ -9,7 +9,6 @@ import com.nkcoding.interpreter.ConcurrentStackItem;
 import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Compiler;
-import com.nkcoding.interpreter.compiler.DataTypes;
 import com.nkcoding.interpreter.compiler.Program;
 import com.nkcoding.spacegame.SpaceSimulation;
 
@@ -67,15 +66,15 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
 
     //region properties
     //virtual property when a key is pressed
-    public final NotifyProperty<String> keyDown = register(new NotifyProperty<>(KeyDownKey, DataTypes.String));
+    public final NotifyProperty<String> keyDown = register(new NotifyProperty<>(KeyDownKey));
     //virtual property when key is released
-    public final NotifyProperty<String> keyUp = register(new NotifyProperty<>(KeyUpKey, DataTypes.String));
+    public final NotifyProperty<String> keyUp = register(new NotifyProperty<>(KeyUpKey));
     //wrapper for the angularRotation from Body
     public final FloatProperty angularVelocity = register(new FloatProperty(true, true, AngularVelocityKey));
     //wrapper for the velocity from Body
     public final FloatProperty velocity = register(new FloatProperty(true, true, VelocityKey));
     //focus from SpaceSimulation
-    public final VirtualProperty<Boolean> cameraFocus = register(new VirtualProperty<>(true, CameraFocusKey, DataTypes.Boolean) {
+    public final VirtualProperty<Boolean> cameraFocus = register(new VirtualProperty<>(true, CameraFocusKey) {
         @Override
         public void set(Boolean value) {
             super.set(value);

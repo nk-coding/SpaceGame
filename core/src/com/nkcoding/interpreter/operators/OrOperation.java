@@ -1,7 +1,7 @@
 package com.nkcoding.interpreter.operators;
 
 import com.nkcoding.interpreter.Stack;
-import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.DataType;
 
 public class OrOperation extends BinaryOperation<Boolean> {
     @Override
@@ -10,7 +10,7 @@ public class OrOperation extends BinaryOperation<Boolean> {
     }
 
     @Override
-    public String getType() {
-        return DataTypes.Boolean;
+    public DataType getType() {
+        return DataType.BOOLEAN;
     }
 }

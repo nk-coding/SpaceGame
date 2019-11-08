@@ -1,5 +1,7 @@
 package com.nkcoding.interpreter;
 
+import com.nkcoding.interpreter.compiler.DataType;
+
 public class ExternalMethodStatement<T> implements Statement, Expression<T> {
 
     //normally used to init
@@ -15,9 +17,9 @@ public class ExternalMethodStatement<T> implements Statement, Expression<T> {
         this.name = name;
     }
 
-    private String type;
+    private DataType type;
 
-    public ExternalMethodStatement(String type) {
+    public ExternalMethodStatement(DataType type) {
         this.type = type;
     }
 
@@ -52,7 +54,7 @@ public class ExternalMethodStatement<T> implements Statement, Expression<T> {
 
 
     @Override
-    public String getType() {
+    public DataType getType() {
         return type;
     }
 }

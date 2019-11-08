@@ -1,5 +1,7 @@
 package com.nkcoding.interpreter;
 
+import com.nkcoding.interpreter.compiler.DataType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,7 +32,7 @@ public class Stack {
         this.globalVariables = globalVariables;
     }
 
-    public <T> void addToStack(String name, T value, String type) {
+    public <T> void addToStack(String name, T value, DataType type) {
         //System.out.println("stack: add to stack: " + name);
         StackItem<T> item = new StackItem<T>(type);
         item.setName(name);

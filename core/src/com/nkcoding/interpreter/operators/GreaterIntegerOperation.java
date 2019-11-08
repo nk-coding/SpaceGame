@@ -2,7 +2,7 @@ package com.nkcoding.interpreter.operators;
 
 import com.nkcoding.interpreter.Expression;
 import com.nkcoding.interpreter.Stack;
-import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.DataType;
 
 public class GreaterIntegerOperation extends BinaryExpressionBase<Integer> implements Expression<Boolean> {
     @Override
@@ -11,8 +11,8 @@ public class GreaterIntegerOperation extends BinaryExpressionBase<Integer> imple
     }
 
     @Override
-    public String getType() {
-        return DataTypes.Boolean;
+    public DataType getType() {
+        return DataType.BOOLEAN;
     }
 
 }

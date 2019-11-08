@@ -2,7 +2,7 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.components.*;
 
@@ -13,13 +13,13 @@ import static com.nkcoding.spacegame.spaceship.ExternalPropertyData.of;
 
 public enum ComponentType {
     Engine(Engine::new, 1, 2, 100, 100, Asset.Engine,
-            of(com.nkcoding.spacegame.components.Engine.EnginePowerKey, DataTypes.Integer, false)),
+            of(com.nkcoding.spacegame.components.Engine.EnginePowerKey, DataType.INTEGER, false)),
     Cannon(Cannon::new, 1, 2, 100, 100, Asset.CloseSymbol,
-            of(com.nkcoding.spacegame.components.Cannon.IsShoothingKey, DataTypes.Boolean, false)),
+            of(com.nkcoding.spacegame.components.Cannon.IsShoothingKey, DataType.BOOLEAN, false)),
     PowerCore(PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
     BasicHull(BasicHull::new, Asset.BasicHull),
     ExplosiveCanister(ExplosiveCanister::new, 1, 1, 50, 50, Asset.ErrorSymbol,
-            of(com.nkcoding.spacegame.components.ExplosiveCanister.ExplodeKey, DataTypes.Boolean, false));
+            of(com.nkcoding.spacegame.components.ExplosiveCanister.ExplodeKey, DataType.BOOLEAN, false));
 
     //the width of the component
     public final int width;
@@ -51,11 +51,11 @@ public enum ComponentType {
                   ExternalPropertyData... propertyDefs) {
         ExternalPropertyData[] newPropertyDefs = new ExternalPropertyData[propertyDefs.length + 5];
         System.arraycopy(propertyDefs, 0, newPropertyDefs, 5, propertyDefs.length);
-        newPropertyDefs[0] = new ExternalPropertyData(HealthKey, DataTypes.Float);
-        newPropertyDefs[1] = new ExternalPropertyData(PowerRequestedKey, DataTypes.Float);
-        newPropertyDefs[2] = new ExternalPropertyData(RequestLevelKey, DataTypes.Integer, false);
-        newPropertyDefs[3] = new ExternalPropertyData(HasFullPowerKey, DataTypes.Boolean);
-        newPropertyDefs[4] = new ExternalPropertyData(PowerReceivedKey, DataTypes.Float);
+        newPropertyDefs[0] = new ExternalPropertyData(HealthKey, DataType.FLOAT);
+        newPropertyDefs[1] = new ExternalPropertyData(PowerRequestedKey, DataType.FLOAT);
+        newPropertyDefs[2] = new ExternalPropertyData(RequestLevelKey, DataType.INTEGER, false);
+        newPropertyDefs[3] = new ExternalPropertyData(HasFullPowerKey, DataType.BOOLEAN);
+        newPropertyDefs[4] = new ExternalPropertyData(PowerReceivedKey, DataType.FLOAT);
         this.propertyDefs = newPropertyDefs;
         this.constructor = constructor;
         this.defaultTexture = defaultTexture;

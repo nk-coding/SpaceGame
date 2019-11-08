@@ -29,29 +29,29 @@ public class Methods {
 
     //set the predefined methods in the constructor
     public Methods() {
-        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "println", DataTypes.Void, new TypeNamePair("str", DataTypes.String)),
+    predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "println", DataType.VOID, new TypeNamePair("str", DataType.STRING)),
                 (Function<Object[], Void>) obj ->
                 {
                     System.out.println((String) obj[0]);
                     return null;
                 });
-        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "currentTimeMillis", DataTypes.Void),
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "currentTimeMillis", DataType.VOID),
                 (Function<Object[], Void>) obj ->
                 {
                     System.out.println(System.currentTimeMillis());
                     return null;
                 });
-        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "intToStr", DataTypes.String, new TypeNamePair("i", DataTypes.Integer)),
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "intToStr", DataType.STRING, new TypeNamePair("i", DataType.INTEGER)),
                 (Function<Object[], String>) obj ->
                 {
                     return String.valueOf((int) obj[0]);
                 });
-        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "floatToStr", DataTypes.String, new TypeNamePair("i", DataTypes.Float)),
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "floatToStr", DataType.STRING, new TypeNamePair("i", DataType.FLOAT)),
                 (Function<Object[], String>) obj ->
                 {
                     return String.valueOf((float) obj[0]);
                 });
-        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "boolToStr", DataTypes.String, new TypeNamePair("i", DataTypes.Boolean)),
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "boolToStr", DataType.STRING, new TypeNamePair("i", DataType.BOOLEAN)),
                 (Function<Object[], String>) obj ->
                 {
                     return String.valueOf((boolean) obj[0]);

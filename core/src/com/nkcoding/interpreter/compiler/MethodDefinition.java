@@ -22,13 +22,13 @@ public class MethodDefinition {
         return name;
     }
 
-    private String returnType;
+    private DataType returnType;
 
-    public void setReturnType(String returnType) {
+    public void setReturnType(DataType returnType) {
         this.returnType = returnType;
     }
 
-    public String getReturnType() {
+    public DataType getReturnType() {
         return returnType;
     }
 
@@ -45,7 +45,7 @@ public class MethodDefinition {
     }
 
     //the complete constructor for the ones which use it
-    public MethodDefinition(MethodType methodType, String name, String returnType, TypeNamePair... parameters) {
+    public MethodDefinition(MethodType methodType, String name, DataType returnType, TypeNamePair... parameters) {
         this(methodType);
         this.name = name;
         this.returnType = returnType;

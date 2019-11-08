@@ -132,12 +132,12 @@ public class Compiler {
             } else {
                 //here it really begins
                 //if it does not contain the return type, something must be wrong
-                if (!DataTypes.contains(returnType))
+                if (!DataType.contains(returnType))
                     throw new CompileException("Expected: return type, found : " + returnType, text.getPosition().getClone());
                 //everything ok
                 //create a new methodDefinition
                 NormalMethodDefinition def = new NormalMethodDefinition(text.getPosition().getLine());
-                def.setReturnType(returnType);
+                def.setReturnType(DataType.fromName(returnType));
                 //the method name
                 def.setName(text.getNextWord());
                 //try get the bracket, if that is not possible throw an exception
@@ -169,10 +169,10 @@ public class Compiler {
                                     //there is (or at least should be) a parameter
                                     String parameterType = text.getNextWord();
                                     //check if the type is correct
-                                    if (!DataTypes.containsDataType(parameterType))
+                                    if (!DataType.containsDataType(parameterType))
                                         throw new CompileException(parameterType + " is no correct DataType", text.getPosition());
                                     //correct type was found, get name
-                                    TypeNamePair pair = new TypeNamePair(text.getNextWord(), parameterType);
+                                    TypeNamePair pair = new TypeNamePair(text.getNextWord(), DataType.fromName(parameterType));
                                     //check if parameter name is already in use
                                     if (CompilerHelper.typeNamePairsContainName(pairs, pair.getName()))
                                         throw new CompileException("a parameter with the name " + pair.getName() + " already exists", text.getPosition());
@@ -409,21 +409,21 @@ public class Compiler {
             text.moveBackward();
             if (firstOfMain == '"') {
                 //it is a raw String
-                mainExpression = new RawValueExpression<>(CompilerHelper.parseString(text), DataTypes.String);
+                mainExpression = new RawValueExpression<>(CompilerHelper.parseString(text), DataType.STRING);
             } else if (firstOfMain == '.') {
                 //this is a legal float
-                mainExpression = new RawValueExpression<>(CompilerHelper.parseFloat(text), DataTypes.Float);
+                mainExpression = new RawValueExpression<>(CompilerHelper.parseFloat(text), DataType.FLOAT);
             } else if (Character.isDigit(firstOfMain)) {
                 //it is a raw float or int, find it out with the exception
                 ProgramPosition pos = text.getPosition();
                 try {
                     int val = CompilerHelper.parseInt(text);
-                    mainExpression = new RawValueExpression<>(val, DataTypes.Integer);
+                    mainExpression = new RawValueExpression<>(val, DataType.INTEGER);
                 } catch (CompilerHelper.WrongTypeException e) {
                     //it was a float
                     //reset position and try again
                     text.setPosition(pos);
-                    mainExpression = new RawValueExpression<>(CompilerHelper.parseFloat(text), DataTypes.Float);
+                    mainExpression = new RawValueExpression<>(CompilerHelper.parseFloat(text), DataType.FLOAT);
                 }
             } else {
                 //it's not a float or an integer, so get the complete String
@@ -431,7 +431,7 @@ public class Compiler {
                 //check if it is a raw boolean
                 if (exp.equals("true") || exp.equals("false")) {
                     //it is a raw boolean
-                    mainExpression = new RawValueExpression<>(exp.equals("true"), DataTypes.Boolean);
+                    mainExpression = new RawValueExpression<>(exp.equals("true"), DataType.BOOLEAN);
                 } else {
                     //check if it is a method or not
                     boolean isMethod = false;
@@ -494,17 +494,17 @@ public class Compiler {
                 throw new CompileException("a postfix operator can only be used with a variable", text.getPosition());
             GetValueExpression getValueExpression = (GetValueExpression) mainExpression;
             //check if mainExpression is of correct type
-            switch (mainExpression.getType()) {
-                case DataTypes.Integer:
+            switch (mainExpression.getType().name) {
+                case DataType.INTEGER_KW:
                     AddAssignmentIntegerOperation aaio = new AddAssignmentIntegerOperation(getValueExpression.getName());
                     aaio.setFirstExpression((Expression<Integer>) mainExpression);
-                    aaio.setSecondExpression(new RawValueExpression<Integer>(plusPostfix ? 1 : -1, DataTypes.Integer));
+                    aaio.setSecondExpression(new RawValueExpression<Integer>(plusPostfix ? 1 : -1, DataType.INTEGER));
                     mainExpression = aaio;
                     break;
-                case DataTypes.Float:
+                case DataType.FLOAT_KW:
                     AddAssignmentFloatOperation aado = new AddAssignmentFloatOperation(getValueExpression.getName());
                     aado.setFirstExpression((Expression<Float>) mainExpression);
-                    aado.setSecondExpression(new RawValueExpression<Float>(plusPostfix ? 1f : -1f, DataTypes.Float));
+                    aado.setSecondExpression(new RawValueExpression<Float>(plusPostfix ? 1f : -1f, DataType.FLOAT));
                     mainExpression = aado;
                     break;
                 default:
@@ -514,13 +514,13 @@ public class Compiler {
         //apply unary minus if necessary
         if (unaryMinus) {
             //check if the main Expression is of correct type
-            switch (mainExpression.getType()) {
-                case DataTypes.Integer:
+            switch (mainExpression.getType().name) {
+                case DataType.INTEGER_KW:
                     NegateIntegerOperation nio = new NegateIntegerOperation();
                     nio.setFirstExpression((Expression<Integer>) mainExpression);
                     mainExpression = nio;
                     break;
-                case DataTypes.Float:
+                case DataType.FLOAT_KW:
                     NegateFloatOperation ndo = new NegateFloatOperation();
                     ndo.setFirstExpression((Expression<Float>) mainExpression);
                     mainExpression = ndo;
@@ -533,7 +533,7 @@ public class Compiler {
         //apply negateBoolean if necessary
         if (negateBoolean) {
             //check if the main Expression is of correct type
-            if (mainExpression.getType().equals(DataTypes.Boolean)) {
+            if (mainExpression.getType().equals(DataType.BOOLEAN)) {
                 NegateBooleanOperation nbo = new NegateBooleanOperation();
                 nbo.setFirstExpression((Expression<Boolean>) mainExpression);
                 mainExpression = nbo;
@@ -595,14 +595,14 @@ public class Compiler {
             //amount fits, now check the types and correct it if possible
             Expression[] arguments = new Expression[parameters.length];
             for (int x = 0; x < parameters.length; x++) {
-                switch (methodArguments.get(x).getType()) {
-                    case DataTypes.Integer:
-                        switch (parameters[x].getType()) {
-                            case DataTypes.Integer:
+                switch (methodArguments.get(x).getType().name) {
+                    case DataType.INTEGER_KW:
+                        switch (parameters[x].getType().name) {
+                            case DataType.INTEGER_KW:
                                 //same type, everything ok
                                 arguments[x] = methodArguments.get(x);
                                 break;
-                            case DataTypes.Float:
+                            case DataType.FLOAT_KW:
                                 //cast implicitly
                                 arguments[x] = new IntegerToFloatCast((Expression<Integer>) methodArguments.get(x));
                                 break;
@@ -611,13 +611,13 @@ public class Compiler {
                                 throw new CompileException("type mismatch: int can not be casted implicitly to " + parameters[x].getType(), text.getPosition());
                         }
                         break;
-                    case DataTypes.Float:
-                        switch (parameters[x].getType()) {
-                            case DataTypes.Float:
+                    case DataType.FLOAT_KW:
+                        switch (parameters[x].getType().name) {
+                            case DataType.FLOAT_KW:
                                 //same type, everything ok
                                 arguments[x] = methodArguments.get(x);
                                 break;
-                            case DataTypes.Integer:
+                            case DataType.INTEGER_KW:
                                 //cast implicitly
                                 arguments[x] = new FloatToIntegerCast((Expression<Float>) methodArguments.get(x));
                                 break;
@@ -780,14 +780,14 @@ public class Compiler {
             //check if returns are allowed
             if (!allowsReturn) throw new CompileException("return statement is not allowed here", text.getPosition());
             //check if the return type is void
-            if (actualMethod.getReturnType().equals(DataTypes.Void)) {
+            if (actualMethod.getReturnType().equals(DataType.VOID)) {
                 return new ReturnValueStatement(actualMethod, null);
             } else {
                 Expression assignToReturn = compileCompleteExpression();
                 //correct type if possible
-                if (actualMethod.getReturnType().equals(DataTypes.Integer) && assignToReturn.getType().equals(DataTypes.Float))
+                if (actualMethod.getReturnType().equals(DataType.INTEGER) && assignToReturn.getType().equals(DataType.FLOAT))
                     assignToReturn = new FloatToIntegerCast(assignToReturn);
-                else if (actualMethod.getReturnType().equals(DataTypes.Float) && assignToReturn.getType().equals(DataTypes.Integer))
+                else if (actualMethod.getReturnType().equals(DataType.FLOAT) && assignToReturn.getType().equals(DataType.INTEGER))
                     assignToReturn = new IntegerToFloatCast(assignToReturn);
                 //check if type is correct
                 if (!actualMethod.getReturnType().equals(assignToReturn.getType()))
@@ -795,7 +795,7 @@ public class Compiler {
                 //everything is ok, return the expression
                 return new ReturnValueStatement(actualMethod, assignToReturn);
             }
-        } else if (DataTypes.containsDataType(firstWord)) {
+        } else if (DataType.containsDataType(firstWord)) {
             //it is a declaration of a variable
             //check if this is allowed here
             if (!allowsDeclaration)
@@ -810,7 +810,7 @@ public class Compiler {
                 throw new CompileException("reserved keyword", text.getPosition());
             //add variable
             //System.out.println("add to stack: " + variableName + ", " + firstWord);
-            stack.addToStack(variableName, firstWord);
+            stack.addToStack(variableName, DataType.fromName(firstWord));
             //check if it ends here or if there is an init
             Expression initExpression = null;
             try {
@@ -819,12 +819,12 @@ public class Compiler {
                     //it is an assignment
                     initExpression = compileCompleteExpression();
                     //correct type if possible
-                    if (firstWord.equals(DataTypes.Integer) && initExpression.getType().equals(DataTypes.Float))
+                    if (firstWord.equals(DataType.INTEGER_KW) && initExpression.getType().equals(DataType.FLOAT))
                         initExpression = new FloatToIntegerCast(initExpression);
-                    else if (firstWord.equals(DataTypes.Float) && initExpression.getType().equals(DataTypes.Integer))
+                    else if (firstWord.equals(DataType.FLOAT_KW) && initExpression.getType().equals(DataType.INTEGER))
                         initExpression = new IntegerToFloatCast(initExpression);
                     //check if type is correct
-                    if (!firstWord.equals(initExpression.getType()))
+                    if (!initExpression.getType().equals(DataType.fromName(firstWord)))
                         throw new CompileException("can't assign " + initExpression.getType() + " to " + firstWord, text.getPosition());
 
                 } else {
@@ -835,7 +835,7 @@ public class Compiler {
                 //this is no problem here (in reality it will be a problem, but not of this method)
             }
             //everything is correct, create and return the correct statement
-            DefineValueStatement define = new DefineValueStatement(firstWord);
+            DefineValueStatement define = new DefineValueStatement(DataType.fromName(firstWord));
             define.setName(variableName);
             define.setValueExpression(initExpression);
             return define;
@@ -859,7 +859,7 @@ public class Compiler {
         }
         Expression possibleCondition = compileCompleteExpression();
         //check if type is boolean
-        if (!possibleCondition.getType().equals(DataTypes.Boolean))
+        if (!possibleCondition.getType().equals(DataType.BOOLEAN))
             throw new CompileException("expected: expression of type boolean found: expression of type " + possibleCondition.getType(), text.getPosition());
         ics.setCondition(possibleCondition);
         //check if there is the end bracket
@@ -905,7 +905,7 @@ public class Compiler {
         }
         Expression possibleCondition = compileCompleteExpression();
         //check if type is boolean
-        if (!possibleCondition.getType().equals(DataTypes.Boolean))
+        if (!possibleCondition.getType().equals(DataType.BOOLEAN))
             throw new CompileException("expected: expression of type boolean found: expression of type " + possibleCondition.getType(), text.getPosition());
         wls.setRunCondition(possibleCondition);
         //check for correct end
@@ -956,7 +956,7 @@ public class Compiler {
                 text.moveBackward();
                 possibleCondition = compileCompleteExpression();
                 //check that type is correct
-                if (!possibleCondition.getType().equals(DataTypes.Boolean))
+                if (!possibleCondition.getType().equals(DataType.BOOLEAN))
                     throw new CompileException("expected: expression of type boolean found: expression of type " + possibleCondition.getType(), text.getPosition());
                 //check that there is the correct char now
                 c = text.getNextNonWhitespaceChar();

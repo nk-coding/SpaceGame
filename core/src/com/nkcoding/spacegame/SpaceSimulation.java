@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
-import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.spacegame.spaceship.ExternalPropertyHandler;
 import com.nkcoding.spacegame.spaceship.Simulated;
 
@@ -184,20 +184,20 @@ public class SpaceSimulation implements InputProcessor {
             //complete future manually if none of the simulateds completed it
             if (!future.isDone()) {
                 System.out.println("no module completed " + future.toString());
-                switch (future.getType()) {
-                    case DataTypes.Boolean:
+                switch (future.getType().name) {
+                    case DataType.BOOLEAN_KW:
                         future.complete(false);
                         break;
-                    case DataTypes.Float:
+                    case DataType.FLOAT_KW:
                         future.complete(0f);
                         break;
-                    case DataTypes.Integer:
+                    case DataType.INTEGER_KW:
                         future.complete(0);
                         break;
-                    case DataTypes.String:
+                    case DataType.STRING_KW:
                         future.complete("");
                         break;
-                    case DataTypes.Void:
+                    case DataType.VOID_KW:
                         future.complete(null);
                         break;
                     default:

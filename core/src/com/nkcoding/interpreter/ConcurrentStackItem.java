@@ -1,9 +1,11 @@
 package com.nkcoding.interpreter;
 
+import com.nkcoding.interpreter.compiler.DataType;
+
 public class ConcurrentStackItem<T> extends StackItem<T> {
 
     //default constructor
-    public ConcurrentStackItem(String type, T value) {
+    public ConcurrentStackItem(DataType type, T value) {
         super(type);
         setValue(value);
     }

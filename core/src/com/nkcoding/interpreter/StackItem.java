@@ -1,5 +1,7 @@
 package com.nkcoding.interpreter;
 
+import com.nkcoding.interpreter.compiler.DataType;
+
 public class StackItem<T> implements Expression<T> {
     private String name;
 
@@ -27,9 +29,9 @@ public class StackItem<T> implements Expression<T> {
         this.value = value;
     }
 
-    private String type;
+    private DataType type;
 
-    public StackItem(String type) {
+    public StackItem(DataType type) {
         this.type = type;
     }
 
@@ -39,7 +41,7 @@ public class StackItem<T> implements Expression<T> {
     }
 
     @Override
-    public String getType() {
+    public DataType getType() {
         return type;
     }
 

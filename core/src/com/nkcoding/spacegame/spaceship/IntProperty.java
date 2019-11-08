@@ -1,7 +1,5 @@
 package com.nkcoding.spacegame.spaceship;
 
-import com.nkcoding.interpreter.compiler.DataTypes;
-
 public class IntProperty extends ExternalProperty<Integer> {
     private int value = 0;
 
@@ -15,7 +13,7 @@ public class IntProperty extends ExternalProperty<Integer> {
     }
 
     public IntProperty(boolean readonly, boolean notifyChanges, String name) {
-        super(readonly, notifyChanges, name, DataTypes.Integer);
+        super(readonly, notifyChanges, name);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.nkcoding.interpreter;
 
+import com.nkcoding.interpreter.compiler.DataType;
+
 import java.util.concurrent.CompletableFuture;
 
 public class ExternalMethodFuture extends CompletableFuture<Object> {
@@ -14,13 +16,13 @@ public class ExternalMethodFuture extends CompletableFuture<Object> {
         this.name = name;
     }
 
-    private String type;
+    private DataType type;
 
-    public String getType() {
+    public DataType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(DataType type) {
         this.type = type;
     }
 

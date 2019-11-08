@@ -1,6 +1,6 @@
 package com.nkcoding.interpreter;
 
-import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.interpreter.compiler.TypeNamePair;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,20 +58,20 @@ public class ScriptingEngine {
                     //add all the parameters to the stack
                     TypeNamePair[] parameterNames = methodStatement.getDefinition().getParameters();
                     for (int x = 0; x < parameters.length; x++) {
-                        switch (parameterNames[x].getType()) {
-                            case DataTypes.Boolean:
-                                stack.addToStack(parameterNames[x].getName(), (Boolean) parameters[x], DataTypes.Boolean);
+                        switch (parameterNames[x].getType().name) {
+                            case DataType.BOOLEAN_KW:
+                                stack.addToStack(parameterNames[x].getName(), (Boolean) parameters[x], DataType.BOOLEAN);
                                 break;
-                            case DataTypes.Float:
-                                stack.addToStack(parameterNames[x].getName(), (Float) parameters[x], DataTypes.Float);
+                            case DataType.FLOAT_KW:
+                                stack.addToStack(parameterNames[x].getName(), (Float) parameters[x], DataType.FLOAT);
                                 break;
-                            case DataTypes.Integer:
-                                stack.addToStack(parameterNames[x].getName(), (Integer) parameters[x], DataTypes.Integer);
+                            case DataType.INTEGER_KW:
+                                stack.addToStack(parameterNames[x].getName(), (Integer) parameters[x], DataType.INTEGER);
                                 break;
-                            case DataTypes.String:
-                                stack.addToStack(parameterNames[x].getName(), (String) parameters[x], DataTypes.String);
+                            case DataType.STRING_KW:
+                                stack.addToStack(parameterNames[x].getName(), (String) parameters[x], DataType.STRING);
                                 break;
-                            case DataTypes.Void:
+                            case DataType.VOID_KW:
                                 throw new IllegalArgumentException("a parameter cannot be void");
                             default:
                                 throw new IllegalArgumentException("cannot handle the DataType " + parameterNames[x].getType());

@@ -1,7 +1,7 @@
 package com.nkcoding.interpreter.operators;
 
 import com.nkcoding.interpreter.Stack;
-import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.DataType;
 
 public class NegateIntegerOperation extends UnaryOperation<Integer> {
     @Override
@@ -10,7 +10,7 @@ public class NegateIntegerOperation extends UnaryOperation<Integer> {
     }
 
     @Override
-    public String getType() {
-        return DataTypes.Integer;
+    public DataType getType() {
+        return DataType.INTEGER;
     }
 }

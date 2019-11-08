@@ -1,7 +1,5 @@
 package com.nkcoding.spacegame.spaceship;
 
-import com.nkcoding.interpreter.compiler.DataTypes;
-
 public class BooleanProperty extends ExternalProperty<Boolean> {
     private boolean value = false;
 
@@ -15,7 +13,7 @@ public class BooleanProperty extends ExternalProperty<Boolean> {
     }
 
     public BooleanProperty(boolean readonly, boolean notifyChanges, String name) {
-        super(readonly, notifyChanges, name, DataTypes.Boolean);
+        super(readonly, notifyChanges, name);
     }
 
 

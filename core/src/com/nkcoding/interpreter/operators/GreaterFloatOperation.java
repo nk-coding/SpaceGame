@@ -2,7 +2,7 @@ package com.nkcoding.interpreter.operators;
 
 import com.nkcoding.interpreter.Expression;
 import com.nkcoding.interpreter.Stack;
-import com.nkcoding.interpreter.compiler.DataTypes;
+import com.nkcoding.interpreter.compiler.DataType;
 
 public class GreaterFloatOperation extends BinaryExpressionBase<Float> implements Expression<Boolean> {
     @Override
@@ -11,7 +11,7 @@ public class GreaterFloatOperation extends BinaryExpressionBase<Float> implement
     }
 
     @Override
-    public String getType() {
-        return DataTypes.Boolean;
+    public DataType getType() {
+        return DataType.BOOLEAN;
     }
 }
