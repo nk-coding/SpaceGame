@@ -451,7 +451,7 @@ public class Compiler {
                         if (stack.exists(exp)) {
                             //the variable exists, everything is ok
                             mainExpression = new GetValueExpression(exp, stack.getType(exp));
-                        } else throw new CompileException(exp + " is no known variable", text.getPosition());
+                        } else throw new CompileException(exp + " is no known variable or type", text.getPosition());
                     } else {
                         //it is a method
                         mainExpression = compileMethod(exp);

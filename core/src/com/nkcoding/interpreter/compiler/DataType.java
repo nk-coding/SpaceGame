@@ -1,5 +1,10 @@
 package com.nkcoding.interpreter.compiler;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public final class DataType {
 
     //keywords
@@ -36,7 +41,7 @@ public final class DataType {
         this.name = name;
     }
 
-    public static DataType fromName(String str) {
+    public static DataType fromName(String str){
         switch (str) {
             case INTEGER_KW:
                 return INTEGER;
@@ -54,17 +59,79 @@ public final class DataType {
             case VOID_KW:
                 return VOID;
             default:
-                return parseList(str);
+                if (str.length() == 0) return null;
+                if (str.charAt(0) == '[') {
+                    System.out.println("str:");
+                    System.out.println(str);
+                    System.out.println("parse:");
+                    DataType list = parseList(str);
+                    System.out.println(list);
+                    return list;
+                } else {
+                    return null;
+                }
         }
     }
 
-    private static DataType parseList(String str) {
+    private static DataType parseList(String str){
+        ArrayDeque<String> deque = new ArrayDeque<>(List.of(str.split("[ ]|(?=[,=\\[\\]])|(?<=[,=\\[\\]])")));
+        deque.removeIf(String::isEmpty);
+        deque.pollFirst(); //get rid of the first bracket
+        return parseListInternal(deque);
+    }
 
+    private static DataType parseListInternal(ArrayDeque<String> tokens){
+        ArrayList<TypeNamePair> types = new ArrayList<>();
+        System.out.println("tokens: " + tokens);
+        while (!tokens.isEmpty()) {
+            String token = tokens.pollFirst();
+            TypeNamePair type = new TypeNamePair();
+            switch (token) {
+                case "[":
+                    type.setType(parseListInternal(tokens));
+                    break;
+                case "]":
+                    DataType list = new DataType(LIST_KW);
+                    list.listTypes = types.toArray(TypeNamePair[]::new);
+                    return list;
+                default:
+                    DataType t = fromName(token);
+                    if (t == null) {
+                        throw new IllegalArgumentException("expected: type found: " + token);
+                    } else if (t.name.equals(LIST_KW) || t.equals(VOID)) {
+                        throw new IllegalArgumentException("illegal type in list declaration: " + t);
+                    } else {
+                        type.setType(t);
+                    }
+
+                    break;
+            }
+            types.add(type);
+            //check for name
+            String possibleName = tokens.peekFirst();
+            if (possibleName.equals(",")) {
+                tokens.pollFirst();
+            } else if (!possibleName.equals("]")) {
+                //TODO check if identifier is correct
+                type.setName(possibleName);
+                tokens.pollFirst();
+                String next = tokens.peekFirst();
+                if (next.equals(",")) {
+                    tokens.pollFirst();
+                } else if (!next.equals("]")) {
+                    throw new IllegalArgumentException("expected: , or ] found: " + next);
+                }
+            }
+        }
         return null;
     }
 
     public static boolean contains(String type) {
-        return fromName(type) != null;
+        try {
+            return fromName(type) != null;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     //check if it contains datatype
@@ -74,6 +141,15 @@ public final class DataType {
 
     @Override
     public String toString() {
-        return name;
+        return name + (name.equals(LIST_KW) ? ": " + Arrays.toString(listTypes) : "");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass().equals(DataType.class)) {
+            return name.equals(((DataType) obj).name) && Arrays.equals(listTypes, ((DataType) obj).listTypes);
+        } else {
+            return false;
+        }
     }
 }

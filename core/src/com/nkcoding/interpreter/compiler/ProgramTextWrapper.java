@@ -172,6 +172,7 @@ public class ProgramTextWrapper {
                     //found the beginning of a list
                     foundRealCharacter = true;
                     listMode = true;
+                    sb.append(c);
                 } else {
                     //found something different, throw a Exception
                     throw new CompileException("found illegal character : '" + c + '\'', position.getClone());
@@ -185,7 +186,7 @@ public class ProgramTextWrapper {
         while (!foundIllegalCharacter) {
             try {
                 char c = getNextChar();
-                if (Character.isLetterOrDigit(c)) {
+                if (Character.isLetterOrDigit(c) || c == '_') {
                     //append it, continue searching
                     sb.append(c);
                 } else {
@@ -199,10 +200,10 @@ public class ProgramTextWrapper {
                             if (listBracketCounter == 0) {
                                 foundIllegalCharacter = true;
                             }
-                        } else if (Character.isWhitespace(c)) {
+                        } else if (Character.isWhitespace(c) || c == ',') {
                             sb.append(c);
                         } else {
-                            foundIllegalCharacter = true;
+                            throw new CompileException("illegal character found in list type declaration: " + c, getPosition());
                         }
                     } else {
                         //stop searching
