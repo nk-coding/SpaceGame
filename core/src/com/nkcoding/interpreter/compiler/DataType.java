@@ -6,7 +6,7 @@ public final class DataType {
     public static final String INTEGER_KW = "int";
     public static final String FLOAT_KW = "float";
     public static final String BOOLEAN_KW = "boolean";
-    public static final String STRING_KW = "String";
+    public static final String STRING_KW = "string";
     public static final String LIST_KW = "list";
     public static final String VOID_KW = "void";
 
@@ -21,6 +21,10 @@ public final class DataType {
     //name for the this dataType
     public final String name;
 
+    /**if it is a list, is it already defined?*/
+    public boolean isInit = true;
+
+    public TypeNamePair[] listTypes = null;
 
 
     /**
@@ -43,25 +47,29 @@ public final class DataType {
             case STRING_KW:
                 return STRING;
             case LIST_KW:
-                throw new IllegalArgumentException("not implemented yet");
+                //only the list keyword, so it is not specified
+                DataType dataType = new DataType(LIST_KW);
+                dataType.isInit = false;
+                return dataType;
             case VOID_KW:
                 return VOID;
             default:
-                return null;
+                return parseList(str);
         }
     }
 
+    private static DataType parseList(String str) {
+
+        return null;
+    }
+
     public static boolean contains(String type) {
-        return containsDataType(type) || type.equals(VOID_KW);
+        return fromName(type) != null;
     }
 
     //check if it contains datatype
     public static boolean containsDataType(String type) {
-        return type.equals(INTEGER_KW) ||
-                type.equals(FLOAT_KW) ||
-                type.equals(BOOLEAN_KW) ||
-                type.equals(STRING_KW) ||
-                type.equals(LIST_KW);
+        return contains(type) && !type.equals(VOID_KW);
     }
 
     @Override

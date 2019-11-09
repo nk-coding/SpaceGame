@@ -153,10 +153,13 @@ public class ProgramTextWrapper {
         return getNextWord(true);
     }
 
+    //this also handles DataType recognition
+    //I know this solution is bad, but until I have the time to implement an AST...
     public String getNextWord(boolean movePosition) throws CompileException {
         ProgramPosition pos = position.getClone();
         StringBuilder sb = new StringBuilder();
         boolean foundRealCharacter = false;
+        boolean listMode = false;
         while (!foundRealCharacter) {
             try {
                 char c = getNextChar();
@@ -165,6 +168,10 @@ public class ProgramTextWrapper {
                 } else if (Character.isLetterOrDigit(c) || c == '_') {
                     foundRealCharacter = true;
                     sb.append(c);
+                } else if (c == '[') {
+                    //found the beginning of a list
+                    foundRealCharacter = true;
+                    listMode = true;
                 } else {
                     //found something different, throw a Exception
                     throw new CompileException("found illegal character : '" + c + '\'', position.getClone());
@@ -174,6 +181,7 @@ public class ProgramTextWrapper {
             }
         }
         boolean foundIllegalCharacter = false;
+        int listBracketCounter = 1;
         while (!foundIllegalCharacter) {
             try {
                 char c = getNextChar();
@@ -181,8 +189,25 @@ public class ProgramTextWrapper {
                     //append it, continue searching
                     sb.append(c);
                 } else {
-                    //stop searching
-                    foundIllegalCharacter = true;
+                    if (listMode) {
+                        if (c == '[') {
+                            listBracketCounter++;
+                            sb.append(c);
+                        } else if (c == ']') {
+                            listBracketCounter--;
+                            sb.append(c);
+                            if (listBracketCounter == 0) {
+                                foundIllegalCharacter = true;
+                            }
+                        } else if (Character.isWhitespace(c)) {
+                            sb.append(c);
+                        } else {
+                            foundIllegalCharacter = true;
+                        }
+                    } else {
+                        //stop searching
+                        foundIllegalCharacter = true;
+                    }
                 }
             } catch (EndReachedException e) {
                 //this is ok, just end the loop
@@ -190,10 +215,11 @@ public class ProgramTextWrapper {
             }
         }
         if (!movePosition) setPosition(pos);
-        else moveBackward();
+        else if (!listMode) moveBackward();
 
         return sb.toString();
     }
+
 
     public ProgramPosition getNextPosition(char toFind, boolean movePosition) {
         ProgramPosition pos = position.getClone();

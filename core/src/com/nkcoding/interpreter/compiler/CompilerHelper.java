@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CompilerHelper {
     //array with all the reserved keywords
-    private static final String[] keywords = new String[]{"int", "float", "boolean", "void", "if", "else", "for", "while", "return", "null", "true", "false"};
+    private static final String[] keywords = new String[]{"int", "float", "boolean", "void", "if", "else", "string", "for", "while", "return", "null", "true", "false", "list"};
 
     //checks if a name is already in a list of MethodDefinition
     public static boolean methodDefinitionsContainName(List<MethodDefinition> methodDefinitions, String name) {
