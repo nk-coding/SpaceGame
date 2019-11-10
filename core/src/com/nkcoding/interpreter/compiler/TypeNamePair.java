@@ -1,5 +1,7 @@
 package com.nkcoding.interpreter.compiler;
 
+import java.util.Objects;
+
 public class TypeNamePair {
 
     private String name;
@@ -43,4 +45,13 @@ public class TypeNamePair {
         return sb.toString();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass().equals(TypeNamePair.class)) {
+            return Objects.equals(((TypeNamePair)obj).getName(), (getName()))
+                    && Objects.equals(((TypeNamePair)obj).getType(), (getType()));
+        } else {
+            return false;
+        }
+    }
 }

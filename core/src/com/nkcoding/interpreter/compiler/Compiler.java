@@ -368,15 +368,119 @@ public class Compiler {
         return expressions.get(0);
     }
 
-    //compiles a single expression
-    private Expression compileSingleExpression() throws CompileException {
+    //compile a single expression, also handle list stuff
+    private Expression compileSingleExpression() throws CompileException{
+        try {
+            //get the expression
+            char possibleListChar = text.getNextNonWhitespaceChar();
+            Expression exp = null;
+            if (possibleListChar == '[') {
+                //it's a list, yay
+                ArrayList<Expression> listInitExpressions = new ArrayList<>();
+                boolean completedList = false;
+                //get all init expressions
+                while (!completedList) {
+                    //get the expression
+                    listInitExpressions.add(compileCompleteExpression());
+                    //check for next or ending
+                    try {
+                        char nextOrEnding = text.getNextNonWhitespaceChar();
+                        if (nextOrEnding == ',') {
+                            //just continue searching
+                        } else if (nextOrEnding == ']') {
+                            completedList = true;
+                        } else {
+                            throw new CompileException("expected: , or ] found: " + nextOrEnding, text.getPosition());
+                        }
+                    } catch (ProgramTextWrapper.EndReachedException e) {
+                        throw new CompileException("expected: , or ] found: nothing", text.getPosition());
+                    }
+                }
+                exp = new CreateListExpression(listInitExpressions.toArray(Expression[]::new));
+            } else {
+                //just a normal expression
+                //reset the position
+                text.moveBackward();
+                exp = compileInternalExpression();
+            }
+            if (exp.getType().name.equals(DataType.LIST_KW)) {
+                return compileListExpression(exp);
+            }
+            else {
+                return exp;
+            }
+        } catch (ProgramTextWrapper.EndReachedException e) {
+            throw new CompileException("expected: expression, found: nothing", text.getPosition());
+        }
+    }
+
+    //check for getter
+    private Expression compileListExpression(Expression expression) throws CompileException {
+        //check for dots
+        try {
+            char possibleDot = text.getNextNonWhitespaceChar();
+            if (possibleDot == '.') {
+                try {
+                    char possibleIndex = text.getNextNonWhitespaceChar(false);
+                    if (Character.isDigit(possibleIndex)) {
+                        //get an integer
+                        try {
+                            int index = CompilerHelper.parseInt(text, false);
+                            if (index >= expression.getType().listTypes.length) {
+                                throw new CompileException("index " + index + " is out of bounds", text.getPosition());
+                            }
+                            GetterExpression getter = new GetterExpression(expression, index);
+                            if (getter.getType().name.equals(DataType.LIST_KW)) {
+                                return compileListExpression(getter);
+                            } else {
+                                return getter;
+                            }
+                        } catch (CompilerHelper.WrongTypeException e) {
+                            throw new CompileException("expected: index", text.getPosition());
+                        }
+                    } else {
+                        String identifier = text.getNextWord();
+                        TypeNamePair[] possibleIdents = expression.getType().listTypes;
+                        int index = -1;
+                        for (int x = 0; x < possibleIdents.length; x++) {
+                            if (index < 0 && possibleIdents[x].getName().equals(identifier)) {
+                                index = x;
+                            }
+                        }
+                        if (index < 0) {
+                            throw new CompileException("cannot find identifier: " + identifier, text.getPosition());
+                        } else {
+                            GetterExpression getter = new GetterExpression(expression, index);
+                            if (getter.getType().name.equals(DataType.LIST_KW)) {
+                                return compileListExpression(getter);
+                            } else {
+                                return getter;
+                            }
+                        }
+                    }
+                } catch (ProgramTextWrapper.EndReachedException e) {
+                    throw new CompileException("expected: identifier or index, found: nothing", text.getPosition());
+                }
+            } else {
+                text.moveBackward();
+                return expression;
+            }
+        } catch (ProgramTextWrapper.EndReachedException e) {
+            //do nothing, this is not the problem of this method
+            return expression;
+        }
+    }
+
+
+    //compiles a single internal expression (does NOT handle list features)
+    private Expression compileInternalExpression() throws CompileException {
         //check if there is an unary minus
         boolean unaryMinus = false;
         boolean negateBoolean = false;
         try {
-            char possibleUnaryMinus = text.getNextNonWhitespaceChar();
-            if (possibleUnaryMinus == '-') unaryMinus = true;
-            else if (possibleUnaryMinus == '!') negateBoolean = true;
+            char possibleSpecialChar = text.getNextNonWhitespaceChar();
+            if (possibleSpecialChar == '-') unaryMinus = true;
+            else if (possibleSpecialChar == '!') negateBoolean = true;
             else text.moveBackward(); //did not find an unaryMinus, so it's now the problem of the
         } catch (ProgramTextWrapper.EndReachedException e) {
             //did not find an unary minus, but did not find anything else XD
@@ -417,7 +521,7 @@ public class Compiler {
                 //it is a raw float or int, find it out with the exception
                 ProgramPosition pos = text.getPosition();
                 try {
-                    int val = CompilerHelper.parseInt(text);
+                    int val = CompilerHelper.parseInt(text, true);
                     mainExpression = new RawValueExpression<>(val, DataType.INTEGER);
                 } catch (CompilerHelper.WrongTypeException e) {
                     //it was a float
@@ -825,7 +929,7 @@ public class Compiler {
                         initExpression = new IntegerToFloatCast(initExpression);
                     //check if type is correct
                     if (!initExpression.getType().equals(DataType.fromName(firstWord)))
-                        throw new CompileException("can't assign " + initExpression.getType() + " to " + firstWord, text.getPosition());
+                        throw new CompileException("can't assign " + initExpression.getType() + " to " + DataType.fromName(firstWord), text.getPosition());
 
                 } else {
                     //the statement ends after that

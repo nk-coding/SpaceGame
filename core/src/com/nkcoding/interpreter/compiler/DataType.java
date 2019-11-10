@@ -1,5 +1,9 @@
 package com.nkcoding.interpreter.compiler;
 
+import com.nkcoding.interpreter.Expression;
+import com.nkcoding.interpreter.ListObject;
+import com.nkcoding.interpreter.StackItem;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,16 +65,22 @@ public final class DataType {
             default:
                 if (str.length() == 0) return null;
                 if (str.charAt(0) == '[') {
-                    System.out.println("str:");
-                    System.out.println(str);
-                    System.out.println("parse:");
                     DataType list = parseList(str);
-                    System.out.println(list);
                     return list;
                 } else {
                     return null;
                 }
         }
+    }
+
+    public static DataType fromExpressions(Expression[] expressions) {
+        DataType type = new DataType(LIST_KW);
+        TypeNamePair[] lt = new TypeNamePair[expressions.length];
+        for (int x = 0; x < expressions.length; x++) {
+            lt[x] = new TypeNamePair(null, expressions[x].getType());
+        }
+        type.listTypes = lt;
+        return type;
     }
 
     private static DataType parseList(String str){
@@ -82,7 +92,6 @@ public final class DataType {
 
     private static DataType parseListInternal(ArrayDeque<String> tokens){
         ArrayList<TypeNamePair> types = new ArrayList<>();
-        System.out.println("tokens: " + tokens);
         while (!tokens.isEmpty()) {
             String token = tokens.pollFirst();
             TypeNamePair type = new TypeNamePair();
@@ -139,6 +148,34 @@ public final class DataType {
         return contains(type) && !type.equals(VOID_KW);
     }
 
+    public Object getDefaultValue() {
+        switch (name) {
+            case FLOAT_KW:
+                return 0f;
+            case INTEGER_KW:
+                return 0;
+            case BOOLEAN_KW:
+                return false;
+            case STRING_KW:
+                return "";
+            case LIST_KW:
+                return createDefaultList(this);
+            default:
+                throw new IllegalStateException("cannot create alternative value");
+        }
+    }
+
+    private static ListObject createDefaultList(DataType listType) {
+        ListObject list = new ListObject(listType.listTypes.length);
+        for (int x = 0; x < listType.listTypes.length; x++)  {
+            DataType type = listType.listTypes[x].getType();
+            StackItem stackItem = new StackItem(type);
+            stackItem.setValue(type.getDefaultValue());
+            list.items[x] = stackItem;
+        }
+        return list;
+    }
+
     @Override
     public String toString() {
         return name + (name.equals(LIST_KW) ? ": " + Arrays.toString(listTypes) : "");
@@ -147,7 +184,9 @@ public final class DataType {
     @Override
     public boolean equals(Object obj) {
         if (obj.getClass().equals(DataType.class)) {
-            return name.equals(((DataType) obj).name) && Arrays.equals(listTypes, ((DataType) obj).listTypes);
+            boolean arrayEqual = Arrays.equals(listTypes, ((DataType) obj).listTypes);
+            System.out.println(toString() + " == " + obj.toString() + " " + arrayEqual);
+            return name.equals(((DataType) obj).name) && arrayEqual;
         } else {
             return false;
         }

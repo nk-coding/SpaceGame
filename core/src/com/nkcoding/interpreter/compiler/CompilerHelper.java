@@ -75,14 +75,14 @@ public class CompilerHelper {
 
     //parse an int
     //does stop on everything different that a digit except a point (there it throws a WrongTypeException)
-    public static int parseInt(ProgramTextWrapper text) throws CompileException, WrongTypeException {
+    public static int parseInt(ProgramTextWrapper text, boolean secureType) throws CompileException, WrongTypeException {
         StringBuilder sb = new StringBuilder();
         boolean endReached = false;
         while (!endReached) {
             try {
                 char c = text.getNextChar();
                 if (Character.isDigit(c)) sb.append(c);
-                else if (c == '.') throw new WrongTypeException();
+                else if (secureType && c == '.') throw new WrongTypeException();
                 else {
                     endReached = true;
                     text.moveBackward();
