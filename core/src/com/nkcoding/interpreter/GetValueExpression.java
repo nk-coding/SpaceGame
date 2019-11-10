@@ -4,27 +4,20 @@ import com.nkcoding.interpreter.compiler.DataType;
 
 public class GetValueExpression<T> implements Expression<T> {
 
-    private String name;
+    private GetStackItem getStackItem;
 
-    public String getName() {
-        return name;
-    }
-
-    private DataType type;
-
-    public GetValueExpression(String name, DataType type) {
-        this.name = name;
-        this.type = type;
+    public GetValueExpression(GetStackItem getStackItem) {
+        this.getStackItem = getStackItem;
     }
 
     @Override
     public T getResult(Stack stack) {
         //System.out.println("try get value: " + name);
-        return ((StackItem<T>) stack.getFromStack(name)).getResult(stack);
+        return (T) getStackItem.getStackItem(stack).getResult(stack);
     }
 
     @Override
     public DataType getType() {
-        return type;
+        return getStackItem.getType();
     }
 }

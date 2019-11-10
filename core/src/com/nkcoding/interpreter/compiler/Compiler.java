@@ -429,7 +429,7 @@ public class Compiler {
                             if (index >= expression.getType().listTypes.length) {
                                 throw new CompileException("index " + index + " is out of bounds", text.getPosition());
                             }
-                            GetterExpression getter = new GetterExpression(expression, index);
+                            GetValueExpression getter = new GetValueExpression(new GetListItemGet(expression, index));
                             if (getter.getType().name.equals(DataType.LIST_KW)) {
                                 return compileListExpression(getter);
                             } else {
@@ -450,7 +450,7 @@ public class Compiler {
                         if (index < 0) {
                             throw new CompileException("cannot find identifier: " + identifier, text.getPosition());
                         } else {
-                            GetterExpression getter = new GetterExpression(expression, index);
+                            GetValueExpression getter = new GetValueExpression(new GetListItemGet(expression, index));
                             if (getter.getType().name.equals(DataType.LIST_KW)) {
                                 return compileListExpression(getter);
                             } else {
@@ -554,7 +554,7 @@ public class Compiler {
                         //it must be a variable
                         if (stack.exists(exp)) {
                             //the variable exists, everything is ok
-                            mainExpression = new GetValueExpression(exp, stack.getType(exp));
+                            mainExpression = new GetValueExpression(new GetVariableItemGet(exp, stack.getType(exp)));
                         } else throw new CompileException(exp + " is no known variable or type", text.getPosition());
                     } else {
                         //it is a method
