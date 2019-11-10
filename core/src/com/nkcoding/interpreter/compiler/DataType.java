@@ -176,6 +176,27 @@ public final class DataType {
         return list;
     }
 
+    public boolean isAssignableFrom(DataType dataType) {
+        if (this.name.equals(LIST_KW)) {
+            //check for everything except the names
+            if (dataType.name.equals(LIST_KW)) {
+                if (listTypes.length == dataType.listTypes.length) {
+                    boolean allAssignable = true;
+                    for (int x = 0; x < listTypes.length; x++) {
+                        allAssignable &= listTypes[x].getType().isAssignableFrom(dataType.listTypes[x].getType());
+                    }
+                    return allAssignable;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return equals(dataType);
+        }
+    }
+
     @Override
     public String toString() {
         return name + (name.equals(LIST_KW) ? ": " + Arrays.toString(listTypes) : "");
