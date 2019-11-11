@@ -219,7 +219,6 @@ public final class DataType {
     public boolean equals(Object obj) {
         if (obj.getClass().equals(DataType.class)) {
             boolean arrayEqual = Arrays.equals(listTypes, ((DataType) obj).listTypes);
-            System.out.println(toString() + " == " + obj.toString() + " " + arrayEqual);
             return name.equals(((DataType) obj).name) && arrayEqual;
         } else {
             return false;

@@ -135,7 +135,7 @@ public class Compiler {
                 //here it really begins
                 //if it does not contain the return type, something must be wrong
                 if (!DataType.contains(returnType))
-                    throw new CompileException("Expected: return type, found : " + returnType, text.getPosition().getClone());
+                    throw new CompileException("Expected: type, found : " + returnType, text.getPosition().getClone());
                 //everything ok
                 //create a new methodDefinition
                 NormalMethodDefinition def = new NormalMethodDefinition(text.getPosition().getLine());
@@ -231,6 +231,8 @@ public class Compiler {
                             throw new CompileException("a global variable with the name " + def.getName() + " already exists", text.getPosition());
                         } else if (CompilerHelper.isReservedKeyword(def.getName())) {
                             throw new CompileException("expected: variable name found: reserved keyword", text.getPosition());
+                        } else if (def.getReturnType().name.equals(DataType.LIST_KW)) {
+                            throw new CompileException("lists are not allowed as global variables", text.getPosition());
                         }
                         //add global variable
                         stack.addToStack(def.getName(), def.getReturnType());
