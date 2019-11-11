@@ -9,8 +9,8 @@ public class ReturnValueStatement implements Statement {
 
     public ReturnValueStatement(MethodDefinition definition, Expression value) {
         if (!definition.getReturnType().equals(DataType.VOID)) {
-            assignment = new AssignmentOperation(definition.getName() + "$result", definition.getReturnType());
-            assignment.setFirstExpression(value);
+            assignment = new AssignmentOperation(new GetVariableItemGet(definition.getName() + "$result",
+                    definition.getReturnType()), definition.getReturnType(), value);
         }
     }
 

@@ -1,10 +1,7 @@
 package com.nkcoding.interpreter.compiler;
 
 
-import com.nkcoding.interpreter.Expression;
-import com.nkcoding.interpreter.FloatToIntegerCast;
-import com.nkcoding.interpreter.GetValueExpression;
-import com.nkcoding.interpreter.IntegerToFloatCast;
+import com.nkcoding.interpreter.*;
 import com.nkcoding.interpreter.operators.*;
 
 import java.util.Arrays;
@@ -170,7 +167,7 @@ public class CompilerHelper {
             //it is an assignment operation, so check if the first expression is a GetValueExpression
             if (!(exp1 instanceof GetValueExpression))
                 throw new CompileException("can only assign to a variable", pos);
-            String variableName = ((GetValueExpression) exp1).getName();
+            GetStackItem getItem = ((GetValueExpression) exp1).getGetStackItem();
             //correct type if possible
             switch (exp1.getType().name) {
                 case DataType.INTEGER_KW:
@@ -189,13 +186,13 @@ public class CompilerHelper {
                 case AddAssign:
                     switch (exp1.getType().name) {
                         case DataType.FLOAT_KW:
-                            binaryOperation = new AddAssignmentFloatOperation(variableName);
+                            binaryOperation = new AddFloatOperation();
                             break;
                         case DataType.INTEGER_KW:
-                            binaryOperation = new AddAssignmentIntegerOperation(variableName);
+                            binaryOperation = new AddIntegerOperation();
                             break;
                         case DataType.STRING_KW:
-                            binaryOperation = new AddAssignmentStringOperation(variableName);
+                            binaryOperation = new AddStringOperation();
                             break;
                         default:
                             throw new CompileException("you can't use this operator with a " + exp1.getType(), pos);
@@ -204,10 +201,10 @@ public class CompilerHelper {
                 case SubtractAssign:
                     switch (exp1.getType().name) {
                         case DataType.FLOAT_KW:
-                            binaryOperation = new SubtractAssignmentFloatOperation(variableName);
+                            binaryOperation = new SubtractFloatOperation();
                             break;
                         case DataType.INTEGER_KW:
-                            binaryOperation = new SubtractAssignmentIntegerOperation(variableName);
+                            binaryOperation = new SubtractIntegerOperation();
                             break;
                         default:
                             throw new CompileException("you can't use this operator with a " + exp1.getType(), pos);
@@ -216,10 +213,10 @@ public class CompilerHelper {
                 case MultiplyAssign:
                     switch (exp1.getType().name) {
                         case DataType.FLOAT_KW:
-                            binaryOperation = new MultiplyAssignmentFloatOperation(variableName);
+                            binaryOperation = new MultiplyFloatOperation();
                             break;
                         case DataType.INTEGER_KW:
-                            binaryOperation = new MultiplyAssignmentIntegerOperation(variableName);
+                            binaryOperation = new MultiplyIntegerOperation();
                             break;
                         default:
                             throw new CompileException("you can't use this operator with a " + exp1.getType(), pos);
@@ -228,10 +225,10 @@ public class CompilerHelper {
                 case DivideAssign:
                     switch (exp1.getType().name) {
                         case DataType.FLOAT_KW:
-                            binaryOperation = new DivideAssignmentFloatOperation(variableName);
+                            binaryOperation = new DivideFloatOperation();
                             break;
                         case DataType.INTEGER_KW:
-                            binaryOperation = new DivideAssignmentIntegerOperation(variableName);
+                            binaryOperation = new DivideIntegerOperation();
                             break;
                         default:
                             throw new CompileException("you can't use this operator with a " + exp1.getType(), pos);
@@ -240,24 +237,25 @@ public class CompilerHelper {
                 case ModAssign:
                     switch (exp1.getType().name) {
                         case DataType.FLOAT_KW:
-                            binaryOperation = new ModAssignmentFloatOperation(variableName);
+                            binaryOperation = new ModFloatOperation();
                             break;
                         case DataType.INTEGER_KW:
-                            binaryOperation = new ModAssignmentIntegerOperation(variableName);
+                            binaryOperation = new ModIntegerOperation();
                             break;
                         default:
                             throw new CompileException("you can't use this operator with a " + exp1.getType(), pos);
                     }
                     break;
                 case Assignment:
-                    AssignmentOperation assignmentOperation = new AssignmentOperation(variableName, exp1.getType());
+                    AssignmentOperation assignmentOperation = new AssignmentOperation(getItem, exp1.getType());
                     assignmentOperation.setFirstExpression(exp2);
                     return assignmentOperation;
 
             }
             binaryOperation.setFirstExpression(exp1);
             binaryOperation.setSecondExpression(exp2);
-            return binaryOperation;
+            AssignmentOperation assignOperation = new AssignmentOperation(getItem, binaryOperation.getType(), binaryOperation);
+            return assignOperation;
         } else {
             //correct the type if possible
             if (exp1.getType().equals(DataType.INTEGER) && exp2.getType().equals(DataType.FLOAT))

@@ -1,7 +1,9 @@
 package com.nkcoding.interpreter.compiler;
 
 import com.nkcoding.interpreter.*;
-import com.nkcoding.interpreter.operators.*;
+import com.nkcoding.interpreter.operators.NegateBooleanOperation;
+import com.nkcoding.interpreter.operators.NegateFloatOperation;
+import com.nkcoding.interpreter.operators.NegateIntegerOperation;
 import com.nkcoding.spacegame.spaceship.ComponentType;
 import com.nkcoding.spacegame.spaceship.ExternalPropertyData;
 import com.nkcoding.spacegame.spaceship.ShipDef;
@@ -55,7 +57,7 @@ public class Compiler {
         for (ExternalPropertyData data : externalPropertyDatas.values()) {
             data.addExternalMethodDefs(methodDefinitions);
         }
-        String lines[] = text.split("\\r?\\n");
+        String[] lines = text.split("\\r?\\n");
 
         this.text = new ProgramTextWrapper(lines);
         methods = new Methods();
@@ -443,7 +445,7 @@ public class Compiler {
                         TypeNamePair[] possibleIdents = expression.getType().listTypes;
                         int index = -1;
                         for (int x = 0; x < possibleIdents.length; x++) {
-                            if (index < 0 && possibleIdents[x].getName().equals(identifier)) {
+                            if (index < 0 && identifier.equals(possibleIdents[x].getName())) {
                                 index = x;
                             }
                         }
@@ -600,16 +602,12 @@ public class Compiler {
             //check if mainExpression is of correct type
             switch (mainExpression.getType().name) {
                 case DataType.INTEGER_KW:
-                    AddAssignmentIntegerOperation aaio = new AddAssignmentIntegerOperation(getValueExpression.getName());
-                    aaio.setFirstExpression((Expression<Integer>) mainExpression);
-                    aaio.setSecondExpression(new RawValueExpression<Integer>(plusPostfix ? 1 : -1, DataType.INTEGER));
-                    mainExpression = aaio;
+                    mainExpression = CompilerHelper.useOperator(getValueExpression,
+                            new RawValueExpression<Integer>(plusPostfix ? 1 : -1, DataType.INTEGER), OperatorType.AddAssign, null);
                     break;
                 case DataType.FLOAT_KW:
-                    AddAssignmentFloatOperation aado = new AddAssignmentFloatOperation(getValueExpression.getName());
-                    aado.setFirstExpression((Expression<Float>) mainExpression);
-                    aado.setSecondExpression(new RawValueExpression<Float>(plusPostfix ? 1f : -1f, DataType.FLOAT));
-                    mainExpression = aado;
+                    mainExpression = CompilerHelper.useOperator(getValueExpression,
+                            new RawValueExpression<Float>(plusPostfix ? 1f : -1f, DataType.FLOAT), OperatorType.AddAssign, null);
                     break;
                 default:
                     throw new CompileException("type mismatch: expected: int or float found: " + mainExpression.getType(), text.getPosition());
@@ -928,7 +926,7 @@ public class Compiler {
                     else if (firstWord.equals(DataType.FLOAT_KW) && initExpression.getType().equals(DataType.INTEGER))
                         initExpression = new IntegerToFloatCast(initExpression);
                     //check if type is correct
-                    if (!initExpression.getType().equals(DataType.fromName(firstWord)))
+                    if (!initExpression.getType().isAssignableFrom(DataType.fromName(firstWord)))
                         throw new CompileException("can't assign " + initExpression.getType() + " to " + DataType.fromName(firstWord), text.getPosition());
 
                 } else {
