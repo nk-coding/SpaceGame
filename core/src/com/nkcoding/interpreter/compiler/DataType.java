@@ -136,8 +136,17 @@ public final class DataType {
     }
 
     public static boolean contains(String type) {
+        return contains(type, false);
+    }
+
+    public static boolean contains(String type, boolean uninit) {
         try {
-            return fromName(type) != null;
+            DataType returnType = fromName(type);
+            if (uninit) {
+                return returnType != null;
+            } else {
+                return returnType != null && returnType.isInit;
+            }
         } catch (IllegalArgumentException e) {
             return false;
         }
@@ -149,11 +158,7 @@ public final class DataType {
     }
 
     public static boolean containsDataType(String type, boolean uninit) {
-        if (uninit) {
-            return contains(type) && !type.equals(VOID_KW);
-        } else {
-            return contains(type) && !type.equals(VOID_KW) && !type.equals(LIST_KW);
-        }
+        return contains(type, uninit) && !type.equals(VOID_KW);
     }
 
     public Object getDefaultValue() {
