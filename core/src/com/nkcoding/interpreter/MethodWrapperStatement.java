@@ -54,9 +54,21 @@ public class MethodWrapperStatement<T> implements Statement, Expression<T> {
             //that's ok
         }
         //save the result
-        T result = (type.equals(DataType.VOID)) ? null : ((StackItem<T>) stack.getFromStack(name + "$result")).getResult(stack);
+        Object result;
+        if (type.equals(DataType.VOID)) {
+            result = null;
+        } else {
+            StackItem stackItem = stack.getFromStack(name + "$result");
+            if (stackItem != null) {
+                result = stackItem.getResult(stack);
+            } else {
+                //shame on this wrong implemented method...
+                //but it's way to complecated to check for this in the compiler
+                result = type.getDefaultValue();
+            }
+        }
         stack.clearStackLevel();
-        return result;
+        return (T) result;
     }
 
     @Override
