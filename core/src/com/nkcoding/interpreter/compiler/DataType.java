@@ -145,7 +145,15 @@ public final class DataType {
 
     //check if it contains datatype
     public static boolean containsDataType(String type) {
-        return contains(type) && !type.equals(VOID_KW);
+        return containsDataType(type, false);
+    }
+
+    public static boolean containsDataType(String type, boolean uninit) {
+        if (uninit) {
+            return contains(type) && !type.equals(VOID_KW);
+        } else {
+            return contains(type) && !type.equals(VOID_KW) && !type.equals(LIST_KW);
+        }
     }
 
     public Object getDefaultValue() {

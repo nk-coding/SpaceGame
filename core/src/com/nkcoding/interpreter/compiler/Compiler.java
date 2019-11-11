@@ -897,7 +897,7 @@ public class Compiler {
                 //everything is ok, return the expression
                 return new ReturnValueStatement(actualMethod, assignToReturn);
             }
-        } else if (DataType.containsDataType(firstWord)) {
+        } else if (DataType.containsDataType(firstWord, true)) {
             //it is a declaration of a variable
             //check if this is allowed here
             if (!allowsDeclaration)
@@ -911,8 +911,7 @@ public class Compiler {
             if (CompilerHelper.isReservedKeyword(variableName))
                 throw new CompileException("reserved keyword", text.getPosition());
             //add variable
-            //System.out.println("add to stack: " + variableName + ", " + firstWord);
-            stack.addToStack(variableName, DataType.fromName(firstWord));
+            DataType type = DataType.fromName(firstWord);
             //check if it ends here or if there is an init
             Expression initExpression = null;
             try {
@@ -920,22 +919,35 @@ public class Compiler {
                 if (possibleAssignment == '=') {
                     //it is an assignment
                     initExpression = compileCompleteExpression();
+                    //check if it is init
+                    if (!type.isInit) {
+                        if (initExpression.getType().name.equals(DataType.LIST_KW)) {
+                            type = initExpression.getType();
+                        } else {
+                            throw new CompileException("can't assign " + initExpression.getType() + " to " + DataType.fromName(firstWord), text.getPosition());
+                        }
+                    }
                     //correct type if possible
                     if (firstWord.equals(DataType.INTEGER_KW) && initExpression.getType().equals(DataType.FLOAT))
                         initExpression = new FloatToIntegerCast(initExpression);
                     else if (firstWord.equals(DataType.FLOAT_KW) && initExpression.getType().equals(DataType.INTEGER))
                         initExpression = new IntegerToFloatCast(initExpression);
                     //check if type is correct
-                    if (!initExpression.getType().isAssignableFrom(DataType.fromName(firstWord)))
+                    if (!initExpression.getType().isAssignableFrom(type))
                         throw new CompileException("can't assign " + initExpression.getType() + " to " + DataType.fromName(firstWord), text.getPosition());
 
                 } else {
                     //the statement ends after that
                     text.moveBackward();
+                    if (!type.isInit) {
+                        throw new CompileException("cannot interfere list type", text.getPosition());
+                    }
                 }
             } catch (ProgramTextWrapper.EndReachedException e) {
                 //this is no problem here (in reality it will be a problem, but not of this method)
             }
+            //add variable
+            stack.addToStack(variableName, type);
             //everything is correct, create and return the correct statement
             DefineValueStatement define = new DefineValueStatement(DataType.fromName(firstWord));
             define.setName(variableName);
