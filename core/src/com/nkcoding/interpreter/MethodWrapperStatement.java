@@ -59,11 +59,9 @@ public class MethodWrapperStatement<T> implements Statement, Expression<T> {
             result = null;
         } else {
             StackItem stackItem = stack.getFromStack(name + "$result");
-            if (stackItem != null) {
-                result = stackItem.getResult(stack);
-            } else {
-                //shame on this wrong implemented method...
-                //but it's way to complecated to check for this in the compiler
+            result = stackItem.getResult(stack);
+            if (result == null) {
+                //shame on this wrong implemented method
                 result = type.getDefaultValue();
             }
         }
