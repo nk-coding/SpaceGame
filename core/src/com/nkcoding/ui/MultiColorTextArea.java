@@ -751,10 +751,14 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
                 System.out.println("TAB");
                 paste("   ", true, true);
                 return true;
-            }
-            //stop if necessary
-            if (character == ')') {
+            } else if (character == ')') {
                 boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == ')';
+                if (endBracketExists) {
+                    moveCursor(true, false);
+                    return true;
+                }
+            } else if (character == ']') {
+                boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == ']';
                 if (endBracketExists) {
                     moveCursor(true, false);
                     return true;
@@ -763,7 +767,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
             //every other character
             int lineNumber = getCursorLine();
             boolean result = super.keyTyped(event, character);
-            showCursor(); //this always produces serious errors, I don't know why I can do this now
+            showCursor(); //this always produced serious errors, I don't know why I can do this now
 
             if (result) {
                 switch (character) {
@@ -789,6 +793,9 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
                         break;
                     case '(':
                         paste(")", false, false);
+                        break;
+                    case '[':
+                        paste("]", false, false);
                         break;
                 }
             }

@@ -89,8 +89,7 @@ public class Compiler {
             normalMethods[x] = new MethodStatement(methodDefinitions.get(x));
         }
         methods.setNormalMethods(normalMethods);
-        //I can't believe I reached this point
-        boolean completed = false;
+
         for (int x = 0; x < normalMethods.length; x++) {
             try {
                 text.skipUntil(true, '{');

@@ -557,7 +557,9 @@ public class ShipBuilderScreen implements Screen {
         compiler.update(codeEditor.getText().split("\\r?\\n"));
         try {
             errorLog.setText("");
+            long start = System.nanoTime();
             methods = compiler.compile().methods;
+            System.out.println("compile time: " + (System.nanoTime() - start) / 1000000.0 + "ms");
             if (updateMethodsMap) {
                 //update the map, update references and remove old ones
                 methodPositions.clear();
