@@ -174,6 +174,9 @@ public class ShipBuilderScreen implements Screen {
         propertyBoxStyle.labelStyle = labelStyleSmall;
         propertyBoxStyle.spacing = 10f;
 
+        //CodeEditor
+        CodeEditor.CodeEditorStyle codeEditorStyle = new CodeEditor.CodeEditorStyle(textFieldStyle, scrollPaneStyle, new ScriptColorParser());
+
         //endregion
 
 
@@ -382,7 +385,7 @@ public class ShipBuilderScreen implements Screen {
 
         //region code editor ui
 
-        codeEditor = new CodeEditor(textFieldStyle, scrollPaneStyle, new ScriptColorParser());
+        codeEditor = new CodeEditor(codeEditorStyle);
         codeEditor.setText(shipDef.code);
 
         codeRootTable = new Table();

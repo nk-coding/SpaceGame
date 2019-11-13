@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 
@@ -39,7 +40,7 @@ public class CodeEditor extends WidgetGroup {
     /**
      * style for the MultiColorTextArea
      */
-    private TextField.TextFieldStyle textFieldStyle;
+    private CodeEditorStyle codeEditorStyle;
 
     private final Color lineNumberColor = new Color(0x808080ff);
     private final Color highlightLineNumberColor = new Color(0xffffffff);
@@ -49,23 +50,20 @@ public class CodeEditor extends WidgetGroup {
     private int maxLineNumberCharCount = 0;
 
     /**
-     * the default constructor
-     *
-     * @param textFieldStyle  the style for the <code>MultiColorTextArea</code> which shows the code in this control
-     * @param scrollPaneStyle the style for the <code>ScrollPane</code> used to scroll the code
-     * @param codeParser      used to color-format the code
+     * default constructor
+     * @param codeEditorStyle the style for this control
      */
-    public CodeEditor(TextField.TextFieldStyle textFieldStyle, ScrollPane.ScrollPaneStyle scrollPaneStyle, ColorParser codeParser) {
-        this.textFieldStyle = textFieldStyle;
-        codeTextArea = new MultiColorTextArea("//you can write your code here", textFieldStyle);
-        codeScrollPane = new ScrollPane(codeTextArea, scrollPaneStyle);
-        //st attributes on ScrollPane
+    public CodeEditor(CodeEditorStyle codeEditorStyle) {
+        this.codeEditorStyle = codeEditorStyle;
+        codeTextArea = new MultiColorTextArea("//you can write your code here", codeEditorStyle.createTextFieldStyle());
+        codeScrollPane = new ScrollPane(codeTextArea, codeEditorStyle.createScrollPaneStyle());
+        //set attributes on ScrollPane
         codeScrollPane.setFadeScrollBars(false);
         if (Gdx.app.getType() != Application.ApplicationType.Android) codeScrollPane.setFlickScroll(false);
 
         super.addActor(codeScrollPane);
-        codeTextArea.setColorParser(codeParser);
-        font = textFieldStyle.font;
+        codeTextArea.setColorParser(codeEditorStyle.colorParser);
+        font = this.codeEditorStyle.font;
         font.setFixedWidthGlyphs("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~* ");
 
         //init the char size
@@ -106,7 +104,7 @@ public class CodeEditor extends WidgetGroup {
         if (ScissorStack.pushScissors(scissors)) {
             //draw line numbers
             float lineHight = font.getLineHeight();
-            float offset = -font.getLineHeight() * codeTextArea.firstLineShowing + codeScrollPane.getVisualScrollY() + numbersAreaClip.height - textFieldStyle.background.getTopHeight();
+            float offset = -font.getLineHeight() * codeTextArea.firstLineShowing + codeScrollPane.getVisualScrollY() + numbersAreaClip.height - codeEditorStyle.background.getTopHeight();
             int drawUntil = Math.max(codeTextArea.linesShowing, 1);
             if (codeTextArea.getLines() < codeTextArea.firstLineShowing + codeTextArea.linesShowing)
                 drawUntil = codeTextArea.getLines() - codeTextArea.firstLineShowing;
@@ -181,6 +179,47 @@ public class CodeEditor extends WidgetGroup {
      * moves the scrollPane to a specific position
      */
     public void moveTo(int line) {
-        codeScrollPane.scrollTo(0, codeTextArea.getPrefHeight() - textFieldStyle.font.getLineHeight() * line, 0, 0);
+        codeScrollPane.scrollTo(0, codeTextArea.getPrefHeight() - codeEditorStyle.font.getLineHeight() * line, 0, 0);
+    }
+
+    public static class CodeEditorStyle extends TextField.TextFieldStyle {
+        public ColorParser colorParser;
+
+        public Drawable corner;
+
+        public Drawable hScroll;
+
+        public Drawable hScrollKnob;
+
+        public Drawable vScroll;
+
+        public Drawable vScrollKnob;
+
+        public CodeEditorStyle(BitmapFont font, Color fontColor, Drawable cursor, Drawable selection, Drawable background, ColorParser colorParser) {
+            super(font, fontColor, cursor, selection, background);
+            this.colorParser = colorParser;
+        }
+
+        public CodeEditorStyle(TextField.TextFieldStyle textFieldStyle, ScrollPane.ScrollPaneStyle scrollPaneStyle, ColorParser colorParser) {
+            super(textFieldStyle);
+            this.colorParser = colorParser;
+            this.corner = scrollPaneStyle.corner;
+            this.hScroll = scrollPaneStyle.hScroll;
+            this.hScrollKnob = scrollPaneStyle.hScrollKnob;
+            this.vScroll = scrollPaneStyle.vScroll;
+            this.vScrollKnob = scrollPaneStyle.vScrollKnob;
+        }
+
+        private ScrollPane.ScrollPaneStyle createScrollPaneStyle() {
+            ScrollPane.ScrollPaneStyle style = new ScrollPane.ScrollPaneStyle(background, hScroll, hScrollKnob, vScroll, vScrollKnob);
+            style.corner = corner;
+            return style;
+        }
+
+        private TextField.TextFieldStyle createTextFieldStyle() {
+            TextField.TextFieldStyle style = new TextField.TextFieldStyle(this);
+            style.background = null;
+            return style;
+        }
     }
 }
