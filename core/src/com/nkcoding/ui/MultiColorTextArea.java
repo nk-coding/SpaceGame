@@ -638,6 +638,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
             ScrollPane scrollPane = (ScrollPane) getParent();
             float posX = getCursorX();
             //just a hack, but it works fine
+            //it is necessary, because of some really weired behaviour
             if (posX > 0) {
                 if (posX > scrollPane.getScrollWidth() / 2) posX += 10;
                 else if (posX < 100) posX = 0;
@@ -767,7 +768,6 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
             //every other character
             int lineNumber = getCursorLine();
             boolean result = super.keyTyped(event, character);
-            showCursor(); //this always produced serious errors, I don't know why I can do this now
 
             if (result) {
                 switch (character) {
@@ -799,6 +799,9 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
                         break;
                 }
             }
+
+            showCursor(); //this always produced serious errors, I don't know why I can do this now
+
 
             return result;
         }
