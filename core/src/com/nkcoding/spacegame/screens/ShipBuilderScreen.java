@@ -148,12 +148,12 @@ public class ShipBuilderScreen implements Screen {
         ZoomScrollPane.ZoomScrollPaneStyle zoomScrollPaneStyle = new ZoomScrollPane.ZoomScrollPaneStyle(scrollPaneStyle);
 
         //Label
-        Label.LabelStyle labelStyleSmall = new Label.LabelStyle(assetManager.getBitmapFont(Asset.Consolas_18), new Color(0xffffffff));
-        Label.LabelStyle labelStyleBig = new Label.LabelStyle(assetManager.getBitmapFont(Asset.Consolas_32), new Color(0xffffffff));
+        Label.LabelStyle labelStyleSmall = new Label.LabelStyle(assetManager.getBitmapFont(Asset.Inconsolata_18), new Color(0xffffffff));
+        Label.LabelStyle labelStyleBig = new Label.LabelStyle(assetManager.getBitmapFont(Asset.Inconsolata_32), new Color(0xffffffff));
 
         //TextField
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-        textFieldStyle.font = assetManager.getBitmapFont(Asset.Consolas_18);
+        textFieldStyle.font = assetManager.getBitmapFont(Asset.Inconsolata_18);
         textFieldStyle.fontColor = new Color(0xffffffff);
         textFieldStyle.cursor = assetManager.getDrawable(Asset.Cursor);
         textFieldStyle.selection = assetManager.getDrawable(Asset.Selection);
