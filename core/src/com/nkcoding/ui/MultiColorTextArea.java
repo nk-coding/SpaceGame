@@ -38,13 +38,14 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class MultiColorTextArea extends TextFieldBase implements ColorParserHandler, Cullable {
 
     /**
      * Array storing lines breaks positions
      **/
-    IntArray linesBreak;
+    private IntArray linesBreak;
 
     /**
      * Last text processed. This attribute is used to avoid unnecessary computations while calculating offsets
@@ -54,7 +55,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     /**
      * Current line for the cursor
      **/
-    int cursorLine;
+    private int cursorLine;
 
     /**
      * Index of the first line showed by the text area
@@ -79,7 +80,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     /**
      * Variable to maintain the x offset of the cursor when moving up and down. If it's set to -1, the offset is reset
      **/
-    float moveOffset;
+    private float moveOffset;
 
     private float prefRows;
 
@@ -607,6 +608,27 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         colors.add(color);
     }
 
+    /**
+     * can be overwritten if necessary
+     * is called before the text is changed
+     * warning: is also called if the character is no legal char
+     * @param event the corresponding input event
+     * @param character the typed char
+     */
+    public Optional<Boolean> preInput(InputEvent event, char character) {
+        return Optional.empty();
+    }
+
+    /**
+     * can be overwritten if necessary
+     * is called after the text is changed
+     * @param event the corresponding input event
+     * @param character the typed char
+     */
+    public void postInput(InputEvent event, char character) {
+
+    }
+
     private void clearColors() {
         colorAreas.clear();
         colors.clear();
@@ -649,7 +671,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     }
 
     //helper methods for manipulating the text based on the input
-    private String getTextLine(int line) {
+    protected String getTextLine(int line) {
         //special case newLineAtEnd
         if (linesBreak.size == 2 * line) return "";
         if (linesBreak.size < 2 * line) throw new IllegalArgumentException("line is too high");
@@ -667,7 +689,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     }
 
     //calculates the amount of space chars at the beginning of a String
-    private int calculateSpaceChars(String str) {
+    protected int calculateSpaceChars(String str) {
         int x = 0;
         while (str.length() > x && str.charAt(x) == ' ') x++;
         return x;
@@ -747,62 +769,19 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
 
         @Override
         public boolean keyTyped(InputEvent event, char character) {
-            //correct tab
-            if (character == '\t') {
-                System.out.println("TAB");
-                paste("   ", true, true);
-                return true;
-            } else if (character == ')') {
-                boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == ')';
-                if (endBracketExists) {
-                    moveCursor(true, false);
-                    return true;
-                }
-            } else if (character == ']') {
-                boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == ']';
-                if (endBracketExists) {
-                    moveCursor(true, false);
-                    return true;
-                }
-            }
+            //preInput
+            Optional<Boolean> res = preInput(event, character);
+            if (res.isPresent()) return res.get();
+
             //every other character
-            int lineNumber = getCursorLine();
             boolean result = super.keyTyped(event, character);
 
+            //postInput
             if (result) {
-                switch (character) {
-                    case '{':
-                        paste("}", false, false);
-                        break;
-                    case ENTER_ANDROID:
-                    case ENTER_DESKTOP:
-                        //region
-                        String lastLine = getTextLine(lineNumber);
-                        int spaces = calculateSpaceChars(lastLine);
-                        //determine if it was after a '{'
-                        if (getCursorPosition() > 1 && text.charAt(getCursorPosition() - 2) == '{') {
-                            //check if there is a end bracket
-                            boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == '}';
-                            paste(" ".repeat(spaces + 3), false, true);
-                            if (endBracketExists) paste("\n" + " ".repeat(spaces), false, false);
-                        } else {
-                            // just a normal new line
-                            paste(" ".repeat(spaces), false, true);
-                        }
-                        //endregion
-                        break;
-                    case '(':
-                        paste(")", false, false);
-                        break;
-                    case '[':
-                        paste("]", false, false);
-                        break;
-                }
+                postInput(event, character);
             }
 
             showCursor(); //this always produced serious errors, I don't know why I can do this now
-
-
             return result;
         }
 

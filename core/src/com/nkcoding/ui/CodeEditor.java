@@ -7,12 +7,15 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
+
+import java.util.Optional;
 
 
 public class CodeEditor extends WidgetGroup {
@@ -55,7 +58,62 @@ public class CodeEditor extends WidgetGroup {
      */
     public CodeEditor(CodeEditorStyle codeEditorStyle) {
         this.codeEditorStyle = codeEditorStyle;
-        codeTextArea = new MultiColorTextArea("//you can write your code here", codeEditorStyle.createTextFieldStyle());
+        codeTextArea = new MultiColorTextArea("//you can write your code here", codeEditorStyle.createTextFieldStyle()) {
+            @Override
+            public Optional<Boolean> preInput(InputEvent event, char character) {
+                //correct tab
+                if (character == '\t') {
+                    System.out.println("TAB");
+                    paste("   ", true, true);
+                    return Optional.of(true);
+                } else if (character == ')') {
+                    boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == ')';
+                    if (endBracketExists) {
+                        moveCursor(true, false);
+                        return Optional.of(true);
+                    }
+                } else if (character == ']') {
+                    boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == ']';
+                    if (endBracketExists) {
+                        moveCursor(true, false);
+                        return Optional.of(true);
+                    }
+                }
+                return Optional.empty();
+            }
+
+            @Override
+            public void postInput(InputEvent event, char character) {
+                switch (character) {
+                    case '{':
+                        paste("}", false, false);
+                        break;
+                    case ENTER_ANDROID:
+                    case ENTER_DESKTOP:
+                        //region
+                        String lastLine = getTextLine(getCursorLine());
+                        int spaces = calculateSpaceChars(lastLine);
+                        //determine if it was after a '{'
+                        if (getCursorPosition() > 1 && text.charAt(getCursorPosition() - 2) == '{') {
+                            //check if there is a end bracket
+                            boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == '}';
+                            paste(" ".repeat(spaces + 3), false, true);
+                            if (endBracketExists) paste("\n" + " ".repeat(spaces), false, false);
+                        } else {
+                            // just a normal new line
+                            paste(" ".repeat(spaces), false, true);
+                        }
+                        //endregion
+                        break;
+                    case '(':
+                        paste(")", false, false);
+                        break;
+                    case '[':
+                        paste("]", false, false);
+                        break;
+                }
+            }
+        };
         codeScrollPane = new ScrollPane(codeTextArea, codeEditorStyle.createScrollPaneStyle());
         //set attributes on ScrollPane
         codeScrollPane.setFadeScrollBars(false);
