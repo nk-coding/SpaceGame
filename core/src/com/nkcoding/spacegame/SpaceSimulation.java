@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
-import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.spacegame.spaceship.ExternalPropertyHandler;
 import com.nkcoding.spacegame.spaceship.Simulated;
 
@@ -184,25 +183,7 @@ public class SpaceSimulation implements InputProcessor {
             //complete future manually if none of the simulateds completed it
             if (!future.isDone()) {
                 System.out.println("no module completed " + future.toString());
-                switch (future.getType().name) {
-                    case DataType.BOOLEAN_KW:
-                        future.complete(false);
-                        break;
-                    case DataType.FLOAT_KW:
-                        future.complete(0f);
-                        break;
-                    case DataType.INTEGER_KW:
-                        future.complete(0);
-                        break;
-                    case DataType.STRING_KW:
-                        future.complete("");
-                        break;
-                    case DataType.VOID_KW:
-                        future.complete(null);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("unknown DataType " + future.getType());
-                }
+                future.complete(future.getType().getDefaultValue());
             }
         }
         //call step on the world
