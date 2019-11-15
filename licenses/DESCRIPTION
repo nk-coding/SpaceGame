@@ -1,8 +1,8 @@
 copyright for specific files:
 core/src/ui/TextFieldBase.java: modified version under GPL 2.0, original version copyright see AUTHORS file
 core/src/ui/MultiColorTextArea.java: modified version under GPL 2.0, original version copyright see AUTHORS file
-core/assets/fonts/inconsolata_18.png: modified version under OFL, original version copyright see OFL.txt
-core/assets/fonts/inconsolata_32.png: modified version under OFL, original version copyright see OFL.txt
+core/assets/fonts/sourceCodePro_18.png: modified version under OFL, original version copyright see OFL.txt
+core/assets/fonts/sourceCodePro_32.png: modified version under OFL, original version copyright see OFL.txt
 core/assets/ui/saveSymbol.png: modified version under GPL 2.0, original version copyright see https://github.com/google/material-design-icons
 core/assets/ui/okSymbol.png: modified version under GPL 2.0, original version copyright see https://github.com/google/material-design-icons
 core/assets/ui/rotateSymbol.png: modified version under  Creative Commons Attribution-Share Alike 3.0 Unported
@@ -18,7 +18,7 @@ core/assets/ui/errorSymbol.png: modified version under MIT, based on original ve
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
     The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
     The Software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the Software or the use or other dealings in the Software.
-everything else is under
+everything else is under MIT licence
 Copyright 2019 Niklas Krieger
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
     The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.

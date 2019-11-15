@@ -2,8 +2,8 @@ package com.nkcoding.spacegame;
 
 public enum Asset {
     //fonts
-    Inconsolata_18("fonts/inconsolata_18.fnt"),
-    Inconsolata_32("fonts/inconsolata_32.fnt"),
+    SourceCodePro_18("fonts/sourceCodePro_18.fnt"),
+    SourceCodePro_32("fonts/sourceCodePro_32.fnt"),
 
     //textures
     //game
@@ -12,6 +12,7 @@ public enum Asset {
     PowerCore("textures/game/powerCore.png"),
     Bullet("textures/game/bullet.png"),
     VerySimpleExplosion("textures/game/verySimpleExplosion.png"),
+    StarBackground("textures/game/starBackground.png"),
     //others
     Numbers("textures/other/numbers.png"),
     //ui

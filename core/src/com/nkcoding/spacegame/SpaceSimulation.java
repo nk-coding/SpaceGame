@@ -17,46 +17,45 @@ import java.util.Iterator;
 import java.util.List;
 
 public class SpaceSimulation implements InputProcessor {
-    public static final float SCALE_FACTOR = 350f;
-    public static final float TILE_SIZE = 0.5f;
+    public static final float TILE_SIZE = 5f;
 
-    //list with all simulateds
+    // list with all simulateds
     private final SnapshotArray<Simulated> simulateds = new SnapshotArray<>();
 
-    //list with all simulated that receive key events
+    // list with all simulated that receive key events
     private final ArrayList<Simulated> keyHandlers = new ArrayList<>();
 
-    //map with all objects that can receive futures
+    // map with all objects that can receive futures
     private final HashMap<String, ExternalPropertyHandler> propertyHandlers = new HashMap<>();
 
-    //handles all the ExternalPropertyHandlers
+    // handles all the ExternalPropertyHandlers
     private ScriptingEngine scriptingEngine;
 
     public ScriptingEngine getScriptingEngine() {
         return scriptingEngine;
     }
 
-    //AssetManager to load the resources
+    // AssetManager to load the resources
     private final ExtAssetManager assetManager;
 
     public ExtAssetManager getAssetManager() {
         return assetManager;
     }
 
-    //camera to draw stuff correctly
+    // camera to draw stuff correctly
     private OrthographicCamera camera;
 
-    //tiles that must be drawn
+    // tiles that must be drawn
     List<int[]> tilesToDraw = new ArrayList<>();
 
-    //set from resize, necessary for camera
+    // set from resize, necessary for camera
     private int width, height;
 
-    //center pos and radius, necessary for improved drawing
+    // center pos and radius, necessary for improved drawing
     private Vector2 centerPos;
     private float radius, scaledRadius;
 
-    //Simulated that the camera should follow
+    // Simulated that the camera should follow
     private Simulated cameraSimulated;
 
     public Simulated getCameraSimulated() {
@@ -69,24 +68,24 @@ public class SpaceSimulation implements InputProcessor {
         this.cameraSimulated = cameraSimulated;
     }
 
-    //DEBUG
+    // DEBUG
     private Box2DDebugRenderer debugRenderer;
 
-    //World for Box2D
-    //this is the physics simulation
+    // World for Box2D
+    // this is the physics simulation
     private final World world;
 
     public World getWorld() {
         return world;
     }
 
-    //constructor
+    // constructor
     public SpaceSimulation(SpaceGame spaceGame) {
-        //set Batch and assetManager
+        // set Batch and assetManager
         assetManager = spaceGame.getAssetManager();
-        //init scriptingEngine
+        // init scriptingEngine
         scriptingEngine = new ScriptingEngine();
-        //init the world
+        // init the world
         world = new World(new Vector2(0, 0), true);
         world.setContactListener(new ContactListener() {
             @Override
@@ -115,7 +114,7 @@ public class SpaceSimulation implements InputProcessor {
 
             }
         });
-        //init camera
+        // init camera
         this.camera = new OrthographicCamera();
         debugRenderer = new Box2DDebugRenderer();
     }
@@ -169,38 +168,37 @@ public class SpaceSimulation implements InputProcessor {
         }
     }
 
-
-    //calls act on all Simulateds
-    //deals with ExternalMethodFutures
+    // calls act on all Simulateds
+    // deals with ExternalMethodFutures
     public void act(float time) {
-        //handle all external Methods
+        // handle all external Methods
         while (!scriptingEngine.getFutureQueue().isEmpty()) {
             ExternalMethodFuture future = scriptingEngine.getFutureQueue().poll();
             ExternalPropertyHandler handler = propertyHandlers.get(future.getParameters()[0]);
             if (handler != null) {
                 handler.handleExternalMethod(future);
             }
-            //complete future manually if none of the simulateds completed it
+            // complete future manually if none of the simulateds completed it
             if (!future.isDone()) {
                 System.out.println("no module completed " + future.toString());
                 future.complete(future.getType().getDefaultValue());
             }
         }
-        //call step on the world
+        // call step on the world
         world.step(time, 6, 2);
         for (Simulated simulated : simulateds) {
-            //call act on simulateds
+            // call act on simulateds
             simulated.act(time);
         }
-        //update the camera
+        // update the camera
         updateCamera();
     }
 
     public void draw(Batch batch) {
-        //update the batch
+        // update the batch
         batch.setProjectionMatrix(camera.combined);
-        //debugRenderer.render(world, batch.getProjectionMatrix().cpy());
-        //draw simulateds
+        // debugRenderer.render(world, batch.getProjectionMatrix().cpy());
+        // draw simulateds
         if (true) {
             drawBackground(batch);
             for (Simulated simulated : simulateds) {
@@ -220,19 +218,20 @@ public class SpaceSimulation implements InputProcessor {
     private void drawBackground(Batch batch) {
         for (int[] val : tilesToDraw) {
             for (int y = val[1]; y < val[2]; y++) {
-                batch.draw(assetManager.getTexture(Asset.NoComponent), val[0] * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                batch.draw(assetManager.getTexture(Asset.StarBackground), val[0] * TILE_SIZE, y * TILE_SIZE, TILE_SIZE,
+                        TILE_SIZE);
             }
         }
     }
 
-    //called when the screen is resized
+    // called when the screen is resized
     public void resize(int width, int height) {
         this.width = width;
         this.height = height;
         radius = (float) Math.sqrt(width * width + height * height) / 2.0f;
     }
 
-    //updates the camera
+    // updates the camera
     public void updateCamera() {
         if (cameraSimulated != null) {
             centerPos = cameraSimulated.localToWorldCoordinates(cameraSimulated.getCenterPosition());
@@ -246,7 +245,7 @@ public class SpaceSimulation implements InputProcessor {
             camera.position.y = centerPos.y;
             camera.update();
 
-            //CHANGE THIS WHEN ROTATION IS APPLIED!!!!!!!
+            // CHANGE THIS WHEN ROTATION IS APPLIED!!!!!!!
             int x1 = (int) Math.floor((centerPos.x - w / 2) / TILE_SIZE);
             int y1 = (int) Math.floor((centerPos.y - h / 2) / TILE_SIZE);
             int x2 = (int) Math.floor((centerPos.x + w / 2) / TILE_SIZE);
