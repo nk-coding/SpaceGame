@@ -97,7 +97,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         //receives key inputs
         setReceivesKeyInput(true);
         //compile the script
-        Compiler compiler = new Compiler(def.code, def);
+        Compiler compiler = def.createCompiler(def.code);
         Program program = null;
         try {
             program = compiler.compile();

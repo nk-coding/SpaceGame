@@ -12,7 +12,9 @@ public enum Asset {
     PowerCore("textures/game/powerCore.png"),
     Bullet("textures/game/bullet.png"),
     VerySimpleExplosion("textures/game/verySimpleExplosion.png"),
-    StarBackground("textures/game/starBackground.png"),
+    StarBackground_high("textures/game/starBackground_high.png"),
+    StarBackground_medium("textures/game/starBackground_medium.png"),
+    StarBackground_low("textures/game/starBackground_low.png"),
     //others
     Numbers("textures/other/numbers.png"),
     //ui

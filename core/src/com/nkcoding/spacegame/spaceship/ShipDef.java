@@ -2,10 +2,12 @@ package com.nkcoding.spacegame.spaceship;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -229,6 +231,31 @@ public class ShipDef {
             result &= def.verifyProperties(methods);
         }
         return result;
+    }
+
+    public Compiler createCompiler(String text) {
+        //create the external method statements for the components
+        HashMap<String, ExternalPropertyData> externalPropertyDatas = new HashMap<>();
+        for (ComponentType com : ComponentType.values()) {
+            for (ExternalPropertyData data : com.propertyDefs) {
+                if (!externalPropertyDatas.containsKey(data.name)) {
+                    externalPropertyDatas.put(data.name, data);
+                }
+            }
+        }
+        //add from Ship
+        for (ExternalPropertyData data : properties.values()) {
+            if (!externalPropertyDatas.containsKey(data.name)) {
+                externalPropertyDatas.put(data.name, data);
+            }
+        }
+        ArrayList<MethodDefinition> methodDefinitions = new ArrayList<>();
+        for (ExternalPropertyData data : externalPropertyDatas.values()) {
+            data.addExternalMethodDefs(methodDefinitions);
+        }
+        String[] lines = text.split("\\r?\\n");
+
+        return new Compiler(lines, methodDefinitions.toArray(MethodDefinition[]::new));
     }
 
     public void toJson(Json json) {

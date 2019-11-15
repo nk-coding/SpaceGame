@@ -2,6 +2,7 @@ package com.nkcoding.spacegame;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -17,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class SpaceSimulation implements InputProcessor {
-    public static final float TILE_SIZE = 5f;
+    public static final float TILE_SIZE = 8f;
 
     // list with all simulateds
     private final SnapshotArray<Simulated> simulateds = new SnapshotArray<>();
@@ -46,7 +47,9 @@ public class SpaceSimulation implements InputProcessor {
     private OrthographicCamera camera;
 
     // tiles that must be drawn
-    List<int[]> tilesToDraw = new ArrayList<>();
+    private List<int[]> tilesToDraw = new ArrayList<>();
+    //the amount of tiles
+    private int tileCount = 0;
 
     // set from resize, necessary for camera
     private int width, height;
@@ -216,12 +219,21 @@ public class SpaceSimulation implements InputProcessor {
     }
 
     private void drawBackground(Batch batch) {
+        Texture tileTexture = null;
+        if (tileCount < 6) {
+            tileTexture = assetManager.getTexture(Asset.StarBackground_high);
+        } else if (tileCount < 15) {
+            tileTexture = assetManager.getTexture(Asset.StarBackground_medium);
+        } else {
+            tileTexture = assetManager.getTexture(Asset.StarBackground_low);
+        }
         for (int[] val : tilesToDraw) {
             for (int y = val[1]; y < val[2]; y++) {
-                batch.draw(assetManager.getTexture(Asset.StarBackground), val[0] * TILE_SIZE, y * TILE_SIZE, TILE_SIZE,
+                batch.draw(tileTexture, val[0] * TILE_SIZE, y * TILE_SIZE, TILE_SIZE,
                         TILE_SIZE);
             }
         }
+        System.out.println(tileCount);
     }
 
     // called when the screen is resized
@@ -257,11 +269,14 @@ public class SpaceSimulation implements InputProcessor {
             while (tilesToDraw.size() < deltaX) {
                 tilesToDraw.add(new int[3]);
             }
+            //add all the tiles, also update tile count
+            tileCount = 0;
             for (int x = 0; x < deltaX; x++) {
                 int[] val = tilesToDraw.get(x);
                 val[0] = x + x1;
                 val[1] = y1;
                 val[2] = y2 + 1;
+                tileCount += y2 - y1 + 1;
             }
         }
     }

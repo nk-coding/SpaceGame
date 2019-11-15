@@ -4,14 +4,10 @@ import com.nkcoding.interpreter.*;
 import com.nkcoding.interpreter.operators.NegateBooleanOperation;
 import com.nkcoding.interpreter.operators.NegateFloatOperation;
 import com.nkcoding.interpreter.operators.NegateIntegerOperation;
-import com.nkcoding.spacegame.spaceship.ComponentType;
-import com.nkcoding.spacegame.spaceship.ExternalPropertyData;
-import com.nkcoding.spacegame.spaceship.ShipDef;
 import com.nkcoding.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,35 +29,6 @@ public class Compiler {
         text = new ProgramTextWrapper(lines);
         methods = new Methods();
         methods.addExternMethods(externMethods);
-        stack = new CompilerStack();
-    }
-
-    //constructor with default methods
-    public Compiler(String text, ShipDef def) {
-        //create the external method statements for the components
-        HashMap<String, ExternalPropertyData> externalPropertyDatas = new HashMap<>();
-        for (ComponentType com : ComponentType.values()) {
-            for (ExternalPropertyData data : com.propertyDefs) {
-                if (!externalPropertyDatas.containsKey(data.name)) {
-                    externalPropertyDatas.put(data.name, data);
-                }
-            }
-        }
-        //add from Ship
-        for (ExternalPropertyData data : def.properties.values()) {
-            if (!externalPropertyDatas.containsKey(data.name)) {
-                externalPropertyDatas.put(data.name, data);
-            }
-        }
-        ArrayList<MethodDefinition> methodDefinitions = new ArrayList<>();
-        for (ExternalPropertyData data : externalPropertyDatas.values()) {
-            data.addExternalMethodDefs(methodDefinitions);
-        }
-        String[] lines = text.split("\\r?\\n");
-
-        this.text = new ProgramTextWrapper(lines);
-        methods = new Methods();
-        methods.addExternMethods(methodDefinitions.toArray(MethodDefinition[]::new));
         stack = new CompilerStack();
     }
 

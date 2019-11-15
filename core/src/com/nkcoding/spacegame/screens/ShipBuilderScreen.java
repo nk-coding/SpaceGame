@@ -115,7 +115,7 @@ public class ShipBuilderScreen implements Screen {
     public ShipBuilderScreen(SpaceGame spaceGame, ShipDef shipDef) {
         this.shipDef = shipDef;
         //create new compiler
-        compiler = new Compiler("", shipDef);
+        compiler = shipDef.createCompiler("");
 
 
         this.spaceGame = spaceGame;
