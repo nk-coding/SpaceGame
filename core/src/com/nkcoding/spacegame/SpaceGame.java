@@ -3,6 +3,7 @@ package com.nkcoding.spacegame;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.nkcoding.spacegame.screens.GameScreen;
 import com.nkcoding.spacegame.screens.ShipBuilderScreen;
 import com.nkcoding.ui.UITestScreen;
@@ -26,6 +27,8 @@ public class SpaceGame extends Game {
     UITestScreen testScreen;
     Screen screen;
 
+    public GLProfiler glProfiler;
+
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -40,6 +43,8 @@ public class SpaceGame extends Game {
         } else {
             screen = new GameScreen(this, saveGame.shipDef);
         }
+//        glProfiler = new GLProfiler(Gdx.graphics);
+//        glProfiler.enable();
         setScreen(screen);
     }
 

@@ -41,7 +41,7 @@ public class Explosion extends Simulated {
         shape.setRadius(startRadius);
         sensorFixture = body.createFixture(shape, 1);
         sensorFixture.setSensor(true);
-        this.centerPosition = pos;
+        this.centerPosition = new Vector2(0, 0);
         this.radius = endRadius;
     }
 

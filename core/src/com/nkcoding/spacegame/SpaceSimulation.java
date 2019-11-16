@@ -20,6 +20,8 @@ import java.util.List;
 public class SpaceSimulation implements InputProcessor {
     public static final float TILE_SIZE = 8f;
 
+    private final SpaceGame spaceGame;
+
     // list with all simulateds
     private final SnapshotArray<Simulated> simulateds = new SnapshotArray<>();
 
@@ -84,6 +86,7 @@ public class SpaceSimulation implements InputProcessor {
 
     // constructor
     public SpaceSimulation(SpaceGame spaceGame) {
+        this.spaceGame = spaceGame;
         // set Batch and assetManager
         assetManager = spaceGame.getAssetManager();
         // init scriptingEngine
@@ -209,17 +212,20 @@ public class SpaceSimulation implements InputProcessor {
                 float abs = simulated.localToWorldCoordinates(simulated.getCenterPosition()).sub(centerPos).len2();
                 if (abs < (maxAbs * maxAbs)) {
                     simulated.draw(batch);
+                } else {
+                    //System.out.println("do not draw " + simulated);
                 }
             }
             batch.flush();
         } else {
             debugRenderer.render(world, camera.combined);
         }
-
+        //System.out.println(spaceGame.glProfiler.getShaderSwitches());
+        spaceGame.glProfiler.reset();
     }
 
     private void drawBackground(Batch batch) {
-        Texture tileTexture = null;
+        Texture tileTexture;
         if (tileCount < 6) {
             tileTexture = assetManager.getTexture(Asset.StarBackground_high);
         } else if (tileCount < 15) {
@@ -233,7 +239,6 @@ public class SpaceSimulation implements InputProcessor {
                         TILE_SIZE);
             }
         }
-        //System.out.println(tileCount);
     }
 
     // called when the screen is resized
