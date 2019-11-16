@@ -14,11 +14,11 @@ import static com.nkcoding.spacegame.spaceship.ExternalPropertyData.of;
 public enum ComponentType {
     Engine(Engine::new, 1, 2, 100, 100, Asset.Engine,
             of(com.nkcoding.spacegame.components.Engine.EnginePowerKey, DataType.INTEGER, false)),
-    Cannon(Cannon::new, 1, 2, 100, 100, Asset.CloseSymbol,
+    Cannon(Cannon::new, 1, 2, 100, 100, Asset.Cannon,
             of(com.nkcoding.spacegame.components.Cannon.IsShoothingKey, DataType.BOOLEAN, false)),
     PowerCore(PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
     BasicHull(BasicHull::new, Asset.BasicHull),
-    ExplosiveCanister(ExplosiveCanister::new, 1, 1, 50, 50, Asset.ErrorSymbol,
+    ExplosiveCanister(ExplosiveCanister::new, 1, 1, 50, 50, Asset.ExplosiveCanister,
             of(com.nkcoding.spacegame.components.ExplosiveCanister.ExplodeKey, DataType.BOOLEAN, false));
 
     //the width of the component

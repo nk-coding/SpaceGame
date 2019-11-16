@@ -233,7 +233,7 @@ public class SpaceSimulation implements InputProcessor {
                         TILE_SIZE);
             }
         }
-        System.out.println(tileCount);
+        //System.out.println(tileCount);
     }
 
     // called when the screen is resized

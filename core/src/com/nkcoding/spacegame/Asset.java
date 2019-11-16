@@ -10,6 +10,8 @@ public enum Asset {
     BasicHull("textures/game/basicHull.png"),
     Engine("textures/game/engine.png"),
     PowerCore("textures/game/powerCore.png"),
+    ExplosiveCanister("textures/game/explosive.png"),
+    Cannon("textures/game/cannon.png"),
     Bullet("textures/game/bullet.png"),
     VerySimpleExplosion("textures/game/verySimpleExplosion.png"),
     StarBackground_high("textures/game/starBackground_high.png"),
