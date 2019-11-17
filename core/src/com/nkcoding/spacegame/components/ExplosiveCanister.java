@@ -3,9 +3,9 @@ package com.nkcoding.spacegame.components;
 import com.nkcoding.spacegame.spaceship.*;
 
 public class ExplosiveCanister extends Component {
-    public static final String ExplodeKey = "Explode";
+    public static final String EXPLODE_KEY = "Explode";
 
-    public final BooleanProperty explode = register(new BooleanProperty(false, true, ExplodeKey) {
+    public final BooleanProperty explode = register(new BooleanProperty(false, true, EXPLODE_KEY) {
         @Override
         public void set(boolean value) {
             super.set(value);

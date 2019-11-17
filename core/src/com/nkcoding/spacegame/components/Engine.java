@@ -5,9 +5,9 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.nkcoding.spacegame.spaceship.*;
 
 public class Engine extends Component {
-    public static final String EnginePowerKey = "EnginePower";
+    public static final String ENGINE_POWER_KEY = "EnginePower";
 
-    public final IntProperty enginePower = register(new IntProperty(false, true, EnginePowerKey));
+    public final IntProperty enginePower = register(new IntProperty(false, true, ENGINE_POWER_KEY));
 
     public Engine(ComponentDef componentDef, Ship ship) {
         super(componentDef, ship);

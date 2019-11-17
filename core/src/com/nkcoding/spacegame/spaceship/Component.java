@@ -14,11 +14,11 @@ import java.util.Map;
 public abstract class Component implements ExternalPropertyHandler {
 
     //region names for the ExternalProperties
-    public static final String HealthKey = "Health";
-    public static final String PowerRequestedKey = "PowerRequested";
-    public static final String RequestLevelKey = "RequestLevel";
-    public static final String HasFullPowerKey = "HasFullPower";
-    public static final String PowerReceivedKey = "PowerReceived";
+    public static final String HEALTH_KEY = "Health";
+    public static final String POWER_REQUESTED_KEY = "PowerRequested";
+    public static final String REQUEST_LEVEL_KEY = "RequestLevel";
+    public static final String HAS_FULL_POWER_KEY = "HasFullPower";
+    public static final String POWER_RECEIVED_KEY = "PowerReceived";
     //endregion
 
     //region sides
@@ -96,12 +96,12 @@ public abstract class Component implements ExternalPropertyHandler {
      * this check is done in act because of library issues
      * should be initialized in constructor out of componentDef
      */
-    public final IntProperty health = register(new IntProperty(true, true, HealthKey));
+    public final IntProperty health = register(new IntProperty(true, true, HEALTH_KEY));
 
     /**
      * power that component requests
      */
-    public final FloatProperty powerRequested = register(new FloatProperty(true, true, PowerRequestedKey) {
+    public final FloatProperty powerRequested = register(new FloatProperty(true, true, POWER_REQUESTED_KEY) {
         @Override
         public void set(float value) {
             if (get() != value) ship.invalidatePowerDelivery();
@@ -112,7 +112,7 @@ public abstract class Component implements ExternalPropertyHandler {
     /**
      * how important is it to get the power
      */
-    public final IntProperty requestLevel = register(new IntProperty(false, true, RequestLevelKey) {
+    public final IntProperty requestLevel = register(new IntProperty(false, true, REQUEST_LEVEL_KEY) {
         @Override
         public void set(int value) {
             if (get() != value) ship.invalidatePowerLevelOrder();
@@ -123,13 +123,13 @@ public abstract class Component implements ExternalPropertyHandler {
     /**
      * shows if the component get the full power (used to prevent issues with float rounding)
      */
-    public final BooleanProperty hasFullPower = register(new BooleanProperty(true, true, HasFullPowerKey));
+    public final BooleanProperty hasFullPower = register(new BooleanProperty(true, true, HAS_FULL_POWER_KEY));
 
 
     /**
      * how much power does it actually get
      */
-    public final FloatProperty powerReceived = register(new FloatProperty(true, true, PowerReceivedKey) {
+    public final FloatProperty powerReceived = register(new FloatProperty(true, true, POWER_RECEIVED_KEY) {
         @Override
         public void set(float value) {
             super.set(value);

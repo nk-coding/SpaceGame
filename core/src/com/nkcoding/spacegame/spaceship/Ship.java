@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 
 public class Ship extends Simulated implements ExternalPropertyHandler {
     //region keys for the properties
-    public static final String KeyDownKey = "KeyDown";
-    public static final String KeyUpKey = "KeyUp";
-    public static final String AngularVelocityKey = "AngularVelocity";
-    public static final String VelocityKey = "Velocity";
-    public static final String CameraFocusKey = "CameraFocus";
+    public static final String KEY_DOWN_KEY = "KeyDown";
+    public static final String KEY_UP_KEY = "KeyUp";
+    public static final String ANGULAR_VELOCITY_KEY = "AngularVelocity";
+    public static final String VELOCITY_KEY = "Velocity";
+    public static final String CAMERA_FOCUS_KEY = "CameraFocus";
     //endregion
 
     private HashMap<String, ExternalProperty> properties = new HashMap<>();
@@ -66,15 +66,15 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
 
     //region properties
     //virtual property when a key is pressed
-    public final NotifyProperty<String> keyDown = register(new NotifyProperty<>(KeyDownKey));
+    public final NotifyProperty<String> keyDown = register(new NotifyProperty<>(KEY_DOWN_KEY));
     //virtual property when key is released
-    public final NotifyProperty<String> keyUp = register(new NotifyProperty<>(KeyUpKey));
+    public final NotifyProperty<String> keyUp = register(new NotifyProperty<>(KEY_UP_KEY));
     //wrapper for the angularRotation from Body
-    public final FloatProperty angularVelocity = register(new FloatProperty(true, true, AngularVelocityKey));
+    public final FloatProperty angularVelocity = register(new FloatProperty(true, true, ANGULAR_VELOCITY_KEY));
     //wrapper for the velocity from Body
-    public final FloatProperty velocity = register(new FloatProperty(true, true, VelocityKey));
+    public final FloatProperty velocity = register(new FloatProperty(true, true, VELOCITY_KEY));
     //focus from SpaceSimulation
-    public final VirtualProperty<Boolean> cameraFocus = register(new VirtualProperty<>(true, CameraFocusKey) {
+    public final VirtualProperty<Boolean> cameraFocus = register(new VirtualProperty<>(true, CAMERA_FOCUS_KEY) {
         @Override
         public void set(Boolean value) {
             super.set(value);
@@ -405,7 +405,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
                     }
                 } else {
                     //not enough power is available
-                    float fac = levelPowerRequest / availablePower;
+                    float fac = availablePower / levelPowerRequest;
                     availablePower = 0f;
                     for (int x = i0; x < i; x++) {
                         components.get(x).powerReceived.set(components.get(x).powerRequested.get() * fac);

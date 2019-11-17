@@ -11,7 +11,7 @@ public class PowerCore extends Component {
      */
     public PowerCore(ComponentDef componentDef, Ship ship) {
         super(componentDef, ship);
-        powerRequested.set(-200);
+        powerRequested.set(-100);
     }
 
     @Override

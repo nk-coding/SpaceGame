@@ -13,25 +13,23 @@ import com.nkcoding.spacegame.SpaceSimulation;
 import com.nkcoding.spacegame.spaceship.*;
 
 
-public class Cannon extends Component {
-    public static final String IsShoothingKey = "IsShooting";
+
+public class Cannon extends Buffer {
+    public static final String IS_SHOOTING_KEY = "IsShooting";
 
     //should the cannon fire?
-    protected final BooleanProperty isShootingProperty = register(new BooleanProperty(false, true, IsShoothingKey));
-
-    private float lastFired = 0f;
+    protected final BooleanProperty isShootingProperty = register(new BooleanProperty(false, true, IS_SHOOTING_KEY));
 
 
     public Cannon(ComponentDef componentDef, Ship ship) {
-        super(componentDef, ship);
+        super(componentDef, ship, 50f, 50f);
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
-        lastFired += delta;
-        if (lastFired > 1f && isShootingProperty.get()) {
-            lastFired = 0;
+        if (isCharged() && isShootingProperty.get()) {
+            bufferLevel.set(0f);
             float angle = getShip().getRotation() + getComponentDef().getRotation() * 90 * MathUtils.degreesToRadians;
             CannonBullet bullet = new CannonBullet(getSpaceSimulation(),
                     localToWorld(new Vector2(0.5f * ShipDef.UNIT_SIZE, 2.3f * ShipDef.UNIT_SIZE)),

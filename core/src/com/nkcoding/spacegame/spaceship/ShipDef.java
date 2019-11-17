@@ -174,11 +174,11 @@ public class ShipDef {
     //the main Constructor
     public ShipDef() {
         //add all the properties
-        properties.put(KeyDownKey, of(KeyDownKey, DataType.STRING, true, true));
-        properties.put(KeyUpKey, of(KeyUpKey, DataType.STRING, true, true));
-        properties.put(AngularVelocityKey, of(AngularVelocityKey, DataType.FLOAT));
-        properties.put(VelocityKey, of(VelocityKey, DataType.FLOAT));
-        properties.put(CameraFocusKey, of(CameraFocusKey, DataType.BOOLEAN, false));
+        properties.put(KEY_DOWN_KEY, of(KEY_DOWN_KEY, DataType.STRING, true, true));
+        properties.put(KEY_UP_KEY, of(KEY_UP_KEY, DataType.STRING, true, true));
+        properties.put(ANGULAR_VELOCITY_KEY, of(ANGULAR_VELOCITY_KEY, DataType.FLOAT));
+        properties.put(VELOCITY_KEY, of(VELOCITY_KEY, DataType.FLOAT));
+        properties.put(CAMERA_FOCUS_KEY, of(CAMERA_FOCUS_KEY, DataType.BOOLEAN, false));
     }
 
     /**
