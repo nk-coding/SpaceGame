@@ -1,6 +1,7 @@
 package com.nkcoding.spacegame;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
@@ -43,8 +44,8 @@ public class SpaceGame extends Game {
         } else {
             screen = new GameScreen(this, saveGame.shipDef);
         }
-//        glProfiler = new GLProfiler(Gdx.graphics);
-//        glProfiler.enable();
+        glProfiler = new GLProfiler(Gdx.graphics);
+        glProfiler.enable();
         setScreen(screen);
     }
 

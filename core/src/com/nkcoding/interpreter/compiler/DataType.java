@@ -173,7 +173,10 @@ public final class DataType {
                 return "";
             case LIST_KW:
                 return createDefaultList(this);
+            case VOID_KW:
+                return null;
             default:
+                System.out.println(name);
                 throw new IllegalStateException("cannot create alternative value");
         }
     }

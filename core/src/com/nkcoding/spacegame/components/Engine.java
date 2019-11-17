@@ -22,7 +22,7 @@ public class Engine extends Component {
         powerRequested.set(enginePower);
         //System.out.println("received power: " + powerReceived.get());
         enginePower = Math.min((int) powerReceived.get(), enginePower);
-        applyForce(enginePower / 100f);
+        applyForce(enginePower / 1000f);
     }
 
     @Override
