@@ -10,11 +10,4 @@ public class BasicHull extends Component {
     public BasicHull(ComponentDef componentDef, Ship ship) {
         super(componentDef, ship);
     }
-
-
-    @Override
-    public void addFixtures() {
-        super.addFixtures();
-        //TODO implementation
-    }
 }

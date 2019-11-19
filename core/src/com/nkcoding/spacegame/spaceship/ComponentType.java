@@ -16,11 +16,15 @@ public enum ComponentType {
             of(com.nkcoding.spacegame.components.Engine.ENGINE_POWER_KEY, DataType.INTEGER, false)),
     Cannon(Cannon::new, 1, 2, 100, 100, Asset.Cannon,
             of(com.nkcoding.spacegame.components.Cannon.IS_SHOOTING_KEY, DataType.BOOLEAN, false),
-            of (Buffer.BUFFER_LEVEL_KEY, DataType.FLOAT)),
+            of(Buffer.BUFFER_LEVEL_KEY, DataType.FLOAT)),
     PowerCore(PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
     BasicHull(BasicHull::new, Asset.BasicHull),
     ExplosiveCanister(ExplosiveCanister::new, 1, 1, 50, 50, Asset.ExplosiveCanister,
-            of(com.nkcoding.spacegame.components.ExplosiveCanister.EXPLODE_KEY, DataType.BOOLEAN, false));
+            of(com.nkcoding.spacegame.components.ExplosiveCanister.EXPLODE_KEY, DataType.BOOLEAN, false)),
+    ShieldGenerator(ShieldGenerator::new, 2, 2, 200, 100, Asset.CloseSymbol,
+            of(com.nkcoding.spacegame.components.ShieldGenerator.RADIUS_KEY, DataType.FLOAT, false),
+            of(com.nkcoding.spacegame.components.ShieldGenerator.IS_ENABLED_KEY, DataType.BOOLEAN, false),
+            of(Buffer.BUFFER_LEVEL_KEY, DataType.FLOAT));
 
     //the width of the component
     public final int width;

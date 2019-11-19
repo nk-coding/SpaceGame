@@ -106,8 +106,7 @@ public class Cannon extends Buffer {
         public void beginContact(Simulated other, Fixture f1, Fixture f2) {
             Object userData = f2.getUserData();
             if (userData instanceof Component && !collided) {
-                collided = true;
-                ((Component) userData).damageAt(f2, 100);
+                collided = ((Component) userData).damageAt(f2, 100);
             }
         }
     }

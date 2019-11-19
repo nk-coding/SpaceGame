@@ -325,8 +325,9 @@ public abstract class Component implements ExternalPropertyHandler {
      * @param fixture the Fixture that was hit
      * @param damage  the amount of damage
      */
-    public void damageAt(Fixture fixture, int damage) {
+    public boolean damageAt(Fixture fixture, int damage) {
         health.set(health.get() - damage);
+        return true;
     }
 
     protected void spawnExplosion(float endRadius, float damage, float time) {
