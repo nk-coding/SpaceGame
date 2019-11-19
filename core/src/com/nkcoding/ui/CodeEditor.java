@@ -115,6 +115,7 @@ public class CodeEditor extends WidgetGroup {
             }
         };
         codeScrollPane = new ScrollPane(codeTextArea, codeEditorStyle.createScrollPaneStyle());
+        codeScrollPane.setOverscroll(false, false);
         //set attributes on ScrollPane
         codeScrollPane.setFadeScrollBars(false);
         if (Gdx.app.getType() != Application.ApplicationType.Android) codeScrollPane.setFlickScroll(false);
@@ -128,6 +129,7 @@ public class CodeEditor extends WidgetGroup {
         GlyphLayout calcLayout = new GlyphLayout();
         calcLayout.setText(font, "0");
         numberCharWidth = calcLayout.width;
+
     }
 
     @Override
@@ -237,7 +239,11 @@ public class CodeEditor extends WidgetGroup {
      * moves the scrollPane to a specific position
      */
     public void moveTo(int line) {
-        codeScrollPane.scrollTo(0, codeTextArea.getPrefHeight() - codeEditorStyle.font.getLineHeight() * line, 0, 0);
+        //this is to make scroll available on the ScrollBar
+        codeScrollPane.layout();
+        codeScrollPane.setScrollX(0);
+        codeScrollPane.setScrollY(codeEditorStyle.font.getLineHeight() * (line - 1));
+        codeScrollPane.updateVisualScroll();
     }
 
     public static class CodeEditorStyle extends TextField.TextFieldStyle {

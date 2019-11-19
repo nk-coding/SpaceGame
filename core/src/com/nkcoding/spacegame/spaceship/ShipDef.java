@@ -32,7 +32,11 @@ public class ShipDef {
 
         //locate component if there is one
         public ComponentDef getComponent(int x, int y) {
-            return componentsMap[x][y];
+            if (x < 0 || y < 0 || x >= MAX_SIZE || y >= MAX_SIZE) {
+                return null;
+            } else {
+                return componentsMap[x][y];
+            }
         }
 
         //Add a component to componentsMap and componentsDefs

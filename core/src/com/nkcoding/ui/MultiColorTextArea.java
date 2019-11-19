@@ -126,6 +126,26 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         colors = new ArrayList<>();
     }
 
+    private void updateLinesBreak() {
+        linesBreak.clear();
+        int lineStart = 0;
+        char lastCharacter;
+        for (int i = 0; i < text.length(); i++) {
+            lastCharacter = text.charAt(i);
+            if (lastCharacter == ENTER_DESKTOP || lastCharacter == ENTER_ANDROID) {
+                linesBreak.add(lineStart);
+                linesBreak.add(i);
+                lineStart = i + 1;
+            }
+        }
+    }
+
+    @Override
+    public void setText(String str) {
+        super.setText(str);
+        updateLinesBreak();
+    }
+
     protected int letterUnderCursor(float x) {
         if (linesBreak.size > 0) {
             if (cursorLine * 2 >= linesBreak.size) {
