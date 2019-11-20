@@ -37,9 +37,7 @@ public class ScriptColorParser implements ColorParser {
                     // a wild comment was found
                     inComment = true;
                     startPos = x;
-                }
-                //check for all the other stuff
-                else if (inString) {
+                } else if (inString) {
                     //actual in String, this is the worst
                     if (c == '\\') {
                         //escape char
@@ -66,6 +64,7 @@ public class ScriptColorParser implements ColorParser {
                         //end of number
                         inNumber = false;
                         handler.addColorRegion(startPos, x - 1, numberColor);
+                        x--;
                     }
                 } else if (inPossibleNumber) {
                     //something that started with a dot
@@ -73,6 +72,8 @@ public class ScriptColorParser implements ColorParser {
                     inPossibleNumber = false;
                     if (Character.isDigit(c)) {
                         inNumber = true;
+                    } else {
+                        x--;
                     }
                 } else if (inWord) {
                     if (!(Character.isLetterOrDigit(c) || c == '_')) {
@@ -82,6 +83,7 @@ public class ScriptColorParser implements ColorParser {
                         if (CompilerHelper.isReservedKeyword(subStr)) {
                             handler.addColorRegion(startPos, x - 1, keyWordColor);
                         }
+                        x--;
                     }
                 } else {
                     //the default behaviour, check for different stuff
