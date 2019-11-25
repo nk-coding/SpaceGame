@@ -4,21 +4,28 @@ import java.util.ArrayList;
 
 public class Lexer {
     private ArrayList<Token> tokens = new ArrayList<>();
-    private ArrayList<Integer> lineTokenPositions = new ArrayList<>();
+
+    private int insertAt = 0;
 
     public void update(String code, boolean ignoreErrors) throws CompileException {
         //reset tokens
         tokens.clear();
-        lineTokenPositions.clear();
         String[] lines = code.split("\r?\n");
         for (int x = 0; x < lines.length; x++) {
-            lineTokenPositions.add(tokens.size());
             parseLine(lines[x], x, ignoreErrors);
         }
     }
 
-    public void updateLine(String code, int line, boolean ignoreErrors) {
-
+    public void updateLine(String code, int line, boolean ignoreErrors) throws CompileException{
+        int index = 0;
+        for (int x = 0; x < tokens.size(); x++) {
+            if (tokens.get(x).getLine() == line) {
+                index = x;
+                break;
+            }
+        }
+        tokens.removeIf(token -> token.getLine() == line);
+        parseLine(code, line, ignoreErrors);
     }
 
     private void parseLine(String code, int line, boolean ignoreErrors) throws CompileException {
@@ -165,6 +172,7 @@ public class Lexer {
     }
 
     private void addToken(int id, String token, int line, int pos, int length) {
-
+        tokens.add(insertAt, new Token(token, id, line, pos, length));
+        insertAt++;
     }
 }
