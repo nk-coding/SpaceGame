@@ -21,7 +21,7 @@ public class Token {
     public static final int KEYWORD = 0x10000;
     public static final int STRING_LITERAL = 0x20000;
     public static final int INT_LITERAL = 0x40000;
-    public static final int FLOAT_LITERAL = 0x80000;
+    //public static final int FLOAT_LITERAL = 0x80000;
     public static final int COMMENT = 0x100000;
     public static final int NOT_DEFINED = 0x200000;
 
