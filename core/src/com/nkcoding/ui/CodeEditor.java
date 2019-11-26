@@ -83,11 +83,11 @@ public class CodeEditor extends WidgetGroup {
             }
 
             @Override
-            public void postInput(InputEvent event, char character) {
+            public boolean postInput(InputEvent event, char character) {
                 switch (character) {
                     case '{':
                         paste("}", false, false);
-                        break;
+                        return true;
                     case ENTER_ANDROID:
                     case ENTER_DESKTOP:
                         //region
@@ -104,13 +104,15 @@ public class CodeEditor extends WidgetGroup {
                             paste(" ".repeat(spaces), false, true);
                         }
                         //endregion
-                        break;
+                        return true;
                     case '(':
                         paste(")", false, false);
-                        break;
+                        return true;
                     case '[':
                         paste("]", false, false);
-                        break;
+                        return true;
+                    default:
+                        return false;
                 }
             }
         };

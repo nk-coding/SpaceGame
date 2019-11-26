@@ -10,6 +10,7 @@ public class Lexer {
     public void update(String code, boolean ignoreErrors) throws CompileException {
         //reset tokens
         tokens.clear();
+        insertAt = 0;
         String[] lines = code.split("\r?\n");
         for (int x = 0; x < lines.length; x++) {
             parseLine(lines[x], x, ignoreErrors);
@@ -17,13 +18,14 @@ public class Lexer {
     }
 
     public void updateLine(String code, int line, boolean ignoreErrors) throws CompileException{
-        int index = 0;
+        int index = tokens.size();
         for (int x = 0; x < tokens.size(); x++) {
             if (tokens.get(x).getLine() == line) {
                 index = x;
                 break;
             }
         }
+        insertAt = index;
         tokens.removeIf(token -> token.getLine() == line);
         parseLine(code, line, ignoreErrors);
     }
@@ -33,7 +35,9 @@ public class Lexer {
         int pos = 0;
         while (pos < chars.length) {
             char c = chars[pos];
-            if (Character.isDigit(c)) {
+            if (Character.isWhitespace(c)) {
+                //ignore
+            } else if (Character.isDigit(c)) {
                 //check for number
                 int startPos = pos;
                 boolean foundAll = false;
@@ -46,7 +50,7 @@ public class Lexer {
                         foundAll = true;
                     }
                 }
-                String token = code.substring(startPos, pos + 1);
+                String token = code.substring(startPos, Math.min(pos + 1, code.length()));
                 addToken(Token.INT_LITERAL, token, line, startPos, pos - startPos + 1);
             } else if (Character.isAlphabetic(c) || c == '_') {
                 //identifier or keyword
@@ -61,44 +65,54 @@ public class Lexer {
                         foundAll = true;
                     }
                 }
-                String token = code.substring(startPos, pos + 1);
+                String token = code.substring(startPos, Math.min(pos + 1, code.length()));
                 int type = CompilerHelper.isReservedKeyword(token) ? Token.KEYWORD : Token.IDENTIFIER;
                 addToken(type, token, line, startPos, pos - startPos + 1);
             } else if (c == '"') {
+                System.out.println("st");
                 //String literal
                 int startPos = pos;
-                boolean escaped = false;
-                boolean foundAll = false;
-                while (pos < chars.length && !foundAll) {
-                    c = chars[pos];
-                    if (c == '\\') {
-                        //check for escape
-                        escaped = !escaped;
-                        pos++;
-                    } else if (c == '"') {
-                        //check for escape
-                        if (escaped) {
+                if (pos == chars.length - 1) {
+                    if (!ignoreErrors) {
+                        throw new CompileException("string literal has no end", new ProgramPosition(line, pos));
+                    }
+                    addToken(Token.STRING_LITERAL, "\"", line, pos, 1);
+                } else {
+                    pos++;
+                    boolean escaped = false;
+                    boolean foundAll = false;
+                    while (pos < chars.length && !foundAll) {
+                        c = chars[pos];
+                        if (c == '\\') {
+                            //check for escape
+                            escaped = !escaped;
                             pos++;
+                        } else if (c == '"') {
+                            //check for escape
+                            if (escaped) {
+                                pos++;
+                            } else {
+                                foundAll = true;
+                            }
                         } else {
-                            foundAll = true;
-                        }
-                    } else {
-                        //check for escape
-                        if (escaped) {
-                            //check if the escape is legal
-                            if (c != 'n') {
-                                if (!ignoreErrors) {
-                                    throw new CompileException("illegal escape sequence: \\" + c, new ProgramPosition(line, pos));
+                            //check for escape
+                            if (escaped) {
+                                //check if the escape is legal
+                                if (c != 'n') {
+                                    if (!ignoreErrors) {
+                                        throw new CompileException("illegal escape sequence: \\"
+                                                + c, new ProgramPosition(line, pos));
+                                    }
                                 }
                             }
+                            pos++;
                         }
-                        pos++;
                     }
+                    if (c != '"' && !ignoreErrors) {
+                        throw new CompileException("string literal has no end", new ProgramPosition(line, pos));
+                    }
+                    addToken(Token.STRING_LITERAL, code.substring(startPos, Math.min(pos + 1, code.length())), line, startPos, pos - startPos + 1);
                 }
-                if (c != '"' && !ignoreErrors) {
-                    throw new CompileException("string literal has no end", new ProgramPosition(line, pos));
-                }
-                addToken(Token.STRING_LITERAL, code.substring(startPos, pos + 1), line, startPos, pos - startPos + 1);
             } else if (c == '/') {
                 //comment or slash
                 if ((pos + 1) < chars.length && chars[pos + 1] == '/') {
@@ -174,5 +188,20 @@ public class Lexer {
     private void addToken(int id, String token, int line, int pos, int length) {
         tokens.add(insertAt, new Token(token, id, line, pos, length));
         insertAt++;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        int lastLine = 0;
+        for (Token token : tokens) {
+            if (lastLine != token.getLine()) {
+                lastLine = token.getLine();
+                builder.append("\n");
+            }
+            builder.append(token.toString());
+            builder.append(" ");
+        }
+        return builder.toString();
     }
 }

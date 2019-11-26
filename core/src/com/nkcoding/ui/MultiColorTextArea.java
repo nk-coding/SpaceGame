@@ -36,6 +36,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import com.nkcoding.interpreter.compiler.CompileException;
+import com.nkcoding.interpreter.compiler.Lexer;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -50,7 +52,9 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     /**
      * Last text processed. This attribute is used to avoid unnecessary computations while calculating offsets
      **/
-    private String lastText;
+    private String lastText = "";
+    private boolean multiLineChange = true;
+    private Lexer lexer = new Lexer();
 
     /**
      * Current line for the cursor
@@ -87,8 +91,8 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     private float prefWidth;
 
     //lists to handle the color stuff
-    private IntArray colorAreas;
-    private ArrayList<Color> colors;
+    //private IntArray colorAreas;
+    //private ArrayList<Color> colors;
 
     //the parser for the multiColor stuff
     private ColorParser colorParser = null;
@@ -503,17 +507,15 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     @Override
     protected void calculateOffsets() {
         super.calculateOffsets();
-        if (!this.text.equals(lastText)) {
+        if (this.text != lastText) {
             float newPrefWidth = 0f;
             int oldLinesCount = getLines();
 
             this.lastText = text;
             BitmapFont font = style.font;
-            float maxWidthLine = this.getWidth()
-                    - (style.background != null ? style.background.getLeftWidth() + style.background.getRightWidth() : 0);
             linesBreak.clear();
             int lineStart = 0;
-            int lastSpace = 0;
+
             char lastCharacter;
             Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
             GlyphLayout layout = layoutPool.obtain();
@@ -560,6 +562,20 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
                 colorParser.parse(getText(), this);
                 updateRelevantColorRegions();
             }
+            try {
+                if (multiLineChange) {
+                    lexer.update(getText(), true);
+                } else {
+                    updateCurrentLine();
+                    lexer.updateLine(getTextLine(getCursorLine()), getCursorLine(), true);
+                }
+            } catch (CompileException e) {
+                e.printStackTrace();
+            }
+            System.out.println(lexer);
+
+
+            multiLineChange = false;
 
             showCursor();
         }
@@ -645,8 +661,8 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
      * @param event the corresponding input event
      * @param character the typed char
      */
-    public void postInput(InputEvent event, char character) {
-
+    public boolean postInput(InputEvent event, char character) {
+        return false;
     }
 
     private void clearColors() {
@@ -694,9 +710,9 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     protected String getTextLine(int line) {
         //special case newLineAtEnd
         if (linesBreak.size == 2 * line) return "";
-        if (linesBreak.size < 2 * line) throw new IllegalArgumentException("line is too high");
-        else if (line < 0) throw new IllegalArgumentException("line is too low");
-        return text.substring(linesBreak.get(2 * line), linesBreak.get(2 * line + 1) + 1);
+//        if (linesBreak.size < 2 * line) throw new IllegalArgumentException("line is too high");
+//        else if (line < 0) throw new IllegalArgumentException("line is too low");
+        return text.substring(Math.min(linesBreak.get(2 * line), text.length()), Math.min(linesBreak.get(2 * line + 1) + 1, text.length()));
     }
 
     //important: offsets are not calculated for the last input!!!
@@ -747,7 +763,9 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
 
         @Override
         public boolean keyDown(InputEvent event, int keycode) {
+            //System.out.println("keydown");
             boolean result = super.keyDown(event, keycode);
+            //System.out.println(result);
             if (hasKeyboardFocus()) {
                 boolean repeat = false;
                 boolean shift = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
@@ -789,16 +807,20 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
 
         @Override
         public boolean keyTyped(InputEvent event, char character) {
+            multiLineChange = true;
+            boolean hadSelection = hasSelection;
+            //System.out.println("keyTyped");
             //preInput
             Optional<Boolean> res = preInput(event, character);
             if (res.isPresent()) return res.get();
 
             //every other character
             boolean result = super.keyTyped(event, character);
-
-            //postInput
+            //System.out.println(result);//postInput
             if (result) {
-                postInput(event, character);
+                if (!postInput(event, character) && !hadSelection && res.isEmpty()) {
+                    multiLineChange = false;
+                }
             }
 
             showCursor(); //this always produced serious errors, I don't know why I can do this now

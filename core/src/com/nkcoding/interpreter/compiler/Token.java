@@ -58,4 +58,9 @@ public class Token {
     public int getType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[%s]", content);
+    }
 }
