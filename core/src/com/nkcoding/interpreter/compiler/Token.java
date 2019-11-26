@@ -29,14 +29,12 @@ public class Token {
     private final int type;
     private int line;
     private int pos;
-    private int length;
 
-    public Token(final String content, int type, int line, int pos, int length) {
+    public Token(final String content, int type, int line, int pos) {
         this.content = content;
         this.type = type;
         this.line = line;
         this.pos = pos;
-        this.length = length;
     }
 
     public String getContent() {
@@ -52,7 +50,7 @@ public class Token {
     }
 
     public int getLength() {
-        return length;
+        return content.length();
     }
 
     public int getType() {
@@ -61,6 +59,6 @@ public class Token {
 
     @Override
     public String toString() {
-        return String.format("[%s]", content);
+        return String.format("[%s,%d, %d]", content, getLength(), pos);
     }
 }

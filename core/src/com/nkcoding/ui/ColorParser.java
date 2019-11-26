@@ -1,5 +1,7 @@
 package com.nkcoding.ui;
 
+import com.badlogic.gdx.graphics.Color;
+
 public interface ColorParser {
-    void parse(String str, ColorParserHandler handler);
+    Color chooseColor(int id);
 }

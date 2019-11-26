@@ -18,16 +18,10 @@ public class Lexer {
     }
 
     public void updateLine(String code, int line, boolean ignoreErrors) throws CompileException{
-        int index = tokens.size();
-        for (int x = 0; x < tokens.size(); x++) {
-            if (tokens.get(x).getLine() == line) {
-                index = x;
-                break;
-            }
-        }
-        insertAt = index;
+        insertAt = getLineStartIndex(line);
+        if (insertAt < 0) insertAt = tokens.size();
         tokens.removeIf(token -> token.getLine() == line);
-        parseLine(code, line, ignoreErrors);
+        parseLine(code.replaceAll("\r?\n", ""), line, ignoreErrors);
     }
 
     private void parseLine(String code, int line, boolean ignoreErrors) throws CompileException {
@@ -51,7 +45,7 @@ public class Lexer {
                     }
                 }
                 String token = code.substring(startPos, Math.min(pos + 1, code.length()));
-                addToken(Token.INT_LITERAL, token, line, startPos, pos - startPos + 1);
+                addToken(Token.INT_LITERAL, token, line, startPos);
             } else if (Character.isAlphabetic(c) || c == '_') {
                 //identifier or keyword
                 int startPos = pos;
@@ -67,16 +61,15 @@ public class Lexer {
                 }
                 String token = code.substring(startPos, Math.min(pos + 1, code.length()));
                 int type = CompilerHelper.isReservedKeyword(token) ? Token.KEYWORD : Token.IDENTIFIER;
-                addToken(type, token, line, startPos, pos - startPos + 1);
+                addToken(type, token, line, startPos);
             } else if (c == '"') {
-                System.out.println("st");
                 //String literal
                 int startPos = pos;
                 if (pos == chars.length - 1) {
                     if (!ignoreErrors) {
                         throw new CompileException("string literal has no end", new ProgramPosition(line, pos));
                     }
-                    addToken(Token.STRING_LITERAL, "\"", line, pos, 1);
+                    addToken(Token.STRING_LITERAL, "\"", line, pos);
                 } else {
                     pos++;
                     boolean escaped = false;
@@ -111,17 +104,17 @@ public class Lexer {
                     if (c != '"' && !ignoreErrors) {
                         throw new CompileException("string literal has no end", new ProgramPosition(line, pos));
                     }
-                    addToken(Token.STRING_LITERAL, code.substring(startPos, Math.min(pos + 1, code.length())), line, startPos, pos - startPos + 1);
+                    addToken(Token.STRING_LITERAL, code.substring(startPos, Math.min(pos + 1, code.length())), line, startPos);
                 }
             } else if (c == '/') {
                 //comment or slash
                 if ((pos + 1) < chars.length && chars[pos + 1] == '/') {
                     //comment
-                    addToken(Token.COMMENT, code.substring(pos), line, pos, code.substring(pos).length());
+                    addToken(Token.COMMENT, code.substring(pos), line, pos);
                     pos = chars.length;
                 } else {
                     //normal slash
-                    addToken(Token.SLASH, "/", line, pos, 1);
+                    addToken(Token.SLASH, "/", line, pos);
                 }
             } else if ("{}[]()=+-*%.,;".indexOf(c) > -1) {
                 //comment or a single thing
@@ -172,11 +165,11 @@ public class Lexer {
                     default:
                         throw new IllegalStateException();
                 }
-                addToken(type, String.valueOf(c), line, pos, 1);
+                addToken(type, String.valueOf(c), line, pos);
             } else {
                 //undefined
                 if (ignoreErrors) {
-                    addToken(Token.NOT_DEFINED, String.valueOf(c), line, pos, 1);
+                    addToken(Token.NOT_DEFINED, String.valueOf(c), line, pos);
                 } else {
                     throw new CompileException("not defined token: " + c, new ProgramPosition(line, pos));
                 }
@@ -185,9 +178,30 @@ public class Lexer {
         }
     }
 
-    private void addToken(int id, String token, int line, int pos, int length) {
-        tokens.add(insertAt, new Token(token, id, line, pos, length));
+    private void addToken(int id, String token, int line, int pos) {
+        tokens.add(insertAt, new Token(token, id, line, pos));
         insertAt++;
+    }
+
+    public int getTokenCount() {
+        return tokens.size();
+    }
+
+    public Token getToken(int index) {
+        return tokens.get(index);
+    }
+
+    public int getLineStartIndex(int line) {
+        for (int x = 0; x < tokens.size(); x++) {
+            final int tokenLine = tokens.get(x).getLine();
+            if (tokenLine == line) {
+                return x;
+            } else if (tokenLine > line) {
+                //there was no token for this line
+                return x;
+            }
+        }
+        return -1;
     }
 
     @Override

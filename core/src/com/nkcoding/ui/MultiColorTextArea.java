@@ -38,11 +38,11 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Lexer;
+import com.nkcoding.interpreter.compiler.Token;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
-public class MultiColorTextArea extends TextFieldBase implements ColorParserHandler, Cullable {
+public class MultiColorTextArea extends TextFieldBase implements Cullable {
 
     /**
      * Array storing lines breaks positions
@@ -79,7 +79,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     /**
      * the first ColorRegion which is important
      **/
-    private int firstRelevantColorArea;
+    private int firstRelevantToken;
 
     /**
      * Variable to maintain the x offset of the cursor when moving up and down. If it's set to -1, the offset is reset
@@ -89,10 +89,6 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
     private float prefRows;
 
     private float prefWidth;
-
-    //lists to handle the color stuff
-    //private IntArray colorAreas;
-    //private ArrayList<Color> colors;
 
     //the parser for the multiColor stuff
     private ColorParser colorParser = null;
@@ -124,10 +120,8 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         firstLineShowing = 0;
         moveOffset = -1;
         linesShowing = Integer.MAX_VALUE / 2;
-        firstRelevantColorArea = -1;
+        firstRelevantToken = -1;
         prefWidth = 0f;
-        colorAreas = new IntArray();
-        colors = new ArrayList<>();
     }
 
     private void updateLinesBreak() {
@@ -273,8 +267,6 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         return index;
     }
 
-    // OVERRIDE from TextField
-
     @Override
     protected void sizeChanged() {
         lastText = null; // Cause calculateOffsets to recalculate the line breaks.
@@ -327,17 +319,21 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
 
     @Override
     protected void drawText(Batch batch, BitmapFont font, float x, float y) {
+        boolean debug = false;
+        if (debug) System.out.println();
         float offsetY = -firstLineShowing * font.getLineHeight();
         float offsetX = 0;
         //GlyphLayout for the calculation of the offsetX
         Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
         GlyphLayout layout = layoutPool.obtain();
-        ColorRegion region = new ColorRegion(firstLineShowing, firstRelevantColorArea);
-        boolean debug = false;
+        ColorRegion region = new ColorRegion(firstLineShowing, lexer.getLineStartIndex(firstLineShowing));
+
         while (getNextColorRegion(region, debug)) {
             if (offsetX <= renderUntilX) {
                 font.setColor(region.color);
                 font.draw(batch, displayText, x + offsetX, y + offsetY, region.startPos, region.endPos + 1, 0, Align.left, false);
+                if (debug)
+                    System.out.println("draw: [" + displayText.subSequence(region.startPos, region.endPos + 1) + "]");
             }
             if (region.newLineAfter) {
                 offsetY -= font.getLineHeight();
@@ -359,9 +355,20 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         if (cr.lineBreakIndex < linesBreak.size / 2) {
             lineStart = linesBreak.get(cr.lineBreakIndex * 2);
         }
-        if (cr.colorsIndex < colors.size() && cr.colorsIndex > -1) {
-            colorStart = colorAreas.get(cr.colorsIndex * 2);
+
+        Token currentToken = null;
+        if (cr.tokenIndex > -1) {
+            while (currentToken == null && cr.tokenIndex < lexer.getTokenCount()) {
+                Token possibleToken = lexer.getToken(cr.tokenIndex);
+                if (colorParser.chooseColor(possibleToken.getType()) != null) {
+                    currentToken = possibleToken;
+                    colorStart = currentToken.getPos() + linesBreak.get(currentToken.getLine() * 2);
+                } else {
+                    cr.tokenIndex++;
+                }
+            }
         }
+        if (debug) System.out.println(currentToken);
         //only increase an area when it is fully handled!
         //case 1: finished
         //-> can't get both
@@ -416,22 +423,22 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
                 //case 4: there is a color region to handle, and it starts with or before the current position
                 else {
                     //find out what is the end, the end of the color region or the end of the line
-                    int colorEnd = colorAreas.get(cr.colorsIndex * 2 + 1);
+                    int colorEnd = lineStart + currentToken.getPos() + currentToken.getLength() - 1;
                     int lineEnd = linesBreak.get(cr.lineBreakIndex * 2 + 1) - 1;
                     //case 4.1: the color region ends first
                     if (colorEnd < lineEnd) {
                         if (debug) System.out.print("case 4.1, ");
-                        cr.color = colors.get(cr.colorsIndex);
-                        cr.startPos = cr.endPos + 1;
+                        cr.color = colorParser.chooseColor(currentToken.getType());
+                        cr.startPos = currentToken.getPos() + lineStart;
                         cr.endPos = colorEnd;
                         cr.newLineAfter = false;
 
-                        cr.colorsIndex++;
+                        cr.tokenIndex++;
                     }
                     //case 4.2: the line ends first
                     else if (colorEnd > lineEnd) {
-                        if (debug) System.out.print("case 4.2, ");
-                        cr.color = colors.get(cr.colorsIndex);
+                        if (debug) System.out.print("case 4.2, " + colorEnd + ", " + lineEnd);
+                        cr.color = colorParser.chooseColor(currentToken.getType());
                         cr.startPos = cr.endPos + 1;
                         cr.endPos = lineEnd;
                         cr.newLineAfter = true;
@@ -441,13 +448,13 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
                     //case 4.3: the color region ends where the line ends
                     else {
                         if (debug) System.out.print("case 4.3, ");
-                        cr.color = colors.get(cr.colorsIndex);
+                        cr.color = colorParser.chooseColor(currentToken.getType());
                         cr.startPos = cr.endPos + 1;
                         cr.endPos = lineEnd;
                         cr.newLineAfter = true;
 
                         cr.lineBreakIndex++;
-                        cr.colorsIndex++;
+                        cr.tokenIndex++;
                     }
                 }
 
@@ -471,7 +478,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         //correct possible error produced by rounding
         linesShowing += 2;
         renderUntilX = cullingArea.x + cullingArea.width;
-        if (oldFirstLineShowing != firstLineShowing) updateRelevantColorRegions();
+        //if (oldFirstLineShowing != firstLineShowing) updateRelevantColorRegions();
     }
 
     private class ColorRegion {
@@ -481,13 +488,12 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         boolean newLineAfter = false;
 
         //what should it draw now
-        int lineBreakIndex = 0;
-        int colorsIndex = 0;
+        int lineBreakIndex;
+        int tokenIndex;
 
-        //constructor which sets a bit more
-        ColorRegion(int lineBreakIndex, int colorsIndex) {
+        ColorRegion(int lineBreakIndex, int tokenIndex) {
             this.lineBreakIndex = lineBreakIndex;
-            this.colorsIndex = colorsIndex;
+            this.tokenIndex = tokenIndex;
             if (lineBreakIndex < linesBreak.size / 2) {
                 startPos = linesBreak.get(lineBreakIndex * 2);
                 endPos = startPos - 1;
@@ -552,16 +558,6 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
                 invalidateHierarchy();
             }
 
-            //update position if necessary and possible
-            //System.out.println("update form calculate offsets");
-            //updateScrollPane();
-
-            //if there is a color parser, now is the wright time
-            if (colorParser != null) {
-                clearColors();
-                colorParser.parse(getText(), this);
-                updateRelevantColorRegions();
-            }
             try {
                 if (multiLineChange) {
                     lexer.update(getText(), true);
@@ -572,8 +568,6 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
             } catch (CompileException e) {
                 e.printStackTrace();
             }
-            System.out.println(lexer);
-
 
             multiLineChange = false;
 
@@ -608,8 +602,6 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         }
 
         updateCurrentLine();
-        //updateScrollPane();
-
     }
 
     @Override
@@ -638,12 +630,6 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         return -(-font.getDescent() / 2 - (cursorLine + 1) * font.getLineHeight());
     }
 
-    @Override
-    public void addColorRegion(int start, int end, Color color) {
-        colorAreas.add(start, end);
-        colors.add(color);
-    }
-
     /**
      * can be overwritten if necessary
      * is called before the text is changed
@@ -663,32 +649,6 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
      */
     public boolean postInput(InputEvent event, char character) {
         return false;
-    }
-
-    private void clearColors() {
-        colorAreas.clear();
-        colors.clear();
-    }
-
-    private void updateRelevantColorRegions() {
-        //reset
-        firstRelevantColorArea = -1;
-        //check if there are colorAreas
-        if (colors.size() >= 1 && linesBreak.size > firstLineShowing * 2) {
-            int lineStartPos = linesBreak.get(firstLineShowing * 2);
-            boolean finised = false;
-            int i = 0;
-            while (!finised) {
-                int startPos = colorAreas.get(2 * i);
-                int endPos = colorAreas.get(2 * i + 1);
-                if (startPos >= lineStartPos || endPos >= lineStartPos) {
-                    finised = true;
-                    firstRelevantColorArea = i;
-                }
-                i++;
-                finised |= i >= colors.size();
-            }
-        }
     }
 
     private void updateScrollPane() {
@@ -763,9 +723,7 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
 
         @Override
         public boolean keyDown(InputEvent event, int keycode) {
-            //System.out.println("keydown");
             boolean result = super.keyDown(event, keycode);
-            //System.out.println(result);
             if (hasKeyboardFocus()) {
                 boolean repeat = false;
                 boolean shift = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
@@ -809,17 +767,18 @@ public class MultiColorTextArea extends TextFieldBase implements ColorParserHand
         public boolean keyTyped(InputEvent event, char character) {
             multiLineChange = true;
             boolean hadSelection = hasSelection;
-            //System.out.println("keyTyped");
             //preInput
             Optional<Boolean> res = preInput(event, character);
             if (res.isPresent()) return res.get();
 
             //every other character
             boolean result = super.keyTyped(event, character);
-            //System.out.println(result);//postInput
+            //postInput
             if (result) {
-                if (!postInput(event, character) && !hadSelection && res.isEmpty()) {
-                    multiLineChange = false;
+                if (!postInput(event, character) && !hadSelection) {
+                    if (event.getKeyCode() != Input.Keys.DEL && event.getKeyCode() != Input.Keys.FORWARD_DEL) {
+                        multiLineChange = false;
+                    }
                 }
             }
 
