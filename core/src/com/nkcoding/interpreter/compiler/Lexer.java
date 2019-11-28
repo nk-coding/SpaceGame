@@ -204,6 +204,25 @@ public class Lexer {
         return -1;
     }
 
+    /**
+     * get the next token with the correct type
+     *
+     * @param type       flag for correct type use <code>Token.*</code>
+     * @param startIndex inclusive index to search from
+     * @return null if nothing was found
+     */
+    public Token getNextToken(int type, int startIndex) {
+        int i = startIndex;
+        while (i < tokens.size()) {
+            Token currentToken = tokens.get(i);
+            if ((currentToken.getType() & type) != 0) {
+                return currentToken;
+            }
+            i++;
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

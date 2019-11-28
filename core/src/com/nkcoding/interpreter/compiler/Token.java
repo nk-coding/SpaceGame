@@ -24,6 +24,11 @@ public class Token {
     //public static final int FLOAT_LITERAL = 0x80000;
     public static final int COMMENT = 0x100000;
     public static final int NOT_DEFINED = 0x200000;
+    /**
+     * =+-/*%
+     */
+    public static final int OPERATOR = EQUAL | PLUS | MINUS | STAR | SLASH | PERCENT;
+
 
     private final String content;
     private final int type;
