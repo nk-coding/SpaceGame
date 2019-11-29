@@ -34,7 +34,8 @@ public enum Asset {
     ErrorSymbol("textures/ui/errorSymbol.png"),
     ActionNecessarySymbol("textures/ui/actionNecessarySymbol.png"),
     Selection("textures/ui/selection.png"),
-    BasicBackground("textures/ui/basicBackground.png");
+    BasicBackground("textures/ui/basicBackground.png"),
+    LightBackground("textures/ui/lightBackground.png");
 
     private String value;
 
