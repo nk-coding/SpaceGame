@@ -248,7 +248,7 @@ public class CodeEditor extends WidgetGroup {
         codeScrollPane.updateVisualScroll();
     }
 
-    public static class CodeEditorStyle extends TextField.TextFieldStyle {
+    public static class CodeEditorStyle extends MultiColorTextArea.MultiColorTextAreaStyle {
         public ColorParser colorParser;
 
         public Drawable corner;
@@ -261,13 +261,13 @@ public class CodeEditor extends WidgetGroup {
 
         public Drawable vScrollKnob;
 
-        public CodeEditorStyle(BitmapFont font, Color fontColor, Drawable cursor, Drawable selection, Drawable background, ColorParser colorParser) {
-            super(font, fontColor, cursor, selection, background);
+        public CodeEditorStyle(BitmapFont font, Color fontColor, Drawable cursor, Drawable selection, Drawable background, Drawable autocompletion, ColorParser colorParser) {
+            super(font, fontColor, cursor, selection, background, autocompletion);
             this.colorParser = colorParser;
         }
 
-        public CodeEditorStyle(TextField.TextFieldStyle textFieldStyle, ScrollPane.ScrollPaneStyle scrollPaneStyle, ColorParser colorParser) {
-            super(textFieldStyle);
+        public CodeEditorStyle(TextField.TextFieldStyle textFieldStyle, Drawable autocompletion, ScrollPane.ScrollPaneStyle scrollPaneStyle, ColorParser colorParser) {
+            super(textFieldStyle, autocompletion);
             this.colorParser = colorParser;
             this.corner = scrollPaneStyle.corner;
             this.hScroll = scrollPaneStyle.hScroll;
@@ -282,8 +282,8 @@ public class CodeEditor extends WidgetGroup {
             return style;
         }
 
-        private TextField.TextFieldStyle createTextFieldStyle() {
-            TextField.TextFieldStyle style = new TextField.TextFieldStyle(this);
+        private MultiColorTextArea.MultiColorTextAreaStyle createTextFieldStyle() {
+            MultiColorTextArea.MultiColorTextAreaStyle style = new MultiColorTextArea.MultiColorTextAreaStyle(this, autocompletion);
             style.background = null;
             return style;
         }

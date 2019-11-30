@@ -176,7 +176,8 @@ public class ShipBuilderScreen implements Screen {
         propertyBoxStyle.spacing = 10f;
 
         //CodeEditor
-        CodeEditor.CodeEditorStyle codeEditorStyle = new CodeEditor.CodeEditorStyle(textFieldStyle, scrollPaneStyle, new ScriptColorParser());
+        CodeEditor.CodeEditorStyle codeEditorStyle = new CodeEditor.CodeEditorStyle(textFieldStyle,
+                assetManager.getDrawable(Asset.LightBackground), scrollPaneStyle, new ScriptColorParser());
 
         //endregion
 

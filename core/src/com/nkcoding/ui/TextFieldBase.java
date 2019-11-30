@@ -355,6 +355,9 @@ public class TextFieldBase extends Widget implements Disableable {
         if (!disabled && cursorOn && cursorPatch != null) {
             drawCursor(cursorPatch, batch, font, x + bgLeftWidth, y + textY);
         }
+        if (!disabled) {
+            drawAutocompletion(batch, font, x + bgLeftWidth, y + textY);
+        }
     }
 
     protected float getTextY(BitmapFont font, Drawable background) {
@@ -390,6 +393,10 @@ public class TextFieldBase extends Widget implements Disableable {
         cursorPatch.draw(batch,
                 x + textOffset + glyphPositions.get(cursor) - glyphPositions.get(visibleTextStart) + fontOffset + font.getData().cursorX,
                 y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight);
+    }
+
+    protected void drawAutocompletion(Batch batch, BitmapFont font, float x, float y) {
+        //not implemented here, job for MultiColorTextArea
     }
 
     void updateDisplayText() {
@@ -492,7 +499,7 @@ public class TextFieldBase extends Widget implements Disableable {
 
     String insert(int position, CharSequence text, String to) {
         if (to.length() == 0) return text.toString();
-        return to.substring(0, position) + text + to.substring(position, to.length());
+        return to.substring(0, position) + text + to.substring(position);
     }
 
     int delete(boolean fireChangeEvent) {
@@ -501,7 +508,7 @@ public class TextFieldBase extends Widget implements Disableable {
         int minIndex = Math.min(from, to);
         int maxIndex = Math.max(from, to);
         String newText = (minIndex > 0 ? text.substring(0, minIndex) : "")
-                + (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
+                + (maxIndex < text.length() ? text.substring(maxIndex) : "");
         if (fireChangeEvent)
             changeText(text, newText);
         else
@@ -839,8 +846,8 @@ public class TextFieldBase extends Widget implements Disableable {
      *
      * @author mzechner
      */
-    static public interface TextFieldListener {
-        public void keyTyped(TextFieldBase textFieldBase, char c);
+    public interface TextFieldListener {
+        void keyTyped(TextFieldBase textFieldBase, char c);
     }
 
     /**
@@ -848,10 +855,10 @@ public class TextFieldBase extends Widget implements Disableable {
      *
      * @author mzechner
      */
-    static public interface TextFieldFilter {
-        public boolean acceptChar(TextFieldBase textFieldBase, char c);
+    public interface TextFieldFilter {
+        boolean acceptChar(TextFieldBase textFieldBase, char c);
 
-        static public class DigitsOnlyFilter implements TextFieldFilter {
+        class DigitsOnlyFilter implements TextFieldFilter {
             public boolean acceptChar(TextFieldBase textFieldBase, char c) {
                 return Character.isDigit(c);
             }
@@ -863,8 +870,8 @@ public class TextFieldBase extends Widget implements Disableable {
      *
      * @author mzechner
      */
-    static public interface OnscreenKeyboard {
-        public void show(boolean visible);
+    public interface OnscreenKeyboard {
+        void show(boolean visible);
     }
 
     /**

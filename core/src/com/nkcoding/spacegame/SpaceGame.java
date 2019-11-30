@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.nkcoding.spacegame.screens.GameScreen;
 import com.nkcoding.spacegame.screens.ShipBuilderScreen;
-import com.nkcoding.ui.UITestScreen;
 
 public class SpaceGame extends Game {
     //one SpriteBatch for multiple Screens because heavy object
@@ -25,7 +24,6 @@ public class SpaceGame extends Game {
 
     private SaveGameManager.SaveGame saveGame;
 
-    UITestScreen testScreen;
     Screen screen;
 
     public GLProfiler glProfiler;

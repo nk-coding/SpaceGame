@@ -28,7 +28,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -61,6 +60,8 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
      **/
     private int cursorLine;
 
+    private Rectangle cullingArea;
+
     /**
      * Index of the first line showed by the text area
      **/
@@ -77,20 +78,15 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
     private float renderUntilX = Float.POSITIVE_INFINITY;
 
     /**
-     * the first ColorRegion which is important
-     **/
-    private int firstRelevantToken;
-
-    /**
      * Variable to maintain the x offset of the cursor when moving up and down. If it's set to -1, the offset is reset
      **/
     private float moveOffset;
 
-    private float prefRows;
-
     private float prefWidth;
 
-    //the parser for the multiColor stuff
+    /**
+     * the parser for the multiColor stuff
+     */
     private ColorParser colorParser = null;
 
     public void setColorParser(ColorParser colorParser) {
@@ -98,16 +94,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
     }
 
     //constructors
-
-    public MultiColorTextArea(String text, Skin skin) {
-        super(text, skin);
-    }
-
-    public MultiColorTextArea(String text, Skin skin, String styleName) {
-        super(text, skin, styleName);
-    }
-
-    public MultiColorTextArea(String text, TextField.TextFieldStyle style) {
+    public MultiColorTextArea(String text, MultiColorTextAreaStyle style) {
         super(text, style);
     }
 
@@ -120,7 +107,6 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         firstLineShowing = 0;
         moveOffset = -1;
         linesShowing = Integer.MAX_VALUE / 2;
-        firstRelevantToken = -1;
         prefWidth = 0f;
     }
 
@@ -162,13 +148,6 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         } else {
             return 0;
         }
-    }
-
-    /**
-     * Sets the preferred number of rows (lines) for this text area. Used to calculate preferred height
-     */
-    public void setPrefRows(float prefRows) {
-        this.prefRows = prefRows;
     }
 
     @Override
@@ -225,13 +204,14 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                     && glyphPositions.get(cursor) - glyphPositions.get(linesBreak.get(cursorLine * 2)) < moveOffset) {
                 cursor++;
             }
-            showCursor();
+            updateCurrentLine();
         }
     }
 
 
     /**
      * Updates the current line, checking the cursor position in the text
+     * Scroll the text area to show the line of the cursor
      **/
     void updateCurrentLine() {
         int index = calculateCurrentLineIndex(cursor);
@@ -248,13 +228,6 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         updateScrollPane();
     }
 
-    /**
-     * Scroll the text area to show the line of the cursor
-     **/
-    void showCursor() {
-        updateCurrentLine();
-    }
-
 
     /**
      * Calculates the text area line for the given cursor position
@@ -265,17 +238,6 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
             index++;
         }
         return index;
-    }
-
-    @Override
-    protected void sizeChanged() {
-        lastText = null; // Cause calculateOffsets to recalculate the line breaks.
-
-        // The number of lines showed must be updated whenever the height is updated
-        BitmapFont font = style.font;
-        Drawable background = style.background;
-        //float availableHeight = getHeight() - (background == null ? 0 : background.getBottomHeight() + background.getTopHeight());
-        //linesShowing = (int)Math.floor(availableHeight / font.getLineHeight());
     }
 
     @Override
@@ -346,6 +308,45 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         if (debug) System.out.println();
 
         layoutPool.free(layout);
+    }
+
+    @Override
+    protected void drawCursor(Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
+        float textOffset = cursor >= glyphPositions.size || cursorLine * 2 >= linesBreak.size ? 0
+                : glyphPositions.get(cursor) - glyphPositions.get(linesBreak.items[cursorLine * 2]);
+        cursorPatch.draw(batch, x + textOffset + fontOffset + font.getData().cursorX,
+                y - font.getDescent() / 2 - (cursorLine + 1) * font.getLineHeight(), cursorPatch.getMinWidth(),
+                font.getLineHeight());
+    }
+
+    @Override
+    protected void drawAutocompletion(Batch batch, BitmapFont font, float x, float y) {
+        //TODO
+        super.drawAutocompletion(batch, font, x, y);
+
+        Drawable autocompletion = ((MultiColorTextAreaStyle) style).autocompletion;
+        if (autocompletion != null) {
+            float textOffset = cursor >= glyphPositions.size || cursorLine * 2 >= linesBreak.size ? 0
+                    : glyphPositions.get(cursor) - glyphPositions.get(linesBreak.items[cursorLine * 2]);
+            Rectangle screenArea = getArea();
+            float cursorPosX = x + textOffset + fontOffset + 30;
+            float cursorPosY = y - font.getDescent() / 2 - (cursorLine + 1) * font.getLineHeight();
+            final float abs = 20;
+            float posX = cursorPosX - abs;
+            float posY;
+            float height;
+
+            if (cursorPosY < screenArea.getHeight() / 2) {
+                posY = cursorPosY + font.getLineHeight() + abs;
+                height = screenArea.y + screenArea.height - posY - abs;
+            } else {
+                posY = 2 * abs;
+                height = cursorPosY - abs;
+            }
+            autocompletion.draw(batch, posX, posY,
+                    screenArea.getWidth() - posX - 30,
+                    height);
+        }
     }
 
     //gets the next colorRegion
@@ -471,14 +472,21 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
 
     @Override
     public void setCullingArea(Rectangle cullingArea) {
-        int oldFirstLineShowing = firstLineShowing;
+        this.cullingArea = cullingArea;
         firstLineShowing = (int) ((getHeight() - cullingArea.y - cullingArea.height) / style.font.getLineHeight());
         if (firstLineShowing < 0) firstLineShowing = 0;
         linesShowing = (int) (cullingArea.height / style.font.getLineHeight());
         //correct possible error produced by rounding
         linesShowing += 2;
         renderUntilX = cullingArea.x + cullingArea.width;
-        //if (oldFirstLineShowing != firstLineShowing) updateRelevantColorRegions();
+    }
+
+    private Rectangle getArea() {
+        if (cullingArea != null) {
+            return cullingArea;
+        } else {
+            return new Rectangle(0, 0, getWidth(), getHeight());
+        }
     }
 
     private class ColorRegion {
@@ -499,15 +507,6 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                 endPos = startPos - 1;
             }
         }
-    }
-
-    @Override
-    protected void drawCursor(Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
-        float textOffset = cursor >= glyphPositions.size || cursorLine * 2 >= linesBreak.size ? 0
-                : glyphPositions.get(cursor) - glyphPositions.get(linesBreak.items[cursorLine * 2]);
-        cursorPatch.draw(batch, x + textOffset + fontOffset + font.getData().cursorX,
-                y - font.getDescent() / 2 - (cursorLine /*- firstLineShowing*/ + 1) * font.getLineHeight(), cursorPatch.getMinWidth(),
-                font.getLineHeight());
     }
 
     @Override
@@ -571,7 +570,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
 
             multiLineChange = false;
 
-            showCursor();
+            updateCurrentLine();
         }
     }
 
@@ -596,7 +595,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
             if (jump) {
                 super.moveCursor(forward, jump);
             }
-            showCursor();
+            updateCurrentLine();
         } else {
             super.moveCursor(forward, jump);
         }
@@ -670,18 +669,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
     protected String getTextLine(int line) {
         //special case newLineAtEnd
         if (linesBreak.size == 2 * line) return "";
-//        if (linesBreak.size < 2 * line) throw new IllegalArgumentException("line is too high");
-//        else if (line < 0) throw new IllegalArgumentException("line is too low");
         return text.substring(Math.min(linesBreak.get(2 * line), text.length()), Math.min(linesBreak.get(2 * line + 1) + 1, text.length()));
-    }
-
-    //important: offsets are not calculated for the last input!!!
-    private boolean isAtLineEnd() {
-        if (linesBreak.size <= getCursorLine() * 2) return true;
-        else {
-            System.out.println(getCursorPosition() + ", " + linesBreak.get(getCursorLine() * 2 + 1));
-            return getCursorPosition() == linesBreak.get(getCursorLine() * 2 + 1);
-        }
     }
 
     //calculates the amount of space chars at the beginning of a String
@@ -689,6 +677,28 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         int x = 0;
         while (str.length() > x && str.charAt(x) == ' ') x++;
         return x;
+    }
+
+    public static class MultiColorTextAreaStyle extends TextField.TextFieldStyle {
+        public Drawable autocompletion;
+
+        /**
+         * default constructor
+         */
+        public MultiColorTextAreaStyle() {
+            super();
+        }
+
+        public MultiColorTextAreaStyle(BitmapFont font, Color fontColor, Drawable cursor,
+                                       Drawable selection, Drawable background, Drawable autocompletion) {
+            super(font, fontColor, cursor, selection, background);
+            this.autocompletion = autocompletion;
+        }
+
+        public MultiColorTextAreaStyle(TextField.TextFieldStyle style, Drawable autocompletion) {
+            super(style);
+            this.autocompletion = autocompletion;
+        }
     }
 
     /**
@@ -757,7 +767,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                 if (repeat) {
                     scheduleKeyRepeatTask(keycode);
                 }
-                showCursor();
+                updateCurrentLine();
                 return true;
             }
             return result;
@@ -782,7 +792,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                 }
             }
 
-            showCursor(); //this always produced serious errors, I don't know why I can do this now
+            updateCurrentLine(); //this always produced serious errors, I don't know why I can do this now
             return result;
         }
 
