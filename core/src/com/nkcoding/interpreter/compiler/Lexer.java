@@ -1,6 +1,8 @@
 package com.nkcoding.interpreter.compiler;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Lexer {
     private ArrayList<Token> tokens = new ArrayList<>();
@@ -221,6 +223,10 @@ public class Lexer {
             i++;
         }
         return null;
+    }
+
+    public List<Token> getTokens() {
+        return Collections.unmodifiableList(tokens);
     }
 
     @Override
