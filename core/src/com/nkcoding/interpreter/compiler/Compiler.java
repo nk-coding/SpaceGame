@@ -25,10 +25,10 @@ public class Compiler {
     private MethodDefinition actualMethod;
 
     //constructor
-    public Compiler(String[] lines, MethodDefinition[] externMethods) {
+    public Compiler(String[] lines, MethodDefinition[] externalMethods) {
         text = new ProgramTextWrapper(lines);
         methods = new Methods();
-        methods.addExternMethods(externMethods);
+        methods.addExternMethods(externalMethods);
         stack = new CompilerStack();
     }
 

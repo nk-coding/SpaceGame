@@ -2,36 +2,6 @@
   "ShipDef": {
     "comDefs": [
       {
-        "type": "PowerCore",
-        "name": "",
-        "x": 14,
-        "y": 10,
-        "rotation": 0,
-        "properties": [
-          {
-            "key": "Health",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerRequested",
-            "handlerName": ""
-          },
-          {
-            "key": "RequestLevel",
-            "initData": "",
-            "handlerName": ""
-          },
-          {
-            "key": "HasFullPower",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerReceived",
-            "handlerName": ""
-          }
-        ]
-      },
-      {
         "type": "Engine",
         "name": "l",
         "x": 0,
@@ -583,14 +553,18 @@
             "key": "IsShooting",
             "initData": "",
             "handlerName": ""
+          },
+          {
+            "key": "BufferLevel",
+            "handlerName": ""
           }
         ]
       },
       {
-        "type": "BasicHull",
+        "type": "ShieldGenerator",
         "name": "",
         "x": 16,
-        "y": 9,
+        "y": 12,
         "rotation": 0,
         "properties": [
           {
@@ -613,35 +587,19 @@
           {
             "key": "PowerReceived",
             "handlerName": ""
-          }
-        ]
-      },
-      {
-        "type": "BasicHull",
-        "name": "",
-        "x": 16,
-        "y": 10,
-        "rotation": 0,
-        "properties": [
+          },
           {
-            "key": "Health",
+            "key": "Radius",
+            "initData": "80",
             "handlerName": ""
           },
           {
-            "key": "PowerRequested",
-            "handlerName": ""
-          },
-          {
-            "key": "RequestLevel",
+            "key": "IsEnabled",
             "initData": "",
             "handlerName": ""
           },
           {
-            "key": "HasFullPower",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerReceived",
+            "key": "BufferLevel",
             "handlerName": ""
           }
         ]
@@ -651,156 +609,6 @@
         "name": "",
         "x": 16,
         "y": 11,
-        "rotation": 0,
-        "properties": [
-          {
-            "key": "Health",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerRequested",
-            "handlerName": ""
-          },
-          {
-            "key": "RequestLevel",
-            "initData": "",
-            "handlerName": ""
-          },
-          {
-            "key": "HasFullPower",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerReceived",
-            "handlerName": ""
-          }
-        ]
-      },
-      {
-        "type": "BasicHull",
-        "name": "",
-        "x": 16,
-        "y": 13,
-        "rotation": 0,
-        "properties": [
-          {
-            "key": "Health",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerRequested",
-            "handlerName": ""
-          },
-          {
-            "key": "RequestLevel",
-            "initData": "",
-            "handlerName": ""
-          },
-          {
-            "key": "HasFullPower",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerReceived",
-            "handlerName": ""
-          }
-        ]
-      },
-      {
-        "type": "PowerCore",
-        "name": "",
-        "x": 17,
-        "y": 10,
-        "rotation": 0,
-        "properties": [
-          {
-            "key": "Health",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerRequested",
-            "handlerName": ""
-          },
-          {
-            "key": "RequestLevel",
-            "initData": "",
-            "handlerName": ""
-          },
-          {
-            "key": "HasFullPower",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerReceived",
-            "handlerName": ""
-          }
-        ]
-      },
-      {
-        "type": "PowerCore",
-        "name": "",
-        "x": 14,
-        "y": 13,
-        "rotation": 0,
-        "properties": [
-          {
-            "key": "Health",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerRequested",
-            "handlerName": ""
-          },
-          {
-            "key": "RequestLevel",
-            "initData": "",
-            "handlerName": ""
-          },
-          {
-            "key": "HasFullPower",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerReceived",
-            "handlerName": ""
-          }
-        ]
-      },
-      {
-        "type": "PowerCore",
-        "name": "",
-        "x": 17,
-        "y": 13,
-        "rotation": 0,
-        "properties": [
-          {
-            "key": "Health",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerRequested",
-            "handlerName": ""
-          },
-          {
-            "key": "RequestLevel",
-            "initData": "",
-            "handlerName": ""
-          },
-          {
-            "key": "HasFullPower",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerReceived",
-            "handlerName": ""
-          }
-        ]
-      },
-      {
-        "type": "BasicHull",
-        "name": "",
-        "x": 17,
-        "y": 12,
         "rotation": 0,
         "properties": [
           {
@@ -859,127 +667,7 @@
       {
         "type": "BasicHull",
         "name": "",
-        "x": 19,
-        "y": 12,
-        "rotation": 0,
-        "properties": [
-          {
-            "key": "Health",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerRequested",
-            "handlerName": ""
-          },
-          {
-            "key": "RequestLevel",
-            "initData": "",
-            "handlerName": ""
-          },
-          {
-            "key": "HasFullPower",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerReceived",
-            "handlerName": ""
-          }
-        ]
-      },
-      {
-        "type": "BasicHull",
-        "name": "",
-        "x": 15,
-        "y": 12,
-        "rotation": 0,
-        "properties": [
-          {
-            "key": "Health",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerRequested",
-            "handlerName": ""
-          },
-          {
-            "key": "RequestLevel",
-            "initData": "",
-            "handlerName": ""
-          },
-          {
-            "key": "HasFullPower",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerReceived",
-            "handlerName": ""
-          }
-        ]
-      },
-      {
-        "type": "BasicHull",
-        "name": "",
-        "x": 14,
-        "y": 12,
-        "rotation": 0,
-        "properties": [
-          {
-            "key": "Health",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerRequested",
-            "handlerName": ""
-          },
-          {
-            "key": "RequestLevel",
-            "initData": "",
-            "handlerName": ""
-          },
-          {
-            "key": "HasFullPower",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerReceived",
-            "handlerName": ""
-          }
-        ]
-      },
-      {
-        "type": "BasicHull",
-        "name": "",
-        "x": 13,
-        "y": 12,
-        "rotation": 0,
-        "properties": [
-          {
-            "key": "Health",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerRequested",
-            "handlerName": ""
-          },
-          {
-            "key": "RequestLevel",
-            "initData": "",
-            "handlerName": ""
-          },
-          {
-            "key": "HasFullPower",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerReceived",
-            "handlerName": ""
-          }
-        ]
-      },
-      {
-        "type": "BasicHull",
-        "name": "",
-        "x": 16,
+        "x": 17,
         "y": 14,
         "rotation": 0,
         "properties": [
@@ -1009,73 +697,8 @@
       {
         "type": "BasicHull",
         "name": "",
-        "x": 16,
-        "y": 15,
-        "rotation": 0,
-        "properties": [
-          {
-            "key": "Health",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerRequested",
-            "handlerName": ""
-          },
-          {
-            "key": "RequestLevel",
-            "initData": "",
-            "handlerName": ""
-          },
-          {
-            "key": "HasFullPower",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerReceived",
-            "handlerName": ""
-          }
-        ]
-      },
-      {
-        "type": "Engine",
-        "name": "r1",
         "x": 15,
-        "y": 16,
-        "rotation": 3,
-        "properties": [
-          {
-            "key": "Health",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerRequested",
-            "handlerName": ""
-          },
-          {
-            "key": "RequestLevel",
-            "initData": "",
-            "handlerName": ""
-          },
-          {
-            "key": "HasFullPower",
-            "handlerName": ""
-          },
-          {
-            "key": "PowerReceived",
-            "handlerName": ""
-          },
-          {
-            "key": "EnginePower",
-            "initData": "",
-            "handlerName": ""
-          }
-        ]
-      },
-      {
-        "type": "Engine",
-        "name": "r0",
-        "x": 12,
-        "y": 11,
+        "y": 13,
         "rotation": 0,
         "properties": [
           {
@@ -1097,11 +720,6 @@
           },
           {
             "key": "PowerReceived",
-            "handlerName": ""
-          },
-          {
-            "key": "EnginePower",
-            "initData": "",
             "handlerName": ""
           }
         ]
@@ -1110,7 +728,7 @@
         "type": "Engine",
         "name": "r3",
         "x": 16,
-        "y": 8,
+        "y": 10,
         "rotation": 1,
         "properties": [
           {
@@ -1142,11 +760,11 @@
         ]
       },
       {
-        "type": "Engine",
-        "name": "r2",
-        "x": 20,
-        "y": 12,
-        "rotation": 2,
+        "type": "BasicHull",
+        "name": "",
+        "x": 16,
+        "y": 9,
+        "rotation": 0,
         "properties": [
           {
             "key": "Health",
@@ -1168,10 +786,35 @@
           {
             "key": "PowerReceived",
             "handlerName": ""
+          }
+        ]
+      },
+      {
+        "type": "BasicHull",
+        "name": "",
+        "x": 16,
+        "y": 8,
+        "rotation": 0,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
           },
           {
-            "key": "EnginePower",
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
             "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
             "handlerName": ""
           }
         ]
@@ -1297,10 +940,45 @@
         ]
       },
       {
+        "type": "Engine",
+        "name": "r2",
+        "x": 19,
+        "y": 12,
+        "rotation": 2,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          },
+          {
+            "key": "EnginePower",
+            "initData": "",
+            "handlerName": ""
+          }
+        ]
+      },
+      {
         "type": "BasicHull",
         "name": "",
-        "x": 16,
-        "y": 3,
+        "x": 20,
+        "y": 12,
         "rotation": 0,
         "properties": [
           {
@@ -1329,8 +1007,8 @@
       {
         "type": "BasicHull",
         "name": "",
-        "x": 16,
-        "y": 2,
+        "x": 21,
+        "y": 12,
         "rotation": 0,
         "properties": [
           {
@@ -1359,7 +1037,102 @@
       {
         "type": "BasicHull",
         "name": "",
+        "x": 22,
+        "y": 12,
+        "rotation": 0,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          }
+        ]
+      },
+      {
+        "type": "Engine",
+        "name": "r1",
         "x": 16,
+        "y": 15,
+        "rotation": 3,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          },
+          {
+            "key": "EnginePower",
+            "initData": "",
+            "handlerName": ""
+          }
+        ]
+      },
+      {
+        "type": "BasicHull",
+        "name": "",
+        "x": 17,
+        "y": 16,
+        "rotation": 0,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          }
+        ]
+      },
+      {
+        "type": "BasicHull",
+        "name": "",
+        "x": 17,
         "y": 17,
         "rotation": 0,
         "properties": [
@@ -1389,7 +1162,7 @@
       {
         "type": "BasicHull",
         "name": "",
-        "x": 16,
+        "x": 17,
         "y": 18,
         "rotation": 0,
         "properties": [
@@ -1419,7 +1192,7 @@
       {
         "type": "BasicHull",
         "name": "",
-        "x": 16,
+        "x": 17,
         "y": 19,
         "rotation": 0,
         "properties": [
@@ -1449,7 +1222,7 @@
       {
         "type": "BasicHull",
         "name": "",
-        "x": 16,
+        "x": 17,
         "y": 20,
         "rotation": 0,
         "properties": [
@@ -1479,8 +1252,73 @@
       {
         "type": "BasicHull",
         "name": "",
-        "x": 16,
+        "x": 17,
         "y": 21,
+        "rotation": 0,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          }
+        ]
+      },
+      {
+        "type": "Engine",
+        "name": "r0",
+        "x": 14,
+        "y": 12,
+        "rotation": 0,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          },
+          {
+            "key": "EnginePower",
+            "initData": "",
+            "handlerName": ""
+          }
+        ]
+      },
+      {
+        "type": "BasicHull",
+        "name": "",
+        "x": 13,
+        "y": 13,
         "rotation": 0,
         "properties": [
           {
@@ -1509,8 +1347,218 @@
       {
         "type": "BasicHull",
         "name": "",
-        "x": 16,
-        "y": 22,
+        "x": 12,
+        "y": 13,
+        "rotation": 0,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          }
+        ]
+      },
+      {
+        "type": "BasicHull",
+        "name": "",
+        "x": 11,
+        "y": 13,
+        "rotation": 0,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          }
+        ]
+      },
+      {
+        "type": "PowerCore",
+        "name": "",
+        "x": 14,
+        "y": 10,
+        "rotation": 0,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          }
+        ]
+      },
+      {
+        "type": "BasicHull",
+        "name": "",
+        "x": 23,
+        "y": 12,
+        "rotation": 0,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          }
+        ]
+      },
+      {
+        "type": "PowerCore",
+        "name": "",
+        "x": 18,
+        "y": 14,
+        "rotation": 0,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          }
+        ]
+      },
+      {
+        "type": "BasicHull",
+        "name": "",
+        "x": 10,
+        "y": 13,
+        "rotation": 0,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          }
+        ]
+      },
+      {
+        "type": "PowerCore",
+        "name": "",
+        "x": 18,
+        "y": 10,
+        "rotation": 0,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          }
+        ]
+      },
+      {
+        "type": "PowerCore",
+        "name": "",
+        "x": 14,
+        "y": 14,
         "rotation": 0,
         "properties": [
           {
@@ -1539,7 +1587,7 @@
       {
         "type": "ExplosiveCanister",
         "name": "centerExplosion",
-        "x": 16,
+        "x": 15,
         "y": 12,
         "rotation": 0,
         "properties": [
@@ -1570,9 +1618,99 @@
             "handlerName": ""
           }
         ]
+      },
+      {
+        "type": "BasicHull",
+        "name": "",
+        "x": 16,
+        "y": 14,
+        "rotation": 0,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          }
+        ]
+      },
+      {
+        "type": "BasicHull",
+        "name": "",
+        "x": 18,
+        "y": 13,
+        "rotation": 0,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          }
+        ]
+      },
+      {
+        "type": "BasicHull",
+        "name": "",
+        "x": 17,
+        "y": 11,
+        "rotation": 0,
+        "properties": [
+          {
+            "key": "Health",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerRequested",
+            "handlerName": ""
+          },
+          {
+            "key": "RequestLevel",
+            "initData": "",
+            "handlerName": ""
+          },
+          {
+            "key": "HasFullPower",
+            "handlerName": ""
+          },
+          {
+            "key": "PowerReceived",
+            "handlerName": ""
+          }
+        ]
       }
     ],
-    "code": "//write your own code here\n\nboolean isADown;\nboolean isDDown;\nboolean isMDown;\n\nint focusIndex;\n\nvoid keyDown(string str) {\n   println(str);\n   //println(\"key down\");\n   if (str == \"A\") {\n      isADown = true;\n      list testing = [10, \"boring\"];\n      println(testing.1);\n   }\n   else if (str == \"D\") {\n      isDDown = true;\n   }\n   else if (str == \"M\") {\n      isMDown = true;\n   }\n   else if (str == \"Space\") {\n      setIsShooting(\"mainCannon\", true);\n      println(\"found space\");\n   }\n   else if (str == \"1\") {\n      int l1 = getRequestLevel(\"l\");\n      int l2 = getRequestLevel(\"r\");\n      setRequestLevel(\"l\", l2);\n      setRequestLevel(\"r\", l1);\n   }\n   else if (str == \"2\") {\n      focusIndex++;\n      string focusName = \"myShip\";\n      for (int z = 0; z < focusIndex; z++) focusName += \"#\";\n      setCameraFocus(focusName, true);\n   }\n   else if (str == \"3\") {\n      focusIndex--;\n      string focusName = \"myShip\";\n      for (int z = 0; z < focusIndex; z++) focusName += \"#\";\n      setCameraFocus(focusName, true);\n   }  \n   else if (str == \"0\") {\n      setRotationEnginePower(3);\n   }\n   else if (str == \"9\") {\n      string focusName = \"myShip\";\n      for (int z = 0; z < focusIndex; z++) focusName += \"#\";\n      println(floatToStr(getAngularVelocity(focusName)));\n   }\n   else if (str == \"8\") {\n      setExplode(\"centerExplosion\", true);\n   } else if (str == \"7\") {\n      println(intToStr(useThisInt()));\n   }\n   updateEngine();\n}\n\nvoid keyUp(string str) {\n   //println(\"keyUp\");\n   if (str == \"A\") {\n      isADown = false;\n   }\n   else if (str == \"D\") {\n      isDDown = false;\n   }\n   else if (str == \"M\") {\n      isMDown = false;\n   }\n   else if (str == \"Space\") {\n      setIsShooting(\"mainCannon\", false);\n   }\n   else if (str == \"0\") {\n      setRotationEnginePower(0);\n   }\n   \n   updateEngine();\n}\n\n//update the engine power\nvoid updateEngine() {\n   int power = 30;\n   if (isMDown) {\n      float ang;\n      ang = getAngularVelocity(\"myShip\");\n      println(floatToStr(ang));\n      if (ang < 0) {\n         setEnginePower(\"r\", power);\n         setEnginePower(\"l\", 0);\n      }\n      else {\n         setEnginePower(\"l\", power);\n         setEnginePower(\"r\", 0);\n      }\n   }\n   else if (isADown || isDDown){\n      if (isADown) {\n         setEnginePower(\"r\", power);\n      }\n      else {\n         setEnginePower(\"r\", 0);\n      }\n      if (isDDown) {\n         setEnginePower(\"l\", power);\n      }\n      else {\n         setEnginePower(\"l\", 0);\n      }\n   }\n   else{\n      setEnginePower(\"r\", 0);\n      setEnginePower(\"l\", 0);\n   }\n}\n\nint useThisInt() {\n   println(\"do nothing\");\n}\n\n\nvoid setRotationEnginePower(int x) {\n   for (int i = 0; i < 4; i++) {\n      setEnginePower(\"r\" + intToStr(i), x);\n   }\n}",
+    "code": "//te\n//write your own code here\nboolean isADown;\nboolean isDDown;\nboolean isMDown;\n\nint focusIndex;\n\nvoid keyDown(string str) {\n   println(str);\n   //println(\"key down\");\n   if (str == \"A\") {\n      isADown = true;\n      list testing = [10, \"boring\"];\n      println(testing.1);\n   }\n   else if (str == \"D\") {\n      isDDown = true;\n   }\n   else if (str == \"M\") {\n      isMDown = true;\n   }\n   else if (str == \"Space\") {\n      setIsShooting(\"mainCannon\", true);\n      println(\"found space\");\n   }\n   else if (str == \"1\") {\n      int l1 = getRequestLevel(\"l\");\n      int l2 = getRequestLevel(\"r\");\n      setRequestLevel(\"l\", l2);\n      setRequestLevel(\"r\", l1);\n   }\n   else if (str == \"2\") {\n      focusIndex++;\n      string focusName = \"myShip\";\n      for (int z = 0; z < focusIndex; z++) focusName += \"#\";\n      setCameraFocus(focusName, true);\n   }\n   else if (str == \"3\") {\n      focusIndex--;\n      string focusName = \"myShip\";\n      for (int z = 0; z < focusIndex; z++) focusName += \"#\";\n      setCameraFocus(focusName, true);\n   }  \n   else if (str == \"0\") {\n      setRotationEnginePower(50);\n   }\n   else if (str == \"9\") {\n      string focusName = \"myShip\";\n      for (int z = 0; z < focusIndex; z++) focusName += \"#\";\n      println(floatToStr(getAngularVelocity(focusName)));\n   }\n   else if (str == \"8\") {\n      setExplode(\"centerExplosion\", true);\n   } else if (str == \"7\") {\n      println(intToStr(useThisInt()));\n   }\n   updateEngine();\n}\n\nvoid keyUp(string str) {\n   //println(\"keyUp\");\n   if (str == \"A\") {\n      isADown = false;\n   }\n   else if (str == \"D\") {\n      isDDown = false;\n   }\n   else if (str == \"M\") {\n      isMDown = false;\n   }\n   else if (str == \"Space\") {\n      setIsShooting(\"mainCannon\", false);\n   }\n   else if (str == \"0\") {\n      setRotationEnginePower(0);\n   }\n   \n   updateEngine();\n}\n\n//update the engine power\nvoid updateEngine() {\n   int power = 30;\n   if (isMDown) {\n      float ang;\n      ang = getAngularVelocity(\"myShip\");\n      println(floatToStr(ang));\n      if (ang < 0) {\n         setEnginePower(\"r\", power);\n         setEnginePower(\"l\", 0);\n      }\n      else {\n         setEnginePower(\"l\", power);\n         setEnginePower(\"r\", 0);\n      }\n   }\n   else if (isADown || isDDown){\n      if (isADown) {\n         setEnginePower(\"r\", power);\n      }\n      else {\n         setEnginePower(\"r\", 0);\n      }\n      if (isDDown) {\n         setEnginePower(\"l\", power);\n      }\n      else {\n         setEnginePower(\"l\", 0);\n      }\n   }\n   else{\n      setEnginePower(\"r\", 0);\n      setEnginePower(\"l\", 0);\n   }\n}\n\nint useThisInt() {\n   println(\"do nothing\");\n}\n\n\nvoid setRotationEnginePower(int x) {\n   for (int i = 0; i < 4; i++) {\n      setEnginePower(\"r\" + intToStr(i), x);\n   }\n}",
     "name": "myShip",
     "validated": true,
     "properties": [
