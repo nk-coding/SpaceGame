@@ -25,6 +25,9 @@ public class SpaceSimulation implements InputProcessor {
     //the id of the client
     private int clientID = 0;
 
+    //id counter
+    private int idCounter = 0;
+
     // list with all simulateds
     private final SnapshotArray<Simulated> simulateds = new SnapshotArray<>();
 
@@ -339,5 +342,9 @@ public class SpaceSimulation implements InputProcessor {
 
     public int getClientID() {
         return clientID;
+    }
+
+    public int getNewId() {
+        return  clientID * 1000000 + idCounter++;
     }
 }

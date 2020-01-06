@@ -1,10 +1,9 @@
 package com.nkcoding.spacegame.simulation.communication;
 
-import com.nkcoding.communication.Transmission;
 import com.nkcoding.spacegame.simulation.BodyState;
 import com.nkcoding.spacegame.simulation.SimulatedType;
 
-public class CreateTransmission extends Transmission {
+public class CreateTransmission extends SimulatedTransmission {
     /**
      * which type of simulated should be added
      */
@@ -20,8 +19,8 @@ public class CreateTransmission extends Transmission {
      */
     public final BodyState bodyState;
 
-    public CreateTransmission(SimulatedType type, int owner, BodyState bodyState) {
-        super(TransmissionID.CREATE_NEW);
+    public CreateTransmission(SimulatedType type, int simulatedID, int owner, BodyState bodyState) {
+        super(TransmissionID.CREATE_NEW, simulatedID);
         this.type = type;
         this.owner = owner;
         this.bodyState = bodyState;

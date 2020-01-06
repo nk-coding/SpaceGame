@@ -29,6 +29,7 @@ public class Simulated {
     private int owner;
     private boolean isOwner;
     private final int syncPriority;
+    public final int id;
 
     /**
      * wrapper for the complex constructor
@@ -39,8 +40,8 @@ public class Simulated {
      * @param owner owner id, used to calculate isOwner
      * @param syncPriority how often is it synced (between 0 and 2)
      */
-    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority, int owner, int syncPriority) {
-        this(type, spaceSimulation, createBodyDef(bodyType), collisionPriority, owner, syncPriority);
+    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority, int owner, int syncPriority, int id) {
+        this(type, spaceSimulation, createBodyDef(bodyType), collisionPriority, owner, syncPriority, id);
     }
 
     /**
@@ -52,7 +53,7 @@ public class Simulated {
      * @param owner owner id, used to calculate isOwner
      * @param syncPriority how often is it synced (between 0 and 2)
      */
-    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef bodyDef, int collisionPriority, int owner, int syncPriority) {
+    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef bodyDef, int collisionPriority, int owner, int syncPriority, int id) {
         this.type = type;
         this.spaceSimulation = spaceSimulation;
         this.bodyType = bodyDef.type;
@@ -62,6 +63,7 @@ public class Simulated {
         this.owner = owner;
         this.isOwner = owner == spaceSimulation.getClientID();
         this.syncPriority = syncPriority;
+        this.id = id;
     }
 
     //helper method to create bodyDef

@@ -28,12 +28,12 @@ public class Explosion extends Simulated {
 
     public Explosion(SpaceSimulation spaceSimulation, float startRadius, float endRadius, float time,
                      Vector2 pos, Vector2 linearVelocity, float damage) {
-        this(spaceSimulation, startRadius, endRadius, time, pos, linearVelocity, damage, spaceSimulation.getClientID());
+        this(spaceSimulation, startRadius, endRadius, time, pos, linearVelocity, damage, spaceSimulation.getClientID(), spaceSimulation.getNewId());
     }
 
     private Explosion(SpaceSimulation spaceSimulation, float startRadius, float endRadius, float time,
-                        Vector2 pos, Vector2 linearVelocity, float damage, int owner) {
-        super(SimulatedType.Explosion, spaceSimulation, BodyDef.BodyType.KinematicBody, 3, owner, 2);
+                        Vector2 pos, Vector2 linearVelocity, float damage, int owner, int id) {
+        super(SimulatedType.Explosion, spaceSimulation, BodyDef.BodyType.KinematicBody, 3, owner, 2, id);
         this.startRadius = startRadius;
         this.currentRadius = startRadius;
         this.endRadius = endRadius;
@@ -56,8 +56,8 @@ public class Explosion extends Simulated {
      */
     public static Explosion mirror(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
         ExplosionCreateTransmission createTransmission = (ExplosionCreateTransmission)transmission;
-        return new Explosion(spaceSimulation, createTransmission.startRadius, createTransmission.endRadius, createTransmission.time,
-                createTransmission.bodyState.position, createTransmission.bodyState.linearVelocity, createTransmission.damage, createTransmission.owner);
+        return new Explosion(spaceSimulation, createTransmission.startRadius, createTransmission.endRadius, createTransmission.time, createTransmission.bodyState.position,
+                createTransmission.bodyState.linearVelocity, createTransmission.damage, createTransmission.owner, createTransmission.simulatedID);
     }
 
 
@@ -96,8 +96,8 @@ public class Explosion extends Simulated {
         public final float time;
         public final float damage;
 
-        public ExplosionCreateTransmission(SimulatedType type, int owner, BodyState bodyState, float startRadius, float endRadius, float time, float damage) {
-            super(type, owner, bodyState);
+        public ExplosionCreateTransmission(SimulatedType type, int simulatedID, int owner, BodyState bodyState, float startRadius, float endRadius, float time, float damage) {
+            super(type, simulatedID, owner, bodyState);
             this.startRadius = startRadius;
             this.endRadius = endRadius;
             this.time = time;

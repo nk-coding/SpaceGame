@@ -30,11 +30,11 @@ public class CannonBullet extends Simulated {
     private boolean collided = false;
 
     public CannonBullet(SpaceSimulation spaceSimulation, Vector2 pos, float angle, float length, Vector2 velocity) {
-        this(spaceSimulation, pos, angle, length, velocity, spaceSimulation.getClientID());
+        this(spaceSimulation, pos, angle, length, velocity, spaceSimulation.getClientID(), spaceSimulation.getNewId());
     }
 
-    private CannonBullet(SpaceSimulation spaceSimulation, Vector2 pos, float angle, float length, Vector2 velocity, int owner) {
-        super(SimulatedType.CannonBullet, spaceSimulation, BodyDef.BodyType.KinematicBody, 2, owner, 2);
+    private CannonBullet(SpaceSimulation spaceSimulation, Vector2 pos, float angle, float length, Vector2 velocity, int owner, int id) {
+        super(SimulatedType.CannonBullet, spaceSimulation, BodyDef.BodyType.KinematicBody, 2, owner, 2, id);
         final Body body = getBody();
         body.setBullet(true);
         EdgeShape edgeShape = new EdgeShape();
@@ -52,7 +52,7 @@ public class CannonBullet extends Simulated {
     public static CannonBullet mirror(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
         CannonBulletCreateTransmission createTransmission = (CannonBulletCreateTransmission)transmission;
         return new CannonBullet(spaceSimulation, createTransmission.bodyState.position, createTransmission.bodyState.angle,
-                createTransmission.length, createTransmission.bodyState.linearVelocity, createTransmission.owner);
+                createTransmission.length, createTransmission.bodyState.linearVelocity, createTransmission.owner, createTransmission.simulatedID);
     }
 
     @Override
@@ -91,8 +91,8 @@ public class CannonBullet extends Simulated {
     private static class CannonBulletCreateTransmission extends CreateTransmission {
         public final float length;
 
-        public CannonBulletCreateTransmission(SimulatedType type, int owner, BodyState bodyState, float length) {
-            super(type, owner, bodyState);
+        public CannonBulletCreateTransmission(SimulatedType type, int simulatedID, int owner, BodyState bodyState, float length) {
+            super(type, simulatedID, owner, bodyState);
             this.length = length;
         }
     }
