@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.utils.SnapshotArray;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.spacegame.simulation.Simulated;
@@ -29,7 +28,11 @@ public class SpaceSimulation implements InputProcessor {
     private int idCounter = 0;
 
     // list with all simulateds
-    private final SnapshotArray<Simulated> simulateds = new SnapshotArray<>();
+    //private final SnapshotArray<Simulated> simulateds = new SnapshotArray<>();
+    private final HashMap<Integer, Simulated> simulatedMap = new HashMap<>();
+
+    private final List<Simulated> simulatedToRemove = new ArrayList<>();
+    private final List<Simulated> simulatedToAdd = new ArrayList<>();
 
     // list with all simulated that receive key events
     private final ArrayList<Simulated> keyHandlers = new ArrayList<>();
@@ -137,7 +140,7 @@ public class SpaceSimulation implements InputProcessor {
      * @param simulated the Simulated to add
      */
     public void addSimulated(Simulated simulated) {
-        simulateds.add(simulated);
+        simulatedToAdd.add(simulated);
     }
 
     /**
@@ -146,8 +149,7 @@ public class SpaceSimulation implements InputProcessor {
      * @param simulated the Simulated to remove
      */
     public void removeSimulated(Simulated simulated) {
-        simulateds.removeValue(simulated, true);
-        world.destroyBody(simulated.getBody());
+        simulatedToRemove.add(simulated);
     }
 
     /**
@@ -198,12 +200,29 @@ public class SpaceSimulation implements InputProcessor {
         }
         // call step on the world
         world.step(time, 6, 2);
-        for (Simulated simulated : simulateds) {
+        for (Simulated simulated : simulatedMap.values()) {
             // call act on simulateds
             simulated.act(time);
         }
+        updateSimulatedMap();
         // update the camera
         updateCamera();
+    }
+
+    private void updateSimulatedMap() {
+        //add new simulated
+        for (Simulated toAdd : simulatedToAdd) {
+            simulatedMap.put(toAdd.id, toAdd);
+        }
+        //remove the Simulated to remove
+        for (Simulated toRemove : simulatedToRemove) {
+            simulatedMap.remove(toRemove.id);
+            keyHandlers.remove(toRemove);
+            //TODO check if it has to remove propertyHandler
+            world.destroyBody(toRemove.getBody());
+        }
+        simulatedToRemove.clear();
+        simulatedToAdd.clear();
     }
 
     public void draw(Batch batch) {
@@ -213,7 +232,7 @@ public class SpaceSimulation implements InputProcessor {
         // draw simulateds
         if (true) {
             drawBackground(batch);
-            for (Simulated simulated : simulateds) {
+            for (Simulated simulated : simulatedMap.values()) {
                 float maxAbs = simulated.getRadius() + scaledRadius;
                 float abs = simulated.localToWorldCoordinates(simulated.getCenterPosition()).sub(centerPos).len2();
                 if (abs < (maxAbs * maxAbs)) {
