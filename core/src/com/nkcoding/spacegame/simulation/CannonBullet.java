@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.SpaceSimulation;
+import com.nkcoding.spacegame.simulation.communication.CreateTransmission;
 import com.nkcoding.spacegame.simulation.spaceship.components.Component;
 
 /**
@@ -29,7 +30,11 @@ public class CannonBullet extends Simulated {
     private boolean collided = false;
 
     public CannonBullet(SpaceSimulation spaceSimulation, Vector2 pos, float angle, float length, Vector2 velocity) {
-        super(SimulatedType.CannonBullet, spaceSimulation, BodyDef.BodyType.KinematicBody, 2, spaceSimulation.getClientID(), 2);
+        this(spaceSimulation, pos, angle, length, velocity, spaceSimulation.getClientID());
+    }
+
+    private CannonBullet(SpaceSimulation spaceSimulation, Vector2 pos, float angle, float length, Vector2 velocity, int owner) {
+        super(SimulatedType.CannonBullet, spaceSimulation, BodyDef.BodyType.KinematicBody, 2, owner, 2);
         final Body body = getBody();
         body.setBullet(true);
         EdgeShape edgeShape = new EdgeShape();
@@ -42,6 +47,12 @@ public class CannonBullet extends Simulated {
         this.length = length;
         this.centerPosition = new Vector2(0, length / 2);
         this.radius = length / 2;
+    }
+
+    public static CannonBullet mirror(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
+        CannonBulletCreateTransmission createTransmission = (CannonBulletCreateTransmission)transmission;
+        return new CannonBullet(spaceSimulation, createTransmission.bodyState.position, createTransmission.bodyState.angle,
+                createTransmission.length, createTransmission.bodyState.linearVelocity, createTransmission.owner);
     }
 
     @Override
@@ -74,6 +85,15 @@ public class CannonBullet extends Simulated {
         Object userData = f2.getUserData();
         if (userData instanceof Component && !collided) {
             collided = ((Component) userData).damageAt(f2, 100);
+        }
+    }
+
+    private static class CannonBulletCreateTransmission extends CreateTransmission {
+        public final float length;
+
+        public CannonBulletCreateTransmission(SimulatedType type, int owner, BodyState bodyState, float length) {
+            super(type, owner, bodyState);
+            this.length = length;
         }
     }
 }
