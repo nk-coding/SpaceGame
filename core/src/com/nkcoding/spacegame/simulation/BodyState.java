@@ -3,7 +3,9 @@ package com.nkcoding.spacegame.simulation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
-public class BodyState {
+import java.io.Serializable;
+
+public class BodyState implements Serializable {
     public final float angle;
     public final float angularVelocity;
     public final Vector2 position;

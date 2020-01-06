@@ -28,24 +28,31 @@ public class Simulated {
     private int collisionPriority;
     private int owner;
     private boolean isOwner;
+    private final int syncPriority;
 
-    //the default constructor
-    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority, int owner) {
-        this.type = type;
-        this.spaceSimulation = spaceSimulation;
-        this.bodyType = bodyType;
-        this.collisionPriority = collisionPriority;
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = bodyType;
-        bodyDef.position.set(0, 0);
-        this.body = spaceSimulation.getWorld().createBody(bodyDef);
-        this.body.setUserData(this);
-        this.owner = owner;
-        this.isOwner = owner == spaceSimulation.getClientID();
+    /**
+     * wrapper for the complex constructor
+     * @param type the SimulatedType
+     * @param spaceSimulation the simulation this is for
+     * @param bodyType the BodyType which is used to create the default BodyDef
+     * @param collisionPriority a higher priority means that a contact is handled by this instance, but not on this client
+     * @param owner owner id, used to calculate isOwner
+     * @param syncPriority how often is it synced (between 0 and 2)
+     */
+    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority, int owner, int syncPriority) {
+        this(type, spaceSimulation, createBodyDef(bodyType), collisionPriority, owner, syncPriority);
     }
 
-    //the bigger constructor
-    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef bodyDef, int collisionPriority, int owner) {
+    /**
+     * constructor to create a Simulated
+     * @param type the SimulatedType
+     * @param spaceSimulation the simulation this is for
+     * @param bodyDef the Definition for the box2D body for extended control
+     * @param collisionPriority a higher priority means that a contact is handled by this instance, but not on this client
+     * @param owner owner id, used to calculate isOwner
+     * @param syncPriority how often is it synced (between 0 and 2)
+     */
+    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef bodyDef, int collisionPriority, int owner, int syncPriority) {
         this.type = type;
         this.spaceSimulation = spaceSimulation;
         this.bodyType = bodyDef.type;
@@ -54,9 +61,16 @@ public class Simulated {
         this.body.setUserData(this);
         this.owner = owner;
         this.isOwner = owner == spaceSimulation.getClientID();
+        this.syncPriority = syncPriority;
     }
 
     //helper method to create bodyDef
+    private static BodyDef createBodyDef(BodyDef.BodyType bodyType) {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = bodyType;
+        bodyDef.position.set(0, 0);
+        return bodyDef;
+    }
 
     public SpaceSimulation getSpaceSimulation() {
         return spaceSimulation;
@@ -200,5 +214,9 @@ public class Simulated {
 
     public boolean getIsOwner() {
         return isOwner;
+    }
+
+    public int getSyncPriority() {
+        return syncPriority;
     }
 }

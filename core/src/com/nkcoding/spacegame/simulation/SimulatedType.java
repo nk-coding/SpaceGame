@@ -7,7 +7,7 @@ import java.util.function.BiFunction;
 
 public enum SimulatedType {
     Ship(null),
-    Explosion(null),
+    Explosion(com.nkcoding.spacegame.simulation.Explosion::mirror),
     CannonBullet(null);
 
     //constructor to create new instances via multiplayer

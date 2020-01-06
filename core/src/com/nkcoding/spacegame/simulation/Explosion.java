@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.SpaceSimulation;
+import com.nkcoding.spacegame.simulation.communication.CreateTransmission;
 import com.nkcoding.spacegame.simulation.spaceship.components.Component;
 
 public class Explosion extends Simulated {
@@ -25,10 +26,14 @@ public class Explosion extends Simulated {
 
     private Fixture sensorFixture;
 
-
     public Explosion(SpaceSimulation spaceSimulation, float startRadius, float endRadius, float time,
-                        Vector2 pos, Vector2 linearVelocity, float damage) {
-        super(SimulatedType.Explosion, spaceSimulation, BodyDef.BodyType.KinematicBody, 3, spaceSimulation.getClientID());
+                     Vector2 pos, Vector2 linearVelocity, float damage) {
+        this(spaceSimulation, startRadius, endRadius, time, pos, linearVelocity, damage, spaceSimulation.getClientID());
+    }
+
+    private Explosion(SpaceSimulation spaceSimulation, float startRadius, float endRadius, float time,
+                        Vector2 pos, Vector2 linearVelocity, float damage, int owner) {
+        super(SimulatedType.Explosion, spaceSimulation, BodyDef.BodyType.KinematicBody, 3, owner, 2);
         this.startRadius = startRadius;
         this.currentRadius = startRadius;
         this.endRadius = endRadius;
@@ -45,6 +50,16 @@ public class Explosion extends Simulated {
         this.centerPosition = new Vector2(0, 0);
         this.radius = endRadius;
     }
+
+    /**
+     * constructor only for mirror instance
+     */
+    public static Explosion mirror(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
+        ExplosionCreateTransmission createTransmission = (ExplosionCreateTransmission)transmission;
+        return new Explosion(spaceSimulation, createTransmission.startRadius, createTransmission.endRadius, createTransmission.time,
+                createTransmission.bodyState.position, createTransmission.bodyState.linearVelocity, createTransmission.damage, createTransmission.owner);
+    }
+
 
     @Override
     public void act(float delta) {
@@ -72,6 +87,21 @@ public class Explosion extends Simulated {
         Object userData = f2.getUserData();
         if (userData instanceof Component) {
             ((Component) userData).damageAt(f2, (int) (damage * (1 - ((currentRadius - startRadius) / (endRadius - startRadius)))));
+        }
+    }
+
+    private static class ExplosionCreateTransmission extends CreateTransmission {
+        public final float startRadius;
+        public final float endRadius;
+        public final float time;
+        public final float damage;
+
+        public ExplosionCreateTransmission(SimulatedType type, int owner, BodyState bodyState, float startRadius, float endRadius, float time, float damage) {
+            super(type, owner, bodyState);
+            this.startRadius = startRadius;
+            this.endRadius = endRadius;
+            this.time = time;
+            this.damage = damage;
         }
     }
 }
