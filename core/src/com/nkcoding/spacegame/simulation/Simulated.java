@@ -27,6 +27,7 @@ public class Simulated {
     private boolean receivesKeyInput = false;
     private int collisionPriority;
     private int owner;
+    private boolean isOwner;
 
     //the default constructor
     protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority, int owner) {
@@ -37,10 +38,10 @@ public class Simulated {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = bodyType;
         bodyDef.position.set(0, 0);
-        this.owner = owner;
-
         this.body = spaceSimulation.getWorld().createBody(bodyDef);
         this.body.setUserData(this);
+        this.owner = owner;
+        this.isOwner = owner == spaceSimulation.getClientID();
     }
 
     //the bigger constructor
@@ -52,6 +53,7 @@ public class Simulated {
         this.body = spaceSimulation.getWorld().createBody(bodyDef);
         this.body.setUserData(this);
         this.owner = owner;
+        this.isOwner = owner == spaceSimulation.getClientID();
     }
 
     //helper method to create bodyDef
@@ -194,5 +196,9 @@ public class Simulated {
 
     public int getOwner() {
         return owner;
+    }
+
+    public boolean getIsOwner() {
+        return isOwner;
     }
 }

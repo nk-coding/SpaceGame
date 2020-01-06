@@ -48,9 +48,12 @@ public class Explosion extends Simulated {
 
     @Override
     public void act(float delta) {
-        super.act(delta);
         if (currentRadius >= endRadius) {
-            getSpaceSimulation().removeSimulated(this);
+            //remove only if it is the owner
+            //maybe change this later
+            if (getIsOwner()) {
+                getSpaceSimulation().removeSimulated(this);
+            }
         } else {
             currentRadius += step * delta;
             sensorFixture.getShape().setRadius(currentRadius);
@@ -59,7 +62,6 @@ public class Explosion extends Simulated {
 
     @Override
     public void draw(Batch batch) {
-        super.draw(batch);
         Vector2 pos = getBody().getPosition().sub(currentRadius, currentRadius);
         batch.draw(explosionTexture, pos.x, pos.y, currentRadius * 2, currentRadius * 2);
     }
