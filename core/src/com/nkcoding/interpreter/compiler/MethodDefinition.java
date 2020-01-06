@@ -2,42 +2,11 @@ package com.nkcoding.interpreter.compiler;
 
 public class MethodDefinition {
 
-    private TypeNamePair[] parameters;
-
-    public void setParameters(TypeNamePair[] parameters) {
-        this.parameters = parameters;
-    }
-
-    public TypeNamePair[] getParameters() {
-        return parameters;
-    }
-
-    private String name;
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    private DataType returnType;
-
-    public void setReturnType(DataType returnType) {
-        this.returnType = returnType;
-    }
-
-    public DataType getReturnType() {
-        return returnType;
-    }
-
     //the type of the method
     private final MethodType methodType;
-
-    public MethodType getMethodType() {
-        return methodType;
-    }
+    private TypeNamePair[] parameters;
+    private String name;
+    private DataType returnType;
 
     //could be used if necessary
     public MethodDefinition(MethodType methodType) {
@@ -50,6 +19,34 @@ public class MethodDefinition {
         this.name = name;
         this.returnType = returnType;
         this.parameters = parameters;
+    }
+
+    public TypeNamePair[] getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(TypeNamePair[] parameters) {
+        this.parameters = parameters;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public DataType getReturnType() {
+        return returnType;
+    }
+
+    public void setReturnType(DataType returnType) {
+        this.returnType = returnType;
+    }
+
+    public MethodType getMethodType() {
+        return methodType;
     }
 
     @Override

@@ -21,78 +21,41 @@ public class SpaceSimulation implements InputProcessor {
     public static final float TILE_SIZE = 8f;
 
     private final SpaceGame spaceGame;
-
-    //the id of the client
-    private int clientID = 0;
-
-    //id counter
-    private int idCounter = 0;
-
     // list with all simulateds
     //private final SnapshotArray<Simulated> simulateds = new SnapshotArray<>();
     private final HashMap<Integer, Simulated> simulatedMap = new HashMap<>();
-
     private final List<Simulated> simulatedToRemove = new ArrayList<>();
     private final List<Simulated> simulatedToAdd = new ArrayList<>();
-
     // list with all simulated that receive key events
     private final ArrayList<Simulated> keyHandlers = new ArrayList<>();
-
     // map with all objects that can receive futures
     private final HashMap<String, ExternalPropertyHandler> propertyHandlers = new HashMap<>();
-
-    // handles all the ExternalPropertyHandlers
-    private ScriptingEngine scriptingEngine;
-
-    public ScriptingEngine getScriptingEngine() {
-        return scriptingEngine;
-    }
-
     // AssetManager to load the resources
     private final ExtAssetManager assetManager;
-
-    public ExtAssetManager getAssetManager() {
-        return assetManager;
-    }
-
+    // World for Box2D
+    // this is the physics simulation
+    private final World world;
+    //the id of the client
+    private int clientID = 0;
+    //id counter
+    private int idCounter = 0;
+    // handles all the ExternalPropertyHandlers
+    private ScriptingEngine scriptingEngine;
     // camera to draw stuff correctly
     private OrthographicCamera camera;
-
     // tiles that must be drawn
     private List<int[]> tilesToDraw = new ArrayList<>();
     //the amount of tiles
     private int tileCount = 0;
-
     // set from resize, necessary for camera
     private int width, height;
-
     // center pos and radius, necessary for improved drawing
     private Vector2 centerPos;
     private float radius, scaledRadius;
-
     // Simulated that the camera should follow
     private Simulated cameraSimulated;
-
-    public Simulated getCameraSimulated() {
-        return cameraSimulated;
-    }
-
-    public void setCameraSimulated(Simulated cameraSimulated) {
-        if (cameraSimulated != this.cameraSimulated && this.cameraSimulated != null)
-            this.cameraSimulated.setCameraFocus(false);
-        this.cameraSimulated = cameraSimulated;
-    }
-
     // DEBUG
     private Box2DDebugRenderer debugRenderer;
-
-    // World for Box2D
-    // this is the physics simulation
-    private final World world;
-
-    public World getWorld() {
-        return world;
-    }
 
     // constructor
     public SpaceSimulation(SpaceGame spaceGame) {
@@ -133,6 +96,28 @@ public class SpaceSimulation implements InputProcessor {
         // init camera
         this.camera = new OrthographicCamera();
         debugRenderer = new Box2DDebugRenderer();
+    }
+
+    public ScriptingEngine getScriptingEngine() {
+        return scriptingEngine;
+    }
+
+    public ExtAssetManager getAssetManager() {
+        return assetManager;
+    }
+
+    public Simulated getCameraSimulated() {
+        return cameraSimulated;
+    }
+
+    public void setCameraSimulated(Simulated cameraSimulated) {
+        if (cameraSimulated != this.cameraSimulated && this.cameraSimulated != null)
+            this.cameraSimulated.setCameraFocus(false);
+        this.cameraSimulated = cameraSimulated;
+    }
+
+    public World getWorld() {
+        return world;
     }
 
     /**
@@ -367,7 +352,7 @@ public class SpaceSimulation implements InputProcessor {
     }
 
     public int getNewId() {
-        return  clientID * 1000000 + idCounter++;
+        return clientID * 1000000 + idCounter++;
     }
 
     public void sendTo(Transmission transmission, int target) {

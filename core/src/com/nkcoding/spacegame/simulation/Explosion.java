@@ -32,7 +32,7 @@ public class Explosion extends Simulated {
     }
 
     private Explosion(SpaceSimulation spaceSimulation, float startRadius, float endRadius, float time,
-                        Vector2 pos, Vector2 linearVelocity, float damage, int owner, int id) {
+                      Vector2 pos, Vector2 linearVelocity, float damage, int owner, int id) {
         super(SimulatedType.Explosion, spaceSimulation, BodyDef.BodyType.KinematicBody, 3, owner, 2, id);
         this.startRadius = startRadius;
         this.currentRadius = startRadius;
@@ -55,7 +55,7 @@ public class Explosion extends Simulated {
      * constructor only for mirror instance
      */
     public static Explosion mirror(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
-        ExplosionCreateTransmission createTransmission = (ExplosionCreateTransmission)transmission;
+        ExplosionCreateTransmission createTransmission = (ExplosionCreateTransmission) transmission;
         return new Explosion(spaceSimulation, createTransmission.startRadius, createTransmission.endRadius, createTransmission.time, createTransmission.bodyState.position,
                 createTransmission.bodyState.linearVelocity, createTransmission.damage, createTransmission.owner, createTransmission.simulatedID);
     }

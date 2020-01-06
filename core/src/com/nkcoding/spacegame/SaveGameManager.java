@@ -12,6 +12,26 @@ import java.io.IOException;
 import java.io.Writer;
 
 public class SaveGameManager {
+    private static final String SAVE_FILE_PATH = "saveGame.json";
+    private static SaveGame saveGame = null;
+
+    /**
+     * loads a SaveGame
+     */
+    public static SaveGame load() {
+        if (saveGame == null) {
+            FileHandle handle = Gdx.files.local(SAVE_FILE_PATH);
+            if (handle.exists()) saveGame = new SaveGame(handle);
+            else saveGame = new SaveGame();
+        }
+        return saveGame;
+    }
+
+    public static void save() {
+        FileHandle handle = Gdx.files.local(SAVE_FILE_PATH);
+        saveGame.save(handle);
+    }
+
     public static class SaveGame {
         public ShipDef shipDef;
 
@@ -47,27 +67,6 @@ public class SaveGameManager {
                 e.printStackTrace();
             }
         }
-    }
-
-    private static final String SAVE_FILE_PATH = "saveGame.json";
-
-    private static SaveGame saveGame = null;
-
-    /**
-     * loads a SaveGame
-     */
-    public static SaveGame load() {
-        if (saveGame == null) {
-            FileHandle handle = Gdx.files.local(SAVE_FILE_PATH);
-            if (handle.exists()) saveGame = new SaveGame(handle);
-            else saveGame = new SaveGame();
-        }
-        return saveGame;
-    }
-
-    public static void save() {
-        FileHandle handle = Gdx.files.local(SAVE_FILE_PATH);
-        saveGame.save(handle);
     }
 
 }

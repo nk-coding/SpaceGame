@@ -339,7 +339,7 @@ public class Compiler {
     }
 
     //compile a single expression, also handle list stuff
-    private Expression compileSingleExpression() throws CompileException{
+    private Expression compileSingleExpression() throws CompileException {
         try {
             //get the expression
             char possibleListChar = text.getNextNonWhitespaceChar();
@@ -375,8 +375,7 @@ public class Compiler {
             }
             if (exp.getType().name.equals(DataType.LIST_KW)) {
                 return compileListExpression(exp);
-            }
-            else {
+            } else {
                 return exp;
             }
         } catch (ProgramTextWrapper.EndReachedException e) {

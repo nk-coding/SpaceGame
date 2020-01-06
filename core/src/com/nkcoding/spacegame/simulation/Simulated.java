@@ -13,8 +13,10 @@ public class Simulated {
     public final BodyDef.BodyType bodyType;
     //the simulation type
     public final SimulatedType type;
+    public final int id;
     //the body which is used in Box3D
     protected final Body body;
+    private final int syncPriority;
     //is it active for simulation or not
     protected boolean active = true;
     //center position, width and height for camera adjustment
@@ -29,17 +31,16 @@ public class Simulated {
     private int collisionPriority;
     private int owner;
     private boolean isOwner;
-    private final int syncPriority;
-    public final int id;
 
     /**
      * wrapper for the complex constructor
-     * @param type the SimulatedType
-     * @param spaceSimulation the simulation this is for
-     * @param bodyType the BodyType which is used to create the default BodyDef
+     *
+     * @param type              the SimulatedType
+     * @param spaceSimulation   the simulation this is for
+     * @param bodyType          the BodyType which is used to create the default BodyDef
      * @param collisionPriority a higher priority means that a contact is handled by this instance, but not on this client
-     * @param owner owner id, used to calculate isOwner
-     * @param syncPriority how often is it synced (between 0 and 2)
+     * @param owner             owner id, used to calculate isOwner
+     * @param syncPriority      how often is it synced (between 0 and 2)
      */
     protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority, int owner, int syncPriority, int id) {
         this(type, spaceSimulation, createBodyDef(bodyType), collisionPriority, owner, syncPriority, id);
@@ -47,12 +48,13 @@ public class Simulated {
 
     /**
      * constructor to create a Simulated
-     * @param type the SimulatedType
-     * @param spaceSimulation the simulation this is for
-     * @param bodyDef the Definition for the box2D body for extended control
+     *
+     * @param type              the SimulatedType
+     * @param spaceSimulation   the simulation this is for
+     * @param bodyDef           the Definition for the box2D body for extended control
      * @param collisionPriority a higher priority means that a contact is handled by this instance, but not on this client
-     * @param owner owner id, used to calculate isOwner
-     * @param syncPriority how often is it synced (between 0 and 2)
+     * @param owner             owner id, used to calculate isOwner
+     * @param syncPriority      how often is it synced (between 0 and 2)
      */
     protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef bodyDef, int collisionPriority, int owner, int syncPriority, int id) {
         this.type = type;
@@ -204,8 +206,8 @@ public class Simulated {
      * must handle own synchronization on its own
      *
      * @param other the simulated the collision happened with
-     * @param f1 Fixture 1 of the collision
-     * @param f2 Fixture 2 of the collision
+     * @param f1    Fixture 1 of the collision
+     * @param f2    Fixture 2 of the collision
      */
     public void beginContact(Simulated other, Fixture f1, Fixture f2) {
 
@@ -225,6 +227,7 @@ public class Simulated {
 
     /**
      * send a transmission to the original
+     *
      * @param transmission the transmission to send
      */
     public void sendToOriginal(UpdateTransmission transmission) {
@@ -237,6 +240,7 @@ public class Simulated {
 
     /**
      * send a transmission to all mirrors
+     *
      * @param transmission the transmission to send
      */
     public void post(UpdateTransmission transmission) {
@@ -246,6 +250,7 @@ public class Simulated {
 
     /**
      * subclasses should overwrite this method if they want to receive update transmissions
+     *
      * @param transmission the update transmission
      */
     protected void receiveTransmission(UpdateTransmission transmission) {

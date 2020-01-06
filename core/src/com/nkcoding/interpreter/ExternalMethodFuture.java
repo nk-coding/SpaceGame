@@ -7,6 +7,9 @@ import java.util.concurrent.CompletableFuture;
 public class ExternalMethodFuture extends CompletableFuture<Object> {
     //the name of the method
     private String name;
+    private DataType type;
+    //the parameters for the method
+    private Object[] parameters;
 
     public String getName() {
         return name;
@@ -16,8 +19,6 @@ public class ExternalMethodFuture extends CompletableFuture<Object> {
         this.name = name;
     }
 
-    private DataType type;
-
     public DataType getType() {
         return type;
     }
@@ -25,9 +26,6 @@ public class ExternalMethodFuture extends CompletableFuture<Object> {
     public void setType(DataType type) {
         this.type = type;
     }
-
-    //the parameters for the method
-    private Object[] parameters;
 
     public Object[] getParameters() {
         return parameters;

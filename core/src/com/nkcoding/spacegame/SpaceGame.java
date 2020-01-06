@@ -9,24 +9,20 @@ import com.nkcoding.spacegame.screens.GameScreen;
 import com.nkcoding.spacegame.screens.ShipBuilderScreen;
 
 public class SpaceGame extends Game {
+    public GLProfiler glProfiler;
+    Screen screen;
     //one SpriteBatch for multiple Screens because heavy object
     private SpriteBatch batch = null;
+    private ExtAssetManager assetManager = null;
+    private SaveGameManager.SaveGame saveGame;
 
     public SpriteBatch getBatch() {
         return batch;
     }
 
-    private ExtAssetManager assetManager = null;
-
     public ExtAssetManager getAssetManager() {
         return assetManager;
     }
-
-    private SaveGameManager.SaveGame saveGame;
-
-    Screen screen;
-
-    public GLProfiler glProfiler;
 
     @Override
     public void create() {

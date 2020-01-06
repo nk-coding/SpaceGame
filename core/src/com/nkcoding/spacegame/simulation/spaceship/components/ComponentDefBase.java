@@ -7,6 +7,24 @@ import com.nkcoding.spacegame.simulation.Ship;
 import java.io.Serializable;
 
 public class ComponentDefBase implements Serializable {
+    //ComponentInfo with all necessary information
+    protected final ComponentType componentType;
+    //0 = not rotated, 1 = 90°, 2 = 180°, 3 = 270°, everything different will be normalised, negative values are not allowed
+    protected int rotation;
+    //the position, this is necessary for a ship to locate the component
+    protected int x;
+    //the position, this is necessary for a ship to locate the component
+    protected int y;
+
+    /**
+     * constructor with a ComponentInfo instead of a ComponentType
+     *
+     * @param type contains the type of the ComponentDef
+     */
+    public ComponentDefBase(ComponentType type) {
+        this.componentType = type;
+    }
+
     public int getWidth() {
         return componentType.width;
     }
@@ -14,9 +32,6 @@ public class ComponentDefBase implements Serializable {
     public int getHeight() {
         return componentType.height;
     }
-
-    //0 = not rotated, 1 = 90°, 2 = 180°, 3 = 270°, everything different will be normalised, negative values are not allowed
-    protected int rotation;
 
     public int getRotation() {
         return rotation;
@@ -27,9 +42,6 @@ public class ComponentDefBase implements Serializable {
         this.rotation = rotation % 4;
     }
 
-    //the position, this is necessary for a ship to locate the component
-    protected int x;
-
     public int getX() {
         return x;
     }
@@ -37,9 +49,6 @@ public class ComponentDefBase implements Serializable {
     public void setX(int x) {
         this.x = x;
     }
-
-    //the position, this is necessary for a ship to locate the component
-    protected int y;
 
     public int getY() {
         return y;
@@ -63,9 +72,6 @@ public class ComponentDefBase implements Serializable {
         return ((rotation % 2) == 0) ? componentType.height : componentType.width;
     }
 
-    //ComponentInfo with all necessary information
-    protected final ComponentType componentType;
-
     //get the type
     public ComponentType getType() {
         return componentType;
@@ -77,16 +83,8 @@ public class ComponentDefBase implements Serializable {
     }
 
     /**
-     * constructor with a ComponentInfo instead of a ComponentType
-     *
-     * @param type contains the type of the ComponentDef
-     */
-    public ComponentDefBase(ComponentType type) {
-        this.componentType = type;
-    }
-
-    /**
      * helper method to generate the shape
+     *
      * @param posX the x pos for the shape
      * @param posY the y pos for the shape
      * @return the shape

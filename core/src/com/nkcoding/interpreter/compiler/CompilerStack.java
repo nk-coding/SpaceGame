@@ -8,37 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 //the CompilerStack exists because it is less run-time optimated than the real Stack
 //this mainly means that there are less generics
 public class CompilerStack {
-    //subclass that is the item
-    //this subclass will not be revealed to the compiler because it is unnecessary
-    private static class CompilerStackItem {
-        //the name of the variable
-        String name;
-
-        //the type of the variable
-        DataType type;
-
-        //the stack level
-        int stackLevel;
-
-        //the position where this was registered
-        //this is necessary to throw exceptions correctly
-        //not implemented yet
-
-        CompilerStackItem(String name, DataType type, int stackLevel) {
-            this.name = name;
-            this.type = type;
-            this.stackLevel = stackLevel;
-        }
-
-        @Override
-        public String toString() {
-            return type + " " + name;
-        }
-    }
-
     //list of all CompilerStackItems
     private ArrayList<CompilerStackItem> stack = new ArrayList<>();
-
     private int stackLevel = 0;
 
     public void beginStackLevel() {
@@ -107,5 +78,33 @@ public class CompilerStack {
             sb.append('\n');
         }
         return sb.toString();
+    }
+
+    //subclass that is the item
+    //this subclass will not be revealed to the compiler because it is unnecessary
+    private static class CompilerStackItem {
+        //the name of the variable
+        String name;
+
+        //the type of the variable
+        DataType type;
+
+        //the stack level
+        int stackLevel;
+
+        //the position where this was registered
+        //this is necessary to throw exceptions correctly
+        //not implemented yet
+
+        CompilerStackItem(String name, DataType type, int stackLevel) {
+            this.name = name;
+            this.type = type;
+            this.stackLevel = stackLevel;
+        }
+
+        @Override
+        public String toString() {
+            return type + " " + name;
+        }
     }
 }

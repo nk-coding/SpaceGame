@@ -47,17 +47,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
  * @author Nathan Sweet
  */
 public class ZoomScrollPane extends WidgetGroup {
-    private ZoomScrollPaneStyle style;
-    private Actor widget;
-
     final Rectangle hScrollBounds = new Rectangle();
     final Rectangle vScrollBounds = new Rectangle();
     final Rectangle hKnobBounds = new Rectangle();
     final Rectangle vKnobBounds = new Rectangle();
+    final Vector2 lastPoint = new Vector2();
     private final Rectangle widgetAreaBounds = new Rectangle();
     private final Rectangle widgetCullingArea = new Rectangle();
-    private ActorGestureListener flickScrollListener;
-
     boolean scrollX, scrollY;
     boolean vScrollOnRight = true;
     boolean hScrollOnBottom = true;
@@ -65,25 +61,25 @@ public class ZoomScrollPane extends WidgetGroup {
     float visualAmountX, visualAmountY;
     float maxX, maxY;
     boolean touchScrollH, touchScrollV;
-    final Vector2 lastPoint = new Vector2();
     float areaWidth, areaHeight;
     boolean fadeScrollBars = true, smoothScrolling = true, scrollBarTouch = true;
     float fadeAlpha, fadeAlphaSeconds = 1, fadeDelay, fadeDelaySeconds = 1;
     boolean cancelTouchFocus = true;
-
     boolean flickScroll = true;
     float velocityX, velocityY;
     float flingTimer;
-    private boolean overscrollX = true, overscrollY = true;
     float flingTime = 1f;
+    boolean disableX, disableY;
+    int draggingPointer = -1;
+    private ZoomScrollPaneStyle style;
+    private Actor widget;
+    private ActorGestureListener flickScrollListener;
+    private boolean overscrollX = true, overscrollY = true;
     private float overscrollDistance = 50, overscrollSpeedMin = 30, overscrollSpeedMax = 200;
     private boolean forceScrollX, forceScrollY;
-    boolean disableX, disableY;
     private boolean clamp = true;
     private boolean scrollbarsOnTop;
     private boolean variableSizeKnobs = true;
-    int draggingPointer = -1;
-
     /**
      * controls the zoom level
      */
@@ -312,18 +308,18 @@ public class ZoomScrollPane extends WidgetGroup {
                 : MathUtils.clamp(amountY, 0, maxY));
     }
 
-    public void setStyle(ZoomScrollPaneStyle style) {
-        if (style == null) throw new IllegalArgumentException("style cannot be null.");
-        this.style = style;
-        invalidateHierarchy();
-    }
-
     /**
      * Returns the scroll pane's style. Modifying the returned style may not have an effect until
      * {@link #setStyle(ZoomScrollPaneStyle)} is called.
      */
     public ZoomScrollPaneStyle getStyle() {
         return style;
+    }
+
+    public void setStyle(ZoomScrollPaneStyle style) {
+        if (style == null) throw new IllegalArgumentException("style cannot be null.");
+        this.style = style;
+        invalidateHierarchy();
     }
 
     //TODO
@@ -783,6 +779,13 @@ public class ZoomScrollPane extends WidgetGroup {
     }
 
     /**
+     * Returns the actor embedded in this scroll pane, or null.
+     */
+    public Actor getActor() {
+        return widget;
+    }
+
+    /**
      * Sets the {@link Actor} embedded in this scroll pane.
      *
      * @param actor May be null to remove any current actor.
@@ -795,9 +798,10 @@ public class ZoomScrollPane extends WidgetGroup {
     }
 
     /**
-     * Returns the actor embedded in this scroll pane, or null.
+     * @deprecated Use {@link #getActor()}.
      */
-    public Actor getActor() {
+    @Deprecated
+    public Actor getWidget() {
         return widget;
     }
 
@@ -807,14 +811,6 @@ public class ZoomScrollPane extends WidgetGroup {
     @Deprecated
     public void setWidget(Actor actor) {
         setActor(actor);
-    }
-
-    /**
-     * @deprecated Use {@link #getActor()}.
-     */
-    @Deprecated
-    public Actor getWidget() {
-        return widget;
     }
 
     /**
@@ -918,10 +914,6 @@ public class ZoomScrollPane extends WidgetGroup {
         return Math.min(areaHeight, Math.max(areaHeight * 0.9f, maxY * 0.1f) / 4);
     }
 
-    public void setScrollX(float pixels) {
-        scrollX(MathUtils.clamp(pixels, 0, maxX));
-    }
-
     /**
      * Returns the x scroll position in pixels, where 0 is the left of the scroll pane.
      */
@@ -929,27 +921,11 @@ public class ZoomScrollPane extends WidgetGroup {
         return amountX;
     }
 
-    public void setScrollY(float pixels) {
-        scrollY(MathUtils.clamp(pixels, 0, maxY));
-    }
-
     /**
      * Returns the y scroll position in pixels, where 0 is the top of the scroll pane.
      */
     public float getScrollY() {
         return amountY;
-    }
-
-    public void setZoom(float newZoom) {
-        Vector2 localPosition = screenToLocalCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-        percentageX = localPosition.x / getWidth();
-        percentageY = localPosition.y / getHeight();
-
-        childPercentageX = (visualAmountX + localPosition.x) / getActor().getWidth();
-        childPercentageY = 1f - (visualAmountY + (getHeight() - localPosition.y)) / getActor().getHeight();
-
-        zoomLevelDif = Math.abs(visualZoomLevel - newZoom);
-        this.zoomLevel = newZoom;
     }
 
     /**
@@ -975,6 +951,18 @@ public class ZoomScrollPane extends WidgetGroup {
 
     public float getZoom() {
         return zoomLevel;
+    }
+
+    public void setZoom(float newZoom) {
+        Vector2 localPosition = screenToLocalCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+        percentageX = localPosition.x / getWidth();
+        percentageY = localPosition.y / getHeight();
+
+        childPercentageX = (visualAmountX + localPosition.x) / getActor().getWidth();
+        childPercentageY = 1f - (visualAmountY + (getHeight() - localPosition.y)) / getActor().getHeight();
+
+        zoomLevelDif = Math.abs(visualZoomLevel - newZoom);
+        this.zoomLevel = newZoom;
     }
 
     public float getVisualScrollPercentX() {
@@ -1104,11 +1092,19 @@ public class ZoomScrollPane extends WidgetGroup {
         return scrollX;
     }
 
+    public void setScrollX(float pixels) {
+        scrollX(MathUtils.clamp(pixels, 0, maxX));
+    }
+
     /**
      * Returns true if the widget is larger than the scroll pane vertically.
      */
     public boolean isScrollY() {
         return scrollY;
+    }
+
+    public void setScrollY(float pixels) {
+        scrollY(MathUtils.clamp(pixels, 0, maxY));
     }
 
     /**
@@ -1156,10 +1152,6 @@ public class ZoomScrollPane extends WidgetGroup {
         return flingTimer > 0;
     }
 
-    public void setVelocityX(float velocityX) {
-        this.velocityX = velocityX;
-    }
-
     /**
      * Gets the flick scroll x velocity.
      */
@@ -1167,8 +1159,8 @@ public class ZoomScrollPane extends WidgetGroup {
         return velocityX;
     }
 
-    public void setVelocityY(float velocityY) {
-        this.velocityY = velocityY;
+    public void setVelocityX(float velocityX) {
+        this.velocityX = velocityX;
     }
 
     /**
@@ -1176,6 +1168,10 @@ public class ZoomScrollPane extends WidgetGroup {
      */
     public float getVelocityY() {
         return velocityY;
+    }
+
+    public void setVelocityY(float velocityY) {
+        this.velocityY = velocityY;
     }
 
     /**
@@ -1240,6 +1236,15 @@ public class ZoomScrollPane extends WidgetGroup {
         vScrollOnRight = right;
     }
 
+    public void setupFadeScrollBars(float fadeAlphaSeconds, float fadeDelaySeconds) {
+        this.fadeAlphaSeconds = fadeAlphaSeconds;
+        this.fadeDelaySeconds = fadeDelaySeconds;
+    }
+
+    public boolean getFadeScrollBars() {
+        return fadeScrollBars;
+    }
+
     /**
      * When true the scrollbars don't reduce the scrollable size and fade out after some time of not being used.
      */
@@ -1248,15 +1253,6 @@ public class ZoomScrollPane extends WidgetGroup {
         this.fadeScrollBars = fadeScrollBars;
         if (!fadeScrollBars) fadeAlpha = fadeAlphaSeconds;
         invalidate();
-    }
-
-    public void setupFadeScrollBars(float fadeAlphaSeconds, float fadeDelaySeconds) {
-        this.fadeAlphaSeconds = fadeAlphaSeconds;
-        this.fadeDelaySeconds = fadeDelaySeconds;
-    }
-
-    public boolean getFadeScrollBars() {
-        return fadeScrollBars;
     }
 
     /**

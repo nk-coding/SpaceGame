@@ -5,14 +5,14 @@ public class CompileException extends Exception {
     //in which line and column is the error
     private ProgramPosition position;
 
-    public ProgramPosition getPosition() {
-        return position;
-    }
-
     //constructor
     public CompileException(String msg, ProgramPosition position) {
         super(msg);
         this.position = position;
+    }
+
+    public ProgramPosition getPosition() {
+        return position;
     }
 
     @Override

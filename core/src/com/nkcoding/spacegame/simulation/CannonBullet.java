@@ -50,7 +50,7 @@ public class CannonBullet extends Simulated {
     }
 
     public static CannonBullet mirror(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
-        CannonBulletCreateTransmission createTransmission = (CannonBulletCreateTransmission)transmission;
+        CannonBulletCreateTransmission createTransmission = (CannonBulletCreateTransmission) transmission;
         return new CannonBullet(spaceSimulation, createTransmission.bodyState.position, createTransmission.bodyState.angle,
                 createTransmission.length, createTransmission.bodyState.linearVelocity, createTransmission.owner, createTransmission.simulatedID);
     }

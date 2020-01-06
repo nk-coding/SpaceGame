@@ -39,77 +39,58 @@ import java.util.Map;
 
 public class ShipBuilderScreen implements Screen {
 
+    //region data
+    public final ShipDef shipDef;
     //the game
     private final SpaceGame spaceGame;
-
     //the stage
     private final Stage stage;
-
     //fields from game
     //spriteBatch for the stage
     private final SpriteBatch spriteBatch;
-
     private final ExtAssetManager assetManager;
-
     //the main tables
     private final Table shipRootTable;
     private final Table codeRootTable;
-
     //Stack for the possible components
     private final Table componentsStack;
-
     //Stack for the external properties for the selected Component
     private final VerticalGroup propertiesVerticalGroup;
-
     //temporary storage for PropertyBoxes which are not necessary because of a ComponentDef change
     //the can be updated and used later
     private final ArrayDeque<Actor> oldPropertyBoxes = new ArrayDeque<>();
-
     //ZoomScrollOane for the shipDesigner
     private final ZoomScrollPane shipDesignerZoomScrollPane;
-
     //the main Designer for the Ship
     private final ShipDesigner shipDesigner;
-
     //button to switch views
     private final Drawable switchButton_ok;
     private final Drawable switchButton_error;
     private final ImageButton switchButton;
-
     private final CodeEditor codeEditor;
-
     //the table with the component / ship name
     private final Table basicInfoTable;
     private final Label componentNameLabel;
     private final ImageButton rotateButton;
     private final TextField nameTextField;
-
     //check Button
     private final Drawable checkButton_ok;
     private final Drawable checkButton_error;
     private final Drawable checkButton_actionNecessary;
     private final ImageButton checkButton;
 
+    //endregion
     //error log
     private final TextField errorLog;
-
-    //endregion
-
     //style for more propertyBoxes
     PropertyBox.PropertyBoxStyle propertyBoxStyle;
-
     //compiler to check the code
     private Compiler compiler;
-
     //the compiled code
     private MethodStatement[] methods = new MethodStatement[0];
     private HashMap<String, NormalMethodDefinition> methodPositions = new HashMap<>();
-
     //normal (ship) view?
     private boolean isShipView = true;
-
-    //region data
-    public final ShipDef shipDef;
     //endregion
 
     //constructor

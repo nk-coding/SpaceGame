@@ -8,18 +8,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class Stack {
-    //the list where all the items on the Stack are stored in
-    private ArrayList<StackItem> stackItems;
-
-    //the stack level
-    private int stackLevel = 0;
-
-    //the scriptingEngine is mainly used for the requestExternalMethod
-    private ScriptingEngine scriptingEngine;
-
     //map with all globalVariables
     final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables;
-
+    //the list where all the items on the Stack are stored in
+    private ArrayList<StackItem> stackItems;
+    //the stack level
+    private int stackLevel = 0;
+    //the scriptingEngine is mainly used for the requestExternalMethod
+    private ScriptingEngine scriptingEngine;
     //sets the debug mode
     private boolean debugMode = false;
 

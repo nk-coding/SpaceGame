@@ -22,16 +22,20 @@ public abstract class ExternalProperty<T> {
      * the name of the property
      */
     public final String name;
-
+    /**
+     * is the value changed
+     */
+    protected boolean changed = false;
     /**
      * method that is called when property is changed and notifyChange is activated
      */
     private MethodStatement changedMethodStatement = null;
 
-    /**
-     * is the value changed
-     */
-    protected boolean changed = false;
+    public ExternalProperty(boolean readonly, boolean notifyChanges, String name) {
+        this.readonly = readonly;
+        this.notifyChanges = notifyChanges;
+        this.name = name;
+    }
 
     public MethodStatement getChangedMethodStatement() {
         return changedMethodStatement;
@@ -39,12 +43,6 @@ public abstract class ExternalProperty<T> {
 
     public void setChangedMethodStatement(MethodStatement changedMethodStatement) {
         this.changedMethodStatement = changedMethodStatement;
-    }
-
-    public ExternalProperty(boolean readonly, boolean notifyChanges, String name) {
-        this.readonly = readonly;
-        this.notifyChanges = notifyChanges;
-        this.name = name;
     }
 
     public void startChangedHandler(ScriptingEngine engine, final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables) {

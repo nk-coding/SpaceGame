@@ -4,25 +4,24 @@ import com.nkcoding.interpreter.compiler.MethodDefinition;
 
 public class MethodStatement implements Statement {
 
+    private final MethodDefinition definition;
     protected Statement[] statements;
 
-    public void setStatements(Statement[] statements) {
-        this.statements = statements;
+    //constructor
+    public MethodStatement(MethodDefinition definition) {
+        this.definition = definition;
     }
 
     public Statement[] getStatements() {
         return statements;
     }
 
-    private final MethodDefinition definition;
+    public void setStatements(Statement[] statements) {
+        this.statements = statements;
+    }
 
     public MethodDefinition getDefinition() {
         return definition;
-    }
-
-    //constructor
-    public MethodStatement(MethodDefinition definition) {
-        this.definition = definition;
     }
 
     @Override

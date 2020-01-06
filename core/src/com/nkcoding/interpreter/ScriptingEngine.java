@@ -13,15 +13,14 @@ public class ScriptingEngine {
     //Queue of all ExternMethodFutures, they will be executed on the main tread
     //therefore, this queue must be concurrent
     private final ConcurrentLinkedQueue<ExternalMethodFuture> futureQueue = new ConcurrentLinkedQueue<>();
-
-    public final ConcurrentLinkedQueue<ExternalMethodFuture> getFutureQueue() {
-        return futureQueue;
-    }
-
     //the ThreadPool where all scripts run
     //I probably replace this with a fixed size pool to reduce CPU performance impact, because these scripts run normally
     //at a relatively low priority
     private ExecutorService executor = Executors.newCachedThreadPool();
+
+    public final ConcurrentLinkedQueue<ExternalMethodFuture> getFutureQueue() {
+        return futureQueue;
+    }
 
     /**
      * call a method async

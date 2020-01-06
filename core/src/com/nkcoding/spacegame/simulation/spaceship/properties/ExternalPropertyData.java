@@ -69,6 +69,27 @@ public class ExternalPropertyData {
         this(name, type, true, false);
     }
 
+    /**
+     * wrapper for new ExternalPropertyData(name, type, readonly = true)
+     */
+    public static ExternalPropertyData of(String name, DataType type) {
+        return of(name, type, true);
+    }
+
+    /**
+     * wrapper for new ExternalPropertyData(name, type, readonly)
+     */
+    public static ExternalPropertyData of(String name, DataType type, boolean readonly) {
+        return new ExternalPropertyData(name, type, readonly);
+    }
+
+    /**
+     * wrapper for new ExternalPropertyData(name, type, readonly, writeonly)
+     */
+    public static ExternalPropertyData of(String name, DataType type, boolean readonly, boolean writeonly) {
+        return new ExternalPropertyData(name, type, readonly, writeonly);
+    }
+
     public boolean verifyInit(String init) {
         if (init.equals("")) return true;
         switch (type.name) {
@@ -126,7 +147,6 @@ public class ExternalPropertyData {
         return (readonly || verifyInit(this.initData)) && verifyHandler(this.handlerName, methods);
     }
 
-
     //adds the external method definitions the list
     public void addExternalMethodDefs(Collection<? super MethodDefinition> list) {
         if (!readonly) {
@@ -158,27 +178,6 @@ public class ExternalPropertyData {
 
     @Override
     public Object clone() {
-        return new ExternalPropertyData(name, type, readonly, writeonly);
-    }
-
-    /**
-     * wrapper for new ExternalPropertyData(name, type, readonly = true)
-     */
-    public static ExternalPropertyData of(String name, DataType type) {
-        return of(name, type, true);
-    }
-
-    /**
-     * wrapper for new ExternalPropertyData(name, type, readonly)
-     */
-    public static ExternalPropertyData of(String name, DataType type, boolean readonly) {
-        return new ExternalPropertyData(name, type, readonly);
-    }
-
-    /**
-     * wrapper for new ExternalPropertyData(name, type, readonly, writeonly)
-     */
-    public static ExternalPropertyData of(String name, DataType type, boolean readonly, boolean writeonly) {
         return new ExternalPropertyData(name, type, readonly, writeonly);
     }
 }

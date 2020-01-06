@@ -19,7 +19,7 @@ public class Lexer {
         }
     }
 
-    public void updateLine(String code, int line, boolean ignoreErrors) throws CompileException{
+    public void updateLine(String code, int line, boolean ignoreErrors) throws CompileException {
         insertAt = getLineStartIndex(line);
         if (insertAt < 0) insertAt = tokens.size();
         tokens.removeIf(token -> token.getLine() == line);

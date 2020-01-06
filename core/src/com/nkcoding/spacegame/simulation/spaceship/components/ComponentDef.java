@@ -16,21 +16,12 @@ import java.util.Map;
  */
 public class ComponentDef extends ComponentDefBase {
 
-    //name for the component
-    private String name = "";
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     /**
      * HashMap with all the ExternalPropertyData
      */
     public final LinkedHashMap<String, ExternalPropertyData> properties = new LinkedHashMap<>();
+    //name for the component
+    private String name = "";
 
     /**
      * constructor with a ComponentInfo instead of a ComponentType
@@ -43,6 +34,32 @@ public class ComponentDef extends ComponentDefBase {
         for (ExternalPropertyData data : type.propertyDefs) {
             properties.put(data.name, (ExternalPropertyData) data.clone());
         }
+    }
+
+    public static ComponentDef fromJson(JsonValue value) {
+        ComponentDef comDef = new ComponentDef(ComponentType.valueOf(value.getString("type")));
+        //set the basic values
+        comDef.setName(value.getString("name"));
+        comDef.setX(value.getInt("x"));
+        comDef.setY(value.getInt("y"));
+        comDef.setRotation(value.getInt("rotation"));
+
+        //init all properties
+        for (JsonValue propertyValue : value.get("properties")) {
+            ExternalPropertyData data = comDef.properties.get(propertyValue.getString("key"));
+            if (!data.readonly) data.initData = propertyValue.getString("initData");
+            data.handlerName = propertyValue.getString("handlerName");
+        }
+
+        return comDef;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -92,24 +109,6 @@ public class ComponentDef extends ComponentDefBase {
         json.writeArrayEnd();
 
         json.writeObjectEnd();
-    }
-
-    public static ComponentDef fromJson(JsonValue value) {
-        ComponentDef comDef = new ComponentDef(ComponentType.valueOf(value.getString("type")));
-        //set the basic values
-        comDef.setName(value.getString("name"));
-        comDef.setX(value.getInt("x"));
-        comDef.setY(value.getInt("y"));
-        comDef.setRotation(value.getInt("rotation"));
-
-        //init all properties
-        for (JsonValue propertyValue : value.get("properties")) {
-            ExternalPropertyData data = comDef.properties.get(propertyValue.getString("key"));
-            if (!data.readonly) data.initData = propertyValue.getString("initData");
-            data.handlerName = propertyValue.getString("handlerName");
-        }
-
-        return comDef;
     }
 
 }

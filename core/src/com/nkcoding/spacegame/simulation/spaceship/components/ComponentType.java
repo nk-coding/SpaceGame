@@ -34,28 +34,21 @@ public enum ComponentType {
 
     //the height of the component
     public final int height;
-
-    private PolygonShape shape;
-
     //the start health
     //this should never be a negative value or zero
     //the component will be destroyed if health reaches zero
     public final int health;
-
     //constructor to create a new instance
     public final TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor;
-
     //constructor to create a new instance on another client
     public final BiFunction<ComponentDefBase, Ship, ? extends Component> mirrorConstructor;
-
     //file position of the preview image
     public final Asset defaultTexture;
-
     //array with all the keys for the ExternalProperties
     public final ExternalPropertyData[] propertyDefs;
-
     //the mass of the Component
     public final float mass;
+    private PolygonShape shape;
 
     ComponentType(TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor, BiFunction<ComponentDefBase, Ship, ? extends Component> mirrorConstructor,
                   int width, int height,

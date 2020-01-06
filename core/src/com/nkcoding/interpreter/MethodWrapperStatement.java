@@ -5,28 +5,25 @@ import com.nkcoding.interpreter.compiler.DataType;
 public class MethodWrapperStatement<T> implements Statement, Expression<T> {
 
     protected MethodStatement methodStatement;
+    //normally used to init
+    protected Statement[] initStatements = null;
+    protected String name;
+    private DataType type;
+
+    public MethodWrapperStatement(DataType type) {
+        this.type = type;
+    }
 
     public void setMethodStatement(MethodStatement methodStatement) {
         this.methodStatement = methodStatement;
     }
 
-    //normally used to init
-    protected Statement[] initStatements = null;
-
     public void setInitStatements(Statement[] initStatements) {
         this.initStatements = initStatements;
     }
 
-    protected String name;
-
     public void setName(String name) {
         this.name = name;
-    }
-
-    private DataType type;
-
-    public MethodWrapperStatement(DataType type) {
-        this.type = type;
     }
 
     @Override

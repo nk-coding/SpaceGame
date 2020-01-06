@@ -4,6 +4,13 @@ import com.nkcoding.interpreter.compiler.DataType;
 
 public class StackItem<T> implements Expression<T> {
     private String name;
+    private int stackLevel;
+    private T value;
+    private DataType type;
+
+    public StackItem(DataType type) {
+        this.type = type;
+    }
 
     public String getName() {
         return name;
@@ -13,8 +20,6 @@ public class StackItem<T> implements Expression<T> {
         this.name = name;
     }
 
-    private int stackLevel;
-
     public int getStackLevel() {
         return stackLevel;
     }
@@ -23,16 +28,8 @@ public class StackItem<T> implements Expression<T> {
         this.stackLevel = stackLevel;
     }
 
-    private T value;
-
     public void setValue(T value) {
         this.value = value;
-    }
-
-    private DataType type;
-
-    public StackItem(DataType type) {
-        this.type = type;
     }
 
     @Override

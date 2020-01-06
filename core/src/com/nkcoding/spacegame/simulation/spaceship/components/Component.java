@@ -33,69 +33,28 @@ public abstract class Component implements Damageable {
     public static final int LEFT_SIDE = 1;
     public static final int BOTTOM_SIDE = 2;
     public static final int RIGHT_SIDE = 3;
-
-    public ComponentModel model = null;
-
-
     /**
      * the type of the Component
      */
     public final ComponentType type;
-
     /**
      * the def of this component
      */
     protected final ComponentDefBase defBase;
-
-    public ComponentDefBase getComponentDef() {
-        return defBase;
-    }
-
-    public int getX() {
-        return defBase.getX();
-    }
-
-    public int getY() {
-        return defBase.getY();
-    }
-
-    //Ship which has references to box2d and drawing stuff
-    //setter includes update stuff
-    private Ship ship;
-
-    public Ship getShip() {
-        return ship;
-    }
-
-    public void setShip(Ship ship) {
-        this.ship = ship;
-        if (model != null) {
-            model.shipModel = ship.model;
-        }
-        addFixtures();
-    }
-
-    /**C
-     * helper method to get the asset manager
-     * @return the ship's asset manager
-     */
-    protected ExtAssetManager getAssetManager() {
-        return ship.getSpaceSimulation().getAssetManager();
-    }
-
+    public ComponentModel model = null;
     /**
      * the fixture that represents the box
      * other fixtures could be added as fields if necessary by sublasses
      */
     protected Fixture borderFixture;
-
     /**
      * the default texture that will be drawn if draw is not overwritten
      * uses the preview textures
      */
     protected Texture defaultTexture;
-
-    //region properties
+    //Ship which has references to box2d and drawing stuff
+    //setter includes update stuff
+    private Ship ship;
 
     /**
      * constructor that just creates the mirror version
@@ -113,6 +72,42 @@ public abstract class Component implements Damageable {
     protected Component(ComponentDef componentDef, Ship ship, Ship.ShipModel shipModel) {
         this(componentDef, ship);
         this.model = generateModel(shipModel);
+    }
+
+    public ComponentDefBase getComponentDef() {
+        return defBase;
+    }
+
+    public int getX() {
+        return defBase.getX();
+    }
+
+    public int getY() {
+        return defBase.getY();
+    }
+
+    public Ship getShip() {
+        return ship;
+    }
+
+    //region properties
+
+    public void setShip(Ship ship) {
+        this.ship = ship;
+        if (model != null) {
+            model.shipModel = ship.model;
+        }
+        addFixtures();
+    }
+
+    /**
+     * C
+     * helper method to get the asset manager
+     *
+     * @return the ship's asset manager
+     */
+    protected ExtAssetManager getAssetManager() {
+        return ship.getSpaceSimulation().getAssetManager();
     }
 
     protected abstract ComponentModel generateModel(Ship.ShipModel shipModel);
@@ -266,6 +261,7 @@ public abstract class Component implements Damageable {
      * get the damageID for a specific hit Fixture
      * used for transmission purposes
      * zero is the default value, if several IDs are necessary, this method must be overwritten
+     *
      * @param fixture the Fixture that was hit
      * @return the id
      */
@@ -276,6 +272,7 @@ public abstract class Component implements Damageable {
     /**
      * send a transmission to the original
      * uses a shortcut if it is the original
+     *
      * @param transmission the transmission to send
      */
     protected void sendToOriginal(UpdateComponentTransmission transmission) {
@@ -288,6 +285,7 @@ public abstract class Component implements Damageable {
 
     /**
      * send a transmission to all mirrors
+     *
      * @param transmission the transmission to send
      */
     protected void post(UpdateComponentTransmission transmission) {
@@ -296,32 +294,13 @@ public abstract class Component implements Damageable {
 
     /**
      * subclasses should overwrite this method if they want to receive update transmissions
+     *
      * @param transmission the update transmission
      */
     public void receiveTransmission(UpdateComponentTransmission transmission) {
     }
 
     public class ComponentModel implements ExternalPropertyHandler {
-
-        //ComponentDef with which this was created, a reference is stored to reduce duplicate variables
-        private final ComponentDef componentDef;
-
-        public ComponentDef getComponentDef() {
-            return componentDef;
-        }
-
-        private Ship.ShipModel shipModel;
-
-        //map with all properties
-        private HashMap<String, ExternalProperty> properties = new HashMap<>();
-
-        //helper to check structural integrity
-        public boolean structureHelper = false;
-
-        @Override
-        public Map<String, ExternalProperty> getProperties() {
-            return properties;
-        }
 
         /**
          * health has to be stored again, because it changes during simulation
@@ -330,35 +309,10 @@ public abstract class Component implements Damageable {
          * should be initialized in constructor out of componentDef
          */
         public final IntProperty health = register(new IntProperty(true, true, HEALTH_KEY));
-
-        /**
-         * power that component requests
-         */
-        public final FloatProperty powerRequested = register(new FloatProperty(true, true, POWER_REQUESTED_KEY) {
-            @Override
-            public void set(float value) {
-                if (get() != value) shipModel.invalidatePowerDelivery();
-                super.set(value);
-            }
-        });
-
-        /**
-         * how important is it to get the power
-         */
-        public final IntProperty requestLevel = register(new IntProperty(false, true, REQUEST_LEVEL_KEY) {
-            @Override
-            public void set(int value) {
-                if (get() != value) shipModel.invalidatePowerLevelOrder();
-                super.set(value);
-            }
-        });
-
         /**
          * shows if the component get the full power (used to prevent issues with float rounding)
          */
         public final BooleanProperty hasFullPower = register(new BooleanProperty(true, true, HAS_FULL_POWER_KEY));
-
-
         /**
          * how much power does it actually get
          */
@@ -369,7 +323,33 @@ public abstract class Component implements Damageable {
                 hasFullPower.set(powerRequested.get() == powerReceived.get());
             }
         });
-
+        //ComponentDef with which this was created, a reference is stored to reduce duplicate variables
+        private final ComponentDef componentDef;
+        //helper to check structural integrity
+        public boolean structureHelper = false;
+        private Ship.ShipModel shipModel;
+        /**
+         * power that component requests
+         */
+        public final FloatProperty powerRequested = register(new FloatProperty(true, true, POWER_REQUESTED_KEY) {
+            @Override
+            public void set(float value) {
+                if (get() != value) shipModel.invalidatePowerDelivery();
+                super.set(value);
+            }
+        });
+        /**
+         * how important is it to get the power
+         */
+        public final IntProperty requestLevel = register(new IntProperty(false, true, REQUEST_LEVEL_KEY) {
+            @Override
+            public void set(int value) {
+                if (get() != value) shipModel.invalidatePowerLevelOrder();
+                super.set(value);
+            }
+        });
+        //map with all properties
+        private HashMap<String, ExternalProperty> properties = new HashMap<>();
 
         public ComponentModel(Ship.ShipModel shipModel, ComponentDef componentDef) {
             this.componentDef = componentDef;
@@ -378,6 +358,14 @@ public abstract class Component implements Damageable {
             health.set(getComponentDef().getHealth());
         }
 
+        public ComponentDef getComponentDef() {
+            return componentDef;
+        }
+
+        @Override
+        public Map<String, ExternalProperty> getProperties() {
+            return properties;
+        }
 
         @Override
         public String getName() {
@@ -401,9 +389,10 @@ public abstract class Component implements Damageable {
 
         /**
          * spawn an explosion with the initial radius of Math.min(getWidth() / 2 * 0.9f, getHeight() / 2 * 0.9f)
+         *
          * @param endRadius the final radius of the explosion
-         * @param damage how much damage does the explosion make
-         * @param time how long lasts the explosion
+         * @param damage    how much damage does the explosion make
+         * @param time      how long lasts the explosion
          */
         protected final void spawnExplosion(float endRadius, float damage, float time) {
             Vector2 centerPos = localToWorld(new Vector2(getWidth() / 2, getHeight() / 2));

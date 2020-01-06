@@ -18,165 +18,24 @@ import static com.nkcoding.spacegame.simulation.Ship.*;
 import static com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData.of;
 
 public class ShipDef {
-    public class ShipDesignerHelper {
-        //default constructor
-        protected ShipDesignerHelper() {
-            //init the componentsMap
-            for (ComponentDef componentDef : componentDefs) {
-                for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++) {
-                    for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++) {
-                        componentsMap[_x][_y] = componentDef;
-                    }
-                }
-            }
-        }
-
-        private ComponentDef[][] componentsMap = new ComponentDef[MAX_SIZE][MAX_SIZE];
-
-        //locate component if there is one
-        public ComponentDef getComponent(int x, int y) {
-            if (x < 0 || y < 0 || x >= MAX_SIZE || y >= MAX_SIZE) {
-                return null;
-            } else {
-                return componentsMap[x][y];
-            }
-        }
-
-        //Add a component to componentsMap and componentsDefs
-        //this requires that TryMoveComponent was called immediately before
-        //otherwise this might lead to unexpected behaviour
-        public void addComponent(ComponentDef componentDef, int x, int y, int rotation) {
-            componentDefs.add(componentDef);
-            //update component
-            componentDef.setRotation(rotation);
-            componentDef.setX(x);
-            componentDef.setY(y);
-            //add new references
-            for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++) {
-                for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++) {
-                    componentsMap[_x][_y] = componentDef;
-                }
-            }
-        }
-
-        public void removeComponent(ComponentDef componentDef) {
-            //delete the old references
-            if (componentDefs.contains(componentDef)) {
-                componentDefs.remove(componentDef);
-                for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++) {
-                    for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++) {
-                        componentsMap[_x][_y] = null;
-                    }
-                }
-            }
-        }
-
-        //is it possible to move a component to a specific position
-        public boolean tryMoveComponent(ComponentDef componentDef, int x, int y, int rotation) {
-            //calculate resulting width and height
-            int width = (rotation % 2 == 0) ? componentDef.getWidth() : componentDef.getHeight();
-            int height = (rotation % 2 == 0) ? componentDef.getHeight() : componentDef.getWidth();
-            boolean result = true;
-            for (int _x = x; _x < (x + width); _x++) {
-                for (int _y = y; _y < (y + height); _y++) {
-                    //check if it is in range
-                    //check if there is no component or (the not moved) same
-                    result = result && (_x < MAX_SIZE && _x >= 0 && _y >= 0 && _y < MAX_SIZE && (componentsMap[_x][_y] == null || componentsMap[_x][_y] == componentDef));
-                }
-            }
-            return result;
-        }
-
-        //tries to rotate a component
-        public void rotateComponent(ComponentDef def) {
-            int x = def.getX();
-            int y = def.getY();
-            int rotation = def.getRotation();
-
-            for (int i = 0; i < 3; i++) {
-                rotation++;
-                rotation %= 4;
-                switch (rotation) {
-                    case 0:
-                        y += def.getWidth() - 1;
-                        break;
-                    case 1:
-                        x -= def.getHeight() - 1;
-                        break;
-                    case 2:
-                        x += def.getHeight() - 1;
-                        x -= def.getWidth() - 1;
-                        y -= def.getHeight() - 1;
-                        break;
-                    case 3:
-                        x += def.getWidth() - 1;
-                        y += def.getHeight() - 1;
-                        y -= def.getWidth() - 1;
-                        break;
-                }
-                if (tryMoveComponent(def, x, y, rotation)) {
-                    moveComponent(def, x, y, rotation);
-                    return;
-                }
-            }
-        }
-
-        //actually move component
-        //this requires that TryMoveComponent was called immediately before
-        //otherwise this might lead to unexpected behaviour
-        public void moveComponent(ComponentDef componentDef, int x, int y, int rotation) {
-            //delete the old references
-            removeComponent(componentDef);
-            //add new references
-            addComponent(componentDef, x, y, rotation);
-        }
-    }
-
     //the max width / height of a ship
     public static final int MAX_SIZE = 25;
-
     //the size of one unit in box2d
     public static final float UNIT_SIZE = 0.1f;
-
     public final ArrayList<ComponentDef> componentDefs = new ArrayList<>();
-
+    /**
+     * HashMap with all the ExternalPropertyData
+     */
+    public final LinkedHashMap<String, ExternalPropertyData> properties = new LinkedHashMap<>();
     //code for the script
     public String code = "//write your own code here";
 
     //every Ship needs a name
     private String name;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     //is everything ok  -> is the ship usable
     private boolean validated = false;
-
-    public boolean getValidated() {
-        return validated;
-    }
-
-    public void setValidated(boolean validated) {
-        this.validated = validated;
-    }
-
     //ShipDesignerHelper if one is attached
     private ShipDesignerHelper designerHelper = null;
-
-    public ShipDesignerHelper getShipDesignerHelper() {
-        if (designerHelper == null) designerHelper = new ShipDesignerHelper();
-        return designerHelper;
-    }
-
-    /**
-     * HashMap with all the ExternalPropertyData
-     */
-    public final LinkedHashMap<String, ExternalPropertyData> properties = new LinkedHashMap<>();
 
     //the main Constructor
     public ShipDef() {
@@ -186,6 +45,48 @@ public class ShipDef {
         properties.put(ANGULAR_VELOCITY_KEY, of(ANGULAR_VELOCITY_KEY, DataType.FLOAT));
         properties.put(VELOCITY_KEY, of(VELOCITY_KEY, DataType.FLOAT));
         properties.put(CAMERA_FOCUS_KEY, of(CAMERA_FOCUS_KEY, DataType.BOOLEAN, false));
+    }
+
+    public static ShipDef fromJson(JsonValue value) {
+        ShipDef shipDef = new ShipDef();
+        //load ShipDefs
+        for (JsonValue componentValue : value.get("comDefs")) {
+            shipDef.componentDefs.add(ComponentDef.fromJson(componentValue));
+        }
+        //load code
+        shipDef.code = value.getString("code");
+        shipDef.name = value.getString("name");
+        shipDef.validated = value.getBoolean("validated");
+
+        //init all properties
+        for (JsonValue propertyValue : value.get("properties")) {
+            ExternalPropertyData data = shipDef.properties.get(propertyValue.getString("key"));
+            if (!data.readonly) data.initData = propertyValue.getString("initData");
+            data.handlerName = propertyValue.getString("handlerName");
+        }
+
+        return shipDef;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean getValidated() {
+        return validated;
+    }
+
+    public void setValidated(boolean validated) {
+        this.validated = validated;
+    }
+
+    public ShipDesignerHelper getShipDesignerHelper() {
+        if (designerHelper == null) designerHelper = new ShipDesignerHelper();
+        return designerHelper;
     }
 
     /**
@@ -290,25 +191,118 @@ public class ShipDef {
         json.writeObjectEnd();
     }
 
-    public static ShipDef fromJson(JsonValue value) {
-        ShipDef shipDef = new ShipDef();
-        //load ShipDefs
-        for (JsonValue componentValue : value.get("comDefs")) {
-            shipDef.componentDefs.add(ComponentDef.fromJson(componentValue));
-        }
-        //load code
-        shipDef.code = value.getString("code");
-        shipDef.name = value.getString("name");
-        shipDef.validated = value.getBoolean("validated");
+    public class ShipDesignerHelper {
+        private ComponentDef[][] componentsMap = new ComponentDef[MAX_SIZE][MAX_SIZE];
 
-        //init all properties
-        for (JsonValue propertyValue : value.get("properties")) {
-            ExternalPropertyData data = shipDef.properties.get(propertyValue.getString("key"));
-            if (!data.readonly) data.initData = propertyValue.getString("initData");
-            data.handlerName = propertyValue.getString("handlerName");
+        //default constructor
+        protected ShipDesignerHelper() {
+            //init the componentsMap
+            for (ComponentDef componentDef : componentDefs) {
+                for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++) {
+                    for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++) {
+                        componentsMap[_x][_y] = componentDef;
+                    }
+                }
+            }
         }
 
-        return shipDef;
+        //locate component if there is one
+        public ComponentDef getComponent(int x, int y) {
+            if (x < 0 || y < 0 || x >= MAX_SIZE || y >= MAX_SIZE) {
+                return null;
+            } else {
+                return componentsMap[x][y];
+            }
+        }
+
+        //Add a component to componentsMap and componentsDefs
+        //this requires that TryMoveComponent was called immediately before
+        //otherwise this might lead to unexpected behaviour
+        public void addComponent(ComponentDef componentDef, int x, int y, int rotation) {
+            componentDefs.add(componentDef);
+            //update component
+            componentDef.setRotation(rotation);
+            componentDef.setX(x);
+            componentDef.setY(y);
+            //add new references
+            for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++) {
+                for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++) {
+                    componentsMap[_x][_y] = componentDef;
+                }
+            }
+        }
+
+        public void removeComponent(ComponentDef componentDef) {
+            //delete the old references
+            if (componentDefs.contains(componentDef)) {
+                componentDefs.remove(componentDef);
+                for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++) {
+                    for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++) {
+                        componentsMap[_x][_y] = null;
+                    }
+                }
+            }
+        }
+
+        //is it possible to move a component to a specific position
+        public boolean tryMoveComponent(ComponentDef componentDef, int x, int y, int rotation) {
+            //calculate resulting width and height
+            int width = (rotation % 2 == 0) ? componentDef.getWidth() : componentDef.getHeight();
+            int height = (rotation % 2 == 0) ? componentDef.getHeight() : componentDef.getWidth();
+            boolean result = true;
+            for (int _x = x; _x < (x + width); _x++) {
+                for (int _y = y; _y < (y + height); _y++) {
+                    //check if it is in range
+                    //check if there is no component or (the not moved) same
+                    result = result && (_x < MAX_SIZE && _x >= 0 && _y >= 0 && _y < MAX_SIZE && (componentsMap[_x][_y] == null || componentsMap[_x][_y] == componentDef));
+                }
+            }
+            return result;
+        }
+
+        //tries to rotate a component
+        public void rotateComponent(ComponentDef def) {
+            int x = def.getX();
+            int y = def.getY();
+            int rotation = def.getRotation();
+
+            for (int i = 0; i < 3; i++) {
+                rotation++;
+                rotation %= 4;
+                switch (rotation) {
+                    case 0:
+                        y += def.getWidth() - 1;
+                        break;
+                    case 1:
+                        x -= def.getHeight() - 1;
+                        break;
+                    case 2:
+                        x += def.getHeight() - 1;
+                        x -= def.getWidth() - 1;
+                        y -= def.getHeight() - 1;
+                        break;
+                    case 3:
+                        x += def.getWidth() - 1;
+                        y += def.getHeight() - 1;
+                        y -= def.getWidth() - 1;
+                        break;
+                }
+                if (tryMoveComponent(def, x, y, rotation)) {
+                    moveComponent(def, x, y, rotation);
+                    return;
+                }
+            }
+        }
+
+        //actually move component
+        //this requires that TryMoveComponent was called immediately before
+        //otherwise this might lead to unexpected behaviour
+        public void moveComponent(ComponentDef componentDef, int x, int y, int rotation) {
+            //delete the old references
+            removeComponent(componentDef);
+            //add new references
+            addComponent(componentDef, x, y, rotation);
+        }
     }
 
 }

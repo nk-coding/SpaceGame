@@ -5,24 +5,7 @@ import java.util.Objects;
 public class TypeNamePair {
 
     private String name;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     private DataType type;
-
-    public DataType getType() {
-        return type;
-    }
-
-    public void setType(DataType type) {
-        this.type = type;
-    }
 
     //simple constructor
     public TypeNamePair() {
@@ -32,6 +15,22 @@ public class TypeNamePair {
     public TypeNamePair(String name, DataType dataType) {
         this.name = name;
         this.type = dataType;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public DataType getType() {
+        return type;
+    }
+
+    public void setType(DataType type) {
+        this.type = type;
     }
 
     @Override
@@ -48,8 +47,8 @@ public class TypeNamePair {
     @Override
     public boolean equals(Object obj) {
         if (obj.getClass().equals(TypeNamePair.class)) {
-            return Objects.equals(((TypeNamePair)obj).getName(), (getName()))
-                    && Objects.equals(((TypeNamePair)obj).getType(), (getType()));
+            return Objects.equals(((TypeNamePair) obj).getName(), (getName()))
+                    && Objects.equals(((TypeNamePair) obj).getType(), (getType()));
         } else {
             return false;
         }

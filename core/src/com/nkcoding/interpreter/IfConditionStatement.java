@@ -3,18 +3,16 @@ package com.nkcoding.interpreter;
 public class IfConditionStatement implements Statement {
 
     protected Expression<Boolean> condition;
+    protected Statement[] statements;
+    protected Statement elseStatement = null;
 
     public void setCondition(Expression<Boolean> condition) {
         this.condition = condition;
     }
 
-    protected Statement[] statements;
-
     public void setStatements(Statement[] statements) {
         this.statements = statements;
     }
-
-    protected Statement elseStatement = null;
 
     public void setElseStatement(Statement elseStatement) {
         this.elseStatement = elseStatement;

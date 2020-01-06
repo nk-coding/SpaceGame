@@ -30,7 +30,9 @@ public final class DataType {
     //name for the this dataType
     public final String name;
 
-    /**if it is a list, is it already defined?*/
+    /**
+     * if it is a list, is it already defined?
+     */
     public boolean isInit = true;
 
     public TypeNamePair[] listTypes = null;
@@ -39,13 +41,14 @@ public final class DataType {
     /**
      * constructor for simple DataTypes like String, int, float, boolean, void
      * no need for
+     *
      * @param name name for the DataType
      */
     private DataType(String name) {
         this.name = name;
     }
 
-    public static DataType fromName(String str){
+    public static DataType fromName(String str) {
         switch (str) {
             case INTEGER_KW:
                 return INTEGER;
@@ -83,14 +86,14 @@ public final class DataType {
         return type;
     }
 
-    private static DataType parseList(String str){
+    private static DataType parseList(String str) {
         ArrayDeque<String> deque = new ArrayDeque<>(List.of(str.split("[ ]|(?=[,=\\[\\]])|(?<=[,=\\[\\]])")));
         deque.removeIf(String::isEmpty);
         deque.pollFirst(); //get rid of the first bracket
         return parseListInternal(deque);
     }
 
-    private static DataType parseListInternal(ArrayDeque<String> tokens){
+    private static DataType parseListInternal(ArrayDeque<String> tokens) {
         ArrayList<TypeNamePair> types = new ArrayList<>();
         while (!tokens.isEmpty()) {
             String token = tokens.pollFirst();
@@ -161,6 +164,17 @@ public final class DataType {
         return contains(type, uninit) && !type.equals(VOID_KW);
     }
 
+    private static ListObject createDefaultList(DataType listType) {
+        ListObject list = new ListObject(listType.listTypes.length);
+        for (int x = 0; x < listType.listTypes.length; x++) {
+            DataType type = listType.listTypes[x].getType();
+            StackItem stackItem = new StackItem(type);
+            stackItem.setValue(type.getDefaultValue());
+            list.items[x] = stackItem;
+        }
+        return list;
+    }
+
     public Object getDefaultValue() {
         switch (name) {
             case FLOAT_KW:
@@ -179,17 +193,6 @@ public final class DataType {
                 System.out.println(name);
                 throw new IllegalStateException("cannot create alternative value");
         }
-    }
-
-    private static ListObject createDefaultList(DataType listType) {
-        ListObject list = new ListObject(listType.listTypes.length);
-        for (int x = 0; x < listType.listTypes.length; x++)  {
-            DataType type = listType.listTypes[x].getType();
-            StackItem stackItem = new StackItem(type);
-            stackItem.setValue(type.getDefaultValue());
-            list.items[x] = stackItem;
-        }
-        return list;
     }
 
     public boolean isAssignableFrom(DataType dataType) {

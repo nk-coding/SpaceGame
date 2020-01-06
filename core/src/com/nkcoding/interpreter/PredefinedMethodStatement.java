@@ -8,27 +8,24 @@ public class PredefinedMethodStatement<T> implements Statement, Expression<T> {
 
     //normally used to init
     protected Expression[] parameterExpressions = null;
+    protected String name;
+    protected Function<Object[], T> predefinedMethod;
+    private DataType type;
+
+    public PredefinedMethodStatement(DataType type) {
+        this.type = type;
+    }
 
     public void setParameterExpressions(Expression[] parameterExpressions) {
         this.parameterExpressions = parameterExpressions;
     }
 
-    protected String name;
-
     public void setName(String name) {
         this.name = name;
     }
 
-    protected Function<Object[], T> predefinedMethod;
-
     public void setPredefinedMethod(Function<Object[], T> predefinedMethod) {
         this.predefinedMethod = predefinedMethod;
-    }
-
-    private DataType type;
-
-    public PredefinedMethodStatement(DataType type) {
-        this.type = type;
     }
 
     @Override

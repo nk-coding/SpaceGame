@@ -85,7 +85,7 @@ public class Ship extends Simulated {
     }
 
     public static Ship mirror(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
-        ShipCreateTransmission createTransmission = (ShipCreateTransmission)transmission;
+        ShipCreateTransmission createTransmission = (ShipCreateTransmission) transmission;
         return new Ship(spaceSimulation, createTransmission.owner, createTransmission.simulatedID, createTransmission.components);
     }
 
@@ -125,11 +125,11 @@ public class Ship extends Simulated {
         super.receiveTransmission(transmission);
         switch (transmission.updateID) {
             case REMOVE_COMPONENT:
-                RemoveComponentTransmission rct = (RemoveComponentTransmission)transmission;
-                removeComponent(rct.x ,rct.y);
+                RemoveComponentTransmission rct = (RemoveComponentTransmission) transmission;
+                removeComponent(rct.x, rct.y);
                 break;
             case REMOVE_COMPONENTS:
-                RemoveComponentsTransmission rcst = (RemoveComponentsTransmission)transmission;
+                RemoveComponentsTransmission rcst = (RemoveComponentsTransmission) transmission;
                 for (int[] pair : rcst.components) {
                     removeComponent(pair[0], pair[1]);
                 }
@@ -253,38 +253,17 @@ public class Ship extends Simulated {
         radius = (float) Math.sqrt(height * height + width * width);
     }
 
+    private static class ShipCreateTransmission extends CreateTransmission {
+
+        public final ComponentDefBase[] components;
+
+        public ShipCreateTransmission(int simulatedID, int owner, BodyState bodyState, ComponentDefBase[] components) {
+            super(SimulatedType.Ship, simulatedID, owner, bodyState);
+            this.components = components;
+        }
+    }
 
     public class ShipModel implements ExternalPropertyHandler {
-        private HashMap<String, ExternalProperty> properties = new HashMap<>();
-
-        @Override
-        public Map<String, ExternalProperty> getProperties() {
-            return properties;
-        }
-
-        //the list of components which compose the ship
-        private List<Component.ComponentModel> components;
-
-        //corresponds the order of the components to the order of the PowerLevel?
-        private boolean isPowerLevelOrderCorrect = false;
-
-        //did the power request change?
-        private boolean isPowerRequestDifferent = true;
-
-        //is a structure check necessary
-        private boolean isStructureCheckNecessary = true;
-
-        //the name
-        private String name;
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        //global variables
-        private final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables;
-
         //region properties
         //virtual property when a key is pressed
         public final NotifyProperty<String> keyDown = register(new NotifyProperty<>(KEY_DOWN_KEY));
@@ -307,8 +286,20 @@ public class Ship extends Simulated {
                 return getSpaceSimulation().getCameraSimulated() == Ship.this;
             }
         });
-        //endregion
-
+        //global variables
+        private final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables;
+        private HashMap<String, ExternalProperty> properties = new HashMap<>();
+        //the list of components which compose the ship
+        private List<Component.ComponentModel> components;
+        //corresponds the order of the components to the order of the PowerLevel?
+        private boolean isPowerLevelOrderCorrect = false;
+        //did the power request change?
+        private boolean isPowerRequestDifferent = true;
+        //is a structure check necessary
+        private boolean isStructureCheckNecessary = true;
+        //the name
+        private String name;
+        private HashMap<String, MethodStatement> methods;
         //construct Ship out of ShipDef (public constructor)
         public ShipModel(ShipDef def, SpaceSimulation spaceSimulation) {
             name = def.getName(); //here
@@ -334,14 +325,7 @@ public class Ship extends Simulated {
             //init new list with all the components
             components = new ArrayList<>(def.componentDefs.size()); //here
         }
-
-        private HashMap<String, MethodStatement> methods;
-
-        private void initComponentProperties() {
-            for (Component.ComponentModel componentModel : components) {
-                componentModel.initProperties(componentModel.getComponentDef().properties.values(), methods);
-            }
-        }
+        //endregion
 
         //package-private constructor to construct Ship out of components (used to split up a ship)
         //pass other ship to copy important stuff (external method stuff etc.)
@@ -370,6 +354,21 @@ public class Ship extends Simulated {
             body.setAngularVelocity(oldBody.getAngularVelocity()); //here
         }
 
+        @Override
+        public Map<String, ExternalProperty> getProperties() {
+            return properties;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        private void initComponentProperties() {
+            for (Component.ComponentModel componentModel : components) {
+                componentModel.initProperties(componentModel.getComponentDef().properties.values(), methods);
+            }
+        }
 
         private void addComponentInternally(Component component) {
             components.add(component.model);
@@ -395,7 +394,7 @@ public class Ship extends Simulated {
                 //reset remaining
                 components.forEach(component -> component.structureHelper = false);
                 //create new ship
-                if (otherComponents.size() > 0) getSpaceSimulation().addSimulated(new Ship(Ship.this,this,
+                if (otherComponents.size() > 0) getSpaceSimulation().addSimulated(new Ship(Ship.this, this,
                         otherComponents.stream().map(Component.ComponentModel::getComponent).collect(Collectors.toList())));
                 updateLinearVelocity(getBody());
             } else {
@@ -580,16 +579,6 @@ public class Ship extends Simulated {
                     component.powerReceived.set(component.powerRequested.get() * fac);
                 }
             }
-        }
-    }
-
-    private static class ShipCreateTransmission extends CreateTransmission {
-
-        public final ComponentDefBase[] components;
-
-        public ShipCreateTransmission(int simulatedID, int owner, BodyState bodyState, ComponentDefBase[] components) {
-            super(SimulatedType.Ship, simulatedID, owner, bodyState);
-            this.components = components;
         }
     }
 

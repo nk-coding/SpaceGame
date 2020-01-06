@@ -6,21 +6,19 @@ public class ExternalMethodStatement<T> implements Statement, Expression<T> {
 
     //normally used to init
     protected Expression[] parameterExpressions = null;
+    protected String name;
+    private DataType type;
+
+    public ExternalMethodStatement(DataType type) {
+        this.type = type;
+    }
 
     public void setParameterExpressions(Expression[] parameterExpressions) {
         this.parameterExpressions = parameterExpressions;
     }
 
-    protected String name;
-
     public void setName(String name) {
         this.name = name;
-    }
-
-    private DataType type;
-
-    public ExternalMethodStatement(DataType type) {
-        this.type = type;
     }
 
     @Override

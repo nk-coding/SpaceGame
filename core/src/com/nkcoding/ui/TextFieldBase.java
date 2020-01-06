@@ -62,9 +62,9 @@ import java.lang.StringBuilder;
  * @author Nathan Sweet
  */
 public class TextFieldBase extends Widget implements Disableable {
-    static private final char BACKSPACE = 8;
     static protected final char ENTER_DESKTOP = '\r';
     static protected final char ENTER_ANDROID = '\n';
+    static private final char BACKSPACE = 8;
     static private final char TAB = '\t';
     static private final char DELETE = 127;
     static private final char BULLET = 149;
@@ -75,50 +75,43 @@ public class TextFieldBase extends Widget implements Disableable {
 
     static public float keyRepeatInitialTime = 0.4f;
     static public float keyRepeatTime = 0.1f;
-
+    protected final GlyphLayout layout = new GlyphLayout();
+    protected final FloatArray glyphPositions = new FloatArray();
+    final KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
     protected String text;
     protected int cursor, selectionStart;
     protected boolean hasSelection;
     protected boolean writeEnters;
-    protected final GlyphLayout layout = new GlyphLayout();
-    protected final FloatArray glyphPositions = new FloatArray();
-
-    TextField.TextFieldStyle style;
-    private String messageText;
     protected CharSequence displayText;
+    protected float fontOffset, textHeight, textOffset;
+    TextField.TextFieldStyle style;
     Clipboard clipboard;
     InputListener inputListener;
     TextFieldListener listener;
     TextFieldFilter filter;
     OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
     boolean focusTraversal = true, onlyFontChars = true, disabled;
-    private int textHAlign = Align.left;
-    private float selectionX, selectionWidth;
-
     String undoText = "";
     long lastChangeTime;
-
     boolean passwordMode;
-    private StringBuilder passwordBuffer;
-    private char passwordCharacter = BULLET;
-
-    protected float fontOffset, textHeight, textOffset;
     float renderOffset;
-    private int visibleTextStart, visibleTextEnd;
-    private int maxLength = 0;
-
     boolean focused;
     boolean cursorOn;
-    float blinkTime = 0.32f;
     final Task blinkTask = new Task() {
         public void run() {
             cursorOn = !cursorOn;
             Gdx.graphics.requestRendering();
         }
     };
-
-    final KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
+    float blinkTime = 0.32f;
     boolean programmaticChangeEvents;
+    private String messageText;
+    private int textHAlign = Align.left;
+    private float selectionX, selectionWidth;
+    private StringBuilder passwordBuffer;
+    private char passwordCharacter = BULLET;
+    private int visibleTextStart, visibleTextEnd;
+    private int maxLength = 0;
 
     public TextFieldBase(String text, Skin skin) {
         this(text, skin.get(TextField.TextFieldStyle.class));
@@ -194,12 +187,12 @@ public class TextFieldBase extends Widget implements Disableable {
         return maxLength <= 0 || size < maxLength;
     }
 
-    public void setMaxLength(int maxLength) {
-        this.maxLength = maxLength;
-    }
-
     public int getMaxLength() {
         return this.maxLength;
+    }
+
+    public void setMaxLength(int maxLength) {
+        this.maxLength = maxLength;
     }
 
     /**
@@ -211,19 +204,19 @@ public class TextFieldBase extends Widget implements Disableable {
         this.onlyFontChars = onlyFontChars;
     }
 
-    public void setStyle(TextField.TextFieldStyle style) {
-        if (style == null) throw new IllegalArgumentException("style cannot be null.");
-        this.style = style;
-        textHeight = style.font.getCapHeight() - style.font.getDescent() * 2;
-        invalidateHierarchy();
-    }
-
     /**
      * Returns the text field's style. Modifying the returned style may not have an effect until { #setStyle(TextFieldStyle)}
      * is called.
      */
     public TextField.TextFieldStyle getStyle() {
         return style;
+    }
+
+    public void setStyle(TextField.TextFieldStyle style) {
+        if (style == null) throw new IllegalArgumentException("style cannot be null.");
+        this.style = style;
+        textHeight = style.font.getCapHeight() - style.font.getDescent() * 2;
+        invalidateHierarchy();
     }
 
     protected void calculateOffsets() {
@@ -590,15 +583,15 @@ public class TextFieldBase extends Widget implements Disableable {
         this.listener = listener;
     }
 
+    public TextFieldFilter getTextFieldFilter() {
+        return filter;
+    }
+
     /**
      * @param filter May be null.
      */
     public void setTextFieldFilter(TextFieldFilter filter) {
         this.filter = filter;
-    }
-
-    public TextFieldFilter getTextFieldFilter() {
-        return filter;
     }
 
     /**
@@ -636,6 +629,13 @@ public class TextFieldBase extends Widget implements Disableable {
     }
 
     /**
+     * @return Never null, might be an empty string.
+     */
+    public String getText() {
+        return text;
+    }
+
+    /**
      * @param str If null, "" is used.
      */
     public void setText(String str) {
@@ -648,13 +648,6 @@ public class TextFieldBase extends Widget implements Disableable {
         paste(str, false, true);
         if (programmaticChangeEvents) changeText(oldText, text);
         cursor = 0;
-    }
-
-    /**
-     * @return Never null, might be an empty string.
-     */
-    public String getText() {
-        return text;
     }
 
     /**
@@ -671,16 +664,16 @@ public class TextFieldBase extends Widget implements Disableable {
         return !cancelled;
     }
 
+    public boolean getProgrammaticChangeEvents() {
+        return programmaticChangeEvents;
+    }
+
     /**
      * If false, methods that change the text will not fire {@link ChangeEvent}, the event will be fired only when user changes
      * the text.
      */
     public void setProgrammaticChangeEvents(boolean programmaticChangeEvents) {
         this.programmaticChangeEvents = programmaticChangeEvents;
-    }
-
-    public boolean getProgrammaticChangeEvents() {
-        return programmaticChangeEvents;
     }
 
     public int getSelectionStart() {
@@ -722,6 +715,10 @@ public class TextFieldBase extends Widget implements Disableable {
         hasSelection = false;
     }
 
+    public int getCursorPosition() {
+        return cursor;
+    }
+
     /**
      * Sets the cursor position and clears any selection.
      */
@@ -729,10 +726,6 @@ public class TextFieldBase extends Widget implements Disableable {
         if (cursorPosition < 0) throw new IllegalArgumentException("cursorPosition must be >= 0");
         clearSelection();
         cursor = Math.min(cursorPosition, text.length());
-    }
-
-    public int getCursorPosition() {
-        return cursor;
     }
 
     /**
@@ -773,6 +766,10 @@ public class TextFieldBase extends Widget implements Disableable {
         return Math.max(topAndBottom + textHeight, minHeight);
     }
 
+    public int getAlignment() {
+        return textHAlign;
+    }
+
     /**
      * Sets text horizontal alignment (left, center or right).
      *
@@ -782,8 +779,8 @@ public class TextFieldBase extends Widget implements Disableable {
         this.textHAlign = alignment;
     }
 
-    public int getAlignment() {
-        return textHAlign;
+    public boolean isPasswordMode() {
+        return passwordMode;
     }
 
     /**
@@ -794,10 +791,6 @@ public class TextFieldBase extends Widget implements Disableable {
     public void setPasswordMode(boolean passwordMode) {
         this.passwordMode = passwordMode;
         updateDisplayText();
-    }
-
-    public boolean isPasswordMode() {
-        return passwordMode;
     }
 
     /**
@@ -813,12 +806,12 @@ public class TextFieldBase extends Widget implements Disableable {
         this.blinkTime = blinkTime;
     }
 
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
-    }
-
     public boolean isDisabled() {
         return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
     protected void moveCursor(boolean forward, boolean jump) {
@@ -834,12 +827,12 @@ public class TextFieldBase extends Widget implements Disableable {
         return isWordCharacter(c);
     }
 
-    class KeyRepeatTask extends Task {
-        int keycode;
-
-        public void run() {
-            inputListener.keyDown(null, keycode);
-        }
+    /**
+     * Returns true if this actor is the {@link Stage#getKeyboardFocus() keyboard focus} actor.
+     */
+    public boolean hasKeyboardFocus() {
+        Stage stage = getStage();
+        return stage != null && stage.getKeyboardFocus() == this;
     }
 
     /**
@@ -884,6 +877,14 @@ public class TextFieldBase extends Widget implements Disableable {
     static public class DefaultOnscreenKeyboard implements OnscreenKeyboard {
         public void show(boolean visible) {
             Gdx.input.setOnscreenKeyboardVisible(visible);
+        }
+    }
+
+    class KeyRepeatTask extends Task {
+        int keycode;
+
+        public void run() {
+            inputListener.keyDown(null, keycode);
         }
     }
 
@@ -1134,14 +1135,6 @@ public class TextFieldBase extends Widget implements Disableable {
             if (listener != null) listener.keyTyped(TextFieldBase.this, character);
             return true;
         }
-    }
-
-    /**
-     * Returns true if this actor is the {@link Stage#getKeyboardFocus() keyboard focus} actor.
-     */
-    public boolean hasKeyboardFocus() {
-        Stage stage = getStage();
-        return stage != null && stage.getKeyboardFocus() == this;
     }
 
 }

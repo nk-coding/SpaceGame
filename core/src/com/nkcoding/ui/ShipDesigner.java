@@ -19,65 +19,31 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
 
     //default size of a single component
     public static final float COMPONENT_SIZE = 50f;
-
-    //ShipDef that contains all ComponentDefs
-    private ShipDef shipDef;
-
     //AssetManager to load ComponentDef textures
     private final ExtAssetManager assetManager;
-
+    //HashMap with all textures for the different components
+    private final HashMap<ComponentType, Texture> componentTextureMap = new HashMap<>();
+    //ShipDef that contains all ComponentDefs
+    private ShipDef shipDef;
     //helper
     private ShipDef.ShipDesignerHelper designerHelper;
-
     private ComponentDef selectedComponent;
-
     //region implementation of Zoomable
     //where should it start to draw
     private int startDrawX = 0;
     private int startDrawY = 0;
-
-    public ComponentDef getSelectedComponent() {
-        return selectedComponent;
-    }
-
-    public void setSelectedComponent(ComponentDef def) {
-        ComponentDef oldSelected = getSelectedComponent();
-        this.selectedComponent = def;
-        ComponentDef newSelected = getSelectedComponent();
-        if (oldSelected != newSelected) selectionChanged.accept(newSelected, oldSelected);
-    }
-
-    private void setSelectedComponent(int x, int y) {
-        setSelectedComponent(designerHelper.getComponent(x, y));
-    }
-
     //where how much should it draw
     private int amountDrawX;
     private int amountDrawY;
-
     //the zoom
     private float zoom = 1f;
-    //endregion
-
-    //HashMap with all textures for the different components
-    private final HashMap<ComponentType, Texture> componentTextureMap = new HashMap<>();
-
-    private Texture getComponentTexture(ComponentDef def) {
-        if (!componentTextureMap.containsKey(def.getType())) {
-            componentTextureMap.put(def.getType(), assetManager.getTexture(def.getDefaultTexture()));
-        }
-        return componentTextureMap.get(def.getType());
-    }
-
     //the Texture shown when no component would be at this place
     private Texture noComponent;
-
     //the Texture drawn when selecting something or if a component is selected
     private Texture selection;
-
+    //endregion
     //Consumer for when the selection changed
     private BiConsumer<ComponentDef, ComponentDef> selectionChanged;
-
 
     //constructor with a shipDef
     public ShipDesigner(ShipDef shipDef, ExtAssetManager assetManager, Texture noComponent, Texture selection, BiConsumer<ComponentDef, ComponentDef> selectionChanged) {
@@ -98,6 +64,28 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
                 return true;
             }
         });
+    }
+
+    public ComponentDef getSelectedComponent() {
+        return selectedComponent;
+    }
+
+    public void setSelectedComponent(ComponentDef def) {
+        ComponentDef oldSelected = getSelectedComponent();
+        this.selectedComponent = def;
+        ComponentDef newSelected = getSelectedComponent();
+        if (oldSelected != newSelected) selectionChanged.accept(newSelected, oldSelected);
+    }
+
+    private void setSelectedComponent(int x, int y) {
+        setSelectedComponent(designerHelper.getComponent(x, y));
+    }
+
+    private Texture getComponentTexture(ComponentDef def) {
+        if (!componentTextureMap.containsKey(def.getType())) {
+            componentTextureMap.put(def.getType(), assetManager.getTexture(def.getDefaultTexture()));
+        }
+        return componentTextureMap.get(def.getType());
     }
 
     /**

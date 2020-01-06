@@ -6,12 +6,12 @@ public class GetValueExpression<T> implements Expression<T> {
 
     private GetStackItem getStackItem;
 
-    public GetStackItem getGetStackItem() {
-        return getStackItem;
-    }
-
     public GetValueExpression(GetStackItem getStackItem) {
         this.getStackItem = getStackItem;
+    }
+
+    public GetStackItem getGetStackItem() {
+        return getStackItem;
     }
 
     @Override

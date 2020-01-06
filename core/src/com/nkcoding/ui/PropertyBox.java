@@ -15,19 +15,14 @@ import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyDa
 import java.util.Map;
 
 public class PropertyBox extends WidgetGroup {
+    //Map with all the methods
+    private final Map<String, NormalMethodDefinition> methods;
     //the name of the ExternalProperty
     private String name;
-
     //the data for the ExternalProperty
     private ExternalPropertyData data;
-
     //the style of this
     private PropertyBoxStyle style;
-
-    public PropertyBoxStyle getStyle() {
-        return style;
-    }
-
     //the Label for the Name
     private Label nameLabel;
 
@@ -46,14 +41,6 @@ public class PropertyBox extends WidgetGroup {
     //the ImageButton which redirects to the code
     private ImageButton codeImageButton;
 
-    //Map with all the methods
-    private final Map<String, NormalMethodDefinition> methods;
-
-    protected String getHandlerName() {
-        return changedTextField.getText();
-    }
-
-
     public PropertyBox(PropertyBoxStyle style, String name, ExternalPropertyData data,
                        Map<String, NormalMethodDefinition> methods) {
         this.style = style;
@@ -61,6 +48,14 @@ public class PropertyBox extends WidgetGroup {
         this.data = data;
         this.methods = methods;
         init();
+    }
+
+    public PropertyBoxStyle getStyle() {
+        return style;
+    }
+
+    protected String getHandlerName() {
+        return changedTextField.getText();
     }
 
     /**

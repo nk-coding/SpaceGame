@@ -19,17 +19,9 @@ public class Methods {
     //array of all normal methods
     private MethodStatement[] normalMethods = {};
 
-    public void setNormalMethods(MethodStatement[] normalMethods) {
-        this.normalMethods = normalMethods;
-    }
-
-    public MethodStatement[] getNormalMethods() {
-        return normalMethods;
-    }
-
     //set the predefined methods in the constructor
     public Methods() {
-    predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "println", DataType.VOID, new TypeNamePair("str", DataType.STRING)),
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "println", DataType.VOID, new TypeNamePair("str", DataType.STRING)),
                 (Function<Object[], Void>) obj ->
                 {
                     System.out.println((String) obj[0]);
@@ -57,6 +49,14 @@ public class Methods {
                     return String.valueOf((boolean) obj[0]);
                 });
 
+    }
+
+    public MethodStatement[] getNormalMethods() {
+        return normalMethods;
+    }
+
+    public void setNormalMethods(MethodStatement[] normalMethods) {
+        this.normalMethods = normalMethods;
     }
 
     //returns the corresponding method definition or null if it does not exist yet

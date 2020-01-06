@@ -20,40 +20,35 @@ import java.util.Optional;
 
 public class CodeEditor extends WidgetGroup {
 
+    private final Color lineNumberColor = new Color(0x808080ff);
+    private final Color highlightLineNumberColor = new Color(0xffffffff);
     /**
      * <code>ScrollPane</code> which contains the <code>MultiColorTextArea</code> which contains the code
      */
     private ScrollPane codeScrollPane;
-
     /**
      * <code>MultiColorTextArea</code> which contains the code
      */
     private MultiColorTextArea codeTextArea;
-
     /**
      * for the clip of the line numbers area
      */
     private Rectangle numbersAreaClip;
-
     /**
      * font for the line numbers
      */
     private BitmapFont font;
-
     /**
      * style for the MultiColorTextArea
      */
     private CodeEditorStyle codeEditorStyle;
-
-    private final Color lineNumberColor = new Color(0x808080ff);
-    private final Color highlightLineNumberColor = new Color(0xffffffff);
-
     private float numberCharWidth;
 
     private int maxLineNumberCharCount = 0;
 
     /**
      * default constructor
+     *
      * @param codeEditorStyle the style for this control
      */
     public CodeEditor(CodeEditorStyle codeEditorStyle) {
