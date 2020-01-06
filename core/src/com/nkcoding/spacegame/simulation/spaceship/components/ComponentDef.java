@@ -52,9 +52,8 @@ public class ComponentDef extends ComponentDefBase {
      * @param ship the Ship of which the Component will be part of
      * @return the new Component
      */
-    public Component createComponent(Ship ship) {
-        Component component = componentType.constructor.apply(this, ship);
-        return component;
+    public Component createComponent(Ship ship, Ship.ShipModel shipModel) {
+        return componentType.constructor.apply(this, ship, shipModel);
     }
 
     public void initExternalProperty(ExternalProperty property) {

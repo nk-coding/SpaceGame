@@ -34,7 +34,7 @@ public abstract class Component implements Damageable {
     public static final int BOTTOM_SIDE = 2;
     public static final int RIGHT_SIDE = 3;
 
-    protected ComponentModel model = null;
+    public ComponentModel model = null;
 
 
     /**
@@ -46,6 +46,10 @@ public abstract class Component implements Damageable {
      * the def of this component
      */
     protected final ComponentDefBase defBase;
+
+    public ComponentDefBase getComponentDef() {
+        return defBase;
+    }
 
     public int getX() {
         return defBase.getX();
@@ -65,10 +69,13 @@ public abstract class Component implements Damageable {
 
     public void setShip(Ship ship) {
         this.ship = ship;
+        if (model != null) {
+            model.shipModel = ship.model;
+        }
         addFixtures();
     }
 
-    /**
+    /**C
      * helper method to get the asset manager
      * @return the ship's asset manager
      */
@@ -272,7 +279,7 @@ public abstract class Component implements Damageable {
      * @param transmission the transmission to send
      */
     protected void sendToOriginal(UpdateComponentTransmission transmission) {
-        if (ship.getIsOwner()) {
+        if (ship.isOriginal()) {
             receiveTransmission(transmission);
         } else {
             ship.sendToOriginal(transmission);
@@ -291,7 +298,7 @@ public abstract class Component implements Damageable {
      * subclasses should overwrite this method if they want to receive update transmissions
      * @param transmission the update transmission
      */
-    protected void receiveTransmission(UpdateComponentTransmission transmission) {
+    public void receiveTransmission(UpdateComponentTransmission transmission) {
     }
 
     public class ComponentModel implements ExternalPropertyHandler {
@@ -302,6 +309,8 @@ public abstract class Component implements Damageable {
         public ComponentDef getComponentDef() {
             return componentDef;
         }
+
+        private Ship.ShipModel shipModel;
 
         //map with all properties
         private HashMap<String, ExternalProperty> properties = new HashMap<>();
@@ -328,7 +337,7 @@ public abstract class Component implements Damageable {
         public final FloatProperty powerRequested = register(new FloatProperty(true, true, POWER_REQUESTED_KEY) {
             @Override
             public void set(float value) {
-                if (get() != value) ship.invalidatePowerDelivery();
+                if (get() != value) shipModel.invalidatePowerDelivery();
                 super.set(value);
             }
         });
@@ -339,7 +348,7 @@ public abstract class Component implements Damageable {
         public final IntProperty requestLevel = register(new IntProperty(false, true, REQUEST_LEVEL_KEY) {
             @Override
             public void set(int value) {
-                if (get() != value) ship.invalidatePowerLevelOrder();
+                if (get() != value) shipModel.invalidatePowerLevelOrder();
                 super.set(value);
             }
         });
@@ -364,6 +373,7 @@ public abstract class Component implements Damageable {
 
         public ComponentModel(Ship.ShipModel shipModel, ComponentDef componentDef) {
             this.componentDef = componentDef;
+            this.shipModel = shipModel;
             //set health
             health.set(getComponentDef().getHealth());
         }
@@ -442,6 +452,10 @@ public abstract class Component implements Damageable {
                 default:
                     throw new IllegalArgumentException("side must be between 0 and 3");
             }
+        }
+
+        public Component getComponent() {
+            return Component.this;
         }
     }
 }

@@ -66,7 +66,7 @@ public class Explosion extends Simulated {
         if (currentRadius >= endRadius) {
             //remove only if it is the owner
             //maybe change this later
-            if (getIsOwner()) {
+            if (isOriginal()) {
                 getSpaceSimulation().removeSimulated(this);
             }
         } else {
@@ -96,8 +96,8 @@ public class Explosion extends Simulated {
         public final float time;
         public final float damage;
 
-        public ExplosionCreateTransmission(SimulatedType type, int simulatedID, int owner, BodyState bodyState, float startRadius, float endRadius, float time, float damage) {
-            super(type, simulatedID, owner, bodyState);
+        public ExplosionCreateTransmission(int simulatedID, int owner, BodyState bodyState, float startRadius, float endRadius, float time, float damage) {
+            super(SimulatedType.Explosion, simulatedID, owner, bodyState);
             this.startRadius = startRadius;
             this.endRadius = endRadius;
             this.time = time;

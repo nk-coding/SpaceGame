@@ -61,7 +61,7 @@ public class CannonBullet extends Simulated {
         //limit reach
         movingSince += delta;
         //check for movingSince only if this is the owner to prevent redundant removes
-        if (collided || (getIsOwner() && movingSince > 10f)) {
+        if (collided || (isOriginal() && movingSince > 10f)) {
             getSpaceSimulation().removeSimulated(this);
         }
     }
@@ -91,8 +91,8 @@ public class CannonBullet extends Simulated {
     private static class CannonBulletCreateTransmission extends CreateTransmission {
         public final float length;
 
-        public CannonBulletCreateTransmission(SimulatedType type, int simulatedID, int owner, BodyState bodyState, float length) {
-            super(type, simulatedID, owner, bodyState);
+        public CannonBulletCreateTransmission(int simulatedID, int owner, BodyState bodyState, float length) {
+            super(SimulatedType.CannonBullet, simulatedID, owner, bodyState);
             this.length = length;
         }
     }

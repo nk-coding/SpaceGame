@@ -2,6 +2,7 @@ package com.nkcoding.spacegame.simulation.spaceship.components;
 
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.nkcoding.spacegame.Asset;
+import com.nkcoding.spacegame.simulation.Ship;
 
 import java.io.Serializable;
 
@@ -92,5 +93,9 @@ public class ComponentDefBase implements Serializable {
      */
     public PolygonShape getShape(int posX, int posY) {
         return componentType.getShape(rotation % 2 == 1, posX, posY);
+    }
+
+    public Component createMirrorComponent(Ship ship) {
+        return componentType.mirrorConstructor.apply(this, ship);
     }
 }

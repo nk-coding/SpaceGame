@@ -7,6 +7,7 @@ import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.simulation.Ship;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
+import com.nkcoding.util.TriFunction;
 
 import java.util.function.BiFunction;
 
@@ -42,7 +43,10 @@ public enum ComponentType {
     public final int health;
 
     //constructor to create a new instance
-    public final BiFunction<ComponentDef, Ship, ? extends Component> constructor;
+    public final TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor;
+
+    //constructor to create a new instance on another client
+    public final BiFunction<ComponentDefBase, Ship, ? extends Component> mirrorConstructor;
 
     //file position of the preview image
     public final Asset defaultTexture;
@@ -53,7 +57,8 @@ public enum ComponentType {
     //the mass of the Component
     public final float mass;
 
-    ComponentType(BiFunction<ComponentDef, Ship, ? extends Component> constructor, int width, int height,
+    ComponentType(TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor, BiFunction<ComponentDefBase, Ship, ? extends Component> mirrorConstructor,
+                  int width, int height,
                   int health, float mass, Asset defaultTexture,
                   ExternalPropertyData... propertyDefs) {
         ExternalPropertyData[] newPropertyDefs = new ExternalPropertyData[propertyDefs.length + 5];
@@ -65,6 +70,7 @@ public enum ComponentType {
         newPropertyDefs[4] = new ExternalPropertyData(POWER_RECEIVED_KEY, DataType.FLOAT);
         this.propertyDefs = newPropertyDefs;
         this.constructor = constructor;
+        this.mirrorConstructor = mirrorConstructor;
         this.defaultTexture = defaultTexture;
         this.width = width;
         this.height = height;
@@ -73,8 +79,9 @@ public enum ComponentType {
     }
 
     //sets width and height to 1
-    ComponentType(BiFunction<ComponentDef, Ship, ? extends Component> constructor, Asset previewImg, ExternalPropertyData... propertyDefs) {
-        this(constructor, 1, 1, 100, 100, previewImg, propertyDefs);
+    ComponentType(TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor, BiFunction<ComponentDefBase, Ship, ? extends Component> mirrorConstructor,
+                  Asset previewImg, ExternalPropertyData... propertyDefs) {
+        this(constructor, mirrorConstructor, 1, 1, 100, 100, previewImg, propertyDefs);
     }
 
     /**

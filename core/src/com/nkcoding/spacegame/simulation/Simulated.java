@@ -215,7 +215,7 @@ public class Simulated {
         return owner;
     }
 
-    public boolean getIsOwner() {
+    public boolean isOriginal() {
         return isOwner;
     }
 
