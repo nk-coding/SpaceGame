@@ -1,29 +1,31 @@
-package com.nkcoding.spacegame.spaceship;
+package com.nkcoding.spacegame.simulation.spaceship.components;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.spacegame.Asset;
-import com.nkcoding.spacegame.components.*;
+import com.nkcoding.spacegame.simulation.Ship;
+import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 
 import java.util.function.BiFunction;
 
-import static com.nkcoding.spacegame.spaceship.Component.*;
-import static com.nkcoding.spacegame.spaceship.ExternalPropertyData.of;
+import static com.nkcoding.spacegame.simulation.spaceship.components.Component.*;
+import static com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData.of;
 
 public enum ComponentType {
     Engine(Engine::new, 1, 2, 100, 100, Asset.Engine,
-            of(com.nkcoding.spacegame.components.Engine.ENGINE_POWER_KEY, DataType.INTEGER, false)),
+            of(com.nkcoding.spacegame.simulation.spaceship.components.Engine.ENGINE_POWER_KEY, DataType.INTEGER, false)),
     Cannon(Cannon::new, 1, 2, 100, 100, Asset.Cannon,
-            of(com.nkcoding.spacegame.components.Cannon.IS_SHOOTING_KEY, DataType.BOOLEAN, false),
+            of(com.nkcoding.spacegame.simulation.spaceship.components.Cannon.IS_SHOOTING_KEY, DataType.BOOLEAN, false),
             of(Buffer.BUFFER_LEVEL_KEY, DataType.FLOAT)),
     PowerCore(PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
     BasicHull(BasicHull::new, Asset.BasicHull),
     ExplosiveCanister(ExplosiveCanister::new, 1, 1, 50, 50, Asset.ExplosiveCanister,
-            of(com.nkcoding.spacegame.components.ExplosiveCanister.EXPLODE_KEY, DataType.BOOLEAN, false)),
+            of(com.nkcoding.spacegame.simulation.spaceship.components.ExplosiveCanister.EXPLODE_KEY, DataType.BOOLEAN, false)),
     ShieldGenerator(ShieldGenerator::new, 2, 2, 200, 100, Asset.CloseSymbol,
-            of(com.nkcoding.spacegame.components.ShieldGenerator.RADIUS_KEY, DataType.FLOAT, false),
-            of(com.nkcoding.spacegame.components.ShieldGenerator.IS_ENABLED_KEY, DataType.BOOLEAN, false),
+            of(com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.RADIUS_KEY, DataType.FLOAT, false),
+            of(com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.IS_ENABLED_KEY, DataType.BOOLEAN, false),
             of(Buffer.BUFFER_LEVEL_KEY, DataType.FLOAT));
 
     //the width of the component

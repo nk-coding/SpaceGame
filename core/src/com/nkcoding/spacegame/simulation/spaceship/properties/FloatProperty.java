@@ -1,4 +1,4 @@
-package com.nkcoding.spacegame.spaceship;
+package com.nkcoding.spacegame.simulation.spaceship.properties;
 
 public class FloatProperty extends ExternalProperty<Float> {
     private float value = 0f;

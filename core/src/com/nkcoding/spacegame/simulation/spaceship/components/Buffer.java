@@ -1,9 +1,7 @@
-package com.nkcoding.spacegame.components;
+package com.nkcoding.spacegame.simulation.spaceship.components;
 
-import com.nkcoding.spacegame.spaceship.Component;
-import com.nkcoding.spacegame.spaceship.ComponentDef;
-import com.nkcoding.spacegame.spaceship.FloatProperty;
-import com.nkcoding.spacegame.spaceship.Ship;
+import com.nkcoding.spacegame.simulation.Ship;
+import com.nkcoding.spacegame.simulation.spaceship.properties.FloatProperty;
 
 public class Buffer extends Component {
     public static final String BUFFER_LEVEL_KEY = "BufferLevel";

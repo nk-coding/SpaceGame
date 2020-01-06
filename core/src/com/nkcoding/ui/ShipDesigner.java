@@ -8,9 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Disposable;
 import com.nkcoding.spacegame.ExtAssetManager;
-import com.nkcoding.spacegame.spaceship.ComponentDef;
-import com.nkcoding.spacegame.spaceship.ComponentType;
-import com.nkcoding.spacegame.spaceship.ShipDef;
+import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
+import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
+import com.nkcoding.spacegame.simulation.spaceship.components.ComponentType;
 
 import java.util.HashMap;
 import java.util.function.BiConsumer;

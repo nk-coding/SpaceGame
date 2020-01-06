@@ -1,10 +1,13 @@
-package com.nkcoding.spacegame.spaceship;
+package com.nkcoding.spacegame.simulation.spaceship.components;
 
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.spacegame.Asset;
+import com.nkcoding.spacegame.simulation.Ship;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

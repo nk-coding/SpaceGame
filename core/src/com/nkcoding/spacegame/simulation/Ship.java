@@ -1,4 +1,4 @@
-package com.nkcoding.spacegame.spaceship;
+package com.nkcoding.spacegame.simulation;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -11,6 +11,10 @@ import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.Program;
 import com.nkcoding.spacegame.SpaceSimulation;
+import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
+import com.nkcoding.spacegame.simulation.spaceship.components.Component;
+import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
+import com.nkcoding.spacegame.simulation.spaceship.properties.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -205,7 +209,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
      *
      * @param component the Component to destroy
      */
-    void destroyComponent(Component component) {
+    public void destroyComponent(Component component) {
         removeComponent(component);
         isStructureCheckNecessary = true;
     }
@@ -279,12 +283,12 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     }
 
     //region power system
-    void invalidatePowerLevelOrder() {
+    public void invalidatePowerLevelOrder() {
         isPowerLevelOrderCorrect = false;
         invalidatePowerDelivery();
     }
 
-    void invalidatePowerDelivery() {
+    public void invalidatePowerDelivery() {
         isPowerRequestDifferent = true;
     }
 

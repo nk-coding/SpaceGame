@@ -1,4 +1,4 @@
-package com.nkcoding.spacegame.spaceship;
+package com.nkcoding.spacegame.simulation;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.SpaceSimulation;
+import com.nkcoding.spacegame.simulation.spaceship.components.Component;
 
 public class Explosion extends Simulated {
     //the radius of this explosion
@@ -25,7 +26,7 @@ public class Explosion extends Simulated {
     private Fixture sensorFixture;
 
 
-    protected Explosion(SpaceSimulation spaceSimulation, float startRadius, float endRadius, float time,
+    public Explosion(SpaceSimulation spaceSimulation, float startRadius, float endRadius, float time,
                         Vector2 pos, Vector2 linearVelocity, float damage) {
         super(spaceSimulation, BodyDef.BodyType.KinematicBody, 3);
         this.startRadius = startRadius;

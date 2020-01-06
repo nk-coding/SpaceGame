@@ -1,9 +1,7 @@
-package com.nkcoding.spacegame.components;
+package com.nkcoding.spacegame.simulation.spaceship.components;
 
-import com.nkcoding.spacegame.spaceship.Component;
-import com.nkcoding.spacegame.spaceship.ComponentDef;
-import com.nkcoding.spacegame.spaceship.Ship;
-import com.nkcoding.spacegame.spaceship.ShipDef;
+import com.nkcoding.spacegame.simulation.Ship;
+import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 
 public class PowerCore extends Component {
     /**

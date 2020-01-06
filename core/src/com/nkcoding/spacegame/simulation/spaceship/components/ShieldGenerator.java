@@ -1,14 +1,13 @@
-package com.nkcoding.spacegame.components;
+package com.nkcoding.spacegame.simulation.spaceship.components;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.spacegame.Asset;
-import com.nkcoding.spacegame.spaceship.ComponentDef;
-import com.nkcoding.spacegame.spaceship.FloatProperty;
-import com.nkcoding.spacegame.spaceship.Ship;
-import com.nkcoding.spacegame.spaceship.VirtualProperty;
+import com.nkcoding.spacegame.simulation.Ship;
+import com.nkcoding.spacegame.simulation.spaceship.properties.FloatProperty;
+import com.nkcoding.spacegame.simulation.spaceship.properties.VirtualProperty;
 
 public class ShieldGenerator extends Buffer {
     public static final String IS_ENABLED_KEY = "IsEnabled";

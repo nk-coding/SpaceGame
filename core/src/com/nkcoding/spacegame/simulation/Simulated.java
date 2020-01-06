@@ -1,4 +1,4 @@
-package com.nkcoding.spacegame.spaceship;
+package com.nkcoding.spacegame.simulation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;

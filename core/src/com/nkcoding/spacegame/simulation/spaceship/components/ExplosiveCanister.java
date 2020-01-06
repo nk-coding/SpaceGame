@@ -1,6 +1,8 @@
-package com.nkcoding.spacegame.components;
+package com.nkcoding.spacegame.simulation.spaceship.components;
 
-import com.nkcoding.spacegame.spaceship.*;
+import com.nkcoding.spacegame.simulation.Ship;
+import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
+import com.nkcoding.spacegame.simulation.spaceship.properties.BooleanProperty;
 
 public class ExplosiveCanister extends Component {
     public static final String EXPLODE_KEY = "Explode";

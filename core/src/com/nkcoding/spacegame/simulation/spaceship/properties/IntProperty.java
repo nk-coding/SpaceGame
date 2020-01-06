@@ -1,4 +1,4 @@
-package com.nkcoding.spacegame.spaceship;
+package com.nkcoding.spacegame.simulation.spaceship.properties;
 
 public class IntProperty extends ExternalProperty<Integer> {
     private int value = 0;

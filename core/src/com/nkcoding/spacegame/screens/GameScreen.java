@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.nkcoding.spacegame.SpaceGame;
 import com.nkcoding.spacegame.SpaceSimulation;
-import com.nkcoding.spacegame.spaceship.Ship;
-import com.nkcoding.spacegame.spaceship.ShipDef;
+import com.nkcoding.spacegame.simulation.Ship;
+import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 
 public class GameScreen implements Screen {
     //game

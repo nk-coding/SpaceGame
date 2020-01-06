@@ -1,4 +1,4 @@
-package com.nkcoding.spacegame.spaceship;
+package com.nkcoding.spacegame.simulation.spaceship.components;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -7,6 +7,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.SpaceSimulation;
+import com.nkcoding.spacegame.simulation.Explosion;
+import com.nkcoding.spacegame.simulation.Ship;
+import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
+import com.nkcoding.spacegame.simulation.spaceship.properties.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +66,7 @@ public abstract class Component implements ExternalPropertyHandler {
         return ship;
     }
 
-    void setShip(Ship ship) {
+    public void setShip(Ship ship) {
         this.ship = ship;
         addFixtures();
     }
@@ -73,7 +77,7 @@ public abstract class Component implements ExternalPropertyHandler {
     }
 
     //helper to check structural integrity
-    boolean structureHelper = false;
+    public boolean structureHelper = false;
 
 
     /**

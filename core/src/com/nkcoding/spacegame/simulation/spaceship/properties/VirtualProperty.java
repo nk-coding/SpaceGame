@@ -1,4 +1,4 @@
-package com.nkcoding.spacegame.spaceship;
+package com.nkcoding.spacegame.simulation.spaceship.properties;
 
 public abstract class VirtualProperty<T> extends ExternalProperty<T> {
 

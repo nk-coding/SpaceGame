@@ -1,18 +1,21 @@
-package com.nkcoding.spacegame.spaceship;
+package com.nkcoding.spacegame.simulation.spaceship;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
+import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
+import com.nkcoding.spacegame.simulation.spaceship.components.ComponentType;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.nkcoding.spacegame.spaceship.ExternalPropertyData.of;
-import static com.nkcoding.spacegame.spaceship.Ship.*;
+import static com.nkcoding.spacegame.simulation.Ship.*;
+import static com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData.of;
 
 public class ShipDef {
     public class ShipDesignerHelper {

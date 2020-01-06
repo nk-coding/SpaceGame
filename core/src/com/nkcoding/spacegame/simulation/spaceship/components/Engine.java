@@ -1,8 +1,10 @@
-package com.nkcoding.spacegame.components;
+package com.nkcoding.spacegame.simulation.spaceship.components;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.nkcoding.spacegame.spaceship.*;
+import com.nkcoding.spacegame.simulation.Ship;
+import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
+import com.nkcoding.spacegame.simulation.spaceship.properties.IntProperty;
 
 public class Engine extends Component {
     public static final String ENGINE_POWER_KEY = "EnginePower";

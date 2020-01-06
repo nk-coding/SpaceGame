@@ -1,4 +1,4 @@
-package com.nkcoding.spacegame.spaceship;
+package com.nkcoding.spacegame.simulation.spaceship.properties;
 
 public class StringProperty extends ExternalProperty<String> {
     private String value = "";

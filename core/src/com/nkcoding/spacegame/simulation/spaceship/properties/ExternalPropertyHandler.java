@@ -1,4 +1,4 @@
-package com.nkcoding.spacegame.spaceship;
+package com.nkcoding.spacegame.simulation.spaceship.properties;
 
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.MethodStatement;

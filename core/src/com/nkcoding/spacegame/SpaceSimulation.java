@@ -9,8 +9,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
-import com.nkcoding.spacegame.spaceship.ExternalPropertyHandler;
-import com.nkcoding.spacegame.spaceship.Simulated;
+import com.nkcoding.spacegame.simulation.Simulated;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;

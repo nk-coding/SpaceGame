@@ -26,10 +26,10 @@ import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.SaveGameManager;
 import com.nkcoding.spacegame.SpaceGame;
-import com.nkcoding.spacegame.spaceship.ComponentDef;
-import com.nkcoding.spacegame.spaceship.ComponentType;
-import com.nkcoding.spacegame.spaceship.ExternalPropertyData;
-import com.nkcoding.spacegame.spaceship.ShipDef;
+import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
+import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
+import com.nkcoding.spacegame.simulation.spaceship.components.ComponentType;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 import com.nkcoding.ui.*;
 
 import java.util.ArrayDeque;

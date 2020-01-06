@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
-import com.nkcoding.spacegame.spaceship.ShipDef;
+import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 
 import java.io.IOException;
 import java.io.Writer;

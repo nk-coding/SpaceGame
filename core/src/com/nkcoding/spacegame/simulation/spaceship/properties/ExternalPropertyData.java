@@ -1,4 +1,4 @@
-package com.nkcoding.spacegame.spaceship;
+package com.nkcoding.spacegame.simulation.spaceship.properties;
 
 import com.badlogic.gdx.utils.Json;
 import com.nkcoding.interpreter.compiler.DataType;
@@ -157,7 +157,7 @@ public class ExternalPropertyData {
     }
 
     @Override
-    protected Object clone() {
+    public Object clone() {
         return new ExternalPropertyData(name, type, readonly, writeonly);
     }
 
