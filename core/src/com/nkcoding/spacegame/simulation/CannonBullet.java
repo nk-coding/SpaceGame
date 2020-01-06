@@ -49,7 +49,8 @@ public class CannonBullet extends Simulated {
         super.act(delta);
         //limit reach
         movingSince += delta;
-        if (movingSince > 10f || collided) {
+        //check for movingSince only if this is the owner to prevent redundant removes
+        if (collided || (getIsOwner() && movingSince > 10f)) {
             getSpaceSimulation().removeSimulated(this);
         }
     }
