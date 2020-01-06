@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.nkcoding.communication.Transmission;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.spacegame.simulation.Simulated;
@@ -329,6 +330,7 @@ public class SpaceSimulation implements InputProcessor {
         return handled;
     }
 
+    //region unused events
     @Override
     public boolean keyTyped(char character) {
         return false;
@@ -358,6 +360,7 @@ public class SpaceSimulation implements InputProcessor {
     public boolean scrolled(int amount) {
         return false;
     }
+    //endregion
 
     public int getClientID() {
         return clientID;
@@ -365,5 +368,13 @@ public class SpaceSimulation implements InputProcessor {
 
     public int getNewId() {
         return  clientID * 1000000 + idCounter++;
+    }
+
+    public void sendTo(Transmission transmission, int target) {
+        //TODO
+    }
+
+    public void sendToAll(Transmission transmission) {
+        //TODO
     }
 }

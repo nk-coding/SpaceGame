@@ -7,15 +7,18 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.SpaceSimulation;
+import com.nkcoding.spacegame.simulation.Damageable;
 import com.nkcoding.spacegame.simulation.Explosion;
 import com.nkcoding.spacegame.simulation.Ship;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
+import com.nkcoding.spacegame.simulation.spaceship.components.communication.DamageTransmission;
+import com.nkcoding.spacegame.simulation.spaceship.components.communication.UpdateComponentTransmission;
 import com.nkcoding.spacegame.simulation.spaceship.properties.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Component implements ExternalPropertyHandler {
+public abstract class Component implements Damageable {
 
     //region names for the ExternalProperties
     public static final String HEALTH_KEY = "Health";
@@ -31,31 +34,25 @@ public abstract class Component implements ExternalPropertyHandler {
     public static final int BOTTOM_SIDE = 2;
     public static final int RIGHT_SIDE = 3;
 
+    protected ComponentModel model = null;
 
-    private HashMap<String, ExternalProperty> properties = new HashMap<>();
 
-    @Override
-    public Map<String, ExternalProperty> getProperties() {
-        return properties;
+    /**
+     * the type of the Component
+     */
+    public final ComponentType type;
+
+    /**
+     * the def of this component
+     */
+    protected final ComponentDefBase defBase;
+
+    public int getX() {
+        return defBase.getX();
     }
 
-    //Type if the Component
-    private final ComponentType type;
-
-    public ComponentType getType() {
-        return type;
-    }
-
-    //get the name
-    public String getName() {
-        return componentDef.getName();
-    }
-
-    //ComponentDef with which this was created, a reference is stored to reduce duplicate variables
-    private final ComponentDef componentDef;
-
-    public ComponentDef getComponentDef() {
-        return componentDef;
+    public int getY() {
+        return defBase.getY();
     }
 
     //Ship which has references to box2d and drawing stuff
@@ -71,14 +68,13 @@ public abstract class Component implements ExternalPropertyHandler {
         addFixtures();
     }
 
-    //get the ExtAssetManager
+    /**
+     * helper method to get the asset manager
+     * @return the ship's asset manager
+     */
     protected ExtAssetManager getAssetManager() {
         return ship.getSpaceSimulation().getAssetManager();
     }
-
-    //helper to check structural integrity
-    public boolean structureHelper = false;
-
 
     /**
      * the fixture that represents the box
@@ -95,62 +91,24 @@ public abstract class Component implements ExternalPropertyHandler {
     //region properties
 
     /**
-     * health has to be stored again, because it changes during simulation
-     * if it reaches zero, the component should be destroyed
-     * this check is done in act because of library issues
-     * should be initialized in constructor out of componentDef
+     * constructor that just creates the mirror version
      */
-    public final IntProperty health = register(new IntProperty(true, true, HEALTH_KEY));
-
-    /**
-     * power that component requests
-     */
-    public final FloatProperty powerRequested = register(new FloatProperty(true, true, POWER_REQUESTED_KEY) {
-        @Override
-        public void set(float value) {
-            if (get() != value) ship.invalidatePowerDelivery();
-            super.set(value);
-        }
-    });
-
-    /**
-     * how important is it to get the power
-     */
-    public final IntProperty requestLevel = register(new IntProperty(false, true, REQUEST_LEVEL_KEY) {
-        @Override
-        public void set(int value) {
-            if (get() != value) ship.invalidatePowerLevelOrder();
-            super.set(value);
-        }
-    });
-
-    /**
-     * shows if the component get the full power (used to prevent issues with float rounding)
-     */
-    public final BooleanProperty hasFullPower = register(new BooleanProperty(true, true, HAS_FULL_POWER_KEY));
-
-
-    /**
-     * how much power does it actually get
-     */
-    public final FloatProperty powerReceived = register(new FloatProperty(true, true, POWER_RECEIVED_KEY) {
-        @Override
-        public void set(float value) {
-            super.set(value);
-            hasFullPower.set(powerRequested.get() == powerReceived.get());
-        }
-    });
-
-    //constructor to force subclasses to implement important stuff
-    protected Component(ComponentDef componentDef, Ship ship) {
-        //set the final variables
-        this.type = componentDef.getType();
-        this.componentDef = componentDef;
+    protected Component(ComponentDefBase defBase, Ship ship) {
+        this.defBase = defBase;
+        this.type = defBase.componentType;
         setShip(ship);
-        defaultTexture = getAssetManager().getTexture(componentDef.getDefaultTexture());
-        //set health
-        health.set(componentDef.getHealth());
+        defaultTexture = getAssetManager().getTexture(defBase.getDefaultTexture());
     }
+
+    /**
+     * constructor that creates the original version
+     */
+    protected Component(ComponentDef componentDef, Ship ship, Ship.ShipModel shipModel) {
+        this(componentDef, ship);
+        this.model = generateModel(shipModel);
+    }
+
+    protected abstract ComponentModel generateModel(Ship.ShipModel shipModel);
 
     //helper methods
 
@@ -165,14 +123,14 @@ public abstract class Component implements ExternalPropertyHandler {
      * @return the width including UNIT_SIZE
      */
     public float getWidth() {
-        return getComponentDef().getWidth() * ShipDef.UNIT_SIZE;
+        return type.width * ShipDef.UNIT_SIZE;
     }
 
     /**
      * @return the height including UNIT_SIZE
      */
     public float getHeight() {
-        return getComponentDef().getHeight() * ShipDef.UNIT_SIZE;
+        return type.height * ShipDef.UNIT_SIZE;
     }
 
     //the physics system
@@ -183,8 +141,7 @@ public abstract class Component implements ExternalPropertyHandler {
      * do NOT remove the old fixtures
      */
     public void addFixtures() {
-        ComponentDef def = getComponentDef();
-        this.borderFixture = ship.getBody().createFixture(componentDef.getShape(def.getX(), def.getY()),
+        this.borderFixture = ship.getBody().createFixture(defBase.getShape(defBase.getX(), defBase.getY()),
                 type.mass * ShipDef.UNIT_SIZE * ShipDef.UNIT_SIZE / type.width / type.height);
         borderFixture.setUserData(this);
     }
@@ -208,52 +165,17 @@ public abstract class Component implements ExternalPropertyHandler {
         else System.out.println("this fixture should not be null");
     }
 
-    protected void destroy() {
+    /**
+     * destroy a component
+     * synchronization is done by the ship
+     */
+    private void destroy() {
         ship.destroyComponent(this);
     }
 
-    public void act(float delta) {
-        if (health.get() <= 0) destroy();
-    }
-
-    /**
-     * tries to attach another Component at the specified position
-     * returns true, but can be overwritten by subclasses to implement new behavior
-     * do NOT call this direc
-     *
-     * @param x    x pos of the attachment
-     * @param y    y pos of the attachment
-     * @param side align of the attachment
-     * @return true if the component is allowed to attach
-     */
-    protected boolean attachComponentAt(int x, int y, int side) {
-        return true;
-    }
-
-    /**
-     * tries to attach another Component at the specified position
-     * calls attachComponentAt and calculates rotation
-     *
-     * @param x    x pos of the attachment
-     * @param y    y pos of the attachment
-     * @param side align of the attachment
-     * @return true if the component is allowed to attach
-     */
-    public final boolean attachComponentAtRaw(int x, int y, int side) {
-        final ComponentDef def = getComponentDef();
-        x -= def.getX();
-        y -= def.getY();
-        switch (def.getRotation()) {
-            case 0:
-                return attachComponentAt(x, y, side);
-            case 1:
-                return attachComponentAt(y, def.getHeight() - x - 1, (side + 3) % 4);
-            case 2:
-                return attachComponentAt(def.getWidth() - x - 1, def.getHeight() - y - 1, (side + 2) % 4);
-            case 3:
-                return attachComponentAt(def.getHeight() - y - 1, x, (side + 1) % 4);
-            default:
-                throw new IllegalArgumentException("side must be between 0 and 3");
+    public void act(float delta, boolean original) {
+        if (original) {
+            model.act(delta);
         }
     }
 
@@ -262,7 +184,7 @@ public abstract class Component implements ExternalPropertyHandler {
      *
      * @param batch the Batch to draw on
      */
-    public void draw(Batch batch) {
+    public void draw(Batch batch, boolean original) {
         drawTexture(batch, defaultTexture, new Vector2(0, 0),
                 getWidth(), getHeight(), 0);
     }
@@ -279,14 +201,13 @@ public abstract class Component implements ExternalPropertyHandler {
      * @param degrees the angle in degrees
      */
     public void drawTexture(Batch batch, Texture texture, Vector2 pos, float width, float height, float degrees) {
-        ComponentDef def = getComponentDef();
         Vector2 drawPos = localToWorld(pos);
         batch.draw(texture,
                 drawPos.x, drawPos.y,
                 0, 0,
                 width, height,
                 1, 1,
-                degrees + ship.getRotation() * MathUtils.radiansToDegrees + 90 * def.getRotation(),
+                degrees + ship.getRotation() * MathUtils.radiansToDegrees + 90 * defBase.getRotation(),
                 0, 0,
                 texture.getWidth(), texture.getHeight(),
                 false, false);
@@ -301,23 +222,22 @@ public abstract class Component implements ExternalPropertyHandler {
     public Vector2 localToWorld(Vector2 local) {
         final float x = local.x;
         final float y = local.y;
-        ComponentDef def = getComponentDef();
-        switch (def.getRotation()) {
+        switch (defBase.getRotation()) {
             case 0:
-                local.x = ShipDef.UNIT_SIZE * def.getX() + x;
-                local.y = ShipDef.UNIT_SIZE * def.getY() + y;
+                local.x = ShipDef.UNIT_SIZE * defBase.getX() + x;
+                local.y = ShipDef.UNIT_SIZE * defBase.getY() + y;
                 break;
             case 1:
-                local.x = ShipDef.UNIT_SIZE * (def.getX() + def.getRealWidth()) - y;
-                local.y = ShipDef.UNIT_SIZE * def.getY() + x;
+                local.x = ShipDef.UNIT_SIZE * (defBase.getX() + defBase.getRealWidth()) - y;
+                local.y = ShipDef.UNIT_SIZE * defBase.getY() + x;
                 break;
             case 2:
-                local.x = ShipDef.UNIT_SIZE * (def.getX() + def.getRealWidth()) - x;
-                local.y = ShipDef.UNIT_SIZE * (def.getY() + def.getRealHeight()) - y;
+                local.x = ShipDef.UNIT_SIZE * (defBase.getX() + defBase.getRealWidth()) - x;
+                local.y = ShipDef.UNIT_SIZE * (defBase.getY() + defBase.getRealHeight()) - y;
                 break;
             case 3:
-                local.x = ShipDef.UNIT_SIZE * def.getX() + y;
-                local.y = ShipDef.UNIT_SIZE * (def.getY() + def.getRealHeight()) - x;
+                local.x = ShipDef.UNIT_SIZE * defBase.getX() + y;
+                local.y = ShipDef.UNIT_SIZE * (defBase.getY() + defBase.getRealHeight()) - x;
                 break;
         }
         return ship.localToWorldCoordinates(local);
@@ -329,18 +249,200 @@ public abstract class Component implements ExternalPropertyHandler {
      * @param fixture the Fixture that was hit
      * @param damage  the amount of damage
      */
+    @Override
     public boolean damageAt(Fixture fixture, int damage) {
-        health.set(health.get() - damage);
+        sendToOriginal(new DamageTransmission(this, damage, getDamageID(fixture)));
         return true;
     }
 
-    protected void spawnExplosion(float endRadius, float damage, float time) {
-        Vector2 centerPos = localToWorld(new Vector2(getWidth() / 2, getHeight() / 2));
-        Explosion explosion = new Explosion(getSpaceSimulation(),
-                Math.min(getWidth() / 2 * 0.9f, getHeight() / 2 * 0.9f), endRadius, time,
-                centerPos, getShip().getBody().getLinearVelocityFromWorldPoint(centerPos), damage);
-        getSpaceSimulation().addSimulated(explosion);
+    /**
+     * get the damageID for a specific hit Fixture
+     * used for transmission purposes
+     * zero is the default value, if several IDs are necessary, this method must be overwritten
+     * @param fixture the Fixture that was hit
+     * @return the id
+     */
+    protected int getDamageID(Fixture fixture) {
+        return 0;
     }
 
+    /**
+     * send a transmission to the original
+     * uses a shortcut if it is the original
+     * @param transmission the transmission to send
+     */
+    protected void sendToOriginal(UpdateComponentTransmission transmission) {
+        if (ship.getIsOwner()) {
+            receiveTransmission(transmission);
+        } else {
+            ship.sendToOriginal(transmission);
+        }
+    }
+
+    /**
+     * send a transmission to all mirrors
+     * @param transmission the transmission to send
+     */
+    protected void post(UpdateComponentTransmission transmission) {
+        ship.post(transmission);
+    }
+
+    /**
+     * subclasses should overwrite this method if they want to receive update transmissions
+     * @param transmission the update transmission
+     */
+    protected void receiveTransmission(UpdateComponentTransmission transmission) {
+    }
+
+    public class ComponentModel implements ExternalPropertyHandler {
+
+        //ComponentDef with which this was created, a reference is stored to reduce duplicate variables
+        private final ComponentDef componentDef;
+
+        public ComponentDef getComponentDef() {
+            return componentDef;
+        }
+
+        //map with all properties
+        private HashMap<String, ExternalProperty> properties = new HashMap<>();
+
+        //helper to check structural integrity
+        public boolean structureHelper = false;
+
+        @Override
+        public Map<String, ExternalProperty> getProperties() {
+            return properties;
+        }
+
+        /**
+         * health has to be stored again, because it changes during simulation
+         * if it reaches zero, the component should be destroyed
+         * this check is done in act because of library issues
+         * should be initialized in constructor out of componentDef
+         */
+        public final IntProperty health = register(new IntProperty(true, true, HEALTH_KEY));
+
+        /**
+         * power that component requests
+         */
+        public final FloatProperty powerRequested = register(new FloatProperty(true, true, POWER_REQUESTED_KEY) {
+            @Override
+            public void set(float value) {
+                if (get() != value) ship.invalidatePowerDelivery();
+                super.set(value);
+            }
+        });
+
+        /**
+         * how important is it to get the power
+         */
+        public final IntProperty requestLevel = register(new IntProperty(false, true, REQUEST_LEVEL_KEY) {
+            @Override
+            public void set(int value) {
+                if (get() != value) ship.invalidatePowerLevelOrder();
+                super.set(value);
+            }
+        });
+
+        /**
+         * shows if the component get the full power (used to prevent issues with float rounding)
+         */
+        public final BooleanProperty hasFullPower = register(new BooleanProperty(true, true, HAS_FULL_POWER_KEY));
+
+
+        /**
+         * how much power does it actually get
+         */
+        public final FloatProperty powerReceived = register(new FloatProperty(true, true, POWER_RECEIVED_KEY) {
+            @Override
+            public void set(float value) {
+                super.set(value);
+                hasFullPower.set(powerRequested.get() == powerReceived.get());
+            }
+        });
+
+
+        public ComponentModel(Ship.ShipModel shipModel, ComponentDef componentDef) {
+            this.componentDef = componentDef;
+            //set health
+            health.set(getComponentDef().getHealth());
+        }
+
+
+        @Override
+        public String getName() {
+            return componentDef.getName();
+        }
+
+        public void act(float delta) {
+            if (health.get() <= 0) destroy();
+        }
+
+        /**
+         * append some damage on the Component
+         *
+         * @param fixture the Fixture that was hit
+         * @param damage  the amount of damage
+         */
+        public boolean damageAt(Fixture fixture, int damage) {
+            health.set(health.get() - damage);
+            return true;
+        }
+
+        /**
+         * spawn an explosion with the initial radius of Math.min(getWidth() / 2 * 0.9f, getHeight() / 2 * 0.9f)
+         * @param endRadius the final radius of the explosion
+         * @param damage how much damage does the explosion make
+         * @param time how long lasts the explosion
+         */
+        protected final void spawnExplosion(float endRadius, float damage, float time) {
+            Vector2 centerPos = localToWorld(new Vector2(getWidth() / 2, getHeight() / 2));
+            Explosion explosion = new Explosion(getSpaceSimulation(),
+                    Math.min(getWidth() / 2 * 0.9f, getHeight() / 2 * 0.9f), endRadius, time,
+                    centerPos, getShip().getBody().getLinearVelocityFromWorldPoint(centerPos), damage);
+            getSpaceSimulation().addSimulated(explosion);
+        }
+
+        /**
+         * tries to attach another Component at the specified position
+         * returns true, but can be overwritten by subclasses to implement new behavior
+         * do NOT call this directly
+         *
+         * @param x    x pos of the attachment
+         * @param y    y pos of the attachment
+         * @param side align of the attachment
+         * @return true if the component is allowed to attach
+         */
+        protected boolean attachComponentAt(int x, int y, int side) {
+            return true;
+        }
+
+        /**
+         * tries to attach another Component at the specified position
+         * calls attachComponentAt and calculates rotation
+         *
+         * @param x    x pos of the attachment
+         * @param y    y pos of the attachment
+         * @param side align of the attachment
+         * @return true if the component is allowed to attach
+         */
+        public final boolean attachComponentAtRaw(int x, int y, int side) {
+            final ComponentDef def = getComponentDef();
+            x -= def.getX();
+            y -= def.getY();
+            switch (def.getRotation()) {
+                case 0:
+                    return attachComponentAt(x, y, side);
+                case 1:
+                    return attachComponentAt(y, def.getHeight() - x - 1, (side + 3) % 4);
+                case 2:
+                    return attachComponentAt(def.getWidth() - x - 1, def.getHeight() - y - 1, (side + 2) % 4);
+                case 3:
+                    return attachComponentAt(def.getHeight() - y - 1, x, (side + 1) % 4);
+                default:
+                    throw new IllegalArgumentException("side must be between 0 and 3");
+            }
+        }
+    }
 }
 

@@ -441,4 +441,8 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
         super.draw(batch);
         for (Component component : components) component.draw(batch);
     }
+
+    public class ShipModel {
+
+    }
 }

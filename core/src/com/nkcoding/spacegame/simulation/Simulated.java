@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.spacegame.SpaceSimulation;
+import com.nkcoding.spacegame.simulation.communication.UpdateTransmission;
 
 public class Simulated {
     //the type of this object
@@ -220,5 +221,33 @@ public class Simulated {
 
     public int getSyncPriority() {
         return syncPriority;
+    }
+
+    /**
+     * send a transmission to the original
+     * @param transmission the transmission to send
+     */
+    public void sendToOriginal(UpdateTransmission transmission) {
+        if (isOwner) {
+            receiveTransmission(transmission);
+        } else {
+            spaceSimulation.sendTo(transmission, owner);
+        }
+    }
+
+    /**
+     * send a transmission to all mirrors
+     * @param transmission the transmission to send
+     */
+    public void post(UpdateTransmission transmission) {
+        receiveTransmission(transmission);
+        spaceSimulation.sendToAll(transmission);
+    }
+
+    /**
+     * subclasses should overwrite this method if they want to receive update transmissions
+     * @param transmission the update transmission
+     */
+    protected void receiveTransmission(UpdateTransmission transmission) {
     }
 }

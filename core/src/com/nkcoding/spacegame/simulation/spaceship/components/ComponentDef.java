@@ -1,10 +1,8 @@
 package com.nkcoding.spacegame.simulation.spaceship.components;
 
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
-import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.simulation.Ship;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
@@ -12,77 +10,11 @@ import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyDa
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-//subclass which contains all the stuff that is necessary to design a ship but not emulate it
-public class ComponentDef {
-
-    public int getWidth() {
-        return componentType.width;
-    }
-
-    public int getHeight() {
-        return componentType.height;
-    }
-
-    //0 = not rotated, 1 = 90°, 2 = 180°, 3 = 270°, everything different will be normalised, negative values are not allowed
-    private int rotation;
-
-    public int getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(int rotation) {
-        if (rotation < 0) throw new IllegalArgumentException();
-        this.rotation = rotation % 4;
-    }
-
-    //the position, this is necessary for a ship to locate the component
-    private int x;
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    //the position, this is necessary for a ship to locate the component
-    private int y;
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public int getHealth() {
-        return componentType.health;
-    }
-
-    //function to get width, includes rotation
-    public int getRealWidth() {
-        return ((rotation % 2) == 0) ? componentType.width : componentType.height;
-    }
-
-    //function to get height, includes rotation
-    public int getRealHeight() {
-        return ((rotation % 2) == 0) ? componentType.height : componentType.width;
-    }
-
-    //ComponentInfo with all necessary information
-    private final ComponentType componentType;
-
-    //get the type
-    public ComponentType getType() {
-        return componentType;
-    }
-
-    //get the preview image file
-    public Asset getDefaultTexture() {
-        return componentType.defaultTexture;
-    }
+/**
+ * subclass which contains all the stuff that is necessary to design a ship but not emulate it<br>
+ * this class is Serializable, BUT DO NOT DO IT
+ */
+public class ComponentDef extends ComponentDefBase {
 
     //name for the component
     private String name = "";
@@ -106,7 +38,7 @@ public class ComponentDef {
      * @param type contains the type of the ComponentDef
      */
     public ComponentDef(ComponentType type) {
-        this.componentType = type;
+        super(type);
         //add all ExternalPropertyDefs
         for (ExternalPropertyData data : type.propertyDefs) {
             properties.put(data.name, (ExternalPropertyData) data.clone());
@@ -129,10 +61,6 @@ public class ComponentDef {
         ExternalPropertyData data = properties.get(property.name);
         property.setInitValue(data.initData);
         //TODO implementation of changedMethodStatement probably with the SpaceSimulation's list of methods
-    }
-
-    public PolygonShape getShape(int posX, int posY) {
-        return componentType.getShape(rotation % 2 == 1, posX, posY);
     }
 
     /**
