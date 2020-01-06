@@ -27,9 +27,6 @@ public class Engine extends Component {
 
     @Override
     protected boolean attachComponentAt(int x, int y, int side) {
-        if (y != 1) {
-            System.out.printf("x:%d, y:%d, side:%d%n", x, y, side);
-        }
         return y == 1;
     }
 
