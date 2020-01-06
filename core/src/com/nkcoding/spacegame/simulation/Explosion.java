@@ -28,7 +28,7 @@ public class Explosion extends Simulated {
 
     public Explosion(SpaceSimulation spaceSimulation, float startRadius, float endRadius, float time,
                         Vector2 pos, Vector2 linearVelocity, float damage) {
-        super(spaceSimulation, BodyDef.BodyType.KinematicBody, 3);
+        super(SimulatedType.Explosion, spaceSimulation, BodyDef.BodyType.KinematicBody, 3, spaceSimulation.getClientID());
         this.startRadius = startRadius;
         this.currentRadius = startRadius;
         this.endRadius = endRadius;

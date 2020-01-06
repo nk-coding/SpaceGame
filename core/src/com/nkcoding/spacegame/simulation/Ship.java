@@ -94,7 +94,7 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
 
     //construct Ship out of ShipDef (public constructor)
     public Ship(ShipDef def, SpaceSimulation spaceSimulation) {
-        super(spaceSimulation, BodyDef.BodyType.DynamicBody, 1);
+        super(SimulatedType.Ship, spaceSimulation, BodyDef.BodyType.DynamicBody, 1, spaceSimulation.getClientID());
         name = def.getName();
         spaceSimulation.addExternalPropertyHandler(this);
         if (!def.getValidated()) throw new IllegalArgumentException("shipDef is not validated");
@@ -129,9 +129,10 @@ public class Ship extends Simulated implements ExternalPropertyHandler {
     //package-private constructor to construct Ship out of components (used to split up a ship)
     //pass other ship to copy important stuff (external method stuff etc.)
     Ship(Ship oldShip, List<Component> components) {
-        super(oldShip.getSpaceSimulation(), BodyDef.BodyType.DynamicBody, 1);
+        super(SimulatedType.Ship, oldShip.getSpaceSimulation(), BodyDef.BodyType.DynamicBody, 1, oldShip.getSpaceSimulation().getClientID());
         //check for new name
         String nameStart = oldShip.getName();
+        //TODO
         while (getSpaceSimulation().containsExternalPropertyHandler(nameStart += "#")) ;
         name = nameStart;
         getSpaceSimulation().addExternalPropertyHandler(this);

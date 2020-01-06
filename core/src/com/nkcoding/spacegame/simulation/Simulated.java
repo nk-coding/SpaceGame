@@ -10,6 +10,8 @@ import com.nkcoding.spacegame.SpaceSimulation;
 public class Simulated {
     //the type of this object
     public final BodyDef.BodyType bodyType;
+    //the simulation type
+    public final SimulatedType type;
     //the body which is used in Box3D
     protected final Body body;
     //is it active for simulation or not
@@ -24,27 +26,35 @@ public class Simulated {
     private SpaceSimulation spaceSimulation;
     private boolean receivesKeyInput = false;
     private int collisionPriority;
+    private int owner;
 
     //the default constructor
-    protected Simulated(SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority) {
+    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority, int owner) {
+        this.type = type;
         this.spaceSimulation = spaceSimulation;
         this.bodyType = bodyType;
         this.collisionPriority = collisionPriority;
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = bodyType;
         bodyDef.position.set(0, 0);
+        this.owner = owner;
+
         this.body = spaceSimulation.getWorld().createBody(bodyDef);
         this.body.setUserData(this);
     }
 
     //the bigger constructor
-    protected Simulated(SpaceSimulation spaceSimulation, BodyDef bodyDef, int collisionPriority) {
+    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef bodyDef, int collisionPriority, int owner) {
+        this.type = type;
         this.spaceSimulation = spaceSimulation;
         this.bodyType = bodyDef.type;
         this.collisionPriority = collisionPriority;
         this.body = spaceSimulation.getWorld().createBody(bodyDef);
         this.body.setUserData(this);
+        this.owner = owner;
     }
+
+    //helper method to create bodyDef
 
     public SpaceSimulation getSpaceSimulation() {
         return spaceSimulation;
@@ -169,7 +179,20 @@ public class Simulated {
         return body.getLocalPoint(world);
     }
 
+    /**
+     * called when a contact happens
+     * Will only be called if it's the client of other's owner
+     * must handle own synchronization on its own
+     *
+     * @param other the simulated the collision happened with
+     * @param f1 Fixture 1 of the collision
+     * @param f2 Fixture 2 of the collision
+     */
     public void beginContact(Simulated other, Fixture f1, Fixture f2) {
 
+    }
+
+    public int getOwner() {
+        return owner;
     }
 }

@@ -10,6 +10,7 @@ public enum SimulatedType {
     Explosion(null),
     CannonBullet(null);
 
+    //constructor to create new instances via multiplayer
     public final BiFunction<SpaceSimulation, CreateTransmission, Simulated> constructor;
 
     SimulatedType(BiFunction<SpaceSimulation, CreateTransmission, Simulated> constructor) {

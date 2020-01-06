@@ -22,6 +22,9 @@ public class SpaceSimulation implements InputProcessor {
 
     private final SpaceGame spaceGame;
 
+    //the id of the client
+    private int clientID = 0;
+
     // list with all simulateds
     private final SnapshotArray<Simulated> simulateds = new SnapshotArray<>();
 
@@ -332,5 +335,9 @@ public class SpaceSimulation implements InputProcessor {
     @Override
     public boolean scrolled(int amount) {
         return false;
+    }
+
+    public int getClientID() {
+        return clientID;
     }
 }

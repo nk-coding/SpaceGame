@@ -29,7 +29,7 @@ public class CannonBullet extends Simulated {
     private boolean collided = false;
 
     public CannonBullet(SpaceSimulation spaceSimulation, Vector2 pos, float angle, float length, Vector2 velocity) {
-        super(spaceSimulation, BodyDef.BodyType.KinematicBody, 2);
+        super(SimulatedType.CannonBullet, spaceSimulation, BodyDef.BodyType.KinematicBody, 2, spaceSimulation.getClientID());
         final Body body = getBody();
         body.setBullet(true);
         EdgeShape edgeShape = new EdgeShape();
