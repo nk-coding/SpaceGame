@@ -14,10 +14,10 @@ import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.communication.ComponentUpdateID;
 import com.nkcoding.spacegame.simulation.spaceship.components.communication.DamageTransmission;
 import com.nkcoding.spacegame.simulation.spaceship.components.communication.UpdateComponentTransmission;
-import com.nkcoding.spacegame.simulation.spaceship.properties.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.nkcoding.spacegame.simulation.spaceship.properties.BooleanProperty;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler;
+import com.nkcoding.spacegame.simulation.spaceship.properties.FloatProperty;
+import com.nkcoding.spacegame.simulation.spaceship.properties.IntProperty;
 
 public abstract class Component implements Damageable {
 
@@ -308,8 +308,7 @@ public abstract class Component implements Damageable {
         }
     }
 
-    public class ComponentModel implements ExternalPropertyHandler {
-
+    public class ComponentModel extends ExternalPropertyHandler {
         /**
          * health has to be stored again, because it changes during simulation
          * if it reaches zero, the component should be destroyed
@@ -356,8 +355,6 @@ public abstract class Component implements Damageable {
                 super.set(value);
             }
         });
-        //map with all properties
-        private HashMap<String, ExternalProperty> properties = new HashMap<>();
 
         public ComponentModel(Ship.ShipModel shipModel, ComponentDef componentDef) {
             this.componentDef = componentDef;
@@ -368,11 +365,6 @@ public abstract class Component implements Damageable {
 
         public ComponentDef getComponentDef() {
             return componentDef;
-        }
-
-        @Override
-        public Map<String, ExternalProperty> getProperties() {
-            return properties;
         }
 
         @Override

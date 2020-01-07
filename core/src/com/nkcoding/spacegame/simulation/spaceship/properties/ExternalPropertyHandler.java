@@ -4,15 +4,21 @@ import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.MethodStatement;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
-public interface ExternalPropertyHandler {
-    String getName();
+public abstract class ExternalPropertyHandler {
+    public abstract String getName();
 
-    Map<String, ExternalProperty> getProperties();
+    //map with all properties
+    private HashMap<String, ExternalProperty> properties = new HashMap<>();
+
+    public Map<String, ExternalProperty> getProperties() {
+        return properties;
+    }
 
     //init ExternalProperties with the given ExternalPropertyData
-    default void initProperties(Collection<ExternalPropertyData> datas, Map<String, MethodStatement> methods) {
+    public void initProperties(Collection<ExternalPropertyData> datas, Map<String, MethodStatement> methods) {
         Map<String, ExternalProperty> properties = getProperties();
         for (ExternalPropertyData data : datas) {
             ExternalProperty property = properties.get(data.name);
@@ -25,7 +31,7 @@ public interface ExternalPropertyHandler {
     }
 
     //init the ExternalProperties with the ExternalProperties
-    default void cloneProperties(Collection<ExternalProperty> toClone) {
+    protected void cloneProperties(Collection<ExternalProperty> toClone) {
         Map<String, ExternalProperty> properties = getProperties();
         for (ExternalProperty clone : toClone) {
             ExternalProperty property = properties.get(clone.name);
@@ -36,12 +42,12 @@ public interface ExternalPropertyHandler {
     }
 
     //registers a property to properties
-    default <T extends ExternalProperty> T register(T property) {
+    protected <T extends ExternalProperty> T register(T property) {
         getProperties().put(property.name, property);
         return property;
     }
 
-    default boolean handleExternalMethod(ExternalMethodFuture future) {
+    public boolean handleExternalMethod(ExternalMethodFuture future) {
         ExternalProperty property = getProperties().get(future.getName().substring(3));
         if (property != null) {
             if (future.getParameters().length == 2) {

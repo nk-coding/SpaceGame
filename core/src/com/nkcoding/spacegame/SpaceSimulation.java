@@ -260,6 +260,7 @@ public class SpaceSimulation implements InputProcessor {
     // updates the camera
     public void updateCamera() {
         if (cameraSimulated != null) {
+            System.out.println(cameraSimulated.getCenterPosition());
             centerPos = cameraSimulated.localToWorldCoordinates(cameraSimulated.getCenterPosition());
             float length = cameraSimulated.getBody().getLinearVelocity().len() + 1;
             float h = cameraSimulated.getHeight() / (0.15f / (length * length) + 0.08f);

@@ -22,7 +22,10 @@ import com.nkcoding.spacegame.simulation.spaceship.components.communication.Remo
 import com.nkcoding.spacegame.simulation.spaceship.components.communication.UpdateComponentTransmission;
 import com.nkcoding.spacegame.simulation.spaceship.properties.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -40,7 +43,7 @@ public class Ship extends Simulated {
 
     public ShipModel model = null;
 
-    private List<Component> components;
+    private List<Component> components = new ArrayList<>();
 
     private List<Component> iterationList;
 
@@ -79,6 +82,7 @@ public class Ship extends Simulated {
         model = new ShipModel(oldShip, oldModel, components);
         for (Component component : components) {
             addComponent(component);
+            component.setShip(this);
         }
         //update center pos
         updateCenterPos();
@@ -263,7 +267,7 @@ public class Ship extends Simulated {
         }
     }
 
-    public class ShipModel implements ExternalPropertyHandler {
+    public class ShipModel extends ExternalPropertyHandler {
         //region properties
         //virtual property when a key is pressed
         public final NotifyProperty<String> keyDown = register(new NotifyProperty<>(KEY_DOWN_KEY));
@@ -288,7 +292,6 @@ public class Ship extends Simulated {
         });
         //global variables
         private final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables;
-        private HashMap<String, ExternalProperty> properties = new HashMap<>();
         //the list of components which compose the ship
         private List<Component.ComponentModel> components;
         //corresponds the order of the components to the order of the PowerLevel?
@@ -344,19 +347,11 @@ public class Ship extends Simulated {
             this.cloneProperties(oldModel.getProperties().values()); //here
             //set the components
             this.components = new ArrayList<>(components.size()); //here
-            for (Component component : components) {
-                component.setShip(Ship.this); //here
-            }
             Body oldBody = oldShip.getBody(); //here
             Body body = getBody(); //here
             body.setTransform(oldBody.getPosition(), oldBody.getAngle()); //here
             updateLinearVelocity(oldBody); //here
             body.setAngularVelocity(oldBody.getAngularVelocity()); //here
-        }
-
-        @Override
-        public Map<String, ExternalProperty> getProperties() {
-            return properties;
         }
 
         @Override
@@ -411,44 +406,44 @@ public class Ship extends Simulated {
             if (comDef.getX() > 0) {
                 //there is a left side
                 for (int y = comDef.getY(); y < (comDef.getY() + comDef.getRealHeight()); y++) {
-                    Component.ComponentModel nextComponent = componentsMap[comDef.getX() - 1][y].model;
-                    if (nextComponent != null && !nextComponent.structureHelper &&
-                            nextComponent.attachComponentAtRaw(comDef.getX() - 1, y, Component.RIGHT_SIDE) &&
+                    Component nextComponent = componentsMap[comDef.getX() - 1][y];
+                    if (nextComponent != null && !nextComponent.model.structureHelper &&
+                            nextComponent.model.attachComponentAtRaw(comDef.getX() - 1, y, Component.RIGHT_SIDE) &&
                             component.attachComponentAtRaw(comDef.getX(), y, Component.LEFT_SIDE))
-                        checkStructureRec(nextComponent);
+                        checkStructureRec(nextComponent.model);
                 }
             }
             //check bottom side
             if (comDef.getY() > 0) {
                 //there is a top side
                 for (int x = comDef.getX(); x < (comDef.getX() + comDef.getRealWidth()); x++) {
-                    Component.ComponentModel nextComponent = componentsMap[x][comDef.getY() - 1].model;
-                    if (nextComponent != null && !nextComponent.structureHelper &&
-                            nextComponent.attachComponentAtRaw(x, comDef.getY() - 1, Component.TOP_SIDE) &&
+                    Component nextComponent = componentsMap[x][comDef.getY() - 1];
+                    if (nextComponent != null && !nextComponent.model.structureHelper &&
+                            nextComponent.model.attachComponentAtRaw(x, comDef.getY() - 1, Component.TOP_SIDE) &&
                             component.attachComponentAtRaw(x, comDef.getY(), Component.BOTTOM_SIDE))
-                        checkStructureRec(nextComponent);
+                        checkStructureRec(nextComponent.model);
                 }
             }
             //check right side
             if (comDef.getX() < (ShipDef.MAX_SIZE - 1)) {
                 //there is a right side
                 for (int y = comDef.getY(); y < (comDef.getY() + comDef.getRealHeight()); y++) {
-                    Component.ComponentModel nextComponent = componentsMap[comDef.getX() + comDef.getRealWidth()][y].model;
-                    if (nextComponent != null && !nextComponent.structureHelper &&
-                            nextComponent.attachComponentAtRaw(comDef.getX() + comDef.getRealWidth(), y, Component.LEFT_SIDE) &&
+                    Component nextComponent = componentsMap[comDef.getX() + comDef.getRealWidth()][y];
+                    if (nextComponent != null && !nextComponent.model.structureHelper &&
+                            nextComponent.model.attachComponentAtRaw(comDef.getX() + comDef.getRealWidth(), y, Component.LEFT_SIDE) &&
                             component.attachComponentAtRaw(comDef.getX() + comDef.getRealWidth() - 1, y, Component.RIGHT_SIDE))
-                        checkStructureRec(nextComponent);
+                        checkStructureRec(nextComponent.model);
                 }
             }
             //check top side
             if (comDef.getY() < (ShipDef.MAX_SIZE - 1)) {
                 //there is a bottom side
                 for (int x = comDef.getX(); x < (comDef.getX() + comDef.getRealWidth()); x++) {
-                    Component.ComponentModel nextComponent = componentsMap[x][comDef.getY() + comDef.getRealHeight()].model;
-                    if (nextComponent != null && !nextComponent.structureHelper &&
-                            nextComponent.attachComponentAtRaw(x, comDef.getY() + comDef.getRealHeight(), Component.BOTTOM_SIDE) &&
+                    Component nextComponent = componentsMap[x][comDef.getY() + comDef.getRealHeight()];
+                    if (nextComponent != null && !nextComponent.model.structureHelper &&
+                            nextComponent.model.attachComponentAtRaw(x, comDef.getY() + comDef.getRealHeight(), Component.BOTTOM_SIDE) &&
                             component.attachComponentAtRaw(x, comDef.getY() + comDef.getRealHeight() - 1, Component.TOP_SIDE))
-                        checkStructureRec(nextComponent);
+                        checkStructureRec(nextComponent.model);
                 }
             }
         }
