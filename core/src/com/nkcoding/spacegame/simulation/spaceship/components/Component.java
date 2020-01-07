@@ -115,6 +115,14 @@ public abstract class Component implements Damageable {
         return new ComponentModel(shipModel, componentDef);
     }
 
+    /**
+     * create the data for mirror creation
+     * overwrite in subclasses if necessary
+     */
+    public ComponentDefBase getMirrorData() {
+        return new ComponentDefBase(this.defBase);
+    }
+
     //helper methods
 
     /**

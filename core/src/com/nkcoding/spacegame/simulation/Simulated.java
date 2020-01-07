@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.spacegame.SpaceSimulation;
+import com.nkcoding.spacegame.simulation.communication.CreateTransmission;
 import com.nkcoding.spacegame.simulation.communication.UpdateTransmission;
 
 public class Simulated {
@@ -240,7 +241,6 @@ public class Simulated {
 
     /**
      * send a transmission to all mirrors
-     *
      * @param transmission the transmission to send
      */
     public void post(UpdateTransmission transmission) {
@@ -254,5 +254,20 @@ public class Simulated {
      * @param transmission the update transmission
      */
     protected void receiveTransmission(UpdateTransmission transmission) {
+    }
+
+    /**
+     * get the data to construct a mirror
+     * should be overwritten by subclasses
+     */
+    public CreateTransmission getMirrorData() {
+        return null;
+    }
+
+    /**
+     * get the BodyState of this Simulated
+     */
+    public BodyState getBodyState() {
+        return new BodyState(body);
     }
 }

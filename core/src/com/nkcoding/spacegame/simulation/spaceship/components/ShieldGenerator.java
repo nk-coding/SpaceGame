@@ -24,7 +24,7 @@ public class ShieldGenerator extends Buffer {
     /**
      * is the shield set by the user to be activated
      */
-    protected boolean isEnabled = true;
+    protected boolean isEnabled = false;
 
     private float radius = -1;
 
@@ -33,6 +33,9 @@ public class ShieldGenerator extends Buffer {
      */
     protected ShieldGenerator(ComponentDefBase defBase, Ship ship) {
         super(defBase, ship);
+        ShieldComponentDef shieldComponentDef = (ShieldComponentDef) defBase;
+        this.radius = shieldComponentDef.radius;
+        this.isEnabled = shieldComponentDef.isEnabled;
     }
 
     /**
@@ -94,6 +97,11 @@ public class ShieldGenerator extends Buffer {
     @Override
     protected ComponentModel generateModel(Ship.ShipModel shipModel, ComponentDef componentDef) {
         return new ShieldGeneratorModel(shipModel, componentDef);
+    }
+
+    @Override
+    public ComponentDefBase getMirrorData() {
+        return new ShieldComponentDef(defBase, radius, isEnabled);
     }
 
     @Override
@@ -183,6 +191,17 @@ public class ShieldGenerator extends Buffer {
             } else {
                 return super.damageAt(damageID, damage);
             }
+        }
+    }
+
+    private static class ShieldComponentDef extends ComponentDefBase {
+        public final float radius;
+        public final boolean isEnabled;
+
+        public ShieldComponentDef(ComponentDefBase toCopy, float radius, boolean isEnabled) {
+            super(toCopy);
+            this.radius = radius;
+            this.isEnabled = isEnabled;
         }
     }
 

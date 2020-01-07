@@ -93,6 +93,12 @@ public class Ship extends Simulated {
         return new Ship(spaceSimulation, createTransmission.owner, createTransmission.simulatedID, createTransmission.components);
     }
 
+    @Override
+    public CreateTransmission getMirrorData() {
+        return new ShipCreateTransmission(id, getOwner(), getBodyState(),
+                components.stream().map(Component::getMirrorData).toArray(ComponentDefBase[]::new));
+    }
+
     /**
      * the default act method
      * a subclass must call this, otherwise positioning will not work

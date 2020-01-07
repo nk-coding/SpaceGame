@@ -22,6 +22,8 @@ public class Explosion extends Simulated {
     //the start damage
     private float damage;
 
+    private float time;
+
     private Texture explosionTexture;
 
     private Fixture sensorFixture;
@@ -49,6 +51,7 @@ public class Explosion extends Simulated {
         sensorFixture.setSensor(true);
         this.centerPosition = new Vector2(0, 0);
         this.radius = endRadius;
+        this.time = time;
     }
 
     /**
@@ -60,6 +63,10 @@ public class Explosion extends Simulated {
                 createTransmission.bodyState.linearVelocity, createTransmission.damage, createTransmission.owner, createTransmission.simulatedID);
     }
 
+    @Override
+    public CreateTransmission getMirrorData() {
+        return new ExplosionCreateTransmission(id, getOwner(), getBodyState(), startRadius, endRadius, time, damage);
+    }
 
     @Override
     public void act(float delta) {

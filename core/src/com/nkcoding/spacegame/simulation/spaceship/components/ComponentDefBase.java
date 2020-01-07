@@ -25,6 +25,13 @@ public class ComponentDefBase implements Serializable {
         this.componentType = type;
     }
 
+    public ComponentDefBase(ComponentDefBase toCopy) {
+        this.componentType = toCopy.componentType;
+        this.rotation = toCopy.rotation;
+        this.x = toCopy.x;
+        this.y = toCopy.y;
+    }
+
     public int getWidth() {
         return componentType.width;
     }

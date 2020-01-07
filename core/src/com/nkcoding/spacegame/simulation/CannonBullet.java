@@ -55,6 +55,11 @@ public class CannonBullet extends Simulated {
     }
 
     @Override
+    public CreateTransmission getMirrorData() {
+        return new CannonBulletCreateTransmission(id, getOwner(), getBodyState(), length);
+    }
+
+    @Override
     public void act(float delta) {
         super.act(delta);
         //limit reach
