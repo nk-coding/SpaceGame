@@ -103,6 +103,7 @@ public class Ship extends Simulated {
         //check if list has changed
         if (componentsChanged) {
             iterationList = List.copyOf(components);
+            updateCenterPos();
         }
         if (isOriginal()) {
             model.act(delta);
@@ -230,6 +231,7 @@ public class Ship extends Simulated {
         Component component = componentsMap[x][y];
         component.removeFixtures();
         componentsChanged = true;
+        components.remove(component);
         //remove from map
         ComponentDefBase comDef = component.getComponentDef();
         for (int _x = comDef.getX(); _x < (comDef.getX() + comDef.getRealWidth()); _x++) {
@@ -237,10 +239,10 @@ public class Ship extends Simulated {
                 componentsMap[_x][_y] = null;
             }
         }
+
         if (isOriginal()) {
             model.removeComponentInternally(component);
         }
-        updateCenterPos();
     }
 
     //update the center position
@@ -373,10 +375,6 @@ public class Ship extends Simulated {
         private void removeComponentInternally(Component component) {
             components.remove(component.model);
             getSpaceSimulation().removeExternalPropertyHandler(component.model);
-        }
-
-        private void createComponentInternal(Component component) {
-
         }
 
         //checks if the ship structure is intact or constructs partial ships otherwise
