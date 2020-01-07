@@ -2,8 +2,8 @@ package com.nkcoding.spacegame.simulation.spaceship.properties;
 
 public abstract class VirtualProperty<T> extends ExternalProperty<T> {
 
-    public VirtualProperty(boolean notifyChanges, String name) {
-        super(true, notifyChanges, name);
+    public VirtualProperty(boolean notifyChanges, boolean readonly, String name) {
+        super(readonly, notifyChanges, name);
     }
 
     @Override

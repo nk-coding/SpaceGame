@@ -280,7 +280,7 @@ public class Ship extends Simulated {
         //wrapper for the velocity from Body
         public final FloatProperty velocity = register(new FloatProperty(true, true, VELOCITY_KEY));
         //focus from SpaceSimulation
-        public final VirtualProperty<Boolean> cameraFocus = register(new VirtualProperty<>(true, CAMERA_FOCUS_KEY) {
+        public final VirtualProperty<Boolean> cameraFocus = register(new VirtualProperty<>(true, true, CAMERA_FOCUS_KEY) {
             @Override
             public void set(Boolean value) {
                 super.set(value);

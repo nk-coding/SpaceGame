@@ -118,7 +118,7 @@ public class ShieldGenerator extends Buffer {
          * property to check / set if the shield is enabled
          * virtual, because the shield also must have enough power to activate
          */
-        public final VirtualProperty<Boolean> isEnabled = register(new VirtualProperty<>(true, IS_ENABLED_KEY) {
+        public final VirtualProperty<Boolean> isEnabled = register(new VirtualProperty<>(true, false, IS_ENABLED_KEY) {
             @Override
             public void set(Boolean value) {
                 isSetEnabled = value;
@@ -127,6 +127,11 @@ public class ShieldGenerator extends Buffer {
             @Override
             public Boolean get2() {
                 return isInternalEnabled && isSetEnabled;
+            }
+
+            @Override
+            public void setInitValue(String value) {
+                set(value.equals("true"));
             }
         });
 
@@ -150,6 +155,7 @@ public class ShieldGenerator extends Buffer {
             super.act(delta);
             if (radiusChanged) {
                 post(new RadiusTransmission(ShieldGenerator.this, radius.get()));
+                radiusChanged = false;
             }
 
             //check if it is still activated

@@ -248,8 +248,13 @@ public abstract class Component implements Damageable {
      */
     @Override
     public boolean damageAt(Fixture fixture, int damage) {
-        sendToOriginal(new DamageTransmission(this, damage, getDamageID(fixture)));
-        return true;
+        if (ship.isOriginal()) {
+            return model.damageAt(getDamageID(fixture), damage);
+        } else {
+            System.out.println("wrong handler for tis collision");
+            sendToOriginal(new DamageTransmission(this, damage, getDamageID(fixture)));
+            return true;
+        }
     }
 
     /**

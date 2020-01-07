@@ -599,7 +599,8 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                     updateCurrentLine();
                     lexer.updateLine(getTextLine(getCursorLine()), getCursorLine(), true);
                 }
-                this.autocompletionItems = lexer.getTokens().stream().map(Token::getContent).distinct().collect(Collectors.toList());
+                this.autocompletionItems = lexer.getTokens().stream().filter(token -> (token.getType() & (Token.IDENTIFIER | Token.KEYWORD)) != 0)
+                        .map(Token::getContent).distinct().collect(Collectors.toList());
             } catch (CompileException e) {
                 e.printStackTrace();
             }

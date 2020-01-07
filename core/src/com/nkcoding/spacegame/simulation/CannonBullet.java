@@ -11,7 +11,6 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.SpaceSimulation;
 import com.nkcoding.spacegame.simulation.communication.CreateTransmission;
-import com.nkcoding.spacegame.simulation.spaceship.components.Component;
 
 /**
  * represents a bullet of this cannonS
@@ -83,8 +82,8 @@ public class CannonBullet extends Simulated {
     @Override
     public void beginContact(Simulated other, Fixture f1, Fixture f2) {
         Object userData = f2.getUserData();
-        if (userData instanceof Component && !collided) {
-            collided = ((Component) userData).damageAt(f2, 100);
+        if (userData instanceof Damageable && !collided) {
+            collided = ((Damageable) userData).damageAt(f2, 100);
         }
     }
 
