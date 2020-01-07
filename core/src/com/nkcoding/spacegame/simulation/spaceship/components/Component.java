@@ -72,7 +72,7 @@ public abstract class Component implements Damageable {
      */
     protected Component(ComponentDef componentDef, Ship ship, Ship.ShipModel shipModel) {
         this(componentDef, ship);
-        this.model = generateModel(shipModel);
+        this.model = generateModel(shipModel, componentDef);
     }
 
     public ComponentDefBase getComponentDef() {
@@ -111,7 +111,9 @@ public abstract class Component implements Damageable {
         return ship.getSpaceSimulation().getAssetManager();
     }
 
-    protected abstract ComponentModel generateModel(Ship.ShipModel shipModel);
+    protected ComponentModel generateModel(Ship.ShipModel shipModel, ComponentDef componentDef) {
+        return new ComponentModel(shipModel, componentDef);
+    }
 
     //helper methods
 
@@ -166,14 +168,6 @@ public abstract class Component implements Damageable {
         if (fixture != null)
             getShip().getBody().destroyFixture(fixture);
         else System.out.println("this fixture should not be null");
-    }
-
-    /**
-     * destroy a component
-     * synchronization is done by the ship
-     */
-    private void destroy() {
-        ship.destroyComponent(this);
     }
 
     public void act(float delta, boolean original) {
@@ -399,6 +393,10 @@ public abstract class Component implements Damageable {
         public boolean damageAt(int damageID, int damage) {
             health.set(health.get() - damage);
             return true;
+        }
+
+        protected void destroy() {
+            ship.destroyComponent(Component.this);
         }
 
         /**

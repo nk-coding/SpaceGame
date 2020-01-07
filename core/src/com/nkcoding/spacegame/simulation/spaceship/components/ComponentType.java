@@ -15,16 +15,16 @@ import static com.nkcoding.spacegame.simulation.spaceship.components.Component.*
 import static com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData.of;
 
 public enum ComponentType {
-    Engine(Engine::new, 1, 2, 100, 100, Asset.Engine,
+    Engine(Engine::new, Engine::new, 1, 2, 100, 100, Asset.Engine,
             of(com.nkcoding.spacegame.simulation.spaceship.components.Engine.ENGINE_POWER_KEY, DataType.INTEGER, false)),
-    Cannon(Cannon::new, 1, 2, 100, 100, Asset.Cannon,
+    Cannon(Cannon::new, Cannon::new, 1, 2, 100, 100, Asset.Cannon,
             of(com.nkcoding.spacegame.simulation.spaceship.components.Cannon.IS_SHOOTING_KEY, DataType.BOOLEAN, false),
             of(Buffer.BUFFER_LEVEL_KEY, DataType.FLOAT)),
-    PowerCore(PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
-    BasicHull(BasicHull::new, Asset.BasicHull),
-    ExplosiveCanister(ExplosiveCanister::new, 1, 1, 50, 50, Asset.ExplosiveCanister,
+    PowerCore(PowerCore::new, PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
+    BasicHull(BasicHull::new, BasicHull::new, Asset.BasicHull),
+    ExplosiveCanister(ExplosiveCanister::new, ExplosiveCanister::new, 1, 1, 50, 50, Asset.ExplosiveCanister,
             of(com.nkcoding.spacegame.simulation.spaceship.components.ExplosiveCanister.EXPLODE_KEY, DataType.BOOLEAN, false)),
-    ShieldGenerator(ShieldGenerator::new, 2, 2, 200, 100, Asset.CloseSymbol,
+    ShieldGenerator(ShieldGenerator::new, ShieldGenerator::new, 2, 2, 200, 100, Asset.CloseSymbol,
             of(com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.RADIUS_KEY, DataType.FLOAT, false),
             of(com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.IS_ENABLED_KEY, DataType.BOOLEAN, false),
             of(Buffer.BUFFER_LEVEL_KEY, DataType.FLOAT));
