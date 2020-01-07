@@ -6,7 +6,7 @@ import com.nkcoding.spacegame.simulation.communication.CreateTransmission;
 import java.util.function.BiFunction;
 
 public enum SimulatedType {
-    Ship(null),
+    Ship(com.nkcoding.spacegame.simulation.Ship::mirror),
     Explosion(com.nkcoding.spacegame.simulation.Explosion::mirror),
     CannonBullet(com.nkcoding.spacegame.simulation.CannonBullet::mirror);
 

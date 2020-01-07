@@ -9,31 +9,6 @@ public class ProgramTextWrapper {
 
     private ProgramPosition position;
 
-    public ProgramPosition getPosition() {
-        return position.getClone();
-    }
-
-    //at this time this is not checked, I will probably change this
-    public void setPosition(ProgramPosition position) {
-        this.position = position;
-        jumpIfNecessary();
-    }
-
-    //throws an IllegalOperationException if it is at the start
-    public void moveBackward() {
-        if (position.getColumn() == 0) {
-            if (position.getLine() == 0)
-                throw new UnsupportedOperationException("can't move backwards at the beginning");
-            //now at begin of line, move to last line last char
-            position.setLine(position.getLine() - 1);
-            position.setColumn(lines[position.getLine()].length() - 1);
-
-        } else {
-            //middle of the line, just decrease column
-            position.setColumn(position.getColumn() - 1);
-        }
-    }
-
     //constructor
     public ProgramTextWrapper(String[] program) {
         this.lines = program;
@@ -93,6 +68,31 @@ public class ProgramTextWrapper {
 
             }
             if (!done) ignoreAt[i] = -1;
+        }
+    }
+
+    public ProgramPosition getPosition() {
+        return position.getClone();
+    }
+
+    //at this time this is not checked, I will probably change this
+    public void setPosition(ProgramPosition position) {
+        this.position = position;
+        jumpIfNecessary();
+    }
+
+    //throws an IllegalOperationException if it is at the start
+    public void moveBackward() {
+        if (position.getColumn() == 0) {
+            if (position.getLine() == 0)
+                throw new UnsupportedOperationException("can't move backwards at the beginning");
+            //now at begin of line, move to last line last char
+            position.setLine(position.getLine() - 1);
+            position.setColumn(lines[position.getLine()].length() - 1);
+
+        } else {
+            //middle of the line, just decrease column
+            position.setColumn(position.getColumn() - 1);
         }
     }
 

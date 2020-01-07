@@ -3,24 +3,21 @@ package com.nkcoding.interpreter;
 public class ForLoopStatement extends StackStatement {
 
     protected Statement initStatement = null;
+    protected Expression<Boolean> runCondition;
+    protected Statement stepStatement;
+    protected Statement[] statements;
 
     public void setInitStatement(Statement initStatement) {
         this.initStatement = initStatement;
     }
 
-    protected Expression<Boolean> runCondition;
-
     public void setRunCondition(Expression<Boolean> runCondition) {
         this.runCondition = runCondition;
     }
 
-    protected Statement stepStatement;
-
     public void setStepStatement(Statement stepStatement) {
         this.stepStatement = stepStatement;
     }
-
-    protected Statement[] statements;
 
     public void setStatements(Statement[] statements) {
         this.statements = statements;

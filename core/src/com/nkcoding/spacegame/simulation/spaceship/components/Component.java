@@ -11,6 +11,7 @@ import com.nkcoding.spacegame.simulation.Damageable;
 import com.nkcoding.spacegame.simulation.Explosion;
 import com.nkcoding.spacegame.simulation.Ship;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
+import com.nkcoding.spacegame.simulation.spaceship.components.communication.ComponentUpdateID;
 import com.nkcoding.spacegame.simulation.spaceship.components.communication.DamageTransmission;
 import com.nkcoding.spacegame.simulation.spaceship.components.communication.UpdateComponentTransmission;
 import com.nkcoding.spacegame.simulation.spaceship.properties.*;
@@ -298,6 +299,19 @@ public abstract class Component implements Damageable {
      * @param transmission the update transmission
      */
     public void receiveTransmission(UpdateComponentTransmission transmission) {
+        switch (transmission.updateID) {
+            case ComponentUpdateID.DAMAGE:
+                DamageTransmission damageTransmission = (DamageTransmission)transmission;
+                if (ship.isOriginal()) {
+                    model.damageAt(damageTransmission.damageID, damageTransmission.damage);
+                } else {
+                    System.out.println("try to make damage on a mirror");
+                }
+                break;
+            default:
+                System.out.println("could not handle transmission on Component: " + transmission);
+                break;
+        }
     }
 
     public class ComponentModel implements ExternalPropertyHandler {
@@ -379,10 +393,10 @@ public abstract class Component implements Damageable {
         /**
          * append some damage on the Component
          *
-         * @param fixture the Fixture that was hit
+         * @param damageID the calculated id for the damage
          * @param damage  the amount of damage
          */
-        public boolean damageAt(Fixture fixture, int damage) {
+        public boolean damageAt(int damageID, int damage) {
             health.set(health.get() - damage);
             return true;
         }

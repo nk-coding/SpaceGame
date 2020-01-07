@@ -7,6 +7,12 @@ public class Operation implements Comparable<Operation> {
 
     private int exp2;
 
+    public Operation(OperatorType type, int exp1, int exp2) {
+        this.type = type;
+        this.exp1 = exp1;
+        this.exp2 = exp2;
+    }
+
     public OperatorType getType() {
         return type;
     }
@@ -17,12 +23,6 @@ public class Operation implements Comparable<Operation> {
 
     public int getExp2() {
         return exp2;
-    }
-
-    public Operation(OperatorType type, int exp1, int exp2) {
-        this.type = type;
-        this.exp1 = exp1;
-        this.exp2 = exp2;
     }
 
     @Override
