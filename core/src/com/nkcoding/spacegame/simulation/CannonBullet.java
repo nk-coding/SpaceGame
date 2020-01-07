@@ -33,7 +33,7 @@ public class CannonBullet extends Simulated {
     }
 
     private CannonBullet(SpaceSimulation spaceSimulation, Vector2 pos, float angle, float length, Vector2 velocity, int owner, int id) {
-        super(SimulatedType.CannonBullet, spaceSimulation, BodyDef.BodyType.KinematicBody, 2, owner, 2, id);
+        super(SimulatedType.CannonBullet, spaceSimulation, BodyDef.BodyType.KinematicBody, 2, owner, SynchronizationPriority.LOW, id);
         final Body body = getBody();
         body.setBullet(true);
         EdgeShape edgeShape = new EdgeShape();

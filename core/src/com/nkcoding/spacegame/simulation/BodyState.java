@@ -10,20 +10,18 @@ public class BodyState implements Serializable {
     public final float angularVelocity;
     public final Vector2 position;
     public final Vector2 linearVelocity;
+    public final int id;
 
-    public BodyState(Vector2 position, float angle, Vector2 linearVelocity, float angularVelocity) {
+    public BodyState(Vector2 position, float angle, Vector2 linearVelocity, float angularVelocity, int id) {
         this.angle = angle;
         this.angularVelocity = angularVelocity;
         this.position = position;
         this.linearVelocity = linearVelocity;
+        this.id = id;
     }
 
-    public BodyState(Vector2 position, float angle) {
-        this(position, angle, new Vector2(), 0);
-    }
-
-    public BodyState(Body body) {
-        this(body.getPosition(), body.getAngle(), body.getLinearVelocity(), body.getAngularVelocity());
+    public BodyState(Body body, int id) {
+        this(body.getPosition(), body.getAngle(), body.getLinearVelocity(), body.getAngularVelocity(), id);
     }
 
     @Override

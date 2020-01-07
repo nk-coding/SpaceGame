@@ -268,6 +268,6 @@ public class Simulated {
      * get the BodyState of this Simulated
      */
     public BodyState getBodyState() {
-        return new BodyState(body);
+        return new BodyState(body, id);
     }
 }

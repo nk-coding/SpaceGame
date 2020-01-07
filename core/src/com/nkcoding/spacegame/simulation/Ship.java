@@ -53,7 +53,7 @@ public class Ship extends Simulated {
     private boolean componentsChanged = true;
 
     private Ship(SpaceSimulation spaceSimulation, int owner, int id) {
-        super(SimulatedType.Ship, spaceSimulation, BodyDef.BodyType.DynamicBody, 1, owner, 0, id);
+        super(SimulatedType.Ship, spaceSimulation, BodyDef.BodyType.DynamicBody, 1, owner, SynchronizationPriority.HIGH, id);
         //init the components map
         componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];
     }

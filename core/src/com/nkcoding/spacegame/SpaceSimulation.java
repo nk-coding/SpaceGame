@@ -9,7 +9,11 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.nkcoding.communication.Transmission;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
+import com.nkcoding.spacegame.simulation.BodyState;
 import com.nkcoding.spacegame.simulation.Simulated;
+import com.nkcoding.spacegame.simulation.SynchronizationPriority;
+import com.nkcoding.spacegame.simulation.communication.RemoveTransmission;
+import com.nkcoding.spacegame.simulation.communication.UpdateBodysTransmission;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler;
 
 import java.util.ArrayList;
@@ -19,6 +23,14 @@ import java.util.List;
 
 public class SpaceSimulation implements InputProcessor {
     public static final float TILE_SIZE = 8f;
+
+    private static final long LOW_TIMEOUT = 500000000;
+    private static final long MEDIUM_TIMEOUT = 200000000;
+    private static final long HIGH_TIMEOUT = 85000000;
+    private long lastLow = 0;
+    private long lastMedium = 0;
+    private long lastHigh = 0;
+
 
     private final SpaceGame spaceGame;
     // list with all simulateds
@@ -54,8 +66,6 @@ public class SpaceSimulation implements InputProcessor {
     private float radius, scaledRadius;
     // Simulated that the camera should follow
     private Simulated cameraSimulated;
-    // DEBUG
-    private Box2DDebugRenderer debugRenderer;
 
     // constructor
     public SpaceSimulation(SpaceGame spaceGame) {
@@ -95,7 +105,6 @@ public class SpaceSimulation implements InputProcessor {
         });
         // init camera
         this.camera = new OrthographicCamera();
-        debugRenderer = new Box2DDebugRenderer();
     }
 
     public ScriptingEngine getScriptingEngine() {
@@ -127,6 +136,7 @@ public class SpaceSimulation implements InputProcessor {
      */
     public void addSimulated(Simulated simulated) {
         simulatedToAdd.add(simulated);
+        sendToAll(simulated.getMirrorData());
     }
 
     /**
@@ -136,6 +146,7 @@ public class SpaceSimulation implements InputProcessor {
      */
     public void removeSimulated(Simulated simulated) {
         simulatedToRemove.add(simulated);
+        sendToAll(new RemoveTransmission(simulated.id));
     }
 
     /**
@@ -171,7 +182,25 @@ public class SpaceSimulation implements InputProcessor {
     // calls act on all Simulateds
     // deals with ExternalMethodFutures
     public void act(float time) {
-        // handle all external Methods
+        handleScriptingEngine();
+        int synchronizationMask = handleSynchronization();
+        // call step on the world
+        world.step(time, 6, 2);
+        List<BodyState> bodyStatesToSend = new ArrayList<>();
+        //act on simulateds
+        for (Simulated simulated : simulatedMap.values()) {
+            simulated.act(time);
+            if ((simulated.getSyncPriority() & synchronizationMask) != 0) {
+                bodyStatesToSend.add(simulated.getBodyState());
+            }
+        }
+        if (!bodyStatesToSend.isEmpty()) new UpdateBodysTransmission(bodyStatesToSend.toArray(new BodyState[0]));
+        updateSimulatedMap();
+        // update the camera
+        updateCamera();
+    }
+
+    private void handleScriptingEngine() {
         while (!scriptingEngine.getFutureQueue().isEmpty()) {
             ExternalMethodFuture future = scriptingEngine.getFutureQueue().poll();
             ExternalPropertyHandler handler = propertyHandlers.get(future.getParameters()[0]);
@@ -184,15 +213,6 @@ public class SpaceSimulation implements InputProcessor {
                 future.complete(future.getType().getDefaultValue());
             }
         }
-        // call step on the world
-        world.step(time, 6, 2);
-        for (Simulated simulated : simulatedMap.values()) {
-            // call act on simulateds
-            simulated.act(time);
-        }
-        updateSimulatedMap();
-        // update the camera
-        updateCamera();
     }
 
     private void updateSimulatedMap() {
@@ -204,32 +224,44 @@ public class SpaceSimulation implements InputProcessor {
         for (Simulated toRemove : simulatedToRemove) {
             simulatedMap.remove(toRemove.id);
             keyHandlers.remove(toRemove);
-            //TODO check if it has to remove propertyHandler
             world.destroyBody(toRemove.getBody());
         }
         simulatedToRemove.clear();
         simulatedToAdd.clear();
     }
 
+    private int handleSynchronization() {
+        if (true) return 0;
+        long time = System.nanoTime();
+        int result = 0;
+        if (time - lastLow > LOW_TIMEOUT) {
+            lastLow = time;
+            result |= SynchronizationPriority.LOW;
+        }
+        if (time - lastMedium > MEDIUM_TIMEOUT) {
+            lastMedium = time;
+            result |= SynchronizationPriority.MEDIUM;
+        }
+        if (time - lastHigh > HIGH_TIMEOUT) {
+            lastHigh = time;
+            result |= SynchronizationPriority.HIGH;
+        }
+        return result;
+    }
+
     public void draw(Batch batch) {
         // update the batch
         batch.setProjectionMatrix(camera.combined);
-        // debugRenderer.render(world, batch.getProjectionMatrix().cpy());
-        // draw simulateds
-        if (true) {
-            drawBackground(batch);
-            for (Simulated simulated : simulatedMap.values()) {
-                float maxAbs = simulated.getRadius() + scaledRadius;
-                float abs = simulated.localToWorldCoordinates(simulated.getCenterPosition()).sub(centerPos).len2();
-                if (abs < (maxAbs * maxAbs)) {
-                    simulated.draw(batch);
-                }
+
+        drawBackground(batch);
+        for (Simulated simulated : simulatedMap.values()) {
+            float maxAbs = simulated.getRadius() + scaledRadius;
+            float abs = simulated.localToWorldCoordinates(simulated.getCenterPosition()).sub(centerPos).len2();
+            if (abs < (maxAbs * maxAbs)) {
+                simulated.draw(batch);
             }
-            batch.flush();
-        } else {
-            debugRenderer.render(world, camera.combined);
         }
-        //System.out.println(spaceGame.glProfiler.getShaderSwitches());
+        batch.flush();
         spaceGame.glProfiler.reset();
     }
 
