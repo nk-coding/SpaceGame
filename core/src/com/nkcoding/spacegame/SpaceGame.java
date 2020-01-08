@@ -5,7 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
+import com.nkcoding.communication.Communication;
 import com.nkcoding.spacegame.screens.GameScreen;
+import com.nkcoding.spacegame.screens.LauncherScreen;
 import com.nkcoding.spacegame.screens.ShipBuilderScreen;
 
 public class SpaceGame extends Game {
@@ -33,14 +35,18 @@ public class SpaceGame extends Game {
         assetManager.loadAll();
         //load saveGame
         saveGame = SaveGameManager.load();
-        if (false) {
-            screen = new ShipBuilderScreen(this, saveGame.shipDef);
-        } else {
-            screen = new GameScreen(this, saveGame.shipDef);
-        }
+
         glProfiler = new GLProfiler(Gdx.graphics);
         glProfiler.enable();
-        setScreen(screen);
+        setScreen(new LauncherScreen(this));
+    }
+
+    public void startEditor() {
+        setScreen(new ShipBuilderScreen(this, saveGame.shipDef));
+    }
+
+    public void startGame(Communication communication) {
+        setScreen(new GameScreen(this, saveGame.shipDef));
     }
 
     @Override
@@ -50,8 +56,6 @@ public class SpaceGame extends Game {
 
     @Override
     public void dispose() {
-        //testScreen.dispose();
-        //shipBuilderScreen.dispose();
         assetManager.dispose();
         batch.dispose();
     }

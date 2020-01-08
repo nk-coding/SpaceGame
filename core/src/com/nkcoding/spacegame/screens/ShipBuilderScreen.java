@@ -105,7 +105,7 @@ public class ShipBuilderScreen implements Screen {
         this.assetManager = spaceGame.getAssetManager();
         //region create the stage with and all its components
         ScreenViewport viewport = new ScreenViewport();
-        viewport.setUnitsPerPixel(0.75f / Gdx.graphics.getDensity());
+        //viewport.setUnitsPerPixel(0.75f / Gdx.graphics.getDensity());
         System.out.println(Gdx.graphics.getDensity());
         stage = new Stage(viewport, spriteBatch);
         Gdx.input.setInputProcessor(stage);

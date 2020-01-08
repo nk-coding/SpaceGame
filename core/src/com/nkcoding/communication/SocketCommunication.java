@@ -137,7 +137,6 @@ public class SocketCommunication extends Communication {
      */
     @Override
     public void sendTo(int peer, Transmission transmission) {
-        System.out.println("send transmission " + transmission + " to " + peer);
         Connection connection = connections.get(peer);
         if (connection == null) {
             throw new IllegalArgumentException("peer does not exist");
@@ -368,7 +367,6 @@ public class SocketCommunication extends Communication {
         }
 
         void handleTransmission(Transmission transmission) {
-            System.out.println("read new transmission: " + transmission);
             switch (transmission.getId()) {
                 case Transmission.SET_PEER_ID:
                     //change the id
