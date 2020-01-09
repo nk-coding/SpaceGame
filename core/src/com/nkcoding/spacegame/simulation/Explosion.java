@@ -59,8 +59,8 @@ public class Explosion extends Simulated {
      */
     public static Explosion mirror(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
         ExplosionCreateTransmission createTransmission = (ExplosionCreateTransmission) transmission;
-        return new Explosion(spaceSimulation, createTransmission.startRadius, createTransmission.endRadius, createTransmission.time, createTransmission.bodyState.position,
-                createTransmission.bodyState.linearVelocity, createTransmission.damage, createTransmission.owner, createTransmission.simulatedID);
+        return new Explosion(spaceSimulation, createTransmission.startRadius, createTransmission.endRadius, createTransmission.time, createTransmission.bodyState.position(),
+                createTransmission.bodyState.linearVelocity(), createTransmission.damage, createTransmission.owner, createTransmission.simulatedID);
     }
 
     @Override

@@ -275,8 +275,8 @@ public class Simulated {
      * update the Simulated based on the body state
      */
     public void update(BodyState bodyState) {
-        body.setTransform(bodyState.position, bodyState.angle);
-        body.setLinearVelocity(bodyState.linearVelocity);
+        body.setTransform(bodyState.position(), bodyState.angle);
+        body.setLinearVelocity(bodyState.linearVelocity());
         body.setAngularVelocity(bodyState.angularVelocity);
     }
 }

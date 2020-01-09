@@ -8,15 +8,19 @@ import java.io.Serializable;
 public class BodyState implements Serializable {
     public final float angle;
     public final float angularVelocity;
-    public final Vector2 position;
-    public final Vector2 linearVelocity;
+    public final float positionX;
+    public final float positionY;
+    public final float linearVelocityX;
+    public final float linearVelocityY;
     public final int id;
 
     public BodyState(Vector2 position, float angle, Vector2 linearVelocity, float angularVelocity, int id) {
         this.angle = angle;
         this.angularVelocity = angularVelocity;
-        this.position = position;
-        this.linearVelocity = linearVelocity;
+        this.positionX = position.x;
+        this.positionY = position.y;
+        this.linearVelocityX = linearVelocity.x;
+        this.linearVelocityY = linearVelocity.y;
         this.id = id;
     }
 
@@ -24,8 +28,16 @@ public class BodyState implements Serializable {
         this(body.getPosition(), body.getAngle(), body.getLinearVelocity(), body.getAngularVelocity(), id);
     }
 
+    public Vector2 position() {
+        return new Vector2(positionX, positionY);
+    }
+
+    public Vector2 linearVelocity() {
+        return new Vector2(linearVelocityX, linearVelocityY);
+    }
+
     @Override
     public String toString() {
-        return String.format("%d: %s, %f | %s, %f", id, position, angle, linearVelocity, angularVelocity);
+        return String.format("%d: (%f, %f), %f | (%f, %f), %f", id, positionX, positionY, angle, linearVelocityX, linearVelocityY, angularVelocity);
     }
 }
