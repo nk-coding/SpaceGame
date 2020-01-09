@@ -201,7 +201,7 @@ public class SpaceSimulation implements InputProcessor {
                 bodyStatesToSend.add(simulated.getBodyState());
             }
         }
-        if (!bodyStatesToSend.isEmpty()) new UpdateBodysTransmission(bodyStatesToSend.toArray(new BodyState[0]));
+        if (!bodyStatesToSend.isEmpty()) sendToAll(new UpdateBodysTransmission(bodyStatesToSend.toArray(new BodyState[0])));
         updateSimulatedMap();
         // update the camera
         updateCamera();
