@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.nkcoding.communication.Communication;
 import com.nkcoding.communication.Transmission;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
@@ -68,7 +69,7 @@ public class SpaceSimulation implements InputProcessor {
     private Simulated cameraSimulated;
 
     // constructor
-    public SpaceSimulation(SpaceGame spaceGame) {
+    public SpaceSimulation(SpaceGame spaceGame, Communication communication) {
         this.spaceGame = spaceGame;
         // set Batch and assetManager
         assetManager = spaceGame.getAssetManager();
@@ -231,7 +232,6 @@ public class SpaceSimulation implements InputProcessor {
     }
 
     private int handleSynchronization() {
-        if (true) return 0;
         long time = System.nanoTime();
         int result = 0;
         if (time - lastLow > LOW_TIMEOUT) {

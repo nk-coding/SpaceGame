@@ -46,7 +46,7 @@ public class SpaceGame extends Game {
     }
 
     public void startGame(Communication communication) {
-        setScreen(new GameScreen(this, saveGame.shipDef));
+        setScreen(new GameScreen(this, saveGame.shipDef, communication));
     }
 
     @Override

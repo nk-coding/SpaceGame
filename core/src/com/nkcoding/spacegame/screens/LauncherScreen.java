@@ -13,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.nkcoding.communication.Communication;
+import com.nkcoding.communication.SocketCommunication;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.SpaceGame;
@@ -29,6 +31,22 @@ public class LauncherScreen implements Screen {
     private final TextButton singleplayerButton;
     private final TextButton serverButton;
     private final TextButton clientButton;
+
+    private Communication communication;
+
+    private final Table serverTable;
+    private final Label serverPortLabel;
+    private final TextField serverPortTextField;
+    private final TextButton startServerButton;
+
+    private final Table clientTable;
+    private final Label clientClientPortLabel;
+    private final TextField clientClientPortTextField;
+    private final Label clientServerPortLabel;
+    private final TextField clientServerPortTextField;
+    private final Label clientServerIPLabel;
+    private final TextField clientServerIPTextField;
+    private final TextButton startClientButton;
 
     //private final Table serverTable;
 
@@ -83,8 +101,9 @@ public class LauncherScreen implements Screen {
         textButtonStyle.fontColor = new Color(0xffffffff);
         textButtonStyle.down = background;
         textButtonStyle.up = background;
+        //endregion
 
-        //selection table
+        //region selection table
         selectionTable = new Table();
         selectionTable.setFillParent(true);
         stage.addActor(selectionTable);
@@ -111,6 +130,83 @@ public class LauncherScreen implements Screen {
                 spaceGame.startGame(null);
             }
         });
+        serverButton.addCaptureListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                stage.getActors().removeIndex(0);
+                stage.addActor(serverTable);
+            }
+        });
+        clientButton.addCaptureListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                stage.getActors().removeIndex(0);
+                stage.addActor(clientTable);
+            }
+        });
+
+        //endregion
+
+        //region server table
+
+        serverTable = new Table();
+        serverTable.setFillParent(true);
+        serverPortLabel = new Label("Port", labelStyleBig);
+        serverPortTextField = new TextField("8001", textFieldStyle);
+        serverPortTextField.setTextFieldFilter(new TextField.TextFieldFilter.DigitsOnlyFilter());
+        startServerButton = new TextButton("Start server", textButtonStyle);
+        startServerButton.addCaptureListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (communication == null) {
+                    communication = new SocketCommunication(true, Integer.parseInt(serverPortTextField.getText()));
+                    startServerButton.setText("Start Game");
+                } else {
+                    spaceGame.startGame(communication);
+                }
+            }
+        });
+
+        serverTable.add(serverPortLabel).pad(15).row();
+        serverTable.add(serverPortTextField).pad(15).row();
+        serverTable.add(startServerButton).pad(15);
+
+        //endregion
+
+        //region client table
+
+        clientTable = new Table();
+        clientTable.setFillParent(true);
+        clientClientPortLabel = new Label("Client Port", labelStyleBig);
+        clientClientPortTextField = new TextField("8000", textFieldStyle);
+        clientServerIPLabel = new Label("Server IP", labelStyleBig);
+        clientServerIPTextField = new TextField("", textFieldStyle);
+        clientServerPortLabel = new Label("Server Port", labelStyleBig);
+        clientServerPortTextField = new TextField("8001", textFieldStyle);
+        startClientButton = new TextButton("Start Client", textButtonStyle);
+        startClientButton.addCaptureListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (communication == null) {
+                    communication = new SocketCommunication(false, Integer.parseInt(clientClientPortTextField.getText()));
+                    communication.openCommunication(clientServerIPTextField.getText(), Integer.parseInt(clientServerPortTextField.getText()));
+                    startClientButton.setText("Start Game");
+                } else {
+                    spaceGame.startGame(communication);
+                }
+            }
+        });
+
+        clientTable.add(clientClientPortLabel).pad(15).row();
+        clientTable.add(clientClientPortTextField).pad(15).row();
+        clientTable.add(clientServerIPLabel).pad(15).row();
+        clientTable.add(clientServerIPTextField).pad(15).row();
+        clientTable.add(clientServerPortLabel).pad(15).row();
+        clientTable.add(clientServerPortTextField).pad(15).row();
+        clientTable.add(startClientButton).pad(15);
+
+
+        //endregion
 
     }
 
