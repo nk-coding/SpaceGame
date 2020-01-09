@@ -87,10 +87,14 @@ public class SpaceSimulation implements InputProcessor {
             public void beginContact(Contact contact) {
                 Simulated s1 = (Simulated) contact.getFixtureA().getBody().getUserData();
                 Simulated s2 = (Simulated) contact.getFixtureB().getBody().getUserData();
-                if (s1.getCollisionPriority() > s2.getCollisionPriority()) {
+                if (s1.getCollisionPriority() < s2.getCollisionPriority() && s1.getOwner() == clientID) {
+                    Simulated temp = s2;
+                    s2 = s1;
+                    s1 = temp;
+                }
+
+                if (s1.getOwner() == clientID) {
                     s1.beginContact(s2, contact.getFixtureA(), contact.getFixtureB());
-                } else {
-                    s2.beginContact(s1, contact.getFixtureB(), contact.getFixtureA());
                 }
             }
 

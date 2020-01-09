@@ -147,6 +147,7 @@ public class Ship extends Simulated {
                 break;
             default:
                 UpdateComponentTransmission uct = (UpdateComponentTransmission) transmission;
+                System.out.println("UpdateComponent: " + uct);
                 componentsMap[uct.x][uct.y].receiveTransmission(uct);
                 break;
         }

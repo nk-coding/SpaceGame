@@ -16,4 +16,9 @@ public class UpdateComponentTransmission extends UpdateTransmission {
     public UpdateComponentTransmission(Component component, int updateID) {
         this(component.getShip().id, updateID, component.getX(), component.getY());
     }
+
+    @Override
+    public String toString() {
+        return String.format("%d: %d: (%d, %d)", getId(), updateID, x, y);
+    }
 }
