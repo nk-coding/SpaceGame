@@ -132,7 +132,7 @@ public class Ship extends Simulated {
      * @param transmission the update transmission
      */
     @Override
-    protected void receiveTransmission(UpdateTransmission transmission) {
+    public void receiveTransmission(UpdateTransmission transmission) {
         super.receiveTransmission(transmission);
         switch (transmission.updateID) {
             case REMOVE_COMPONENT:

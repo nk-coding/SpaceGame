@@ -13,8 +13,7 @@ import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.spacegame.simulation.BodyState;
 import com.nkcoding.spacegame.simulation.Simulated;
 import com.nkcoding.spacegame.simulation.SynchronizationPriority;
-import com.nkcoding.spacegame.simulation.communication.RemoveTransmission;
-import com.nkcoding.spacegame.simulation.communication.UpdateBodysTransmission;
+import com.nkcoding.spacegame.simulation.communication.*;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler;
 
 import java.util.ArrayList;
@@ -190,7 +189,7 @@ public class SpaceSimulation implements InputProcessor {
     // deals with ExternalMethodFutures
     public void act(float time) {
         handleScriptingEngine();
-        int synchronizationMask = handleSynchronization();
+        int synchronizationMask = getBodySynchronization();
         // call step on the world
         world.step(time, 6, 2);
         List<BodyState> bodyStatesToSend = new ArrayList<>();
@@ -237,7 +236,7 @@ public class SpaceSimulation implements InputProcessor {
         simulatedToAdd.clear();
     }
 
-    private int handleSynchronization() {
+    private int getBodySynchronization() {
         long time = System.nanoTime();
         int result = 0;
         if (time - lastLow > LOW_TIMEOUT) {
@@ -253,6 +252,57 @@ public class SpaceSimulation implements InputProcessor {
             result |= SynchronizationPriority.HIGH;
         }
         return result;
+    }
+
+    private void handleMessages() {
+        while (communication.hasTransmissions()) {
+            Transmission transmission = communication.getTransmission();
+            switch (transmission.getId()) {
+                case TransmissionID.CREATE_NEW:
+                    CreateTransmission createTransmission = (CreateTransmission)transmission;
+                    Simulated newSimulated = createTransmission.type.constructor.apply(this, createTransmission);
+                    newSimulated.update(createTransmission.bodyState);
+                    simulatedToAdd.add(newSimulated);
+                    break;
+                case TransmissionID.REMOVE:
+                    Simulated toRemove = getSimulated(((RemoveTransmission)transmission).simulatedID);
+                    if (toRemove != null) simulatedToRemove.add(toRemove);
+                    else System.out.println("cannot remove" + transmission);
+                    break;
+                case TransmissionID.UPDATE:
+                    UpdateTransmission updateTransmission = (UpdateTransmission)transmission;
+                    Simulated toUpdate = getSimulated(updateTransmission.simulatedID);
+                    if (toUpdate != null) {
+                        toUpdate.receiveTransmission(updateTransmission);
+                    } else {
+                        System.out.println("cannot update " + transmission);
+                    }
+                    break;
+                case TransmissionID.UPDATE_BODY_STATE:
+                    UpdateBodysTransmission updateBodysTransmission = (UpdateBodysTransmission) transmission;
+                    for (BodyState bodyState : updateBodysTransmission.bodyStates) {
+                        Simulated updateBody = getSimulated(bodyState.id);
+                        if (updateBody != null) {
+                            updateBody.update(bodyState);
+                        } else {
+                            System.out.println("cannot update body: " + bodyState);
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+
+    private Simulated getSimulated(int id) {
+        Simulated res = simulatedMap.get(id);
+        if (res != null) {
+            return res;
+        } else {
+            for (Simulated simulated : simulatedToAdd) {
+                if (simulated.id == id) return simulated;
+            }
+            return null;
+        }
     }
 
     public void draw(Batch batch) {

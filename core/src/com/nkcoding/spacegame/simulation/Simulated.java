@@ -253,7 +253,7 @@ public class Simulated {
      *
      * @param transmission the update transmission
      */
-    protected void receiveTransmission(UpdateTransmission transmission) {
+    public void receiveTransmission(UpdateTransmission transmission) {
     }
 
     /**
@@ -269,5 +269,14 @@ public class Simulated {
      */
     public BodyState getBodyState() {
         return new BodyState(body, id);
+    }
+
+    /**
+     * update the Simulated based on the body state
+     */
+    public void update(BodyState bodyState) {
+        body.setTransform(bodyState.position, bodyState.angle);
+        body.setLinearVelocity(bodyState.linearVelocity);
+        body.setAngularVelocity(bodyState.angularVelocity);
     }
 }
