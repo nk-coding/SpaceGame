@@ -197,7 +197,7 @@ public class SpaceSimulation implements InputProcessor {
         //act on simulateds
         for (Simulated simulated : simulatedMap.values()) {
             simulated.act(time);
-            if ((simulated.getSyncPriority() & synchronizationMask) != 0) {
+            if (simulated.getOwner() == clientID && (simulated.getSyncPriority() & synchronizationMask) != 0) {
                 bodyStatesToSend.add(simulated.getBodyState());
             }
         }
