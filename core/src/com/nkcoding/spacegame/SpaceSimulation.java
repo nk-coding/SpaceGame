@@ -68,9 +68,15 @@ public class SpaceSimulation implements InputProcessor {
     // Simulated that the camera should follow
     private Simulated cameraSimulated;
 
+    private Communication communication;
+
     // constructor
     public SpaceSimulation(SpaceGame spaceGame, Communication communication) {
         this.spaceGame = spaceGame;
+        this.communication = communication;
+        if (communication != null) {
+            this.clientID = communication.getId();
+        }
         // set Batch and assetManager
         assetManager = spaceGame.getAssetManager();
         // init scriptingEngine
@@ -388,10 +394,14 @@ public class SpaceSimulation implements InputProcessor {
     }
 
     public void sendTo(Transmission transmission, int target) {
-        //TODO
+        if (communication != null) {
+            communication.sendTo(target, transmission);
+        }
     }
 
     public void sendToAll(Transmission transmission) {
-        //TODO
+        if (communication != null) {
+            communication.sendToAll(transmission);
+        }
     }
 }
