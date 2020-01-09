@@ -26,6 +26,6 @@ public class BodyState implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("%s, %f | %s, %f", position, angle, linearVelocity, angularVelocity);
+        return String.format("%d: %s, %f | %s, %f", id, position, angle, linearVelocity, angularVelocity);
     }
 }
