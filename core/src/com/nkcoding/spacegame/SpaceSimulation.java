@@ -189,6 +189,7 @@ public class SpaceSimulation implements InputProcessor {
     // deals with ExternalMethodFutures
     public void act(float time) {
         handleScriptingEngine();
+        handleMessages();
         int synchronizationMask = getBodySynchronization();
         // call step on the world
         world.step(time, 6, 2);
@@ -255,40 +256,42 @@ public class SpaceSimulation implements InputProcessor {
     }
 
     private void handleMessages() {
-        while (communication.hasTransmissions()) {
-            Transmission transmission = communication.getTransmission();
-            switch (transmission.getId()) {
-                case TransmissionID.CREATE_NEW:
-                    CreateTransmission createTransmission = (CreateTransmission)transmission;
-                    Simulated newSimulated = createTransmission.type.constructor.apply(this, createTransmission);
-                    newSimulated.update(createTransmission.bodyState);
-                    simulatedToAdd.add(newSimulated);
-                    break;
-                case TransmissionID.REMOVE:
-                    Simulated toRemove = getSimulated(((RemoveTransmission)transmission).simulatedID);
-                    if (toRemove != null) simulatedToRemove.add(toRemove);
-                    else System.out.println("cannot remove" + transmission);
-                    break;
-                case TransmissionID.UPDATE:
-                    UpdateTransmission updateTransmission = (UpdateTransmission)transmission;
-                    Simulated toUpdate = getSimulated(updateTransmission.simulatedID);
-                    if (toUpdate != null) {
-                        toUpdate.receiveTransmission(updateTransmission);
-                    } else {
-                        System.out.println("cannot update " + transmission);
-                    }
-                    break;
-                case TransmissionID.UPDATE_BODY_STATE:
-                    UpdateBodysTransmission updateBodysTransmission = (UpdateBodysTransmission) transmission;
-                    for (BodyState bodyState : updateBodysTransmission.bodyStates) {
-                        Simulated updateBody = getSimulated(bodyState.id);
-                        if (updateBody != null) {
-                            updateBody.update(bodyState);
+        if (communication != null) {
+            while (communication.hasTransmissions()) {
+                Transmission transmission = communication.getTransmission();
+                switch (transmission.getId()) {
+                    case TransmissionID.CREATE_NEW:
+                        CreateTransmission createTransmission = (CreateTransmission)transmission;
+                        Simulated newSimulated = createTransmission.type.constructor.apply(this, createTransmission);
+                        newSimulated.update(createTransmission.bodyState);
+                        simulatedToAdd.add(newSimulated);
+                        break;
+                    case TransmissionID.REMOVE:
+                        Simulated toRemove = getSimulated(((RemoveTransmission)transmission).simulatedID);
+                        if (toRemove != null) simulatedToRemove.add(toRemove);
+                        else System.out.println("cannot remove" + transmission);
+                        break;
+                    case TransmissionID.UPDATE:
+                        UpdateTransmission updateTransmission = (UpdateTransmission)transmission;
+                        Simulated toUpdate = getSimulated(updateTransmission.simulatedID);
+                        if (toUpdate != null) {
+                            toUpdate.receiveTransmission(updateTransmission);
                         } else {
-                            System.out.println("cannot update body: " + bodyState);
+                            System.out.println("cannot update " + transmission);
                         }
-                    }
-                    break;
+                        break;
+                    case TransmissionID.UPDATE_BODY_STATE:
+                        UpdateBodysTransmission updateBodysTransmission = (UpdateBodysTransmission) transmission;
+                        for (BodyState bodyState : updateBodysTransmission.bodyStates) {
+                            Simulated updateBody = getSimulated(bodyState.id);
+                            if (updateBody != null) {
+                                updateBody.update(bodyState);
+                            } else {
+                                System.out.println("cannot update body: " + bodyState);
+                            }
+                        }
+                        break;
+                }
             }
         }
     }
