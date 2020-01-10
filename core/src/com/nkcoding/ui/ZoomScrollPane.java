@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
  * <p>
  * The scroll pane's preferred size is that of the child widget. At this size, the child widget will not need to scroll, so the
  * scroll pane is typically sized by ignoring the preferred size in one or both directions.
+ * THIS IS A MODIFIED VERSION
  *
  * @author mzechner
  * @author Nathan Sweet
