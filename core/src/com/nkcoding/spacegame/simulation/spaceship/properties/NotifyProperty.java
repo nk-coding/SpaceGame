@@ -27,7 +27,7 @@ public class NotifyProperty<T> extends ExternalProperty<T> {
 
     @Override
     public void startChangedHandler(ScriptingEngine engine, final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables) {
-        while (!updatedValues.isEmpty()) {
+        while (!updatedValues.isEmpty() && getChangedMethodStatement() != null) {
             engine.runMethod(getChangedMethodStatement(), globalVariables, updatedValues.pop());
         }
     }

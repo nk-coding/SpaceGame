@@ -96,6 +96,7 @@ public class SocketCommunication extends Communication {
             });
             serverAcceptingThread.start();
         } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException("could not create ServerSocket", e);
         }
     }
@@ -250,7 +251,7 @@ public class SocketCommunication extends Communication {
         try {
             System.out.println(ip + ", " + port);
             Socket peerSocket = new Socket();
-            peerSocket.connect(new InetSocketAddress(ip, port), 700);
+            peerSocket.connect(new InetSocketAddress(ip, port), 7000);
             Connection connection = new Connection(peerSocket, port, peerID);
             connection.start();
             return connection;

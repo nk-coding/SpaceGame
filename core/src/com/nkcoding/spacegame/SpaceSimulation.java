@@ -295,7 +295,7 @@ public class SpaceSimulation implements InputProcessor {
                             Simulated updateBody = getSimulated(bodyState.id);
                             if (updateBody != null) {
                                 float dist = updateBody.getBody().getPosition().sub(bodyState.position()).len();
-                                if (dist > 0.01) System.out.println(dist);
+                                if (dist > 0.05) System.out.println(dist);
                                 updateBody.update(bodyState);
                             } else {
                                 System.out.println("cannot update body: " + bodyState);

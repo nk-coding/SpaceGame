@@ -398,7 +398,7 @@ public class Ship extends Simulated {
                         otherComponents.stream().map(Component.ComponentModel::getComponent).collect(Collectors.toList())));
                 updateLinearVelocity(getBody());
             } else {
-                System.out.println("this ship has no component?!");
+                getSpaceSimulation().removeSimulated(Ship.this);
             }
         }
 
@@ -430,7 +430,7 @@ public class Ship extends Simulated {
                 }
             }
             //check right side
-            if (comDef.getX() < (ShipDef.MAX_SIZE - 1)) {
+            if ((comDef.getX() + comDef.getRealWidth()) < (ShipDef.MAX_SIZE - 1)) {
                 //there is a right side
                 for (int y = comDef.getY(); y < (comDef.getY() + comDef.getRealHeight()); y++) {
                     Component nextComponent = componentsMap[comDef.getX() + comDef.getRealWidth()][y];
@@ -441,7 +441,7 @@ public class Ship extends Simulated {
                 }
             }
             //check top side
-            if (comDef.getY() < (ShipDef.MAX_SIZE - 1)) {
+            if ((comDef.getY() + comDef.getRealHeight()) < (ShipDef.MAX_SIZE - 1)) {
                 //there is a bottom side
                 for (int x = comDef.getX(); x < (comDef.getX() + comDef.getRealWidth()); x++) {
                     Component nextComponent = componentsMap[x][comDef.getY() + comDef.getRealHeight()];
