@@ -10,7 +10,6 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.SpaceSimulation;
 import com.nkcoding.spacegame.simulation.communication.CreateTransmission;
-import com.nkcoding.spacegame.simulation.spaceship.components.Component;
 
 public class Explosion extends Simulated {
     //the radius of this explosion
@@ -92,8 +91,8 @@ public class Explosion extends Simulated {
     public void beginContact(Simulated other, Fixture f1, Fixture f2) {
         super.beginContact(other, f1, f2);
         Object userData = f2.getUserData();
-        if (userData instanceof Component) {
-            ((Component) userData).damageAt(f2, (int) (damage * (1 - ((currentRadius - startRadius) / (endRadius - startRadius)))));
+        if (userData instanceof Damageable) {
+            ((Damageable) userData).damageAt(f2, (int) (damage * (1 - ((currentRadius - startRadius) / (endRadius - startRadius)))));
         }
     }
 

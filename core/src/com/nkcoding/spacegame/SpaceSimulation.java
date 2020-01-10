@@ -24,7 +24,7 @@ import java.util.List;
 public class SpaceSimulation implements InputProcessor {
     public static final float TILE_SIZE = 8f;
 
-    private static final long LOW_TIMEOUT = 500000000;
+    private static final long LOW_TIMEOUT = 1000000000 / 30;
     private static final long MEDIUM_TIMEOUT = 200000000;
     private static final long HIGH_TIMEOUT = 85000000;
     private long lastLow = 0;
@@ -87,14 +87,19 @@ public class SpaceSimulation implements InputProcessor {
             public void beginContact(Contact contact) {
                 Simulated s1 = (Simulated) contact.getFixtureA().getBody().getUserData();
                 Simulated s2 = (Simulated) contact.getFixtureB().getBody().getUserData();
+                Fixture f1 = contact.getFixtureA();
+                Fixture f2 = contact.getFixtureB();
                 if (s1.getCollisionPriority() < s2.getCollisionPriority() && s1.getOwner() == clientID) {
                     Simulated temp = s2;
                     s2 = s1;
                     s1 = temp;
+                    Fixture fTemp = f2;
+                    f2 = f1;
+                    f1 = fTemp;
                 }
 
-                if (s1.getOwner() == clientID) {
-                    s1.beginContact(s2, contact.getFixtureA(), contact.getFixtureB());
+                if (s2.getOwner() == clientID) {
+                    s1.beginContact(s2, f1, f2);
                 }
             }
 
@@ -289,10 +294,13 @@ public class SpaceSimulation implements InputProcessor {
                         for (BodyState bodyState : updateBodysTransmission.bodyStates) {
                             Simulated updateBody = getSimulated(bodyState.id);
                             if (updateBody != null) {
+                                float dist = updateBody.getBody().getPosition().sub(bodyState.position()).len();
+                                if (dist > 0.01) System.out.println(dist);
                                 updateBody.update(bodyState);
                             } else {
                                 System.out.println("cannot update body: " + bodyState);
                             }
+
                         }
                         break;
                 }
