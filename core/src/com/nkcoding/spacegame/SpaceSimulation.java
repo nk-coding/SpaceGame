@@ -26,7 +26,7 @@ public class SpaceSimulation implements InputProcessor {
 
     private static final float LOW_TIMEOUT = 1f / 2;
     private static final float MEDIUM_TIMEOUT = 1f / 5;
-    private static final float HIGH_TIMEOUT = 1f / 30;
+    private static final float HIGH_TIMEOUT = 1f / 20;
     private float lastLow = 0;
     private float lastMedium = 0;
     private float lastHigh = 0;
@@ -197,7 +197,6 @@ public class SpaceSimulation implements InputProcessor {
     // calls act on all Simulateds
     // deals with ExternalMethodFutures
     public void act(float time) {
-        System.out.println("//////////////////////////////////////////");
         handleScriptingEngine();
         handleMessages();
         int synchronizationMask = getBodySynchronization(time);
@@ -294,7 +293,6 @@ public class SpaceSimulation implements InputProcessor {
                         break;
                     case TransmissionID.UPDATE_BODY_STATE:
                         UpdateBodysTransmission updateBodysTransmission = (UpdateBodysTransmission) transmission;
-                        System.out.println(updateBodysTransmission.bodyStates.length);
                         for (BodyState bodyState : updateBodysTransmission.bodyStates) {
                             Simulated updateBody = getSimulated(bodyState.id);
                             if (updateBody != null) {
