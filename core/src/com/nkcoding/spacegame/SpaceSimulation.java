@@ -24,12 +24,12 @@ import java.util.List;
 public class SpaceSimulation implements InputProcessor {
     public static final float TILE_SIZE = 8f;
 
-    private static final long LOW_TIMEOUT = 1000000000 / 30;
-    private static final long MEDIUM_TIMEOUT = 200000000;
-    private static final long HIGH_TIMEOUT = 85000000;
-    private long lastLow = 0;
-    private long lastMedium = 0;
-    private long lastHigh = 0;
+    private static final float LOW_TIMEOUT = 1f / 2;
+    private static final float MEDIUM_TIMEOUT = 1f / 5;
+    private static final float HIGH_TIMEOUT = 1f / 30;
+    private float lastLow = 0;
+    private float lastMedium = 0;
+    private float lastHigh = 0;
 
 
     private final SpaceGame spaceGame;
@@ -197,9 +197,10 @@ public class SpaceSimulation implements InputProcessor {
     // calls act on all Simulateds
     // deals with ExternalMethodFutures
     public void act(float time) {
+        System.out.println("//////////////////////////////////////////");
         handleScriptingEngine();
         handleMessages();
-        int synchronizationMask = getBodySynchronization();
+        int synchronizationMask = getBodySynchronization(time);
         // call step on the world
         world.step(time, 6, 2);
         List<BodyState> bodyStatesToSend = new ArrayList<>();
@@ -246,19 +247,21 @@ public class SpaceSimulation implements InputProcessor {
         simulatedToAdd.clear();
     }
 
-    private int getBodySynchronization() {
-        long time = System.nanoTime();
+    private int getBodySynchronization(float delta) {
         int result = 0;
-        if (time - lastLow > LOW_TIMEOUT) {
-            lastLow = time;
+        lastLow += delta;
+        lastMedium += delta;
+        lastHigh += delta;
+        if (lastLow> LOW_TIMEOUT) {
+            lastLow = 0;
             result |= SynchronizationPriority.LOW;
         }
-        if (time - lastMedium > MEDIUM_TIMEOUT) {
-            lastMedium = time;
+        if (lastMedium > MEDIUM_TIMEOUT) {
+            lastMedium = 0;
             result |= SynchronizationPriority.MEDIUM;
         }
-        if (time - lastHigh > HIGH_TIMEOUT) {
-            lastHigh = time;
+        if (lastHigh > HIGH_TIMEOUT) {
+            lastHigh = 0;
             result |= SynchronizationPriority.HIGH;
         }
         return result;
@@ -291,6 +294,7 @@ public class SpaceSimulation implements InputProcessor {
                         break;
                     case TransmissionID.UPDATE_BODY_STATE:
                         UpdateBodysTransmission updateBodysTransmission = (UpdateBodysTransmission) transmission;
+                        System.out.println(updateBodysTransmission.bodyStates.length);
                         for (BodyState bodyState : updateBodysTransmission.bodyStates) {
                             Simulated updateBody = getSimulated(bodyState.id);
                             if (updateBody != null) {
