@@ -59,16 +59,16 @@ public class ScriptingEngine {
                     for (int x = 0; x < parameters.length; x++) {
                         switch (parameterNames[x].getType().name) {
                             case DataType.BOOLEAN_KW:
-                                stack.addToStack(parameterNames[x].getName(), (Boolean) parameters[x], DataType.BOOLEAN);
+                                stack.addToStack(parameterNames[x].getName(), parameters[x], DataType.BOOLEAN);
                                 break;
                             case DataType.FLOAT_KW:
-                                stack.addToStack(parameterNames[x].getName(), (Float) parameters[x], DataType.FLOAT);
+                                stack.addToStack(parameterNames[x].getName(), parameters[x], DataType.FLOAT);
                                 break;
                             case DataType.INTEGER_KW:
-                                stack.addToStack(parameterNames[x].getName(), (Integer) parameters[x], DataType.INTEGER);
+                                stack.addToStack(parameterNames[x].getName(), parameters[x], DataType.INTEGER);
                                 break;
                             case DataType.STRING_KW:
-                                stack.addToStack(parameterNames[x].getName(), (String) parameters[x], DataType.STRING);
+                                stack.addToStack(parameterNames[x].getName(), parameters[x], DataType.STRING);
                                 break;
                             case DataType.VOID_KW:
                                 throw new IllegalArgumentException("a parameter cannot be void");
