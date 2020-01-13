@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Transform;
 import com.nkcoding.spacegame.SpaceSimulation;
-import com.nkcoding.spacegame.simulation.communication.CreateTransmission;
+import com.nkcoding.spacegame.simulation.communication.TransmissionID;
 import com.nkcoding.spacegame.simulation.communication.UpdateTransmission;
 
 import java.io.DataInputStream;
@@ -22,7 +22,7 @@ public class Simulated {
     public final int id;
     //the body which is used in Box3D
     protected final Body body;
-    private final int syncPriority;
+    private int syncPriority = SynchronizationPriority.LOW;
     //is it active for simulation or not
     protected boolean active = true;
     //center position, width and height for camera adjustment
@@ -46,10 +46,9 @@ public class Simulated {
      * @param bodyType          the BodyType which is used to create the default BodyDef
      * @param collisionPriority a higher priority means that a contact is handled by this instance, but not on this client
      * @param owner             owner id, used to calculate isOwner
-     * @param syncPriority      how often is it synced (between 0 and 2)
      */
-    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority, int owner, int syncPriority, int id) {
-        this(type, spaceSimulation, createBodyDef(bodyType), collisionPriority, owner, syncPriority, id);
+    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority, int owner, int id) {
+        this(type, spaceSimulation, createBodyDef(bodyType), collisionPriority, owner, id);
     }
 
     /**
@@ -60,9 +59,8 @@ public class Simulated {
      * @param bodyDef           the Definition for the box2D body for extended control
      * @param collisionPriority a higher priority means that a contact is handled by this instance, but not on this client
      * @param owner             owner id, used to calculate isOwner
-     * @param syncPriority      how often is it synced (between 0 and 2)
      */
-    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef bodyDef, int collisionPriority, int owner, int syncPriority, int id) {
+    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef bodyDef, int collisionPriority, int owner, int id) {
         this.type = type;
         this.spaceSimulation = spaceSimulation;
         this.bodyType = bodyDef.type;
@@ -71,8 +69,15 @@ public class Simulated {
         this.body.setUserData(this);
         this.owner = owner;
         this.isOwner = owner == spaceSimulation.getClientID();
-        this.syncPriority = syncPriority;
         this.id = id;
+    }
+
+    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef bodyDef, int collisionPriority, DataInputStream inputStream) throws IOException {
+        this(type, spaceSimulation, bodyDef, collisionPriority, inputStream.readInt(), inputStream.readInt());
+    }
+
+    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority, DataInputStream inputStream) throws IOException {
+        this(type, spaceSimulation, bodyType, collisionPriority, inputStream.readInt(), inputStream.readInt());
     }
 
     //helper method to create bodyDef
@@ -231,6 +236,10 @@ public class Simulated {
         return syncPriority;
     }
 
+    public void setSyncPriority(int syncPriority) {
+        this.syncPriority = syncPriority;
+    }
+
     /**
      * send a transmission to the original
      *
@@ -240,7 +249,14 @@ public class Simulated {
         if (isOwner) {
             receiveTransmission(transmission);
         } else {
-            spaceSimulation.sendTo(transmission, owner);
+            DataOutputStream outputStream = spaceSimulation.getOutputStream(true);
+            try {
+                outputStream.writeInt(TransmissionID.UPDATE);
+                transmission.serialize(outputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            spaceSimulation.sendTo(outputStream, owner);
         }
     }
 
@@ -250,7 +266,14 @@ public class Simulated {
      */
     public void post(UpdateTransmission transmission) {
         receiveTransmission(transmission);
-        spaceSimulation.sendToAll(transmission);
+        DataOutputStream outputStream = spaceSimulation.getOutputStream(true);
+        try {
+            outputStream.writeInt(TransmissionID.UPDATE);
+            transmission.serialize(outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        spaceSimulation.sendToAll(outputStream);
     }
 
     /**
@@ -262,18 +285,20 @@ public class Simulated {
     }
 
     /**
-     * get the data to construct a mirror
-     * should be overwritten by subclasses
+     * subclasses should overwrite this if they want to register additional UpdateTransmissions
      */
-    public CreateTransmission getMirrorData() {
+    public UpdateTransmission deserializeTransmission(DataInputStream inputStream, short updateID) throws IOException {
         return null;
     }
 
     /**
-     * get the BodyState of this Simulated
+     * get the data to construct a mirror
+     * should be overwritten by subclasses
      */
-    public BodyState getBodyState() {
-        return new BodyState(body, id);
+    public void serialize(DataOutputStream outputStream) throws IOException {
+        type.serialize(outputStream);
+        outputStream.writeInt(owner);
+        outputStream.writeInt(id);
     }
 
     /**

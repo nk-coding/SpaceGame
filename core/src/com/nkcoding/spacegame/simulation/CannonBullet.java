@@ -10,7 +10,10 @@ import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.SpaceSimulation;
-import com.nkcoding.spacegame.simulation.communication.CreateTransmission;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 /**
  * represents a bullet of this cannonS
@@ -33,7 +36,9 @@ public class CannonBullet extends Simulated {
     }
 
     private CannonBullet(SpaceSimulation spaceSimulation, Vector2 pos, float angle, float length, Vector2 velocity, int owner, int id) {
-        super(SimulatedType.CannonBullet, spaceSimulation, BodyDef.BodyType.KinematicBody, 2, owner, SynchronizationPriority.LOW, id);
+        super(SimulatedType.CannonBullet, spaceSimulation, BodyDef.BodyType.KinematicBody, 2, owner, id);
+        setSyncPriority(SynchronizationPriority.LOW);
+
         final Body body = getBody();
         body.setBullet(true);
         EdgeShape edgeShape = new EdgeShape();
@@ -48,15 +53,31 @@ public class CannonBullet extends Simulated {
         this.radius = length / 2;
     }
 
-    public static CannonBullet deserialize(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
-        CannonBulletCreateTransmission createTransmission = (CannonBulletCreateTransmission) transmission;
-        return new CannonBullet(spaceSimulation, createTransmission.bodyState.position(), createTransmission.bodyState.angle,
-                createTransmission.length, createTransmission.bodyState.linearVelocity(), createTransmission.owner, createTransmission.simulatedID);
+    private CannonBullet(SpaceSimulation spaceSimulation, DataInputStream inputStream) throws IOException{
+        super(SimulatedType.CannonBullet, spaceSimulation, BodyDef.BodyType.KinematicBody, 2, inputStream);
+        setSyncPriority(SynchronizationPriority.LOW);
+
+        final Body body = getBody();
+        body.setBullet(true);
+        EdgeShape edgeShape = new EdgeShape();
+        edgeShape.set(new Vector2(0, 0), new Vector2(0, length));
+        Fixture fixture = body.createFixture(edgeShape, 0f);
+        fixture.setSensor(true);
+        this.texture = getSpaceSimulation().getAssetManager().getTexture(Asset.Bullet);
+        this.length = inputStream.readFloat();
+        this.centerPosition = new Vector2(0, length / 2);
+        this.radius = length / 2;
+    }
+
+    public static CannonBullet deserialize(SpaceSimulation spaceSimulation, DataInputStream inputStream) throws IOException{
+        return new CannonBullet(spaceSimulation, inputStream);
     }
 
     @Override
-    public CreateTransmission getMirrorData() {
-        return new CannonBulletCreateTransmission(id, getOwner(), getBodyState(), length);
+    public void serialize(DataOutputStream outputStream) throws IOException {
+        super.serialize(outputStream);
+        outputStream.writeFloat(length);
+        serializeBodyState(outputStream);
     }
 
     @Override
@@ -89,15 +110,6 @@ public class CannonBullet extends Simulated {
         Object userData = f2.getUserData();
         if (userData instanceof Damageable && !collided) {
             collided = ((Damageable) userData).damageAt(f2, 100);
-        }
-    }
-
-    private static class CannonBulletCreateTransmission extends CreateTransmission {
-        public final float length;
-
-        public CannonBulletCreateTransmission(int simulatedID, int owner, BodyState bodyState, float length) {
-            super(SimulatedType.CannonBullet, simulatedID, owner, bodyState);
-            this.length = length;
         }
     }
 }

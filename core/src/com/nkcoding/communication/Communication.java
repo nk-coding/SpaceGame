@@ -6,6 +6,8 @@ import java.io.DataOutputStream;
 import java.util.Set;
 
 public abstract class Communication implements Closeable {
+    public static int MAX_SIZE = 1280;
+
     protected final int port;
     private boolean isServer;
 
@@ -27,7 +29,7 @@ public abstract class Communication implements Closeable {
      */
     public abstract void openCommunication(String ip, int port);
 
-    public abstract DataInputStream getInputStream();
+    public abstract DataOutputStream getOutputStream(boolean reliable);
 
     /**
      * send data to a specified peer with a specific id
@@ -35,14 +37,14 @@ public abstract class Communication implements Closeable {
      * @param peer         the id got from openCommunication
      * @param transmission the transmission to send
      */
-    public abstract void sendTo(int peer, DataInputStream transmission);
+    public abstract void sendTo(int peer, DataOutputStream transmission);
 
     /**
      * sends some data to all peers
      *
      * @param transmission the transmission to send
      */
-    public abstract void sendToAll(DataInputStream transmission);
+    public abstract void sendToAll(DataOutputStream transmission);
 
     /**
      * checks if there are any received transmissions

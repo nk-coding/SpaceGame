@@ -156,7 +156,7 @@ public class SocketCommunication extends Communication {
     }
 
     @Override
-    public DataInputStream getInputStream() {
+    public DataInputStream getOutputStream() {
         return null;
     }
 

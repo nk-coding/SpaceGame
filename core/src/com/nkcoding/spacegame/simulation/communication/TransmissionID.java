@@ -4,14 +4,15 @@ public final class TransmissionID {
     /**
      * SimulatedType
      * Simulated (via SimulatedType constructor
+     * Ship: componentsAmount
+     *      [ComponentType, ComponentDefBase, constructor][]
+     * Explosion: startRadius, endRadius, time, damage
+     * CannonBullet: length
      * deserialize BodyState
      */
     public static final int CREATE_NEW = 1;
     /**
      * simulatedID
-     * Ship: owner, simulatedID,
-     *      componentsAmount
-     *      [ComponentType, x, y, rotation, constructor][]
      */
     public static final int REMOVE = 2;
     /**

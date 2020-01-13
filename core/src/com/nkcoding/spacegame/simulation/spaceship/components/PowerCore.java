@@ -3,13 +3,15 @@ package com.nkcoding.spacegame.simulation.spaceship.components;
 import com.nkcoding.spacegame.simulation.Ship;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 
+import java.io.DataInputStream;
+
 public class PowerCore extends Component {
 
     /**
      * mirror constructor
      */
-    protected PowerCore(ComponentDefBase defBase, Ship ship) {
-        super(defBase, ship);
+    protected PowerCore(ComponentDefBase componentDef, DataInputStream inputStream, Ship ship) {
+        super(componentDef, ship);
     }
 
     /**

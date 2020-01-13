@@ -7,27 +7,27 @@ import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.simulation.Ship;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
+import com.nkcoding.util.IOTriFunction;
 import com.nkcoding.util.TriFunction;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.function.BiFunction;
 
 import static com.nkcoding.spacegame.simulation.spaceship.components.Component.*;
 import static com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData.of;
 
 public enum ComponentType {
-    Engine(0, Engine::new, Engine::new, 1, 2, 100, 100, Asset.Engine,
+    Engine((short)0, Engine::new, Engine::new, 1, 2, 100, 100, Asset.Engine,
             of(com.nkcoding.spacegame.simulation.spaceship.components.Engine.ENGINE_POWER_KEY, DataType.INTEGER, false)),
-    Cannon(1, Cannon::new, Cannon::new, 1, 2, 100, 100, Asset.Cannon,
+    Cannon((short)1, Cannon::new, Cannon::new, 1, 2, 100, 100, Asset.Cannon,
             of(com.nkcoding.spacegame.simulation.spaceship.components.Cannon.IS_SHOOTING_KEY, DataType.BOOLEAN, false),
             of(Buffer.BUFFER_LEVEL_KEY, DataType.FLOAT)),
-    PowerCore(2, PowerCore::new, PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
-    BasicHull(3, BasicHull::new, BasicHull::new, Asset.BasicHull),
-    ExplosiveCanister(4, ExplosiveCanister::new, ExplosiveCanister::new, 1, 1, 50, 50, Asset.ExplosiveCanister,
+    PowerCore((short)2, PowerCore::new, PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
+    BasicHull((short)3, BasicHull::new, BasicHull::new, Asset.BasicHull),
+    ExplosiveCanister((short)4, ExplosiveCanister::new, ExplosiveCanister::new, 1, 1, 50, 50, Asset.ExplosiveCanister,
             of(com.nkcoding.spacegame.simulation.spaceship.components.ExplosiveCanister.EXPLODE_KEY, DataType.BOOLEAN, false)),
-    ShieldGenerator(5, ShieldGenerator::new, ShieldGenerator::new, 2, 2, 200, 100, Asset.CloseSymbol,
+    ShieldGenerator((short)5, ShieldGenerator::new, ShieldGenerator::new, 2, 2, 200, 100, Asset.CloseSymbol,
             of(com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.RADIUS_KEY, DataType.FLOAT, false),
             of(com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.IS_ENABLED_KEY, DataType.BOOLEAN, false),
             of(Buffer.BUFFER_LEVEL_KEY, DataType.FLOAT));
@@ -44,7 +44,7 @@ public enum ComponentType {
     //constructor to create a new instance
     public final TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor;
     //constructor to create a new instance on another client
-    public final BiFunction<ComponentDefBase, Ship, ? extends Component> mirrorConstructor;
+    public final IOTriFunction<ComponentDefBase, DataInputStream, Ship, ? extends Component> deserializer;
     //file position of the preview image
     public final Asset defaultTexture;
     //array with all the keys for the ExternalProperties
@@ -52,9 +52,11 @@ public enum ComponentType {
     //the mass of the Component
     public final float mass;
     private PolygonShape shape;
-    private final int index;
 
-    ComponentType(int index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor, BiFunction<ComponentDefBase, Ship, ? extends Component> mirrorConstructor,
+    private final short index;
+
+    ComponentType(short index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor,
+                  IOTriFunction<ComponentDefBase, DataInputStream, Ship, ? extends Component> deserializer,
                   int width, int height,
                   int health, float mass, Asset defaultTexture,
                   ExternalPropertyData... propertyDefs) {
@@ -67,7 +69,7 @@ public enum ComponentType {
         newPropertyDefs[4] = new ExternalPropertyData(POWER_RECEIVED_KEY, DataType.FLOAT);
         this.propertyDefs = newPropertyDefs;
         this.constructor = constructor;
-        this.mirrorConstructor = mirrorConstructor;
+        this.deserializer = deserializer;
         this.defaultTexture = defaultTexture;
         this.width = width;
         this.height = height;
@@ -77,9 +79,10 @@ public enum ComponentType {
     }
 
     //sets width and height to 1
-    ComponentType(int index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor, BiFunction<ComponentDefBase, Ship, ? extends Component> mirrorConstructor,
+    ComponentType(short index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor,
+                  IOTriFunction<ComponentDefBase, DataInputStream, Ship, ? extends Component> deserializer,
                   Asset previewImg, ExternalPropertyData... propertyDefs) {
-        this(index, constructor, mirrorConstructor, 1, 1, 100, 100, previewImg, propertyDefs);
+        this(index, constructor, deserializer, 1, 1, 100, 100, previewImg, propertyDefs);
     }
 
     /**

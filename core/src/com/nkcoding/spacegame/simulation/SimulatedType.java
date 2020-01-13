@@ -1,12 +1,11 @@
 package com.nkcoding.spacegame.simulation;
 
 import com.nkcoding.spacegame.SpaceSimulation;
-import com.nkcoding.spacegame.simulation.communication.CreateTransmission;
+import com.nkcoding.util.IOBiFunction;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.function.BiFunction;
 
 public enum SimulatedType {
     Ship(com.nkcoding.spacegame.simulation.Ship::deserialize, (short)0),
@@ -14,10 +13,10 @@ public enum SimulatedType {
     CannonBullet(com.nkcoding.spacegame.simulation.CannonBullet::deserialize,(short)2);
 
     //constructor to create new instances via multiplayer
-    public final BiFunction<SpaceSimulation, DataInputStream, Simulated> constructor;
+    public final IOBiFunction<SpaceSimulation, DataInputStream, Simulated> constructor;
     private final short index;
 
-    SimulatedType(BiFunction<SpaceSimulation, DataInputStream, Simulated> constructor, short index) {
+    SimulatedType(IOBiFunction<SpaceSimulation, DataInputStream, Simulated> constructor, short index) {
         this.constructor = constructor;
         this.index = index;
     }

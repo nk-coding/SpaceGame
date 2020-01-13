@@ -11,18 +11,16 @@ import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.Program;
 import com.nkcoding.spacegame.SpaceSimulation;
-import com.nkcoding.spacegame.simulation.communication.CreateTransmission;
 import com.nkcoding.spacegame.simulation.communication.UpdateTransmission;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.Component;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDefBase;
-import com.nkcoding.spacegame.simulation.spaceship.components.communication.RemoveComponentTransmission;
-import com.nkcoding.spacegame.simulation.spaceship.components.communication.RemoveComponentsTransmission;
-import com.nkcoding.spacegame.simulation.spaceship.components.communication.UpdateComponentTransmission;
+import com.nkcoding.spacegame.simulation.spaceship.components.communication.*;
 import com.nkcoding.spacegame.simulation.spaceship.properties.*;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -41,8 +39,9 @@ public class Ship extends Simulated {
     public static final String CAMERA_FOCUS_KEY = "CameraFocus";
     //endregion
 
-    public static final int REMOVE_COMPONENT = -1;
-    public static final int REMOVE_COMPONENTS = -2;
+    public static final short REMOVE_COMPONENT = -1;
+    public static final short REMOVE_COMPONENTS = -2;
+    public static final short UPDATE_COMPONENT = -3;
 
     public ShipModel model = null;
 
@@ -56,15 +55,21 @@ public class Ship extends Simulated {
     private boolean componentsChanged = true;
 
     private Ship(SpaceSimulation spaceSimulation, int owner, int id) {
-        super(SimulatedType.Ship, spaceSimulation, BodyDef.BodyType.DynamicBody, 1, owner, SynchronizationPriority.HIGH, id);
+        super(SimulatedType.Ship, spaceSimulation, BodyDef.BodyType.DynamicBody, 1, owner, id);
+        setSyncPriority(SynchronizationPriority.HIGH);
         //init the components map
         componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];
     }
 
-    private  Ship(SpaceSimulation spaceSimulation, int owner, int id, ComponentDefBase[] components) {
-        this(spaceSimulation, owner, id);
-        for (ComponentDefBase def : components) {
-            createMirrorComponent(def);
+    /**
+     * constructor for deserialization
+     */
+    private Ship(SpaceSimulation spaceSimulation, DataInputStream inputStream) throws IOException{
+        super(SimulatedType.Ship, spaceSimulation, BodyDef.BodyType.DynamicBody, 1, inputStream);
+
+        int componentAmount = inputStream.readInt();
+        for (int i = 0; i < componentAmount; i++) {
+            addComponent(ComponentDefBase.deserialize(inputStream).deserializeComponent(this, inputStream));
         }
         updateCenterPos();
     }
@@ -92,20 +97,39 @@ public class Ship extends Simulated {
     }
 
     public static Ship deserialize(SpaceSimulation spaceSimulation, DataInputStream inputStream) throws IOException {
-        int owner = inputStream.readInt();
-        int simulatedID = inputStream.readInt();
-        int componentAmount = inputStream.readInt();
-        Component[] components = new Component[componentAmount];
-        for (int i = 0; i < componentAmount; i++) {
-
-        }
-        return new Ship(spaceSimulation, owner, simulatedID, createTransmission.components);
+        return new Ship(spaceSimulation, inputStream);
     }
 
     @Override
-    public CreateTransmission getMirrorData() {
-        return new ShipCreateTransmission(id, getOwner(), getBodyState(),
-                components.stream().map(Component::getMirrorData).toArray(ComponentDefBase[]::new));
+    public void serialize(DataOutputStream outputStream) throws IOException{
+        super.serialize(outputStream);
+        for (Component component : components) {
+            component.serialize(outputStream);
+        }
+        serializeBodyState(outputStream);
+    }
+
+    @Override
+    public UpdateTransmission deserializeTransmission(DataInputStream inputStream, short updateID) throws IOException{
+        switch (updateID) {
+            case REMOVE_COMPONENT:
+                return new RemoveComponentTransmission(inputStream);
+            case REMOVE_COMPONENTS:
+                return new RemoveComponentsTransmission(inputStream);
+            case UPDATE_COMPONENT:
+                switch(inputStream.readShort()) {
+                    case ComponentUpdateID.DAMAGE:
+                        return new DamageTransmission(inputStream);
+                    case ComponentUpdateID.RADIUS:
+                        return new RadiusTransmission(inputStream);
+                    case ComponentUpdateID.SHIELD:
+                        return new ShieldTransmission(inputStream);
+                    default:
+                        throw new IllegalStateException("unknown ComponentID");
+                }
+            default:
+                return super.deserializeTransmission(inputStream, updateID);
+        }
     }
 
     /**
@@ -230,14 +254,6 @@ public class Ship extends Simulated {
     }
 
     /**
-     * create a mirror Component from a ComponentDefBase
-     */
-    private void createMirrorComponent(ComponentDefBase comDef) {
-        Component component = comDef.createMirrorComponent(this);
-        addComponent(component);
-    }
-
-    /**
      * removes a component
      * handles Actor.addActor, components, componentsMap
      * only call this from receive!!!
@@ -273,16 +289,6 @@ public class Ship extends Simulated {
         width = (maxX - minX) * ShipDef.UNIT_SIZE;
         height = (maxY - minY) * ShipDef.UNIT_SIZE;
         radius = (float) Math.sqrt(height * height + width * width);
-    }
-
-    private static class ShipCreateTransmission extends CreateTransmission {
-
-        public final ComponentDefBase[] components;
-
-        public ShipCreateTransmission(int simulatedID, int owner, BodyState bodyState, ComponentDefBase[] components) {
-            super(SimulatedType.Ship, simulatedID, owner, bodyState);
-            this.components = components;
-        }
     }
 
     public class ShipModel extends ExternalPropertyHandler {
@@ -399,7 +405,7 @@ public class Ship extends Simulated {
                 checkStructureRec(components.get(0));
                 List<Component.ComponentModel> otherComponents = components.stream().filter(com -> !com.structureHelper).collect(Collectors.toList());
                 //remove other components
-                post(new RemoveComponentsTransmission(id, otherComponents));
+                post(new RemoveComponentsTransmission(otherComponents));
                 //reset remaining
                 components.forEach(component -> component.structureHelper = false);
                 //create new ship

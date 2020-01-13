@@ -7,6 +7,8 @@ import com.nkcoding.spacegame.simulation.Ship;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.properties.BooleanProperty;
 
+import java.io.DataInputStream;
+
 
 public class Cannon extends Buffer {
     public static final String IS_SHOOTING_KEY = "IsShooting";
@@ -14,8 +16,8 @@ public class Cannon extends Buffer {
     /**
      * mirror constructor
      */
-    protected Cannon(ComponentDefBase defBase, Ship ship) {
-        super(defBase, ship);
+    protected Cannon(ComponentDefBase componentDef, DataInputStream inputStream, Ship ship) {
+        super(componentDef, inputStream, ship);
     }
 
     /**

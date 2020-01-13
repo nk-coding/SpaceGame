@@ -6,6 +6,8 @@ import com.nkcoding.spacegame.simulation.Ship;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.properties.IntProperty;
 
+import java.io.DataInputStream;
+
 public class Engine extends Component {
     public static final String ENGINE_POWER_KEY = "EnginePower";
 
@@ -14,8 +16,8 @@ public class Engine extends Component {
     /**
      * mirror constructor
      */
-    protected Engine(ComponentDefBase defBase, Ship ship) {
-        super(defBase, ship);
+    protected Engine(ComponentDefBase componentDef, DataInputStream inputStream, Ship ship) {
+        super(componentDef, ship);
     }
 
     /**

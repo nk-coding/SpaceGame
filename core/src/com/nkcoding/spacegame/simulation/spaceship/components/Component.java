@@ -19,6 +19,10 @@ import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHa
 import com.nkcoding.spacegame.simulation.spaceship.properties.FloatProperty;
 import com.nkcoding.spacegame.simulation.spaceship.properties.IntProperty;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 public abstract class Component implements Damageable {
 
     //region names for the ExternalProperties
@@ -115,12 +119,8 @@ public abstract class Component implements Damageable {
         return new ComponentModel(shipModel, componentDef);
     }
 
-    /**
-     * create the data for mirror creation
-     * overwrite in subclasses if necessary
-     */
-    public ComponentDefBase getMirrorData() {
-        return new ComponentDefBase(this.defBase);
+    public void serialize(DataOutputStream outputStream) throws IOException {
+        defBase.serialize(outputStream);
     }
 
     //helper methods

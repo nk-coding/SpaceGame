@@ -13,6 +13,10 @@ import com.nkcoding.spacegame.simulation.spaceship.components.communication.Upda
 import com.nkcoding.spacegame.simulation.spaceship.properties.FloatProperty;
 import com.nkcoding.spacegame.simulation.spaceship.properties.VirtualProperty;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 public class ShieldGenerator extends Buffer {
     public static final String IS_ENABLED_KEY = "IsEnabled";
     public static final String RADIUS_KEY = "Radius";
@@ -31,11 +35,10 @@ public class ShieldGenerator extends Buffer {
     /**
      * mirror constructor
      */
-    protected ShieldGenerator(ComponentDefBase defBase, Ship ship) {
-        super(defBase, ship);
-        ShieldComponentDef shieldComponentDef = (ShieldComponentDef) defBase;
-        this.radius = shieldComponentDef.radius;
-        this.isEnabled = shieldComponentDef.isEnabled;
+    protected ShieldGenerator(ComponentDefBase componentDef, DataInputStream inputStream, Ship ship) throws IOException {
+        super(componentDef, inputStream, ship);
+        this.radius = inputStream.readFloat();
+        this.isEnabled = inputStream.readBoolean();
     }
 
     /**
@@ -100,14 +103,16 @@ public class ShieldGenerator extends Buffer {
     }
 
     @Override
-    public ComponentDefBase getMirrorData() {
-        return new ShieldComponentDef(defBase, radius, isEnabled);
-    }
-
-    @Override
     protected int getDamageID(Fixture fixture) {
         if (fixture == shieldFixture) return DAMAGE_SHIELD;
         else return super.getDamageID(fixture);
+    }
+
+    @Override
+    public void serialize(DataOutputStream outputStream) throws IOException {
+        super.serialize(outputStream);
+        outputStream.writeFloat(radius);
+        outputStream.writeBoolean(isEnabled);
     }
 
     public class ShieldGeneratorModel extends BufferModel {
@@ -191,17 +196,6 @@ public class ShieldGenerator extends Buffer {
             } else {
                 return super.damageAt(damageID, damage);
             }
-        }
-    }
-
-    private static class ShieldComponentDef extends ComponentDefBase {
-        public final float radius;
-        public final boolean isEnabled;
-
-        public ShieldComponentDef(ComponentDefBase toCopy, float radius, boolean isEnabled) {
-            super(toCopy);
-            this.radius = radius;
-            this.isEnabled = isEnabled;
         }
     }
 
