@@ -1,10 +1,16 @@
 package com.nkcoding.spacegame.simulation.communication;
 
-public class UpdateTransmission extends SimulatedTransmission {
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+public class UpdateTransmission {
     public final int updateID;
 
-    public UpdateTransmission(int simulatedID, int updateID) {
-        super(TransmissionID.UPDATE, simulatedID);
+    public UpdateTransmission(int updateID) {
         this.updateID = updateID;
+    }
+
+    public void serialize(DataOutputStream outputStream) throws IOException {
+        outputStream.writeInt(updateID);
     }
 }

@@ -48,7 +48,7 @@ public class CannonBullet extends Simulated {
         this.radius = length / 2;
     }
 
-    public static CannonBullet mirror(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
+    public static CannonBullet deserialize(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
         CannonBulletCreateTransmission createTransmission = (CannonBulletCreateTransmission) transmission;
         return new CannonBullet(spaceSimulation, createTransmission.bodyState.position(), createTransmission.bodyState.angle,
                 createTransmission.length, createTransmission.bodyState.linearVelocity(), createTransmission.owner, createTransmission.simulatedID);

@@ -1,6 +1,8 @@
 package com.nkcoding.communication;
 
 import java.io.Closeable;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.util.Set;
 
 public abstract class Communication implements Closeable {
@@ -25,20 +27,22 @@ public abstract class Communication implements Closeable {
      */
     public abstract void openCommunication(String ip, int port);
 
+    public abstract DataInputStream getInputStream();
+
     /**
      * send data to a specified peer with a specific id
      *
      * @param peer         the id got from openCommunication
      * @param transmission the transmission to send
      */
-    public abstract void sendTo(int peer, Transmission transmission);
+    public abstract void sendTo(int peer, DataInputStream transmission);
 
     /**
      * sends some data to all peers
      *
      * @param transmission the transmission to send
      */
-    public abstract void sendToAll(Transmission transmission);
+    public abstract void sendToAll(DataInputStream transmission);
 
     /**
      * checks if there are any received transmissions
@@ -52,7 +56,7 @@ public abstract class Communication implements Closeable {
      *
      * @return the Transmission or null if none was available
      */
-    public abstract Transmission getTransmission();
+    public abstract DataInputStream getTransmission();
 
     /**
      * get a list of all peers

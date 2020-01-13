@@ -4,10 +4,7 @@ import com.nkcoding.communication.transmissions.IntTransmission;
 import com.nkcoding.communication.transmissions.PeerInfoTransmission;
 import com.nkcoding.communication.transmissions.TransmissionTransmission;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -137,7 +134,7 @@ public class SocketCommunication extends Communication {
      * @param transmission the transmission to send
      */
     @Override
-    public void sendTo(int peer, Transmission transmission) {
+    public void sendTo(int peer, DataInputStream transmission) {
         Connection connection = connections.get(peer);
         if (connection == null) {
             throw new IllegalArgumentException("peer does not exist");
@@ -152,10 +149,15 @@ public class SocketCommunication extends Communication {
      * @param transmission the transmission to send
      */
     @Override
-    public void sendToAll(Transmission transmission) {
+    public void sendToAll(DataInputStream transmission) {
         for (Connection connection : connections.values()) {
             connection.send(transmission);
         }
+    }
+
+    @Override
+    public DataInputStream getInputStream() {
+        return null;
     }
 
     /**
@@ -174,7 +176,7 @@ public class SocketCommunication extends Communication {
      * @return the Transmission or null if none was available
      */
     @Override
-    public Transmission getTransmission() {
+    public DataOutputStream getTransmission() {
         return receivedTransmissions.poll();
     }
 
@@ -289,8 +291,8 @@ public class SocketCommunication extends Communication {
 
     private class Connection extends Thread implements Closeable {
         public Socket socket;
-        public ObjectInputStream inputStream = null;
-        public ObjectOutputStream outputStream = null;
+        public InputStream inputStream = null;
+        public OutputStream outputStream = null;
         public int remotePort = -1;
         public volatile boolean shutdown = false;
         private int peerID = -1;
@@ -300,9 +302,8 @@ public class SocketCommunication extends Communication {
             this.socket = socket;
             this.remotePort = remotePort;
             if (socket != null) {
-                outputStream = new ObjectOutputStream(socket.getOutputStream());
-                outputStream.flush();
-                inputStream = new ObjectInputStream(socket.getInputStream());
+                inputStream = socket.getInputStream();
+                outputStream = socket.getOutputStream();
             }
             if (peerID == -1) {
                 //try to get the id
@@ -460,7 +461,7 @@ public class SocketCommunication extends Communication {
         }
 
 
-        public synchronized void send(Transmission transmission) {
+        public synchronized void send(DataInputStream transmission) {
             if (socket != null) {
                 //there is a direct connection available
                 try {

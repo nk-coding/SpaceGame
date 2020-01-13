@@ -22,6 +22,9 @@ import com.nkcoding.spacegame.simulation.spaceship.components.communication.Remo
 import com.nkcoding.spacegame.simulation.spaceship.components.communication.UpdateComponentTransmission;
 import com.nkcoding.spacegame.simulation.spaceship.properties.*;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -58,7 +61,7 @@ public class Ship extends Simulated {
         componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];
     }
 
-    private Ship(SpaceSimulation spaceSimulation, int owner, int id, ComponentDefBase[] components) {
+    private  Ship(SpaceSimulation spaceSimulation, int owner, int id, ComponentDefBase[] components) {
         this(spaceSimulation, owner, id);
         for (ComponentDefBase def : components) {
             createMirrorComponent(def);
@@ -88,9 +91,15 @@ public class Ship extends Simulated {
         updateCenterPos();
     }
 
-    public static Ship mirror(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
-        ShipCreateTransmission createTransmission = (ShipCreateTransmission) transmission;
-        return new Ship(spaceSimulation, createTransmission.owner, createTransmission.simulatedID, createTransmission.components);
+    public static Ship deserialize(SpaceSimulation spaceSimulation, DataInputStream inputStream) throws IOException {
+        int owner = inputStream.readInt();
+        int simulatedID = inputStream.readInt();
+        int componentAmount = inputStream.readInt();
+        Component[] components = new Component[componentAmount];
+        for (int i = 0; i < componentAmount; i++) {
+
+        }
+        return new Ship(spaceSimulation, owner, simulatedID, createTransmission.components);
     }
 
     @Override

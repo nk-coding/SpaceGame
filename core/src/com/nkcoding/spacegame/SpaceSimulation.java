@@ -12,10 +12,13 @@ import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.spacegame.simulation.BodyState;
 import com.nkcoding.spacegame.simulation.Simulated;
+import com.nkcoding.spacegame.simulation.SimulatedType;
 import com.nkcoding.spacegame.simulation.SynchronizationPriority;
 import com.nkcoding.spacegame.simulation.communication.*;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler;
 
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -266,43 +269,43 @@ public class SpaceSimulation implements InputProcessor {
         return result;
     }
 
-    private void handleMessages() {
+    private void handleMessages() throws IOException {
         if (communication != null) {
             while (communication.hasTransmissions()) {
-                Transmission transmission = communication.getTransmission();
-                switch (transmission.getId()) {
+                DataInputStream inputStream = communication.getTransmission();
+                switch (inputStream.readInt()) {
                     case TransmissionID.CREATE_NEW:
-                        CreateTransmission createTransmission = (CreateTransmission)transmission;
-                        Simulated newSimulated = createTransmission.type.constructor.apply(this, createTransmission);
-                        newSimulated.update(createTransmission.bodyState);
+                        SimulatedType type = SimulatedType.deserialize(inputStream);
+                        Simulated newSimulated = type.constructor.apply(this, inputStream);
+                        newSimulated.deserializeBodyState(inputStream);
                         simulatedToAdd.add(newSimulated);
                         break;
                     case TransmissionID.REMOVE:
-                        Simulated toRemove = getSimulated(((RemoveTransmission)transmission).simulatedID);
+                        //Simulated toRemove = getSimulated(((RemoveTransmission)transmission).simulatedID);
+                        int removeID = inputStream.readInt();
+                        Simulated toRemove = getSimulated(removeID);
                         if (toRemove != null) simulatedToRemove.add(toRemove);
-                        else System.out.println("cannot remove" + transmission);
+                        else System.out.println("cannot remove" + removeID);
                         break;
                     case TransmissionID.UPDATE:
-                        UpdateTransmission updateTransmission = (UpdateTransmission)transmission;
-                        Simulated toUpdate = getSimulated(updateTransmission.simulatedID);
+                        int updateID = inputStream.readInt();
+                        Simulated toUpdate = getSimulated(updateID);
                         if (toUpdate != null) {
-                            toUpdate.receiveTransmission(updateTransmission);
+                            toUpdate.receiveTransmission(inputStream);
                         } else {
-                            System.out.println("cannot update " + transmission);
+                            System.out.println("cannot update " + updateID);
                         }
                         break;
                     case TransmissionID.UPDATE_BODY_STATE:
-                        UpdateBodysTransmission updateBodysTransmission = (UpdateBodysTransmission) transmission;
-                        for (BodyState bodyState : updateBodysTransmission.bodyStates) {
-                            Simulated updateBody = getSimulated(bodyState.id);
+                        int amount = inputStream.readInt();
+                        for (int x = 0; x < amount; x++) {
+                            int simulatedID = inputStream.readInt();
+                            Simulated updateBody = getSimulated(simulatedID);
                             if (updateBody != null) {
-                                float dist = updateBody.getBody().getPosition().sub(bodyState.position()).len();
-                                if (dist > 0.05) System.out.println(dist);
-                                updateBody.update(bodyState);
+                                updateBody.deserializeBodyState(inputStream);
                             } else {
-                                System.out.println("cannot update body: " + bodyState);
+                                System.out.println("cannot update body: " + simulatedID);
                             }
-
                         }
                         break;
                 }

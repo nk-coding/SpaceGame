@@ -9,22 +9,25 @@ import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 import com.nkcoding.util.TriFunction;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.function.BiFunction;
 
 import static com.nkcoding.spacegame.simulation.spaceship.components.Component.*;
 import static com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData.of;
 
 public enum ComponentType {
-    Engine(Engine::new, Engine::new, 1, 2, 100, 100, Asset.Engine,
+    Engine(0, Engine::new, Engine::new, 1, 2, 100, 100, Asset.Engine,
             of(com.nkcoding.spacegame.simulation.spaceship.components.Engine.ENGINE_POWER_KEY, DataType.INTEGER, false)),
-    Cannon(Cannon::new, Cannon::new, 1, 2, 100, 100, Asset.Cannon,
+    Cannon(1, Cannon::new, Cannon::new, 1, 2, 100, 100, Asset.Cannon,
             of(com.nkcoding.spacegame.simulation.spaceship.components.Cannon.IS_SHOOTING_KEY, DataType.BOOLEAN, false),
             of(Buffer.BUFFER_LEVEL_KEY, DataType.FLOAT)),
-    PowerCore(PowerCore::new, PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
-    BasicHull(BasicHull::new, BasicHull::new, Asset.BasicHull),
-    ExplosiveCanister(ExplosiveCanister::new, ExplosiveCanister::new, 1, 1, 50, 50, Asset.ExplosiveCanister,
+    PowerCore(2, PowerCore::new, PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
+    BasicHull(3, BasicHull::new, BasicHull::new, Asset.BasicHull),
+    ExplosiveCanister(4, ExplosiveCanister::new, ExplosiveCanister::new, 1, 1, 50, 50, Asset.ExplosiveCanister,
             of(com.nkcoding.spacegame.simulation.spaceship.components.ExplosiveCanister.EXPLODE_KEY, DataType.BOOLEAN, false)),
-    ShieldGenerator(ShieldGenerator::new, ShieldGenerator::new, 2, 2, 200, 100, Asset.CloseSymbol,
+    ShieldGenerator(5, ShieldGenerator::new, ShieldGenerator::new, 2, 2, 200, 100, Asset.CloseSymbol,
             of(com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.RADIUS_KEY, DataType.FLOAT, false),
             of(com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.IS_ENABLED_KEY, DataType.BOOLEAN, false),
             of(Buffer.BUFFER_LEVEL_KEY, DataType.FLOAT));
@@ -49,8 +52,9 @@ public enum ComponentType {
     //the mass of the Component
     public final float mass;
     private PolygonShape shape;
+    private final int index;
 
-    ComponentType(TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor, BiFunction<ComponentDefBase, Ship, ? extends Component> mirrorConstructor,
+    ComponentType(int index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor, BiFunction<ComponentDefBase, Ship, ? extends Component> mirrorConstructor,
                   int width, int height,
                   int health, float mass, Asset defaultTexture,
                   ExternalPropertyData... propertyDefs) {
@@ -69,12 +73,13 @@ public enum ComponentType {
         this.height = height;
         this.health = health;
         this.mass = mass;
+        this.index = index;
     }
 
     //sets width and height to 1
-    ComponentType(TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor, BiFunction<ComponentDefBase, Ship, ? extends Component> mirrorConstructor,
+    ComponentType(int index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor, BiFunction<ComponentDefBase, Ship, ? extends Component> mirrorConstructor,
                   Asset previewImg, ExternalPropertyData... propertyDefs) {
-        this(constructor, mirrorConstructor, 1, 1, 100, 100, previewImg, propertyDefs);
+        this(index, constructor, mirrorConstructor, 1, 1, 100, 100, previewImg, propertyDefs);
     }
 
     /**
@@ -96,5 +101,28 @@ public enum ComponentType {
         shape.setAsBox(w * ShipDef.UNIT_SIZE / 2, h * ShipDef.UNIT_SIZE / 2,
                 new Vector2(ShipDef.UNIT_SIZE * (w / 2 + posX), ShipDef.UNIT_SIZE * (h / 2 + posY)), 0);
         return shape;
+    }
+
+    public static ComponentType deserialize(DataInputStream inputStream) throws IOException {
+        switch (inputStream.readInt()) {
+            case 0:
+                return Engine;
+            case 1:
+                return Cannon;
+            case 2:
+                return PowerCore;
+            case 3:
+                return BasicHull;
+            case 4:
+                return ExplosiveCanister;
+            case 5:
+                return ShieldGenerator;
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+    public void serialize(DataOutputStream outputStream) throws IOException{
+        outputStream.writeInt(index);
     }
 }

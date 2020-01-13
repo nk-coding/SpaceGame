@@ -56,7 +56,7 @@ public class Explosion extends Simulated {
     /**
      * constructor only for mirror instance
      */
-    public static Explosion mirror(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
+    public static Explosion deserialize(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
         ExplosionCreateTransmission createTransmission = (ExplosionCreateTransmission) transmission;
         return new Explosion(spaceSimulation, createTransmission.startRadius, createTransmission.endRadius, createTransmission.time, createTransmission.bodyState.position(),
                 createTransmission.bodyState.linearVelocity(), createTransmission.damage, createTransmission.owner, createTransmission.simulatedID);

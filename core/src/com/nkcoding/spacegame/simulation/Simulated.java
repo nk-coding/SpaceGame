@@ -5,9 +5,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.Transform;
 import com.nkcoding.spacegame.SpaceSimulation;
 import com.nkcoding.spacegame.simulation.communication.CreateTransmission;
 import com.nkcoding.spacegame.simulation.communication.UpdateTransmission;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 public class Simulated {
     //the type of this object
@@ -249,11 +254,11 @@ public class Simulated {
     }
 
     /**
-     * subclasses should overwrite this method if they want to receive update transmissions
+     * subclasses should receive update transmissions
      *
-     * @param transmission the update transmission
+     * @param updateTransmission the update transmission
      */
-    public void receiveTransmission(UpdateTransmission transmission) {
+    public void receiveTransmission(UpdateTransmission updateTransmission) {
     }
 
     /**
@@ -274,9 +279,19 @@ public class Simulated {
     /**
      * update the Simulated based on the body state
      */
-    public void update(BodyState bodyState) {
-        body.setTransform(bodyState.position(), bodyState.angle);
-        body.setLinearVelocity(bodyState.linearVelocity());
-        body.setAngularVelocity(bodyState.angularVelocity);
+    public void deserializeBodyState(DataInputStream inputStream) throws IOException {
+        body.setTransform(inputStream.readFloat(), inputStream.readFloat(), inputStream.readFloat());
+        body.setLinearVelocity(inputStream.readFloat(), inputStream.readFloat());
+        body.setAngularVelocity(inputStream.readFloat());
+    }
+
+    public void serializeBodyState(DataOutputStream outputStream) throws IOException {
+        Transform transform = body.getTransform();
+        outputStream.writeFloat(transform.getPosition().x);
+        outputStream.writeFloat(transform.getPosition().y);
+        outputStream.writeFloat(transform.getRotation());
+        outputStream.writeFloat(body.getLinearVelocity().x);
+        outputStream.writeFloat(body.getLinearVelocity().y);
+        outputStream.writeFloat(body.getAngle());
     }
 }
