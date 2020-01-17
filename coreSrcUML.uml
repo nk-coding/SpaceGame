@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.nkcoding</OriginalElement>
+  <nodes>
+    <node x="0.0" y="998.0">com.nkcoding.interpreter.compiler.OperatorType</node>
+    <node x="2011.0" y="460.0">com.nkcoding.interpreter.StackStatement</node>
+    <node x="2090.0" y="998.0">com.nkcoding.interpreter.Stack</node>
+    <node x="820.0" y="99.0">com.nkcoding.ui.TextFieldBase.TextFieldClickListener</node>
+    <node x="1899.0" y="692.0">com.nkcoding.interpreter.compiler.ProgramTextWrapper.EndReachedException</node>
+    <node x="233.0" y="924.0">com.nkcoding.spacegame.SaveGameManager.SaveGame</node>
+    <node x="1370.75" y="613.0">com.nkcoding.interpreter.GetStackItem</node>
+    <node x="530.0" y="998.0">com.nkcoding.interpreter.ListObject</node>
+    <node x="2357.0" y="692.0">com.nkcoding.interpreter.compiler.CompilerHelper.WrongTypeException</node>
+    <node x="2254.0" y="845.0">com.nkcoding.interpreter.compiler.ProgramPosition</node>
+    <node x="392.0" y="692.0">com.nkcoding.communication.transmissions.TransmissionTransmission</node>
+    <node x="1221.0" y="99.0">com.nkcoding.ui.TextFieldBase.TextFieldListener</node>
+    <node x="860.0" y="998.0">com.nkcoding.util.MathHelper</node>
+    <node x="2565.0" y="460.0">com.nkcoding.interpreter.DefineValueStatement</node>
+    <node x="208.0" y="845.0">com.nkcoding.spacegame.SaveGameManager</node>
+    <node x="2179.0" y="460.0">com.nkcoding.interpreter.IfConditionStatement</node>
+    <node x="415.0" y="178.0">com.nkcoding.ui.MultiColorTextArea.MultiColorTextAreaStyle</node>
+    <node x="648.0" y="178.0">com.nkcoding.ui.MultiColorTextArea.ColorRegion</node>
+    <node x="641.0" y="0.0">com.nkcoding.ui.TextFieldBase</node>
+    <node x="2004.3458994708992" y="539.0">com.nkcoding.interpreter.ForLoopStatement</node>
+    <node x="435.0" y="613.0">com.nkcoding.communication.Transmission</node>
+    <node x="2187.345899470899" y="539.0">com.nkcoding.interpreter.WhileLoopStatement</node>
+    <node x="2794.0" y="692.0">com.nkcoding.ui.ScriptColorParser</node>
+    <node x="1025.0" y="998.0">com.nkcoding.spacegame.screens.GameScreen</node>
+    <node x="2776.0" y="460.0">com.nkcoding.interpreter.ReturnValueStatement</node>
+    <node x="2815.5" y="613.0">com.nkcoding.ui.ColorParser</node>
+    <node x="800.75" y="178.0">com.nkcoding.ui.MultiColorTextArea.TextAreaListener</node>
+    <node x="2371.5" y="613.0">com.nkcoding.interpreter.compiler.CompilerHelper</node>
+    <node x="1504.0" y="998.0">com.nkcoding.interpreter.compiler.Compiler</node>
+    <node x="1246.0" y="845.0">com.nkcoding.ui.CustomScrollPane</node>
+    <node x="590.9999999999999" y="460.0">com.nkcoding.interpreter.StackItem</node>
+    <node x="182.0" y="178.0">com.nkcoding.ui.TextFieldBase.DefaultOnscreenKeyboard</node>
+    <node x="1190.0" y="998.0">com.nkcoding.spacegame.SpaceGame</node>
+    <node x="592.4809523809523" y="99.0">com.nkcoding.ui.MultiColorTextArea</node>
+    <node x="1038.0" y="845.0">com.nkcoding.interpreter.compiler.CompileException</node>
+    <node x="0.0" y="99.0">com.nkcoding.ui.TextFieldBase.KeyRepeatTask</node>
+    <node x="695.0" y="998.0">com.nkcoding.interpreter.compiler.MethodType</node>
+    <node x="854.3458994708992" y="331.0">com.nkcoding.interpreter.Expression</node>
+    <node x="823.0" y="845.0">com.nkcoding.spacegame.screens.ShipBuilderScreen</node>
+    <node x="2348.0" y="998.0">com.nkcoding.interpreter.compiler.Lexer</node>
+    <node x="2579.0" y="692.0">com.nkcoding.interpreter.compiler.CompilerStack.CompilerStackItem</node>
+    <node x="1902.5" y="613.0">com.nkcoding.interpreter.compiler.ProgramTextWrapper</node>
+    <node x="587.0" y="845.0">com.nkcoding.interpreter.ExternalMethodFuture</node>
+    <node x="807.0" y="692.0">com.nkcoding.communication.transmissions.StringTransmission</node>
+    <node x="1648.0" y="692.0">com.nkcoding.interpreter.compiler.NormalMethodDefinition</node>
+    <node x="2390.0" y="460.0">com.nkcoding.interpreter.MethodStatement</node>
+    <node x="1669.5" y="613.0">com.nkcoding.interpreter.compiler.MethodDefinition</node>
+    <node x="2219.0" y="998.0">com.nkcoding.spacegame.Asset</node>
+    <node x="1709.912037037037" y="539.0">com.nkcoding.interpreter.StatementBlock</node>
+    <node x="1454.0" y="845.0">com.nkcoding.interpreter.ReturnException</node>
+    <node x="0.0" y="692.0">com.nkcoding.communication.transmissions.PeerInfoTransmission</node>
+    <node x="1347.0" y="998.0">com.nkcoding.interpreter.compiler.Operation</node>
+    <node x="161.0" y="99.0">com.nkcoding.ui.TextFieldBase.OnscreenKeyboard</node>
+    <node x="2128.0" y="692.0">com.nkcoding.ui.ZoomScrollPane.ZoomScrollPaneStyle</node>
+    <node x="1854.0" y="845.0">com.nkcoding.spacegame.ExtAssetManager</node>
+    <node x="1611.0" y="460.0">com.nkcoding.interpreter.operators</node>
+    <node x="2146.0" y="613.0">com.nkcoding.ui.ZoomScrollPane</node>
+    <node x="919.9999999999999" y="460.0">com.nkcoding.interpreter.CreateListExpression</node>
+    <node x="1455.0" y="692.0">com.nkcoding.interpreter.GetListItemGet</node>
+    <node x="1804.0" y="998.0">com.nkcoding.interpreter.compiler.Methods</node>
+    <node x="2454.0" y="845.0">com.nkcoding.spacegame.desktop.DesktopLauncher</node>
+    <node x="1258.0" y="692.0">com.nkcoding.interpreter.GetVariableItemGet</node>
+    <node x="554.9999999999999" y="539.0">com.nkcoding.interpreter.ConcurrentStackItem</node>
+    <node x="2606.0" y="998.0">com.nkcoding.util.Tuple</node>
+    <node x="43.0" y="771.0">com.nkcoding.communication.transmissions.PeerInfoTransmission.PeerInfo</node>
+    <node x="2654.0" y="845.0">com.nkcoding.spacegame.screens.LauncherScreen</node>
+    <node x="211.0" y="692.0">com.nkcoding.spacegame.simulation</node>
+    <node x="1131.0" y="460.0">com.nkcoding.interpreter.ExternalMethodStatement</node>
+    <node x="1061.0" y="771.0">com.nkcoding.communication.SocketCommunication.Connection</node>
+    <node x="241.36666666666662" y="257.0">com.nkcoding.ui.CodeEditor.CodeEditorStyle</node>
+    <node x="2593.5" y="613.0">com.nkcoding.interpreter.compiler.CompilerStack</node>
+    <node x="722.9999999999999" y="460.0">com.nkcoding.interpreter.RawValueExpression</node>
+    <node x="2054.0" y="845.0">com.nkcoding.spacegame.SpaceSimulation</node>
+    <node x="1654.0" y="845.0">com.nkcoding.interpreter.ScriptingEngine</node>
+    <node x="197.0" y="460.0">com.nkcoding.interpreter.GetValueExpression</node>
+    <node x="179.0" y="998.0">com.nkcoding.interpreter.compiler.TypeNamePair</node>
+    <node x="2477.0" y="998.0">com.nkcoding.interpreter.compiler.Token</node>
+    <node x="2029.8458994708992" y="331.0">com.nkcoding.interpreter.Statement</node>
+    <node x="42.0" y="178.0">com.nkcoding.ui.CodeEditor</node>
+    <node x="632.0" y="692.0">com.nkcoding.communication.transmissions.IntTransmission</node>
+    <node x="1050.5" y="613.0">com.nkcoding.communication.Communication</node>
+    <node x="358.0" y="998.0">com.nkcoding.util.TriFunction</node>
+    <node x="1364.0" y="460.0">com.nkcoding.interpreter.PredefinedMethodStatement</node>
+    <node x="0.0" y="924.0">com.nkcoding.ui.PropertyBox.PropertyBoxStyle</node>
+    <node x="422.5" y="845.0">com.nkcoding.ui.Zoomable</node>
+    <node x="408.0" y="924.0">com.nkcoding.ui.ShipDesigner</node>
+    <node x="1785.0" y="460.0">com.nkcoding.interpreter.MethodWrapperStatement</node>
+    <node x="1029.0" y="692.0">com.nkcoding.communication.SocketCommunication</node>
+    <node x="1654.0" y="998.0">com.nkcoding.interpreter.compiler.DataType</node>
+    <node x="394.0" y="460.0">com.nkcoding.interpreter.FloatToIntegerCast</node>
+    <node x="18.0" y="845.0">com.nkcoding.ui.PropertyBox</node>
+    <node x="1046.0" y="99.0">com.nkcoding.ui.TextFieldBase.TextFieldFilter</node>
+    <node x="1042.0" y="178.0">com.nkcoding.ui.TextFieldBase.TextFieldFilter.DigitsOnlyFilter</node>
+    <node x="0.0" y="460.0">com.nkcoding.interpreter.IntegerToFloatCast</node>
+    <node x="1947.0" y="998.0">com.nkcoding.interpreter.compiler.Program</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.nkcoding.interpreter.StatementBlock" target="com.nkcoding.interpreter.StackStatement">
+      <point x="0.0" y="-14.5" />
+      <point x="1783.912037037037" y="514.0" />
+      <point x="2035.6666666666665" y="514.0" />
+      <point x="-49.33333333333337" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.ScriptColorParser" target="com.nkcoding.ui.ColorParser">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ReturnValueStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="0.0" y="-14.5" />
+      <point x="2871.5" y="410.0" />
+      <point x="2135.623677248677" y="410.0" />
+      <point x="49.777777777777715" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication" target="com.nkcoding.communication.Communication">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.RawValueExpression" target="com.nkcoding.interpreter.Expression">
+      <point x="0.0" y="-14.5" />
+      <point x="811.4999999999999" y="440.0" />
+      <point x="908.3458994708992" y="440.0" />
+      <point x="-6.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.StackItem" target="com.nkcoding.interpreter.Expression">
+      <point x="0.0" y="-14.5" />
+      <point x="646.9999999999999" y="430.0" />
+      <point x="896.3458994708992" y="430.0" />
+      <point x="-18.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.transmissions.StringTransmission" target="com.nkcoding.communication.Transmission">
+      <point x="0.0" y="-14.5" />
+      <point x="895.5" y="662.0" />
+      <point x="555.6" y="662.0" />
+      <point x="53.60000000000002" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.transmissions.PeerInfoTransmission.PeerInfo" target="com.nkcoding.communication.transmissions.PeerInfoTransmission">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetVariableItemGet" target="com.nkcoding.interpreter.GetStackItem">
+      <point x="0.0" y="-14.5" />
+      <point x="1346.5" y="667.0" />
+      <point x="1404.25" y="667.0" />
+      <point x="-33.5" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea.MultiColorTextAreaStyle" target="com.nkcoding.ui.MultiColorTextArea">
+      <point x="0.0" y="-14.5" />
+      <point x="521.5" y="153.0" />
+      <point x="621.9809523809523" y="153.0" />
+      <point x="-59.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.operators" target="com.nkcoding.interpreter.Statement">
+      <point x="38.5" y="-14.5" />
+      <point x="1726.5" y="430.0" />
+      <point x="2060.9570105820103" y="430.0" />
+      <point x="-24.888888888888914" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.KeyRepeatTask" target="com.nkcoding.ui.TextFieldBase">
+      <point x="0.0" y="-14.5" />
+      <point x="70.5" y="49.0" />
+      <point x="651.0714285714286" y="49.0" />
+      <point x="-60.428571428571445" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.DefineValueStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="0.0" y="-14.5" />
+      <point x="2660.5" y="420.0" />
+      <point x="2123.1792328042325" y="420.0" />
+      <point x="37.33333333333326" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerStack.CompilerStackItem" target="com.nkcoding.interpreter.compiler.CompilerStack">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.PredefinedMethodStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="56.75" y="-14.5" />
+      <point x="1534.25" y="420.0" />
+      <point x="2048.512566137566" y="420.0" />
+      <point x="-37.33333333333337" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.PredefinedMethodStatement" target="com.nkcoding.interpreter.Expression">
+      <point x="-56.75" y="-14.5" />
+      <point x="1420.75" y="400.0" />
+      <point x="944.3458994708992" y="400.0" />
+      <point x="30.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.IntegerToFloatCast" target="com.nkcoding.interpreter.Expression">
+      <point x="0.0" y="-14.5" />
+      <point x="88.5" y="400.0" />
+      <point x="860.3458994708992" y="400.0" />
+      <point x="-54.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.operators" target="com.nkcoding.interpreter.Expression">
+      <point x="-38.5" y="-14.5" />
+      <point x="1649.5" y="390.0" />
+      <point x="956.3458994708992" y="390.0" />
+      <point x="42.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.WhileLoopStatement" target="com.nkcoding.interpreter.StackStatement">
+      <point x="0.0" y="-14.5" />
+      <point x="2275.845899470899" y="514.0" />
+      <point x="2134.333333333333" y="514.0" />
+      <point x="49.33333333333337" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.DefaultOnscreenKeyboard" target="com.nkcoding.ui.TextFieldBase">
+      <point x="53.250000000000114" y="-14.5" />
+      <point x="341.7500000000001" y="153.0" />
+      <point x="334.5000000000001" y="153.0" />
+      <point x="334.5000000000001" y="69.0" />
+      <point x="691.3571428571429" y="69.0" />
+      <point x="-20.14285714285711" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea.ColorRegion" target="com.nkcoding.ui.MultiColorTextArea">
+      <point x="0.0" y="-14.5" />
+      <point x="711.5" y="153.0" />
+      <point x="680.9809523809523" y="153.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea.TextAreaListener" target="com.nkcoding.ui.MultiColorTextArea">
+      <point x="-40.75" y="-14.5" />
+      <point x="841.5" y="153.0" />
+      <point x="739.9809523809523" y="153.0" />
+      <point x="59.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetListItemGet" target="com.nkcoding.interpreter.GetStackItem">
+      <point x="0.0" y="-14.5" />
+      <point x="1529.0" y="667.0" />
+      <point x="1471.25" y="667.0" />
+      <point x="33.5" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.NormalMethodDefinition" target="com.nkcoding.interpreter.compiler.MethodDefinition">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.TextFieldListener" target="com.nkcoding.ui.TextFieldBase">
+      <point x="0.0" y="-14.5" />
+      <point x="1306.0" y="59.0" />
+      <point x="771.9285714285714" y="59.0" />
+      <point x="60.428571428571445" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea.TextAreaListener" target="com.nkcoding.ui.TextFieldBase.TextFieldClickListener">
+      <point x="40.75" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.ZoomScrollPane.ZoomScrollPaneStyle" target="com.nkcoding.ui.ZoomScrollPane">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.CodeEditor.CodeEditorStyle" target="com.nkcoding.ui.CodeEditor">
+      <point x="-38.75" y="-14.5" />
+      <point x="280.1166666666666" y="232.0" />
+      <point x="102.0" y="232.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.MethodStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="0.0" y="-14.5" />
+      <point x="2467.5" y="430.0" />
+      <point x="2110.734788359788" y="430.0" />
+      <point x="24.888888888888914" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.transmissions.PeerInfoTransmission" target="com.nkcoding.communication.Transmission">
+      <point x="0.0" y="-14.5" />
+      <point x="95.5" y="662.0" />
+      <point x="448.4" y="662.0" />
+      <point x="-53.60000000000002" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ExternalMethodStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="53.25" y="-14.5" />
+      <point x="1290.75" y="410.0" />
+      <point x="2036.0681216931214" y="410.0" />
+      <point x="-49.77777777777783" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetValueExpression" target="com.nkcoding.interpreter.Expression">
+      <point x="0.0" y="-14.5" />
+      <point x="285.5" y="410.0" />
+      <point x="872.3458994708992" y="410.0" />
+      <point x="-42.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea" target="com.nkcoding.ui.TextFieldBase">
+      <point x="0.0" y="-14.5" />
+      <point x="680.9809523809523" y="79.0" />
+      <point x="711.5" y="79.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ForLoopStatement" target="com.nkcoding.interpreter.StackStatement">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.DefaultOnscreenKeyboard" target="com.nkcoding.ui.TextFieldBase.OnscreenKeyboard">
+      <point x="-53.249999999999886" y="-14.5" />
+      <point x="235.2500000000001" y="153.0" />
+      <point x="242.5" y="153.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.IfConditionStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="0.0" y="-14.5" />
+      <point x="2274.5" y="440.0" />
+      <point x="2098.290343915344" y="440.0" />
+      <point x="12.444444444444457" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.PropertyBox.PropertyBoxStyle" target="com.nkcoding.ui.PropertyBox">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication.Connection" target="com.nkcoding.communication.SocketCommunication">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SaveGameManager.SaveGame" target="com.nkcoding.spacegame.SaveGameManager">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.ProgramTextWrapper.EndReachedException" target="com.nkcoding.interpreter.compiler.ProgramTextWrapper">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.TextFieldFilter" target="com.nkcoding.ui.TextFieldBase">
+      <point x="0.0" y="-14.5" />
+      <point x="1123.5" y="69.0" />
+      <point x="751.7857142857142" y="69.0" />
+      <point x="40.28571428571422" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.transmissions.TransmissionTransmission" target="com.nkcoding.communication.Transmission">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.ShipDesigner" target="com.nkcoding.ui.Zoomable">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.MethodWrapperStatement" target="com.nkcoding.interpreter.Expression">
+      <point x="-51.5" y="-14.5" />
+      <point x="1836.5" y="380.0" />
+      <point x="968.3458994708992" y="380.0" />
+      <point x="54.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ExternalMethodStatement" target="com.nkcoding.interpreter.Expression">
+      <point x="-53.25" y="-14.5" />
+      <point x="1184.25" y="430.0" />
+      <point x="932.3458994708992" y="430.0" />
+      <point x="18.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation" target="com.nkcoding.communication.Transmission">
+      <point x="0.0" y="-14.5" />
+      <point x="291.5" y="672.0" />
+      <point x="475.2" y="672.0" />
+      <point x="-26.80000000000001" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ConcurrentStackItem" target="com.nkcoding.interpreter.StackItem">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.FloatToIntegerCast" target="com.nkcoding.interpreter.Expression">
+      <point x="0.0" y="-14.5" />
+      <point x="482.5" y="420.0" />
+      <point x="884.3458994708992" y="420.0" />
+      <point x="-30.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.CreateListExpression" target="com.nkcoding.interpreter.Expression">
+      <point x="0.0" y="-14.5" />
+      <point x="1015.4999999999999" y="440.0" />
+      <point x="920.3458994708992" y="440.0" />
+      <point x="6.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.StackStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper.WrongTypeException" target="com.nkcoding.interpreter.compiler.CompilerHelper">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.MethodWrapperStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="51.5" y="-14.5" />
+      <point x="1939.5" y="440.0" />
+      <point x="2073.4014550264546" y="440.0" />
+      <point x="-12.444444444444457" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.TextFieldClickListener" target="com.nkcoding.ui.TextFieldBase">
+      <point x="0.0" y="-14.5" />
+      <point x="923.0" y="79.0" />
+      <point x="731.6428571428571" y="79.0" />
+      <point x="20.14285714285711" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.TextFieldFilter.DigitsOnlyFilter" target="com.nkcoding.ui.TextFieldBase.TextFieldFilter">
+      <point x="-40.75" y="-14.5" />
+      <point x="1082.75" y="153.0" />
+      <point x="1084.75" y="153.0" />
+      <point x="-38.75" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.OnscreenKeyboard" target="com.nkcoding.ui.TextFieldBase">
+      <point x="0.0" y="-14.5" />
+      <point x="242.5" y="59.0" />
+      <point x="671.2142857142857" y="59.0" />
+      <point x="-40.285714285714334" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.CodeEditor.CodeEditorStyle" target="com.nkcoding.ui.MultiColorTextArea.MultiColorTextAreaStyle">
+      <point x="38.75" y="-14.5" />
+      <point x="357.6166666666666" y="232.0" />
+      <point x="521.5" y="232.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.transmissions.IntTransmission" target="com.nkcoding.communication.Transmission">
+      <point x="0.0" y="-14.5" />
+      <point x="709.5" y="672.0" />
+      <point x="528.8" y="672.0" />
+      <point x="26.799999999999955" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.40000000000000013" x="1379.9999999999995" y="519.9999999999998" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

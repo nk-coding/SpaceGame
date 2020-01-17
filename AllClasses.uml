@@ -1,0 +1,3306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.nkcoding</OriginalElement>
+  <nodes>
+    <node x="7950.442164324745" y="4250.0">com.nkcoding.interpreter.StackStatement</node>
+    <node x="13830.082029030824" y="7096.0">com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty</node>
+    <node x="7834.248711943793" y="2421.0">com.nkcoding.interpreter.Stack</node>
+    <node x="7033.3052734474" y="3016.0">com.nkcoding.interpreter.GetStackItem</node>
+    <node x="5756.063592896175" y="4854.0">com.nkcoding.interpreter.compiler.CompilerHelper.WrongTypeException</node>
+    <node x="15979.826473475268" y="7215.0">com.nkcoding.spacegame.simulation.Ship.ShipCreateTransmission</node>
+    <node x="12764.369064799535" y="8817.0">com.nkcoding.spacegame.simulation.spaceship.properties.NotifyProperty</node>
+    <node x="18393.385334640807" y="9867.0">com.nkcoding.spacegame.simulation.Explosion</node>
+    <node x="853.5468952574956" y="9987.0">com.nkcoding.communication.transmissions.TransmissionTransmission</node>
+    <node x="15229.74869569749" y="5554.0">com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData</node>
+    <node x="0.0" y="19759.0">com.nkcoding.util.MathHelper</node>
+    <node x="6573.215973848555" y="3668.0">com.nkcoding.interpreter.IfConditionStatement</node>
+    <node x="2356.616748198672" y="9975.0">com.nkcoding.ui.MultiColorTextArea.ColorRegion</node>
+    <node x="17161.75311038003" y="11338.0">com.nkcoding.spacegame.screens.GameScreen</node>
+    <node x="2096.616748198672" y="10007.0">com.nkcoding.ui.MultiColorTextArea.TextAreaListener</node>
+    <node x="5540.138592896174" y="4152.0">com.nkcoding.interpreter.compiler.CompilerHelper</node>
+    <node x="12215.230175910647" y="7030.0">com.nkcoding.spacegame.simulation.spaceship.ShipDef</node>
+    <node x="9878.245082871337" y="5565.0">com.nkcoding.interpreter.compiler.Compiler</node>
+    <node x="7552.632640515221" y="1540.0">com.nkcoding.interpreter.StackItem</node>
+    <node x="2365.5041666666657" y="10910.0">com.nkcoding.ui.MultiColorTextArea</node>
+    <node x="17673.443484011248" y="7214.0">com.nkcoding.spacegame.simulation.SynchronizationPriority</node>
+    <node x="12703.154942344583" y="9735.0">com.nkcoding.spacegame.simulation.Ship.ShipModel</node>
+    <node x="14079.082029030824" y="8827.0">com.nkcoding.spacegame.simulation.spaceship.properties.BooleanProperty</node>
+    <node x="16931.914568713364" y="4821.0">com.nkcoding.interpreter.compiler.NormalMethodDefinition</node>
+    <node x="10830.587262472087" y="4208.0">com.nkcoding.interpreter.MethodStatement</node>
+    <node x="15460.826473475268" y="8552.0">com.nkcoding.spacegame.Asset</node>
+    <node x="8789.828235753317" y="1900.0">com.nkcoding.interpreter.ReturnException</node>
+    <node x="578.5468952574956" y="10009.0">com.nkcoding.communication.transmissions.PeerInfoTransmission</node>
+    <node x="19312.110150677916" y="8848.0">com.nkcoding.spacegame.simulation.Explosion.ExplosionCreateTransmission</node>
+    <node x="3914.4677285908274" y="11370.0">com.nkcoding.ui.ZoomScrollPane.ZoomScrollPaneStyle</node>
+    <node x="16194.693140141937" y="10007.0">com.nkcoding.spacegame.ExtAssetManager</node>
+    <node x="4040.8218934532497" y="12251.0">com.nkcoding.ui.ZoomScrollPane</node>
+    <node x="6241.4719262295075" y="3637.0">com.nkcoding.interpreter.GetListItemGet</node>
+    <node x="6470.564841920374" y="17568.0">com.nkcoding.spacegame.desktop.DesktopLauncher</node>
+    <node x="9366.578235753317" y="3648.0">com.nkcoding.interpreter.GetVariableItemGet</node>
+    <node x="10134.331627226184" y="1846.0">com.nkcoding.interpreter.ConcurrentStackItem</node>
+    <node x="17739.77681734458" y="18397.0">com.nkcoding.spacegame.simulation.Simulated</node>
+    <node x="1549.8327714958032" y="15435.0">com.nkcoding.spacegame.screens.LauncherScreen</node>
+    <node x="9638.578235753317" y="3636.0">com.nkcoding.interpreter.ExternalMethodStatement</node>
+    <node x="10728.837262472087" y="4734.0">com.nkcoding.interpreter.compiler.CompilerStack</node>
+    <node x="10710.987262472085" y="2194.0">com.nkcoding.interpreter.ScriptingEngine</node>
+    <node x="2848.1391237616917" y="8564.0">com.nkcoding.interpreter.compiler.Token</node>
+    <node x="13789.082029030824" y="8838.0">com.nkcoding.spacegame.simulation.spaceship.properties.VirtualProperty</node>
+    <node x="13483.082029030824" y="10051.0">com.nkcoding.util.TriFunction</node>
+    <node x="7253.965973848555" y="3625.0">com.nkcoding.interpreter.PredefinedMethodStatement</node>
+    <node x="15137.189045240271" y="11491.0">com.nkcoding.spacegame.simulation.spaceship.components</node>
+    <node x="759.9513906931315" y="13395.0">com.nkcoding.communication.SocketCommunication</node>
+    <node x="1535.215124436978" y="5772.0">com.nkcoding.ui.TextFieldBase.TextFieldFilter</node>
+    <node x="0.0" y="8902.0">com.nkcoding.ui.TextFieldBase.TextFieldFilter.DigitsOnlyFilter</node>
+    <node x="5793.4302734474" y="2974.0">com.nkcoding.interpreter.IntegerToFloatCast</node>
+    <node x="11787.216053455693" y="4810.0">com.nkcoding.interpreter.compiler.Program</node>
+    <node x="5291.9302734474" y="3513.0">com.nkcoding.interpreter.compiler.OperatorType</node>
+    <node x="1955.2834148653383" y="8792.0">com.nkcoding.ui.TextFieldBase.TextFieldClickListener</node>
+    <node x="5041.079166666666" y="3049.0">com.nkcoding.interpreter.compiler.ProgramTextWrapper.EndReachedException</node>
+    <node x="1591.5052285908278" y="11426.0">com.nkcoding.spacegame.SaveGameManager.SaveGame</node>
+    <node x="8527.782651177347" y="54.0">com.nkcoding.interpreter.ListObject</node>
+    <node x="4788.716104829135" y="2487.0">com.nkcoding.interpreter.compiler.ProgramPosition</node>
+    <node x="18936.110150677916" y="8881.0">com.nkcoding.spacegame.simulation.CannonBullet.CannonBulletCreateTransmission</node>
+    <node x="12308.216053455693" y="5675.0">com.nkcoding.spacegame.simulation.spaceship.ShipDef.ShipDesignerHelper</node>
+    <node x="17963.385334640807" y="9911.0">com.nkcoding.spacegame.simulation.CannonBullet</node>
+    <node x="1924.3250815320025" y="5772.0">com.nkcoding.ui.TextFieldBase.TextFieldListener</node>
+    <node x="6795.215973848555" y="3637.0">com.nkcoding.interpreter.DefineValueStatement</node>
+    <node x="1612.7552285908278" y="13591.0">com.nkcoding.spacegame.SaveGameManager</node>
+    <node x="2955.317728590827" y="10008.0">com.nkcoding.ui.MultiColorTextArea.MultiColorTextAreaStyle</node>
+    <node x="1942.4202714958028" y="6183.0">com.nkcoding.ui.TextFieldBase</node>
+    <node x="8206.192164324744" y="4788.0">com.nkcoding.interpreter.ForLoopStatement</node>
+    <node x="754.109393453251" y="8729.0">com.nkcoding.communication.Transmission</node>
+    <node x="7741.192164324745" y="4810.0">com.nkcoding.interpreter.WhileLoopStatement</node>
+    <node x="3723.4677285908274" y="11425.0">com.nkcoding.ui.ScriptColorParser</node>
+    <node x="18660.110150677916" y="19348.0">com.nkcoding.spacegame.simulation.SimulatedType</node>
+    <node x="8899.078235753317" y="4219.0">com.nkcoding.interpreter.ReturnValueStatement</node>
+    <node x="3509.3166684709095" y="10051.0">com.nkcoding.ui.ColorParser</node>
+    <node x="2710.6291666666657" y="13569.0">com.nkcoding.ui.CustomScrollPane</node>
+    <node x="2338.3250815320025" y="5772.0">com.nkcoding.ui.TextFieldBase.DefaultOnscreenKeyboard</node>
+    <node x="6511.398175253707" y="16431.0">com.nkcoding.spacegame.SpaceGame</node>
+    <node x="4554.379166666666" y="2995.0">com.nkcoding.interpreter.compiler.CompileException</node>
+    <node x="2177.3250815320025" y="5751.0">com.nkcoding.ui.TextFieldBase.KeyRepeatTask</node>
+    <node x="11659.587265824994" y="3015.0">com.nkcoding.interpreter.compiler.MethodType</node>
+    <node x="7020.343008320206" y="54.0">com.nkcoding.interpreter.Expression</node>
+    <node x="6418.398175253707" y="15270.0">com.nkcoding.spacegame.screens.ShipBuilderScreen</node>
+    <node x="2694.3177285908278" y="9910.0">com.nkcoding.interpreter.compiler.Lexer</node>
+    <node x="10388.331627226184" y="4197.0">com.nkcoding.interpreter.compiler.CompilerStack.CompilerStackItem</node>
+    <node x="4855.379166666666" y="3516.0">com.nkcoding.interpreter.compiler.ProgramTextWrapper</node>
+    <node x="10958.666008224918" y="1845.0">com.nkcoding.interpreter.ExternalMethodFuture</node>
+    <node x="347.54689525749563" y="10009.0">com.nkcoding.communication.transmissions.StringTransmission</node>
+    <node x="11621.190662929306" y="3625.0">com.nkcoding.interpreter.compiler.MethodDefinition</node>
+    <node x="7983.192164324745" y="4800.0">com.nkcoding.interpreter.StatementBlock</node>
+    <node x="14534.582029030824" y="9976.0">com.nkcoding.spacegame.simulation.spaceship.properties.IntProperty</node>
+    <node x="5286.138592896174" y="4778.0">com.nkcoding.interpreter.compiler.Operation</node>
+    <node x="2485.8250815320025" y="4842.0">com.nkcoding.ui.TextFieldBase.OnscreenKeyboard</node>
+    <node x="14377.082029030824" y="8838.0">com.nkcoding.spacegame.simulation.spaceship.properties.StringProperty</node>
+    <node x="7063.215973848555" y="3723.0">com.nkcoding.interpreter.operators</node>
+    <node x="6095.4302734474" y="2974.0">com.nkcoding.interpreter.CreateListExpression</node>
+    <node x="13508.082029030824" y="8827.0">com.nkcoding.spacegame.simulation.spaceship.properties.FloatProperty</node>
+    <node x="11216.412262472088" y="4713.0">com.nkcoding.interpreter.compiler.Methods</node>
+    <node x="8506.558235753317" y="4810.0">com.nkcoding.util.Tuple</node>
+    <node x="281.0" y="8838.0">com.nkcoding.communication.transmissions.PeerInfoTransmission.PeerInfo</node>
+    <node x="1015.1857841463825" y="11284.0">com.nkcoding.communication.SocketCommunication.Connection</node>
+    <node x="3174.4677285908274" y="11360.0">com.nkcoding.ui.CodeEditor.CodeEditorStyle</node>
+    <node x="9914.905270637037" y="2974.0">com.nkcoding.interpreter.RawValueExpression</node>
+    <node x="17322.282745637094" y="16922.0">com.nkcoding.spacegame.SpaceSimulation</node>
+    <node x="9112.578235753317" y="3658.0">com.nkcoding.interpreter.GetValueExpression</node>
+    <node x="11184.003932491662" y="0.0">com.nkcoding.interpreter.compiler.TypeNamePair</node>
+    <node x="8171.9927734473995" y="3037.0">com.nkcoding.interpreter.Statement</node>
+    <node x="3000.6291666666657" y="13406.0">com.nkcoding.ui.CodeEditor</node>
+    <node x="1209.5468952574956" y="10009.0">com.nkcoding.communication.transmissions.IntTransmission</node>
+    <node x="1404.5468952574956" y="9922.0">com.nkcoding.communication.Communication</node>
+    <node x="16307.343140141937" y="11413.0">com.nkcoding.ui.PropertyBox.PropertyBoxStyle</node>
+    <node x="6459.799799015401" y="11479.0">com.nkcoding.ui.Zoomable</node>
+    <node x="18865.336443713364" y="5631.0">com.nkcoding.spacegame.simulation.BodyState</node>
+    <node x="9867.9192874163" y="13296.0">com.nkcoding.ui.ShipDesigner</node>
+    <node x="8647.558235753317" y="4756.0">com.nkcoding.interpreter.MethodWrapperStatement</node>
+    <node x="15630.826473475268" y="8553.0">com.nkcoding.spacegame.simulation.Ship</node>
+    <node x="9772.578235753317" y="483.0">com.nkcoding.interpreter.compiler.DataType</node>
+    <node x="5468.9302734474" y="2974.0">com.nkcoding.interpreter.FloatToIntegerCast</node>
+    <node x="16371.414568713364" y="13395.0">com.nkcoding.ui.PropertyBox</node>
+    <node x="19239.13095992281" y="19659.0">com.nkcoding.spacegame.simulation.communication</node>
+    <node x="17918.443484011248" y="8902.0">com.nkcoding.spacegame.simulation.Damageable</node>
+    <node x="14675.082029030824" y="8837.0">com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.nkcoding.spacegame.simulation.SimulatedType" target="com.nkcoding.spacegame.SpaceSimulation">
+      <point x="-217.0" y="-80.5" />
+      <point x="18675.610150677916" y="19328.0" />
+      <point x="17462.175626868393" y="19328.0" />
+      <point x="17462.175626868393" y="18357.0" />
+      <point x="17427.282745637094" y="18357.0" />
+      <point x="-84.0" y="672.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.IfConditionStatement" target="com.nkcoding.interpreter.Stack">
+      <point x="-28.857142857143117" y="-69.5" />
+      <point x="6645.358830991412" y="3343.0" />
+      <point x="6745.376702018829" y="3343.0" />
+      <point x="6745.376702018829" y="2884.0" />
+      <point x="7934.962997658078" y="2884.0" />
+      <point x="-134.28571428571422" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SaveGameManager" target="com.nkcoding.spacegame.SaveGameManager.SaveGame">
+      <point x="-63.75" y="-69.5" />
+      <point x="1634.0052285908278" y="12231.0" />
+      <point x="1642.5052285908278" y="12231.0" />
+      <point x="-34.0" y="79.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.CreateListExpression" target="com.nkcoding.interpreter.StackItem">
+      <point x="80.85000000000036" y="-89.5" />
+      <point x="6291.780273447401" y="2834.0" />
+      <point x="6308.855273447401" y="2834.0" />
+      <point x="6308.855273447401" y="1805.0" />
+      <point x="7572.757640515221" y="1805.0" />
+      <point x="-60.375" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.NotifyProperty" target="com.nkcoding.interpreter.ScriptingEngine">
+      <point x="-208.875" y="-111.5" />
+      <point x="12833.994064799535" y="8532.0" />
+      <point x="12742.869064799535" y="8532.0" />
+      <point x="12742.869064799535" y="4653.0" />
+      <point x="14014.466053455693" y="4653.0" />
+      <point x="14014.466053455693" y="2401.0" />
+      <point x="11023.387262472086" y="2401.0" />
+      <point x="28.399999999999636" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.GameScreen" target="com.nkcoding.spacegame.SpaceGame">
+      <point x="-65.19999999999982" y="167.5" />
+      <point x="17259.55311038003" y="12201.0" />
+      <point x="17048.836443713364" y="12201.0" />
+      <point x="17048.836443713364" y="16401.0" />
+      <point x="6709.398175253707" y="16401.0" />
+      <point x="88.0" y="-145.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.ui.CodeEditor.CodeEditorStyle">
+      <point x="-133.21875" y="-530.5" />
+      <point x="6488.179425253707" y="15180.0" />
+      <point x="3237.1291666666657" y="15180.0" />
+      <point x="3237.1291666666657" y="12201.0" />
+      <point x="3544.7677285908267" y="12201.0" />
+      <point x="105.79999999999927" y="145.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Methods" target="com.nkcoding.interpreter.compiler.MethodDefinition">
+      <point x="72.5625" y="-155.5" />
+      <point x="11482.474762472088" y="4673.0" />
+      <point x="11591.718512472087" y="4673.0" />
+      <point x="11591.718512472087" y="4092.0" />
+      <point x="11742.990662929307" y="4092.0" />
+      <point x="-81.19999999999982" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Explosion" target="com.nkcoding.spacegame.simulation.Damageable">
+      <point x="-112.25" y="-210.5" />
+      <point x="18505.635334640807" y="9385.0" />
+      <point x="18095.110150677916" y="9385.0" />
+      <point x="70.66666666666606" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.interpreter.MethodStatement">
+      <point x="-19.03125" y="-530.5" />
+      <point x="6602.366925253707" y="15090.0" />
+      <point x="6401.600408138055" y="15090.0" />
+      <point x="6401.600408138055" y="5534.0" />
+      <point x="8485.058235753317" y="5534.0" />
+      <point x="8485.058235753317" y="4663.0" />
+      <point x="10869.649762472087" y="4663.0" />
+      <point x="-85.9375" y="79.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.SimulatedType" target="com.nkcoding.spacegame.simulation.Simulated">
+      <point x="-124.0" y="-80.5" />
+      <point x="18768.610150677916" y="19298.0" />
+      <point x="17950.27681734458" y="19298.0" />
+      <point x="0.0" y="430.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty" target="com.nkcoding.interpreter.ScriptingEngine">
+      <point x="69.625" y="-166.5" />
+      <point x="14178.207029030824" y="6123.0" />
+      <point x="14096.601703688424" y="6123.0" />
+      <point x="14096.601703688424" y="4683.0" />
+      <point x="14669.277586906937" y="4683.0" />
+      <point x="14669.277586906937" y="2391.0" />
+      <point x="11080.187262472085" y="2391.0" />
+      <point x="85.19999999999982" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetListItemGet" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="17.75" y="-100.5" />
+      <point x="6401.2219262295075" y="3493.0" />
+      <point x="6403.721940114067" y="3493.0" />
+      <point x="6403.721940114067" y="1310.0" />
+      <point x="9811.717770637038" y="1310.0" />
+      <point x="-113.86046511627865" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.LauncherScreen" target="com.nkcoding.communication.SocketCommunication">
+      <point x="-85.875" y="-365.5" />
+      <point x="1578.4577714958032" y="15240.0" />
+      <point x="952.4513906931315" y="15240.0" />
+      <point x="0.0" y="265.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Program" target="com.nkcoding.interpreter.MethodStatement">
+      <point x="-183.375" y="-58.5" />
+      <point x="11848.341053455693" y="4523.0" />
+      <point x="10979.024762472087" y="4523.0" />
+      <point x="23.4375" y="79.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.operators" target="com.nkcoding.interpreter.GetStackItem">
+      <point x="34.222222222222626" y="-14.5" />
+      <point x="7174.438196070778" y="3273.0" />
+      <point x="7137.3052734474" y="3273.0" />
+      <point x="0.0" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.Communication" target="com.nkcoding.communication.Transmission">
+      <point x="0.0" y="-155.5" />
+      <point x="1526.5468952574956" y="9645.0" />
+      <point x="979.609393453251" y="9645.0" />
+      <point x="102.5" y="199.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper" target="com.nkcoding.interpreter.FloatToIntegerCast">
+      <point x="-63.19999999999982" y="-135.5" />
+      <point x="5713.938592896174" y="4072.0" />
+      <point x="5662.4302734474" y="4072.0" />
+      <point x="64.5" y="89.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.FloatProperty" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty">
+      <point x="65.25" y="-101.5" />
+      <point x="13703.832029030824" y="8512.0" />
+      <point x="13986.738279030824" y="8512.0" />
+      <point x="-121.84375" y="166.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.WhileLoopStatement" target="com.nkcoding.interpreter.ReturnException">
+      <point x="-31.71428571428578" y="-58.5" />
+      <point x="7820.47787861046" y="4613.0" />
+      <point x="7735.132640515221" y="4613.0" />
+      <point x="7735.132640515221" y="2084.0" />
+      <point x="8805.328235753317" y="2084.0" />
+      <point x="-62.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Simulated" target="com.nkcoding.spacegame.simulation.BodyState">
+      <point x="195.46428571428623" y="-430.5" />
+      <point x="18145.74110305887" y="18377.0" />
+      <point x="18863.885334640807" y="18377.0" />
+      <point x="18863.885334640807" y="9655.0" />
+      <point x="18925.610150677916" y="9655.0" />
+      <point x="18925.610150677916" y="6163.0" />
+      <point x="18991.336443713364" y="6163.0" />
+      <point x="-14.0" y="167.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship" target="com.nkcoding.spacegame.simulation.SimulatedType">
+      <point x="138.10526315789502" y="375.5" />
+      <point x="15932.931736633163" y="9365.0" />
+      <point x="18987.169777046696" y="9365.0" />
+      <point x="18987.169777046696" y="19318.0" />
+      <point x="19016.610150677916" y="19318.0" />
+      <point x="124.0" y="-80.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea.ColorRegion" target="com.nkcoding.ui.MultiColorTextArea">
+      <point x="20.5" y="102.5" />
+      <point x="2459.116748198672" y="10720.0" />
+      <point x="2505.445343137253" y="10720.0" />
+      <point x="-43.05882352941262" y="-595.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.CreateListExpression" target="com.nkcoding.interpreter.Stack">
+      <point x="103.94999999999982" y="-89.5" />
+      <point x="6314.8802734474" y="2864.0" />
+      <point x="7890.201092896174" y="2864.0" />
+      <point x="-179.04761904761926" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ForLoopStatement" target="com.nkcoding.interpreter.Expression">
+      <point x="69.375" y="-80.5" />
+      <point x="8386.567164324744" y="4623.0" />
+      <point x="8428.370735753317" y="4623.0" />
+      <point x="8428.370735753317" y="4022.0" />
+      <point x="8578.358844875971" y="4022.0" />
+      <point x="8578.358844875971" y="3493.0" />
+      <point x="8643.628844875971" y="3493.0" />
+      <point x="8643.628844875971" y="333.0" />
+      <point x="7128.509674986872" y="333.0" />
+      <point x="36.666666666666515" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.GetListItemGet">
+      <point x="-137.45901639344265" y="-233.5" />
+      <point x="10063.286066477895" y="5324.0" />
+      <point x="6383.4719262295075" y="5324.0" />
+      <point x="0.0" y="100.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.DataType" target="com.nkcoding.interpreter.ListObject">
+      <point x="-68.0" y="-353.5" />
+      <point x="9857.578235753317" y="243.0" />
+      <point x="8643.615984510681" y="243.0" />
+      <point x="46.333333333333485" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ScriptingEngine" target="com.nkcoding.interpreter.ReturnException">
+      <point x="-236.66666666666697" y="-68.5" />
+      <point x="10758.320595805419" y="2084.0" />
+      <point x="8929.328235753317" y="2084.0" />
+      <point x="62.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.spacegame.SaveGameManager">
+      <point x="-196.65625" y="-530.5" />
+      <point x="6424.741925253707" y="15230.0" />
+      <point x="1740.2552285908278" y="15230.0" />
+      <point x="42.5" y="69.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ScriptingEngine" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="142.0" y="-68.5" />
+      <point x="11136.987262472085" y="2164.0" />
+      <point x="11233.392198701109" y="2164.0" />
+      <point x="11233.392198701109" y="1440.0" />
+      <point x="10025.206142730061" y="1440.0" />
+      <point x="99.62790697674427" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ExternalMethodStatement" target="com.nkcoding.interpreter.Expression">
+      <point x="0.0" y="-101.5" />
+      <point x="9762.078235753317" y="273.0" />
+      <point x="7150.509674986872" y="273.0" />
+      <point x="58.666666666666515" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.ShipDesigner" target="com.nkcoding.spacegame.simulation.spaceship.ShipDef">
+      <point x="-136.8888888888887" y="-364.5" />
+      <point x="10039.030398527411" y="12211.0" />
+      <point x="8044.76555841128" y="12211.0" />
+      <point x="8044.76555841128" y="8522.0" />
+      <point x="12388.66350924398" y="8522.0" />
+      <point x="-63.066666666666606" y="232.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="36.16666666666606" y="-244.5" />
+      <point x="15482.915362364156" y="5504.0" />
+      <point x="15463.24869569749" y="5504.0" />
+      <point x="15463.24869569749" y="1390.0" />
+      <point x="10060.787538078897" y="1390.0" />
+      <point x="135.20930232558112" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.FloatToIntegerCast" target="com.nkcoding.interpreter.Expression">
+      <point x="0.0" y="-89.5" />
+      <point x="5597.9302734474" y="2954.0" />
+      <point x="5618.230273447401" y="2954.0" />
+      <point x="5618.230273447401" y="263.0" />
+      <point x="7036.843008320206" y="263.0" />
+      <point x="-55.0" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Explosion.ExplosionCreateTransmission" target="com.nkcoding.spacegame.simulation.BodyState">
+      <point x="0.0" y="-80.5" />
+      <point x="19524.110150677916" y="6153.0" />
+      <point x="19047.336443713364" y="6153.0" />
+      <point x="42.0" y="167.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipModel" target="com.nkcoding.interpreter.MethodStatement">
+      <point x="-101.75" y="-342.5" />
+      <point x="12804.904942344583" y="9535.0" />
+      <point x="12731.869064799535" y="9535.0" />
+      <point x="12731.869064799535" y="4483.0" />
+      <point x="11025.899762472087" y="4483.0" />
+      <point x="70.3125" y="79.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceSimulation" target="com.nkcoding.spacegame.Asset">
+      <point x="23.625" y="-672.5" />
+      <point x="17534.907745637094" y="16802.0" />
+      <point x="17596.943484011248" y="16802.0" />
+      <point x="17596.943484011248" y="9445.0" />
+      <point x="15563.951473475268" y="9445.0" />
+      <point x="28.125" y="376.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceSimulation" target="com.nkcoding.interpreter.ExternalMethodFuture">
+      <point x="102.375" y="-672.5" />
+      <point x="17613.657745637094" y="16852.0" />
+      <point x="17662.943484011248" y="16852.0" />
+      <point x="17662.943484011248" y="2004.0" />
+      <point x="11136.023151082061" y="2004.0" />
+      <point x="81.85714285714312" y="69.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty">
+      <point x="-17.888888888888687" y="-14.5" />
+      <point x="15199.800156351383" y="10620.0" />
+      <point x="14068.582029030824" y="10620.0" />
+      <point x="14068.582029030824" y="8532.0" />
+      <point x="14091.175779030824" y="8532.0" />
+      <point x="-17.40625" y="166.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ScriptingEngine" target="com.nkcoding.interpreter.MethodStatement">
+      <point x="-28.399999999999636" y="68.5" />
+      <point x="10966.587262472087" y="4042.0" />
+      <point x="10991.301548186373" y="4042.0" />
+      <point x="35.714285714285325" y="-79.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.ui.ShipDesigner">
+      <point x="57.09375" y="-530.5" />
+      <point x="6678.491925253707" y="15140.0" />
+      <point x="10381.252620749634" y="15140.0" />
+      <point x="205.33333333333394" y="364.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ExternalMethodFuture" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="-47.75" y="-69.5" />
+      <point x="11006.416008224918" y="1825.0" />
+      <point x="11090.916008224918" y="1825.0" />
+      <point x="11090.916008224918" y="1460.0" />
+      <point x="10010.973584590525" y="1460.0" />
+      <point x="85.39534883720899" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Explosion" target="com.nkcoding.spacegame.SpaceSimulation">
+      <point x="-84.1875" y="210.5" />
+      <point x="18533.697834640807" y="10890.0" />
+      <point x="17829.898943713364" y="10890.0" />
+      <point x="17829.898943713364" y="16902.0" />
+      <point x="17692.407745637094" y="16902.0" />
+      <point x="181.125" y="-672.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ReturnValueStatement" target="com.nkcoding.interpreter.operators">
+      <point x="-111.33333333333303" y="-68.5" />
+      <point x="8954.744902419983" y="4002.0" />
+      <point x="7206.215973848555" y="4002.0" />
+      <point x="66.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication.Connection" target="com.nkcoding.communication.Communication">
+      <point x="112.88888888888891" y="-221.5" />
+      <point x="1255.0746730352712" y="10770.0" />
+      <point x="1450.2968952574956" y="10770.0" />
+      <point x="-76.25" y="155.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.operators" target="com.nkcoding.interpreter.Stack">
+      <point x="51.33333333333303" y="-14.5" />
+      <point x="7191.549307181887" y="3343.0" />
+      <point x="7445.465973848555" y="3343.0" />
+      <point x="7445.465973848555" y="2914.0" />
+      <point x="8002.105854800935" y="2914.0" />
+      <point x="-67.14285714285734" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper" target="com.nkcoding.interpreter.compiler.MethodDefinition">
+      <point x="221.19999999999982" y="-135.5" />
+      <point x="5998.338592896173" y="4052.0" />
+      <point x="11634.72399626264" y="4052.0" />
+      <point x="-189.46666666666624" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.ui.PropertyBox">
+      <point x="158.59375" y="-530.5" />
+      <point x="6779.991925253707" y="15220.0" />
+      <point x="16811.664568713364" y="15220.0" />
+      <point x="146.75" y="265.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.LauncherScreen" target="com.nkcoding.spacegame.ExtAssetManager">
+      <point x="85.875" y="-365.5" />
+      <point x="1750.2077714958032" y="15250.0" />
+      <point x="1835.1927285908278" y="15250.0" />
+      <point x="1835.1927285908278" y="12231.0" />
+      <point x="3903.9677285908274" y="12231.0" />
+      <point x="3903.9677285908274" y="10800.0" />
+      <point x="16206.043140141937" y="10800.0" />
+      <point x="-102.14999999999964" y="70.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="63.19999999999982" y="-135.5" />
+      <point x="5840.338592896173" y="4002.0" />
+      <point x="6084.9302734474" y="4002.0" />
+      <point x="6084.9302734474" y="1280.0" />
+      <point x="9790.368933427735" y="1280.0" />
+      <point x="-135.20930232558112" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.Stack" target="com.nkcoding.interpreter.StackItem">
+      <point x="-83.92857142857156" y="-156.5" />
+      <point x="7985.320140515221" y="2361.0" />
+      <point x="7676.6177734473995" y="2361.0" />
+      <point x="7676.6177734473995" y="1825.0" />
+      <point x="7653.257640515221" y="1825.0" />
+      <point x="20.125" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication" target="com.nkcoding.communication.transmissions.IntTransmission">
+      <point x="128.33333333333394" y="-265.5" />
+      <point x="1080.7847240264655" y="12201.0" />
+      <point x="1335.8946793172472" y="12201.0" />
+      <point x="1335.8946793172472" y="10750.0" />
+      <point x="1355.3802285908296" y="10750.0" />
+      <point x="58.33333333333394" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.GameScreen" target="com.nkcoding.spacegame.SpaceSimulation">
+      <point x="65.19999999999982" y="167.5" />
+      <point x="17389.95311038003" y="12221.0" />
+      <point x="17319.25311038003" y="12221.0" />
+      <point x="17319.25311038003" y="16852.0" />
+      <point x="17408.907745637094" y="16852.0" />
+      <point x="-102.375" y="-672.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.ProgramTextWrapper.EndReachedException">
+      <point x="-253.77049180327867" y="-233.5" />
+      <point x="9946.974591068058" y="5434.0" />
+      <point x="5182.32207672609" y="5434.0" />
+      <point x="5182.32207672609" y="3493.0" />
+      <point x="5169.879166666666" y="3493.0" />
+      <point x="36.79999999999927" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.ScriptColorParser" target="com.nkcoding.ui.ColorParser">
+      <point x="-42.5" y="-80.5" />
+      <point x="3765.9677285908274" y="10780.0" />
+      <point x="3660.51666847091" y="10780.0" />
+      <point x="67.20000000000073" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.MethodWrapperStatement" target="com.nkcoding.interpreter.Stack">
+      <point x="-45.81818181818198" y="-112.5" />
+      <point x="8727.740053935135" y="4623.0" />
+      <point x="8707.828235753317" y="4623.0" />
+      <point x="8707.828235753317" y="3423.0" />
+      <point x="8632.628844875971" y="3423.0" />
+      <point x="8632.628844875971" y="2934.0" />
+      <point x="8158.772521467603" y="2934.0" />
+      <point x="89.52380952380963" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceGame" target="com.nkcoding.spacegame.ExtAssetManager">
+      <point x="58.66666666666697" y="-145.5" />
+      <point x="6680.064841920374" y="16381.0" />
+      <point x="17026.836443713364" y="16381.0" />
+      <point x="17026.836443713364" y="12181.0" />
+      <point x="17106.72792641714" y="12181.0" />
+      <point x="17106.72792641714" y="10500.0" />
+      <point x="16364.943140141937" y="10500.0" />
+      <point x="56.75" y="70.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.ProgramPosition">
+      <point x="-317.21311475409857" y="-233.5" />
+      <point x="9883.531968117239" y="5494.0" />
+      <point x="4543.879166666666" y="5494.0" />
+      <point x="4543.879166666666" y="2924.0" />
+      <point x="4818.716104829135" y="2924.0" />
+      <point x="-60.0" y="90.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetValueExpression" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="93.60000000000036" y="-79.5" />
+      <point x="9323.178235753316" y="3493.0" />
+      <point x="9361.039955987082" y="3493.0" />
+      <point x="9361.039955987082" y="1470.0" />
+      <point x="9925.578235753317" y="1470.0" />
+      <point x="0.0" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.MethodDefinition" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="-169.16666666666697" y="-112.5" />
+      <point x="11655.02399626264" y="3473.0" />
+      <point x="11616.087265824994" y="3473.0" />
+      <point x="11616.087265824994" y="1420.0" />
+      <point x="10039.438700869596" y="1420.0" />
+      <point x="113.86046511627865" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetValueExpression" target="com.nkcoding.interpreter.GetStackItem">
+      <point x="-46.80000000000018" y="-79.5" />
+      <point x="9182.778235753316" y="3253.0" />
+      <point x="7196.733844875972" y="3253.0" />
+      <point x="59.42857142857156" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.DefineValueStatement">
+      <point x="-105.73770491803225" y="-233.5" />
+      <point x="10095.007377953305" y="5294.0" />
+      <point x="6919.7315029555975" y="5294.0" />
+      <point x="6919.7315029555975" y="4012.0" />
+      <point x="6852.215973848555" y="4012.0" />
+      <point x="-57.0" y="100.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ReturnValueStatement" target="com.nkcoding.interpreter.Expression">
+      <point x="37.11111111111131" y="-68.5" />
+      <point x="9103.189346864427" y="4032.0" />
+      <point x="9077.078235753317" y="4032.0" />
+      <point x="9077.078235753317" y="313.0" />
+      <point x="7135.843008320206" y="313.0" />
+      <point x="44.0" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.ProgramTextWrapper" target="com.nkcoding.interpreter.compiler.ProgramTextWrapper.EndReachedException">
+      <point x="86.85714285714312" y="-221.5" />
+      <point x="5094.236309523809" y="3493.0" />
+      <point x="5096.279166666667" y="3493.0" />
+      <point x="-36.79999999999927" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.PropertyBox" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData">
+      <point x="0.0" y="-265.5" />
+      <point x="16664.914568713364" y="12211.0" />
+      <point x="16843.798370637094" y="12211.0" />
+      <point x="16843.798370637094" y="6113.0" />
+      <point x="15543.193140141935" y="6113.0" />
+      <point x="96.44444444444525" y="244.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship" target="com.nkcoding.spacegame.simulation.spaceship.components">
+      <point x="17.26315789473665" y="375.5" />
+      <point x="15812.089631370005" y="9715.0" />
+      <point x="15869.67560028932" y="9715.0" />
+      <point x="15869.67560028932" y="10750.0" />
+      <point x="15264.200156351382" y="10750.0" />
+      <point x="46.51111111111095" y="-14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea.MultiColorTextAreaStyle" target="com.nkcoding.ui.MultiColorTextArea">
+      <point x="-101.0" y="69.5" />
+      <point x="3106.817728590827" y="10750.0" />
+      <point x="2677.6806372549017" y="10750.0" />
+      <point x="129.17647058823604" y="-595.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Lexer" target="com.nkcoding.interpreter.compiler.CompilerHelper">
+      <point x="-20.0" y="-167.5" />
+      <point x="2794.3177285908278" y="9585.0" />
+      <point x="2774.5677285908278" y="9585.0" />
+      <point x="2774.5677285908278" y="5514.0" />
+      <point x="4493.466104829135" y="5514.0" />
+      <point x="4493.466104829135" y="4623.0" />
+      <point x="5587.538592896173" y="4623.0" />
+      <point x="-189.60000000000036" y="135.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.ForLoopStatement">
+      <point x="0.0" y="-233.5" />
+      <point x="10200.745082871337" y="5194.0" />
+      <point x="8372.692164324744" y="5194.0" />
+      <point x="55.5" y="80.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.MethodWrapperStatement" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="45.81818181818198" y="-112.5" />
+      <point x="8819.376417571499" y="4623.0" />
+      <point x="8850.828235753317" y="4623.0" />
+      <point x="8850.828235753317" y="3483.0" />
+      <point x="8955.328235753317" y="3483.0" />
+      <point x="8955.328235753317" y="1440.0" />
+      <point x="9904.229398544014" y="1440.0" />
+      <point x="-21.348837209302474" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData">
+      <point x="17.888888888888687" y="-14.5" />
+      <point x="15235.57793412916" y="10670.0" />
+      <point x="15446.74869569749" y="10670.0" />
+      <point x="0.0" y="244.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.ShipDef" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData">
+      <point x="215.0" y="-232.5" />
+      <point x="12666.730175910647" y="6143.0" />
+      <point x="15302.082029030824" y="6143.0" />
+      <point x="-144.66666666666606" y="244.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.PredefinedMethodStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="112.71428571428578" y="-112.5" />
+      <point x="7498.180259562841" y="3433.0" />
+      <point x="8204.752773447399" y="3433.0" />
+      <point x="-30.23999999999978" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.CodeEditor" target="com.nkcoding.ui.MultiColorTextArea">
+      <point x="-14.125" y="-254.5" />
+      <point x="3099.5041666666657" y="12191.0" />
+      <point x="2548.5041666666657" y="12191.0" />
+      <point x="0.0" y="595.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.MethodType">
+      <point x="169.18032786885215" y="-233.5" />
+      <point x="10369.92541074019" y="5384.0" />
+      <point x="10664.831627226184" y="5384.0" />
+      <point x="10664.831627226184" y="3483.0" />
+      <point x="11669.587265824994" y="3483.0" />
+      <point x="-50.0" y="48.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.IntegerToFloatCast" target="com.nkcoding.interpreter.Expression">
+      <point x="-54.0" y="-89.5" />
+      <point x="5874.4302734474" y="2824.0" />
+      <point x="5938.9302734474" y="2824.0" />
+      <point x="5938.9302734474" y="293.0" />
+      <point x="7047.843008320206" y="293.0" />
+      <point x="-44.0" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.SpaceSimulation">
+      <point x="71.55555555555475" y="14.5" />
+      <point x="15289.244600795826" y="12131.0" />
+      <point x="17074.25311038003" y="12131.0" />
+      <point x="17074.25311038003" y="16882.0" />
+      <point x="17361.657745637094" y="16882.0" />
+      <point x="-149.625" y="-672.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.NotifyProperty" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty">
+      <point x="208.875" y="-111.5" />
+      <point x="13251.744064799535" y="8482.0" />
+      <point x="13882.300779030824" y="8482.0" />
+      <point x="-226.28125" y="166.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.CannonBullet" target="com.nkcoding.spacegame.simulation.communication">
+      <point x="179.375" y="166.5" />
+      <point x="18347.760334640807" y="10820.0" />
+      <point x="19565.22792641714" y="10820.0" />
+      <point x="19565.22792641714" y="19529.0" />
+      <point x="19321.916674208525" y="19529.0" />
+      <point x="-8.714285714286234" y="-14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.CreateListExpression" target="com.nkcoding.interpreter.ListObject">
+      <point x="-11.550000000000182" y="-89.5" />
+      <point x="6199.3802734474" y="2794.0" />
+      <point x="6229.6302734474" y="2794.0" />
+      <point x="6229.6302734474" y="1240.0" />
+      <point x="6303.355273447401" y="1240.0" />
+      <point x="6303.355273447401" y="443.0" />
+      <point x="8550.949317844013" y="443.0" />
+      <point x="-46.333333333333485" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.StatementBlock" target="com.nkcoding.interpreter.Statement">
+      <point x="76.125" y="-68.5" />
+      <point x="8160.817164324745" y="4633.0" />
+      <point x="8203.712164324745" y="4633.0" />
+      <point x="8203.712164324745" y="3483.0" />
+      <point x="8229.9527734474" y="3483.0" />
+      <point x="-5.039999999999964" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.StatementBlock">
+      <point x="-21.147540983606632" y="-233.5" />
+      <point x="10179.597541887731" y="5214.0" />
+      <point x="8084.692164324745" y="5214.0" />
+      <point x="0.0" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Explosion" target="com.nkcoding.spacegame.simulation.Simulated">
+      <point x="28.0625" y="210.5" />
+      <point x="18645.947834640807" y="10890.0" />
+      <point x="18623.385334640807" y="10890.0" />
+      <point x="18623.385334640807" y="18357.0" />
+      <point x="18085.59824591601" y="18357.0" />
+      <point x="135.32142857142935" y="-430.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.OperatorType">
+      <point x="-211.4754098360654" y="-233.5" />
+      <point x="9989.269673035273" y="5394.0" />
+      <point x="5275.638592896174" y="5394.0" />
+      <point x="5275.638592896174" y="4132.0" />
+      <point x="5308.6802734474" y="4132.0" />
+      <point x="-50.25" y="224.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.NormalMethodDefinition" target="com.nkcoding.interpreter.compiler.MethodType">
+      <point x="68.66666666666788" y="-47.5" />
+      <point x="17103.581235380032" y="4693.0" />
+      <point x="17074.7479020467" y="4693.0" />
+      <point x="17074.7479020467" y="3403.0" />
+      <point x="11769.587265824994" y="3403.0" />
+      <point x="50.0" y="48.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipModel" target="com.nkcoding.spacegame.simulation.spaceship.properties.VirtualProperty">
+      <point x="27.75" y="-342.5" />
+      <point x="12934.404942344583" y="9555.0" />
+      <point x="13822.707029030824" y="9555.0" />
+      <point x="-100.875" y="90.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipModel" target="com.nkcoding.spacegame.simulation.spaceship.properties.FloatProperty">
+      <point x="9.25" y="-342.5" />
+      <point x="12915.904942344583" y="9545.0" />
+      <point x="13586.382029030823" y="9545.0" />
+      <point x="-52.20000000000073" y="101.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.StackItem" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="30.1875" y="-112.5" />
+      <point x="7663.320140515221" y="1400.0" />
+      <point x="9875.764282264943" y="1400.0" />
+      <point x="-49.813953488372135" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SaveGameManager.SaveGame" target="com.nkcoding.spacegame.SaveGameManager">
+      <point x="68.0" y="79.5" />
+      <point x="1744.5052285908278" y="12231.0" />
+      <point x="1761.5052285908278" y="12231.0" />
+      <point x="63.75" y="-69.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.TextFieldFilter" target="com.nkcoding.ui.TextFieldBase">
+      <point x="108.75" y="26.5" />
+      <point x="1774.465124436978" y="6123.0" />
+      <point x="2049.0673303193325" y="6123.0" />
+      <point x="-152.35294117647027" y="-1079.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication.Connection" target="com.nkcoding.communication.transmissions.PeerInfoTransmission">
+      <point x="-84.66666666666674" y="-221.5" />
+      <point x="1057.5191174797164" y="10730.0" />
+      <point x="760.7968952574956" y="10730.0" />
+      <point x="60.75" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.RawValueExpression">
+      <point x="148.0327868852455" y="-233.5" />
+      <point x="10348.777869756583" y="5054.0" />
+      <point x="10029.405270637037" y="5054.0" />
+      <point x="0.0" y="89.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase" target="com.nkcoding.ui.TextFieldBase.TextFieldListener">
+      <point x="-121.88235294117658" y="-1079.5" />
+      <point x="2079.5379185546262" y="6113.0" />
+      <point x="1994.2250815320022" y="6113.0" />
+      <point x="-46.600000000000364" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.transmissions.PeerInfoTransmission" target="com.nkcoding.communication.transmissions.PeerInfoTransmission.PeerInfo">
+      <point x="-48.59999999999991" y="-68.5" />
+      <point x="651.4468952574953" y="9615.0" />
+      <point x="411.5" y="9615.0" />
+      <point x="43.5" y="90.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.DefineValueStatement" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="19.0" y="-100.5" />
+      <point x="6928.215973848555" y="3293.0" />
+      <point x="6883.8052734474" y="3293.0" />
+      <point x="6883.8052734474" y="1330.0" />
+      <point x="9825.950328776573" y="1330.0" />
+      <point x="-99.62790697674427" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea.TextAreaListener" target="com.nkcoding.ui.TextFieldBase">
+      <point x="79.66666666666606" y="-70.5" />
+      <point x="2295.7834148653383" y="8462.0" />
+      <point x="2298.545271495803" y="8462.0" />
+      <point x="97.125" y="1079.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.simulation.spaceship.components">
+      <point x="-35.77777777777783" y="14.5" />
+      <point x="15181.911267462494" y="11560.0" />
+      <point x="15097.189045240271" y="11560.0" />
+      <point x="15097.189045240271" y="11495.833333333334" />
+      <point x="-80.5" y="-9.66666666666606" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.StringProperty" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty">
+      <point x="66.5" y="-90.5" />
+      <point x="14576.582029030824" y="8512.0" />
+      <point x="14230.425779030824" y="8512.0" />
+      <point x="121.84375" y="166.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.communication" target="com.nkcoding.communication.Transmission">
+      <point x="-87.14285714285688" y="-14.5" />
+      <point x="19243.488102779957" y="19639.0" />
+      <point x="154.93138566645212" y="19639.0" />
+      <point x="154.93138566645212" y="10740.0" />
+      <point x="225.35344287654334" y="10740.0" />
+      <point x="225.35344287654334" y="9635.0" />
+      <point x="760.9427267865849" y="9635.0" />
+      <point x="-116.16666666666606" y="199.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceGame" target="com.nkcoding.spacegame.screens.LauncherScreen">
+      <point x="-58.66666666666697" y="-145.5" />
+      <point x="6562.7315085870405" y="16381.0" />
+      <point x="1587.9994381624692" y="16381.0" />
+      <point x="-76.33333333333326" y="365.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.ShipDef" target="com.nkcoding.spacegame.simulation.Ship">
+      <point x="157.66666666666697" y="232.5" />
+      <point x="12609.396842577313" y="8422.0" />
+      <point x="15712.826473475268" y="8422.0" />
+      <point x="-82.0" y="-375.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceSimulation" target="com.nkcoding.spacegame.simulation.SynchronizationPriority">
+      <point x="118.125" y="-672.5" />
+      <point x="17629.407745637094" y="16862.0" />
+      <point x="17772.14459308381" y="16862.0" />
+      <point x="17772.14459308381" y="10830.0" />
+      <point x="17753.318484011248" y="10830.0" />
+      <point x="-26.625" y="48.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ScriptingEngine" target="com.nkcoding.interpreter.ExternalMethodFuture">
+      <point x="47.33333333333303" y="-68.5" />
+      <point x="11042.320595805419" y="2174.0" />
+      <point x="11081.451722510632" y="2174.0" />
+      <point x="27.285714285714675" y="69.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.Expression" target="com.nkcoding.interpreter.Stack">
+      <point x="25.666666666666515" y="47.5" />
+      <point x="7117.509674986872" y="363.0" />
+      <point x="7542.132640515221" y="363.0" />
+      <point x="7542.132640515221" y="2401.0" />
+      <point x="7851.0344262295075" y="2401.0" />
+      <point x="-218.21428571428532" y="-156.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication" target="com.nkcoding.communication.SocketCommunication.Connection">
+      <point x="51.33333333333337" y="-265.5" />
+      <point x="1003.7847240264655" y="12161.0" />
+      <point x="1142.1857841463825" y="12161.0" />
+      <point x="0.0" y="221.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetVariableItemGet" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="50.19999999999982" y="-89.5" />
+      <point x="9542.278235753316" y="3493.0" />
+      <point x="9560.131816452198" y="3493.0" />
+      <point x="9560.131816452198" y="1480.0" />
+      <point x="9932.694514823084" y="1480.0" />
+      <point x="7.116279069767188" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.MethodDefinition" target="com.nkcoding.interpreter.compiler.MethodType">
+      <point x="101.5" y="-112.5" />
+      <point x="11925.690662929306" y="3433.0" />
+      <point x="11709.587265824994" y="3433.0" />
+      <point x="-10.0" y="48.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.StackItem" target="com.nkcoding.interpreter.Expression">
+      <point x="-70.4375" y="-112.5" />
+      <point x="7562.695140515221" y="1210.0" />
+      <point x="7709.012651177347" y="1210.0" />
+      <point x="7709.012651177347" y="353.0" />
+      <point x="7121.176341653539" y="353.0" />
+      <point x="29.333333333333485" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.BooleanProperty" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty">
+      <point x="69.5" y="-101.5" />
+      <point x="14287.582029030824" y="8532.0" />
+      <point x="14160.800779030824" y="8532.0" />
+      <point x="52.21875" y="166.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.IntegerToFloatCast" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="54.0" y="-89.5" />
+      <point x="5982.4302734474" y="2834.0" />
+      <point x="5999.690230542427" y="2834.0" />
+      <point x="5999.690230542427" y="1270.0" />
+      <point x="9783.252654357966" y="1270.0" />
+      <point x="-142.32558139534922" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Explosion.ExplosionCreateTransmission" target="com.nkcoding.spacegame.simulation.Explosion">
+      <point x="-35.33333333333394" y="80.5" />
+      <point x="19488.77681734458" y="9715.0" />
+      <point x="18804.96866797414" y="9715.0" />
+      <point x="187.08333333333394" y="-210.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.LauncherScreen" target="com.nkcoding.communication.Communication">
+      <point x="-28.625" y="-365.5" />
+      <point x="1635.7077714958032" y="15230.0" />
+      <point x="1532.0468952574956" y="15230.0" />
+      <point x="1532.0468952574956" y="10780.0" />
+      <point x="1541.7968952574956" y="10780.0" />
+      <point x="15.25" y="155.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ForLoopStatement" target="com.nkcoding.interpreter.ReturnException">
+      <point x="97.125" y="-80.5" />
+      <point x="8414.317164324744" y="4633.0" />
+      <point x="8439.370735753317" y="4633.0" />
+      <point x="8439.370735753317" y="4032.0" />
+      <point x="8674.828235753317" y="4032.0" />
+      <point x="8674.828235753317" y="3493.0" />
+      <point x="8702.328235753317" y="3493.0" />
+      <point x="8702.328235753317" y="2094.0" />
+      <point x="8836.328235753317" y="2094.0" />
+      <point x="-31.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetStackItem" target="com.nkcoding.interpreter.StackItem">
+      <point x="0.0" y="-47.5" />
+      <point x="7137.3052734474" y="1825.0" />
+      <point x="7599.590973848555" y="1825.0" />
+      <point x="-33.541666666666515" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Simulated" target="com.nkcoding.spacegame.SpaceSimulation">
+      <point x="-135.32142857142935" y="-430.5" />
+      <point x="17814.955388773153" y="18327.0" />
+      <point x="17553.282745637094" y="18327.0" />
+      <point x="42.0" y="672.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData" target="com.nkcoding.interpreter.compiler.TypeNamePair">
+      <point x="180.83333333333394" y="-244.5" />
+      <point x="15627.582029030824" y="5504.0" />
+      <point x="15566.031448242538" y="5504.0" />
+      <point x="15566.031448242538" y="413.0" />
+      <point x="11399.388547876279" y="413.0" />
+      <point x="103.38461538461524" y="101.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetStackItem" target="com.nkcoding.interpreter.Stack">
+      <point x="69.33333333333303" y="-47.5" />
+      <point x="7206.638606780733" y="2904.0" />
+      <point x="7979.724902419983" y="2904.0" />
+      <point x="-89.52380952380963" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.ui.ZoomScrollPane">
+      <point x="-69.78125" y="-530.5" />
+      <point x="6551.616925253707" y="15130.0" />
+      <point x="4124.07189345325" y="15130.0" />
+      <point x="-83.25" y="1409.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.ShipDesigner" target="com.nkcoding.spacegame.simulation.spaceship.ShipDef.ShipDesignerHelper">
+      <point x="-205.33333333333394" y="-364.5" />
+      <point x="9970.585954082966" y="12221.0" />
+      <point x="6793.383132348734" y="12221.0" />
+      <point x="6793.383132348734" y="8462.0" />
+      <point x="12011.057100795828" y="8462.0" />
+      <point x="12011.057100795828" y="6163.0" />
+      <point x="12327.660497900139" y="6163.0" />
+      <point x="-155.55555555555475" y="123.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler" target="com.nkcoding.interpreter.MethodStatement">
+      <point x="0.0" y="-91.5" />
+      <point x="14931.582029030824" y="8532.0" />
+      <point x="15023.182029030824" y="8532.0" />
+      <point x="15023.182029030824" y="4453.0" />
+      <point x="11072.774762472087" y="4453.0" />
+      <point x="117.1875" y="79.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.WhileLoopStatement" target="com.nkcoding.interpreter.Expression">
+      <point x="-95.14285714285734" y="-58.5" />
+      <point x="7757.049307181887" y="4633.0" />
+      <point x="7527.465973848555" y="4633.0" />
+      <point x="7527.465973848555" y="383.0" />
+      <point x="7110.176341653539" y="383.0" />
+      <point x="18.333333333333485" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipModel" target="com.nkcoding.spacegame.simulation.Simulated">
+      <point x="-169.58333333333394" y="342.5" />
+      <point x="12737.07160901125" y="10790.0" />
+      <point x="1315.4780126505793" y="10790.0" />
+      <point x="1315.4780126505793" y="12191.0" />
+      <point x="213.48495709502458" y="12191.0" />
+      <point x="213.48495709502458" y="18347.0" />
+      <point x="17754.812531630298" y="18347.0" />
+      <point x="-195.46428571428623" y="-430.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler" target="com.nkcoding.interpreter.ExternalMethodFuture">
+      <point x="102.60000000000036" y="-91.5" />
+      <point x="15034.182029030824" y="4693.0" />
+      <point x="15373.746190024023" y="4693.0" />
+      <point x="15373.746190024023" y="2014.0" />
+      <point x="11108.737436796346" y="2014.0" />
+      <point x="54.57142857142844" y="69.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Simulated" target="com.nkcoding.spacegame.simulation.communication">
+      <point x="-168.39999999999964" y="430.5" />
+      <point x="17781.876817344582" y="19599.0" />
+      <point x="19278.345245637098" y="19599.0" />
+      <point x="-52.285714285713766" y="-14.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship" target="com.nkcoding.spacegame.simulation.Ship.ShipModel">
+      <point x="-103.57894736842172" y="375.5" />
+      <point x="15691.247526106847" y="9655.0" />
+      <point x="13063.904942344583" y="9655.0" />
+      <point x="157.25" y="-342.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipCreateTransmission" target="com.nkcoding.spacegame.simulation.spaceship.components">
+      <point x="24.875" y="47.5" />
+      <point x="16203.701473475268" y="8522.0" />
+      <point x="16180.615362364158" y="8522.0" />
+      <point x="16180.615362364158" y="10780.0" />
+      <point x="15274.933489684716" y="10780.0" />
+      <point x="57.244444444444525" y="-14.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData" target="com.nkcoding.interpreter.compiler.MethodDefinition">
+      <point x="-180.83333333333394" y="-244.5" />
+      <point x="15265.915362364156" y="5494.0" />
+      <point x="15362.746190024023" y="5494.0" />
+      <point x="15362.746190024023" y="4112.0" />
+      <point x="11932.457329595973" y="4112.0" />
+      <point x="108.26666666666642" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea" target="com.nkcoding.interpreter.compiler.Lexer">
+      <point x="64.58823529411711" y="-595.5" />
+      <point x="2613.092401960783" y="10720.0" />
+      <point x="2874.3177285908278" y="10720.0" />
+      <point x="60.0" y="167.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ReturnValueStatement" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="74.22222222222263" y="-68.5" />
+      <point x="9140.30045797554" y="4022.0" />
+      <point x="9088.078235753317" y="4022.0" />
+      <point x="9088.078235753317" y="1460.0" />
+      <point x="9918.46195668355" y="1460.0" />
+      <point x="-7.116279069767188" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ScriptingEngine" target="com.nkcoding.interpreter.ConcurrentStackItem">
+      <point x="-142.0" y="-68.5" />
+      <point x="10852.987262472085" y="2074.0" />
+      <point x="10260.539960559518" y="2074.0" />
+      <point x="9.70833333333303" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.ExternalMethodStatement">
+      <point x="137.45901639344265" y="-233.5" />
+      <point x="10338.20409926478" y="5064.0" />
+      <point x="9788.239955987083" y="5064.0" />
+      <point x="9788.239955987083" y="4042.0" />
+      <point x="9823.828235753317" y="4042.0" />
+      <point x="61.75" y="101.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Explosion" target="com.nkcoding.spacegame.simulation.SimulatedType">
+      <point x="84.1875" y="210.5" />
+      <point x="18702.072834640807" y="10840.0" />
+      <point x="18954.169777046696" y="10840.0" />
+      <point x="18954.169777046696" y="19318.0" />
+      <point x="18923.610150677916" y="19318.0" />
+      <point x="31.0" y="-80.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.MethodWrapperStatement" target="com.nkcoding.interpreter.StackItem">
+      <point x="-22.90909090909099" y="-112.5" />
+      <point x="8750.649144844225" y="4633.0" />
+      <point x="8735.328235753317" y="4633.0" />
+      <point x="8735.328235753317" y="1815.0" />
+      <point x="7666.674307181887" y="1815.0" />
+      <point x="33.541666666666515" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.ZoomScrollPane" target="com.nkcoding.ui.Zoomable">
+      <point x="133.20000000000073" y="-1409.5" />
+      <point x="4340.52189345325" y="12231.0" />
+      <point x="6519.549799015401" y="12231.0" />
+      <point x="-59.75" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.spacegame.SpaceGame">
+      <point x="0.0" y="530.5" />
+      <point x="0.0" y="-145.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Explosion" target="com.nkcoding.spacegame.simulation.SynchronizationPriority">
+      <point x="-37.41666666666606" y="-210.5" />
+      <point x="18580.46866797414" y="9655.0" />
+      <point x="18768.92857897043" y="9655.0" />
+      <point x="18768.92857897043" y="8382.0" />
+      <point x="17859.818484011248" y="8382.0" />
+      <point x="79.875" y="48.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ForLoopStatement" target="com.nkcoding.interpreter.StackStatement">
+      <point x="-97.125" y="-80.5" />
+      <point x="8220.067164324744" y="4623.0" />
+      <point x="8093.775497658078" y="4623.0" />
+      <point x="57.333333333333485" y="37.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.IfConditionStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="86.57142857142867" y="-69.5" />
+      <point x="6760.787402419984" y="3403.0" />
+      <point x="8189.6327734474" y="3403.0" />
+      <point x="-45.36000000000013" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.interpreter.compiler.Compiler">
+      <point x="-6.34375" y="-530.5" />
+      <point x="6615.054425253707" y="15090.0" />
+      <point x="6709.299799015401" y="15090.0" />
+      <point x="6709.299799015401" y="8452.0" />
+      <point x="10018.697065194077" y="8452.0" />
+      <point x="10018.697065194077" y="6163.0" />
+      <point x="9958.870082871337" y="6163.0" />
+      <point x="-241.875" y="233.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.simulation.Damageable">
+      <point x="60.82222222222299" y="-14.5" />
+      <point x="15278.511267462494" y="10790.0" />
+      <point x="16184.193140141937" y="10790.0" />
+      <point x="16184.193140141937" y="9715.0" />
+      <point x="17953.776817344584" y="9715.0" />
+      <point x="-70.66666666666606" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Methods" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="-72.5625" y="-155.5" />
+      <point x="11337.349762472088" y="4533.0" />
+      <point x="11289.487262472087" y="4533.0" />
+      <point x="11289.487262472087" y="1430.0" />
+      <point x="10032.322421799829" y="1430.0" />
+      <point x="106.74418604651146" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.ShipDef" target="com.nkcoding.spacegame.simulation.spaceship.ShipDef.ShipDesignerHelper">
+      <point x="0.0" y="-232.5" />
+      <point x="12451.730175910647" y="6123.0" />
+      <point x="12405.438275677916" y="6123.0" />
+      <point x="-77.77777777777737" y="123.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication.Connection" target="com.nkcoding.communication.Transmission">
+      <point x="0.0" y="-221.5" />
+      <point x="1142.1857841463825" y="10720.0" />
+      <point x="1188.0468952574956" y="10720.0" />
+      <point x="1188.0468952574956" y="9685.0" />
+      <point x="924.9427267865849" y="9685.0" />
+      <point x="47.83333333333394" y="199.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.NotifyProperty" target="com.nkcoding.interpreter.ConcurrentStackItem">
+      <point x="-69.625" y="-111.5" />
+      <point x="12973.244064799535" y="4673.0" />
+      <point x="14140.653553455693" y="4673.0" />
+      <point x="14140.653553455693" y="2034.0" />
+      <point x="10338.206627226184" y="2034.0" />
+      <point x="87.375" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceSimulation" target="com.nkcoding.spacegame.SpaceGame">
+      <point x="-181.125" y="-672.5" />
+      <point x="17330.157745637094" y="16902.0" />
+      <point x="6621.398175253707" y="16902.0" />
+      <point x="0.0" y="145.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.DataType" target="com.nkcoding.interpreter.StackItem">
+      <point x="-35.58139534883685" y="353.5" />
+      <point x="9889.99684040448" y="1420.0" />
+      <point x="7703.570140515221" y="1420.0" />
+      <point x="70.4375" y="-112.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Operation" target="com.nkcoding.interpreter.compiler.OperatorType">
+      <point x="-75.33333333333303" y="-90.5" />
+      <point x="5323.805259562841" y="4613.0" />
+      <point x="5364.6802734474" y="4613.0" />
+      <point x="5364.6802734474" y="4132.0" />
+      <point x="5342.1802734474" y="4132.0" />
+      <point x="-16.75" y="224.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.PropertyBox" target="com.nkcoding.ui.PropertyBox.PropertyBoxStyle">
+      <point x="-167.71428571428623" y="-265.5" />
+      <point x="16497.200282999078" y="12231.0" />
+      <point x="16455.743140141938" y="12231.0" />
+      <point x="42.400000000001455" y="92.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.StackItem" target="com.nkcoding.interpreter.Stack">
+      <point x="-20.125" y="112.5" />
+      <point x="7613.007640515221" y="1825.0" />
+      <point x="7616.632640515221" y="1825.0" />
+      <point x="7616.632640515221" y="2391.0" />
+      <point x="7884.605854800936" y="2391.0" />
+      <point x="-184.64285714285688" y="-156.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper.WrongTypeException" target="com.nkcoding.interpreter.compiler.CompilerHelper">
+      <point x="-44.25" y="-14.5" />
+      <point x="5800.313592896175" y="4633.0" />
+      <point x="5777.138592896174" y="4633.0" />
+      <point x="0.0" y="135.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.CannonBullet" target="com.nkcoding.spacegame.Asset">
+      <point x="-170.83333333333394" y="-166.5" />
+      <point x="17997.55200130747" y="9405.0" />
+      <point x="15582.701473475268" y="9405.0" />
+      <point x="46.875" y="376.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase" target="com.nkcoding.ui.TextFieldBase.DefaultOnscreenKeyboard">
+      <point x="121.88235294117658" y="-1079.5" />
+      <point x="2323.3026244369794" y="6123.0" />
+      <point x="2391.5750815320025" y="6123.0" />
+      <point x="-53.25" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.TextFieldFilter.DigitsOnlyFilter" target="com.nkcoding.ui.TextFieldBase.TextFieldFilter">
+      <point x="-87.0" y="-26.5" />
+      <point x="43.5" y="8532.0" />
+      <point x="119.5" y="8532.0" />
+      <point x="119.5" y="6153.0" />
+      <point x="1556.965124436978" y="6153.0" />
+      <point x="-108.75" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.MethodWrapperStatement" target="com.nkcoding.interpreter.ReturnException">
+      <point x="22.90909090909099" y="-112.5" />
+      <point x="8796.467326662409" y="4633.0" />
+      <point x="8801.328235753317" y="4633.0" />
+      <point x="8801.328235753317" y="3473.0" />
+      <point x="8867.328235753317" y="3473.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Lexer" target="com.nkcoding.interpreter.compiler.ProgramPosition">
+      <point x="-100.0" y="-167.5" />
+      <point x="2714.3177285908278" y="9575.0" />
+      <point x="2752.5677285908278" y="9575.0" />
+      <point x="2752.5677285908278" y="2914.0" />
+      <point x="4798.716104829135" y="2914.0" />
+      <point x="-80.0" y="90.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.GameScreen" target="com.nkcoding.spacegame.simulation.Ship">
+      <point x="-65.19999999999982" y="-167.5" />
+      <point x="17259.55311038003" y="10830.0" />
+      <point x="17318.986912303764" y="10830.0" />
+      <point x="17318.986912303764" y="9485.0" />
+      <point x="15829.352789264742" y="9485.0" />
+      <point x="34.5263157894733" y="375.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.IntegerToFloatCast">
+      <point x="-158.60655737704838" y="-233.5" />
+      <point x="10042.138525494289" y="5344.0" />
+      <point x="6024.638592896174" y="5344.0" />
+      <point x="6024.638592896174" y="3493.0" />
+      <point x="5995.9302734474" y="3493.0" />
+      <point x="67.5" y="89.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.ProgramTextWrapper" target="com.nkcoding.interpreter.compiler.ProgramPosition">
+      <point x="-86.85714285714312" y="-221.5" />
+      <point x="4920.522023809523" y="3483.0" />
+      <point x="4981.858961971991" y="3483.0" />
+      <point x="4981.858961971991" y="2954.0" />
+      <point x="4898.716104829135" y="2954.0" />
+      <point x="20.0" y="90.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.GameScreen" target="com.nkcoding.communication.Communication">
+      <point x="-130.39999999999998" y="-167.5" />
+      <point x="17194.35311038003" y="10480.0" />
+      <point x="1633.2968952574956" y="10480.0" />
+      <point x="106.75" y="155.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.Program">
+      <point x="296.06557377049194" y="-233.5" />
+      <point x="10496.810656641828" y="5504.0" />
+      <point x="12031.716053455693" y="5504.0" />
+      <point x="0.0" y="58.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.WhileLoopStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="31.71428571428578" y="-58.5" />
+      <point x="7883.9064500390305" y="4633.0" />
+      <point x="7879.129664324745" y="4633.0" />
+      <point x="7879.129664324745" y="3443.0" />
+      <point x="8209.7927734474" y="3443.0" />
+      <point x="-25.199999999999818" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea" target="com.nkcoding.interpreter.compiler.Token">
+      <point x="86.11764705882342" y="-595.5" />
+      <point x="2634.621813725489" y="10730.0" />
+      <point x="2944.8177285908287" y="10730.0" />
+      <point x="2944.8177285908287" y="9585.0" />
+      <point x="2975.5391237616914" y="9585.0" />
+      <point x="36.399999999999636" y="364.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.ExtAssetManager">
+      <point x="64.39999999999964" y="-14.5" />
+      <point x="15282.089045240271" y="10820.0" />
+      <point x="16251.443140141937" y="10820.0" />
+      <point x="-56.75" y="70.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.ShipDef.ShipDesignerHelper" target="com.nkcoding.spacegame.simulation.spaceship.ShipDef">
+      <point x="38.88888888888869" y="123.5" />
+      <point x="12522.104942344582" y="6093.0" />
+      <point x="12580.730175910647" y="6093.0" />
+      <point x="129.0" y="-232.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication.Connection" target="com.nkcoding.communication.transmissions.TransmissionTransmission">
+      <point x="-28.22222222222217" y="-221.5" />
+      <point x="1113.9635619241599" y="10750.0" />
+      <point x="1123.5468952574956" y="10750.0" />
+      <point x="108.0" y="90.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ScriptingEngine" target="com.nkcoding.interpreter.compiler.TypeNamePair">
+      <point x="236.66666666666697" y="-68.5" />
+      <point x="11231.653929138753" y="2174.0" />
+      <point x="11244.392198701109" y="2174.0" />
+      <point x="11244.392198701109" y="463.0" />
+      <point x="11296.003932491662" y="463.0" />
+      <point x="0.0" y="101.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ReturnValueStatement" target="com.nkcoding.interpreter.compiler.MethodDefinition">
+      <point x="148.44444444444434" y="-68.5" />
+      <point x="9214.52268019776" y="4062.0" />
+      <point x="11661.790662929307" y="4062.0" />
+      <point x="-162.39999999999964" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetValueExpression" target="com.nkcoding.interpreter.Stack">
+      <point x="0.0" y="-79.5" />
+      <point x="9229.578235753317" y="3243.0" />
+      <point x="9033.489955987083" y="3243.0" />
+      <point x="9033.489955987083" y="2914.0" />
+      <point x="8203.534426229508" y="2914.0" />
+      <point x="134.28571428571468" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea" target="com.nkcoding.ui.MultiColorTextArea.TextAreaListener">
+      <point x="-172.23529411764684" y="-595.5" />
+      <point x="2376.268872549019" y="10780.0" />
+      <point x="2136.450081532006" y="10780.0" />
+      <point x="-79.66666666666606" y="70.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.StatementBlock" target="com.nkcoding.interpreter.Stack">
+      <point x="-76.125" y="-68.5" />
+      <point x="8008.567164324745" y="4623.0" />
+      <point x="7901.129664324745" y="4623.0" />
+      <point x="7901.129664324745" y="2944.0" />
+      <point x="8069.248711943793" y="2944.0" />
+      <point x="0.0" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.spacegame.Asset">
+      <point x="69.78125" y="-530.5" />
+      <point x="6691.179425253707" y="15150.0" />
+      <point x="13120.654942344583" y="15150.0" />
+      <point x="13120.654942344583" y="9605.0" />
+      <point x="15488.951473475268" y="9605.0" />
+      <point x="-46.875" y="376.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship" target="com.nkcoding.spacegame.simulation.SynchronizationPriority">
+      <point x="136.66666666666606" y="-375.5" />
+      <point x="15931.493140141934" y="8532.0" />
+      <point x="17700.068484011248" y="8532.0" />
+      <point x="-79.875" y="48.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.CreateListExpression" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="34.649999999999636" y="-89.5" />
+      <point x="6245.5802734474" y="2814.0" />
+      <point x="6286.855273447401" y="2814.0" />
+      <point x="6286.855273447401" y="1300.0" />
+      <point x="9804.60149156727" y="1300.0" />
+      <point x="-120.97674418604674" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.Stack" target="com.nkcoding.interpreter.ConcurrentStackItem">
+      <point x="-16.78571428571422" y="-156.5" />
+      <point x="8052.462997658078" y="2391.0" />
+      <point x="8091.028487733114" y="2391.0" />
+      <point x="8091.028487733114" y="2104.0" />
+      <point x="10144.039960559518" y="2104.0" />
+      <point x="-106.79166666666697" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipCreateTransmission" target="com.nkcoding.spacegame.simulation.BodyState">
+      <point x="0.0" y="-47.5" />
+      <point x="16178.826473475268" y="6123.0" />
+      <point x="18879.336443713364" y="6123.0" />
+      <point x="-126.0" y="167.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.Expression">
+      <point x="-243.1967213114749" y="-233.5" />
+      <point x="9957.548361559862" y="5424.0" />
+      <point x="5235.579166666666" y="5424.0" />
+      <point x="5235.579166666666" y="223.0" />
+      <point x="7022.176341653539" y="223.0" />
+      <point x="-69.66666666666652" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.simulation.spaceship.properties.VirtualProperty">
+      <point x="-25.044444444443798" y="-14.5" />
+      <point x="15192.644600795828" y="10640.0" />
+      <point x="13957.207029030824" y="10640.0" />
+      <point x="33.625" y="90.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.WhileLoopStatement" target="com.nkcoding.interpreter.StackStatement">
+      <point x="95.14285714285734" y="-58.5" />
+      <point x="7947.335021467603" y="4633.0" />
+      <point x="7979.108830991412" y="4633.0" />
+      <point x="-57.33333333333326" y="37.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.interpreter.compiler.NormalMethodDefinition">
+      <point x="196.65625" y="-530.5" />
+      <point x="6818.054425253707" y="15250.0" />
+      <point x="16990.914568713364" y="15250.0" />
+      <point x="16990.914568713364" y="12151.0" />
+      <point x="17070.80605141714" y="12151.0" />
+      <point x="17070.80605141714" y="10820.0" />
+      <point x="17290.318484011248" y="10820.0" />
+      <point x="17290.318484011248" y="5514.0" />
+      <point x="17120.747902046696" y="5514.0" />
+      <point x="85.83333333333212" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea" target="com.nkcoding.ui.MultiColorTextArea.ColorRegion">
+      <point x="-86.11764705882342" y="-595.5" />
+      <point x="2462.3865196078423" y="10740.0" />
+      <point x="2377.116748198672" y="10740.0" />
+      <point x="-61.5" y="102.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceSimulation" target="com.nkcoding.spacegame.simulation.BodyState">
+      <point x="133.875" y="-672.5" />
+      <point x="17645.157745637094" y="16872.0" />
+      <point x="17796.75311038003" y="16872.0" />
+      <point x="17796.75311038003" y="10820.0" />
+      <point x="17896.943484011248" y="10820.0" />
+      <point x="17896.943484011248" y="6133.0" />
+      <point x="18907.336443713364" y="6133.0" />
+      <point x="-98.0" y="167.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.communication" target="com.nkcoding.spacegame.simulation.BodyState">
+      <point x="87.14285714285688" y="-14.5" />
+      <point x="19417.773817065667" y="19639.0" />
+      <point x="19781.467293535057" y="19639.0" />
+      <point x="19781.467293535057" y="6123.0" />
+      <point x="19131.336443713364" y="6123.0" />
+      <point x="126.0" y="167.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship" target="com.nkcoding.spacegame.simulation.Ship.ShipCreateTransmission">
+      <point x="27.33333333333394" y="-375.5" />
+      <point x="15822.159806808602" y="8512.0" />
+      <point x="16054.451473475268" y="8512.0" />
+      <point x="-124.375" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ExternalMethodStatement" target="com.nkcoding.interpreter.ExternalMethodFuture">
+      <point x="82.33333333333303" y="-101.5" />
+      <point x="9844.41156908665" y="3483.0" />
+      <point x="9893.405270637037" y="3483.0" />
+      <point x="9893.405270637037" y="2144.0" />
+      <point x="10999.59457965349" y="2144.0" />
+      <point x="-54.57142857142844" y="69.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipCreateTransmission" target="com.nkcoding.spacegame.simulation.Ship">
+      <point x="-74.625" y="47.5" />
+      <point x="16104.201473475268" y="8522.0" />
+      <point x="15876.826473475268" y="8522.0" />
+      <point x="82.0" y="-375.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.MethodStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="-35.714285714285325" y="-79.5" />
+      <point x="10919.8729767578" y="4042.0" />
+      <point x="10933.908865367775" y="4042.0" />
+      <point x="10933.908865367775" y="3173.0" />
+      <point x="8295.4727734474" y="3173.0" />
+      <point x="60.48000000000002" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ListObject" target="com.nkcoding.interpreter.StackItem">
+      <point x="15.444444444444343" y="47.5" />
+      <point x="8612.72709562179" y="463.0" />
+      <point x="8608.282651177347" y="463.0" />
+      <point x="8608.282651177347" y="1230.0" />
+      <point x="7602.945140515221" y="1230.0" />
+      <point x="-30.1875" y="-112.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.transmissions.PeerInfoTransmission" target="com.nkcoding.communication.Transmission">
+      <point x="97.20000000000005" y="-68.5" />
+      <point x="797.2468952574964" y="9695.0" />
+      <point x="842.9427267865849" y="9695.0" />
+      <point x="-34.16666666666663" y="199.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea" target="com.nkcoding.ui.ColorParser">
+      <point x="172.23529411764684" y="-595.5" />
+      <point x="2720.7394607843125" y="10770.0" />
+      <point x="3559.716668470911" y="10770.0" />
+      <point x="-33.599999999998545" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Explosion.ExplosionCreateTransmission" target="com.nkcoding.spacegame.simulation.SimulatedType">
+      <point x="35.33333333333394" y="80.5" />
+      <point x="19559.44348401125" y="9715.0" />
+      <point x="19496.64459308381" y="9715.0" />
+      <point x="19496.64459308381" y="19328.0" />
+      <point x="19109.610150677916" y="19328.0" />
+      <point x="217.0" y="-80.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetValueExpression" target="com.nkcoding.interpreter.Expression">
+      <point x="46.80000000000018" y="-79.5" />
+      <point x="9276.378235753316" y="3483.0" />
+      <point x="9350.039955987082" y="3483.0" />
+      <point x="9350.039955987082" y="303.0" />
+      <point x="7139.509674986872" y="303.0" />
+      <point x="47.666666666666515" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea" target="com.nkcoding.ui.TextFieldBase">
+      <point x="0.0" y="-595.5" />
+      <point x="2548.5041666666657" y="10700.0" />
+      <point x="2531.116748198672" y="10700.0" />
+      <point x="2531.116748198672" y="8462.0" />
+      <point x="2428.045271495803" y="8462.0" />
+      <point x="226.625" y="1079.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.CannonBullet.CannonBulletCreateTransmission" target="com.nkcoding.spacegame.simulation.SimulatedType">
+      <point x="29.66666666666606" y="47.5" />
+      <point x="19143.77681734458" y="9685.0" />
+      <point x="19174.681579249343" y="9685.0" />
+      <point x="19174.681579249343" y="19318.0" />
+      <point x="19078.610150677916" y="19318.0" />
+      <point x="186.0" y="-80.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication.Connection" target="com.nkcoding.communication.SocketCommunication">
+      <point x="101.60000000000036" y="221.5" />
+      <point x="1243.7857841463829" y="12181.0" />
+      <point x="1055.1180573597976" y="12181.0" />
+      <point x="102.66666666666606" y="-265.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.operators" target="com.nkcoding.interpreter.operators">
+      <point x="-66.0" y="14.5" />
+      <point x="7074.215973848555" y="3772.0" />
+      <point x="7043.215973848555" y="3772.0" />
+      <point x="7043.215973848555" y="3737.5" />
+      <point x="-77.0" y="-0.0" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.Methods">
+      <point x="222.04918032786918" y="-233.5" />
+      <point x="10422.794263199206" y="5434.0" />
+      <point x="11313.162262472088" y="5434.0" />
+      <point x="-96.75" y="155.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.CannonBullet" target="com.nkcoding.spacegame.simulation.Simulated">
+      <point x="-25.625" y="166.5" />
+      <point x="18142.760334640807" y="10860.0" />
+      <point x="18162.885334640807" y="10860.0" />
+      <point x="18162.885334640807" y="18327.0" />
+      <point x="17995.383960201725" y="18327.0" />
+      <point x="45.10714285714312" y="-430.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper" target="com.nkcoding.interpreter.compiler.TypeNamePair">
+      <point x="31.600000000000364" y="-135.5" />
+      <point x="5808.738592896174" y="3992.0" />
+      <point x="6073.9302734474" y="3992.0" />
+      <point x="6073.9302734474" y="1250.0" />
+      <point x="9701.316344875971" y="1250.0" />
+      <point x="9701.316344875971" y="403.0" />
+      <point x="11192.619317107048" y="403.0" />
+      <point x="-103.38461538461524" y="101.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper" target="com.nkcoding.interpreter.GetValueExpression">
+      <point x="189.60000000000036" y="-135.5" />
+      <point x="5966.738592896174" y="4042.0" />
+      <point x="9151.578235753317" y="4042.0" />
+      <point x="-78.0" y="79.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.ShipDesigner" target="com.nkcoding.ui.Zoomable">
+      <point x="-273.7777777777774" y="-364.5" />
+      <point x="9902.141509638523" y="12231.0" />
+      <point x="6639.049799015401" y="12231.0" />
+      <point x="59.75" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.Expression" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="66.0" y="47.5" />
+      <point x="7157.843008320206" y="253.0" />
+      <point x="9823.578235753317" y="253.0" />
+      <point x="-102.0" y="-353.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipModel" target="com.nkcoding.spacegame.simulation.spaceship.properties.NotifyProperty">
+      <point x="-46.25" y="-342.5" />
+      <point x="12860.404942344583" y="9515.0" />
+      <point x="13182.119064799535" y="9515.0" />
+      <point x="139.25" y="111.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceGame" target="com.nkcoding.spacegame.screens.GameScreen">
+      <point x="73.33333333333303" y="-145.5" />
+      <point x="6694.7315085870405" y="16391.0" />
+      <point x="17037.836443713364" y="16391.0" />
+      <point x="17037.836443713364" y="12191.0" />
+      <point x="17194.35311038003" y="12191.0" />
+      <point x="-130.39999999999964" y="167.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.operators" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="0.0" y="-14.5" />
+      <point x="7140.215973848555" y="3293.0" />
+      <point x="7022.8052734474" y="3293.0" />
+      <point x="7022.8052734474" y="1350.0" />
+      <point x="9840.182886916107" y="1350.0" />
+      <point x="-85.39534883720899" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.MethodWrapperStatement">
+      <point x="52.868852459016125" y="-233.5" />
+      <point x="10253.613935330353" y="5144.0" />
+      <point x="8710.558235753317" y="5144.0" />
+      <point x="-63.0" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.MethodWrapperStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="-114.5454545454545" y="-112.5" />
+      <point x="8659.012781207863" y="4633.0" />
+      <point x="8663.828235753317" y="4633.0" />
+      <point x="8663.828235753317" y="3453.0" />
+      <point x="8260.1927734474" y="3453.0" />
+      <point x="25.199999999999818" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper" target="com.nkcoding.interpreter.compiler.CompileException">
+      <point x="-158.0" y="-135.5" />
+      <point x="5619.138592896174" y="4102.0" />
+      <point x="5436.4302734474" y="4102.0" />
+      <point x="5436.4302734474" y="3473.0" />
+      <point x="4816.879166666666" y="3473.0" />
+      <point x="122.5" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper" target="com.nkcoding.interpreter.compiler.ProgramTextWrapper">
+      <point x="-221.19999999999982" y="-135.5" />
+      <point x="5555.938592896174" y="4122.0" />
+      <point x="5108.7125" y="4122.0" />
+      <point x="101.33333333333394" y="221.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase" target="com.nkcoding.ui.TextFieldBase.TextFieldClickListener">
+      <point x="32.375" y="1079.5" />
+      <point x="2233.795271495803" y="8462.0" />
+      <point x="2221.116748198672" y="8462.0" />
+      <point x="106.33333333333394" y="-136.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty" target="com.nkcoding.interpreter.ConcurrentStackItem">
+      <point x="208.875" y="-166.5" />
+      <point x="14317.457029030824" y="6113.0" />
+      <point x="14125.082029030824" y="6113.0" />
+      <point x="14125.082029030824" y="4693.0" />
+      <point x="14680.277586906937" y="4693.0" />
+      <point x="14680.277586906937" y="2024.0" />
+      <point x="10357.623293892852" y="2024.0" />
+      <point x="106.79166666666697" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.CodeEditor.CodeEditorStyle" target="com.nkcoding.ui.MultiColorTextArea.MultiColorTextAreaStyle">
+      <point x="-211.60000000000036" y="-145.5" />
+      <point x="3227.367728590827" y="10750.0" />
+      <point x="3207.817728590827" y="10750.0" />
+      <point x="0.0" y="69.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipModel" target="com.nkcoding.spacegame.simulation.spaceship.components">
+      <point x="33.91666666666606" y="342.5" />
+      <point x="12940.57160901125" y="10770.0" />
+      <point x="15146.133489684715" y="10770.0" />
+      <point x="-71.55555555555657" y="-14.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication" target="com.nkcoding.communication.Communication">
+      <point x="179.66666666666606" y="-265.5" />
+      <point x="1132.1180573597976" y="12221.0" />
+      <point x="1509.3802285908296" y="12221.0" />
+      <point x="1509.3802285908296" y="10780.0" />
+      <point x="1511.2968952574956" y="10780.0" />
+      <point x="-15.25" y="155.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.spacegame.simulation.spaceship.components">
+      <point x="82.46875" y="-530.5" />
+      <point x="6703.866925253707" y="15160.0" />
+      <point x="15256.911267462494" y="15160.0" />
+      <point x="15256.911267462494" y="12221.0" />
+      <point x="15253.466823018049" y="12221.0" />
+      <point x="35.777777777777374" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.ZoomScrollPane" target="com.nkcoding.ui.ZoomScrollPane.ZoomScrollPaneStyle">
+      <point x="0.0" y="-1409.5" />
+      <point x="4207.32189345325" y="12231.0" />
+      <point x="4246.717728590827" y="12231.0" />
+      <point x="110.75" y="135.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.ShipDef.ShipDesignerHelper" target="com.nkcoding.spacegame.simulation.spaceship.components">
+      <point x="116.66666666666606" y="123.5" />
+      <point x="12599.88272012236" y="6073.0" />
+      <point x="13469.004251253045" y="6073.0" />
+      <point x="13469.004251253045" y="10710.0" />
+      <point x="15167.600156351382" y="10710.0" />
+      <point x="-50.088888888889414" y="-14.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.LauncherScreen" target="com.nkcoding.spacegame.Asset">
+      <point x="28.625" y="-365.5" />
+      <point x="1692.9577714958032" y="15240.0" />
+      <point x="1824.1927285908278" y="15240.0" />
+      <point x="1824.1927285908278" y="9595.0" />
+      <point x="15470.201473475268" y="9595.0" />
+      <point x="-65.625" y="376.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.transmissions.PeerInfoTransmission.PeerInfo" target="com.nkcoding.communication.transmissions.PeerInfoTransmission">
+      <point x="72.5" y="90.5" />
+      <point x="440.5" y="9605.0" />
+      <point x="700.0468952574956" y="9605.0" />
+      <point x="0.0" y="-68.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.IfConditionStatement">
+      <point x="-126.88524590163888" y="-233.5" />
+      <point x="10073.8598369697" y="5314.0" />
+      <point x="6678.2315029555975" y="5314.0" />
+      <point x="6678.2315029555975" y="4012.0" />
+      <point x="6623.715973848555" y="4012.0" />
+      <point x="-50.5" y="69.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea" target="com.nkcoding.ui.MultiColorTextArea.MultiColorTextAreaStyle">
+      <point x="107.64705882352973" y="-595.5" />
+      <point x="2656.1512254901954" y="10740.0" />
+      <point x="3005.817728590827" y="10740.0" />
+      <point x="-202.0" y="69.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.PredefinedMethodStatement">
+      <point x="-52.868852459016125" y="-233.5" />
+      <point x="10147.876230412321" y="5244.0" />
+      <point x="7444.638606780733" y="5244.0" />
+      <point x="7444.638606780733" y="4032.0" />
+      <point x="7451.215973848555" y="4032.0" />
+      <point x="65.75" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.CannonBullet" target="com.nkcoding.spacegame.simulation.CannonBullet.CannonBulletCreateTransmission">
+      <point x="34.16666666666606" y="-166.5" />
+      <point x="18202.55200130747" y="9665.0" />
+      <point x="18965.77681734458" y="9665.0" />
+      <point x="-148.33333333333394" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.spacegame.ExtAssetManager">
+      <point x="107.84375" y="-530.5" />
+      <point x="6729.241925253707" y="15180.0" />
+      <point x="16296.843140141937" y="15180.0" />
+      <point x="-11.350000000000364" y="70.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetVariableItemGet" target="com.nkcoding.interpreter.GetStackItem">
+      <point x="-100.39999999999964" y="-89.5" />
+      <point x="9391.678235753316" y="3233.0" />
+      <point x="7226.448130590257" y="3233.0" />
+      <point x="89.14285714285688" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.Statement">
+      <point x="10.573770491802861" y="-233.5" />
+      <point x="10211.31885336314" y="5184.0" />
+      <point x="8496.058235753317" y="5184.0" />
+      <point x="8496.058235753317" y="3473.0" />
+      <point x="8250.1127734474" y="3473.0" />
+      <point x="15.11999999999989" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Methods" target="com.nkcoding.interpreter.compiler.MethodType">
+      <point x="24.1875" y="-155.5" />
+      <point x="11434.099762472088" y="4693.0" />
+      <point x="11452.162262472088" y="4693.0" />
+      <point x="11452.162262472088" y="3493.0" />
+      <point x="11689.587265824994" y="3493.0" />
+      <point x="-30.0" y="48.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.PredefinedMethodStatement" target="com.nkcoding.interpreter.Expression">
+      <point x="-37.57142857142844" y="-112.5" />
+      <point x="7347.894545277126" y="3313.0" />
+      <point x="7273.8052734474" y="3313.0" />
+      <point x="7273.8052734474" y="393.0" />
+      <point x="7106.509674986872" y="393.0" />
+      <point x="14.666666666666515" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipCreateTransmission" target="com.nkcoding.spacegame.simulation.SimulatedType">
+      <point x="74.625" y="47.5" />
+      <point x="16253.451473475268" y="8392.0" />
+      <point x="18757.92857897043" y="8392.0" />
+      <point x="18757.92857897043" y="9355.0" />
+      <point x="18998.169777046696" y="9355.0" />
+      <point x="18998.169777046696" y="19308.0" />
+      <point x="19047.610150677916" y="19308.0" />
+      <point x="155.0" y="-80.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.interpreter.compiler.CompileException">
+      <point x="-183.96875" y="-530.5" />
+      <point x="6437.429425253707" y="15220.0" />
+      <point x="1846.1927285908278" y="15220.0" />
+      <point x="1846.1927285908278" y="9555.0" />
+      <point x="1524.715124436978" y="9555.0" />
+      <point x="1524.715124436978" y="3463.0" />
+      <point x="4571.879166666666" y="3463.0" />
+      <point x="-122.5" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Methods" target="com.nkcoding.interpreter.compiler.TypeNamePair">
+      <point x="-24.1875" y="-155.5" />
+      <point x="11385.724762472088" y="4693.0" />
+      <point x="11404.412262472088" y="4693.0" />
+      <point x="11404.412262472088" y="463.0" />
+      <point x="11313.234701722431" y="463.0" />
+      <point x="17.23076923076951" y="101.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea.TextAreaListener" target="com.nkcoding.ui.MultiColorTextArea">
+      <point x="79.66666666666606" y="70.5" />
+      <point x="2295.7834148653383" y="10760.0" />
+      <point x="2419.3276960784297" y="10760.0" />
+      <point x="-129.17647058823604" y="-595.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.CannonBullet.CannonBulletCreateTransmission" target="com.nkcoding.spacegame.simulation.BodyState">
+      <point x="0.0" y="-47.5" />
+      <point x="19114.110150677916" y="6163.0" />
+      <point x="19019.336443713364" y="6163.0" />
+      <point x="14.0" y="167.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.ui.ScriptColorParser">
+      <point x="-107.84375" y="-530.5" />
+      <point x="6513.554425253707" y="15160.0" />
+      <point x="3259.1291666666657" y="15160.0" />
+      <point x="3259.1291666666657" y="12221.0" />
+      <point x="3808.4677285908274" y="12221.0" />
+      <point x="0.0" y="80.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.SimulatedType" target="com.nkcoding.spacegame.simulation.Explosion">
+      <point x="62.0" y="-80.5" />
+      <point x="18954.610150677916" y="19328.0" />
+      <point x="18965.169777046696" y="19328.0" />
+      <point x="18965.169777046696" y="10830.0" />
+      <point x="18758.197834640807" y="10830.0" />
+      <point x="140.3125" y="210.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.TextFieldListener" target="com.nkcoding.ui.TextFieldBase">
+      <point x="46.600000000000364" y="26.5" />
+      <point x="2087.425081532003" y="6093.0" />
+      <point x="2140.4790950252154" y="6093.0" />
+      <point x="-60.94117647058738" y="-1079.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.CodeEditor" target="com.nkcoding.ui.CodeEditor.CodeEditorStyle">
+      <point x="42.375" y="-254.5" />
+      <point x="3156.0041666666657" y="12171.0" />
+      <point x="3227.367728590827" y="12171.0" />
+      <point x="-211.60000000000036" y="145.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea.TextAreaListener" target="com.nkcoding.ui.TextFieldBase.TextFieldClickListener">
+      <point x="0.0" y="-70.5" />
+      <point x="2216.116748198672" y="9575.0" />
+      <point x="2194.5334148653383" y="9575.0" />
+      <point x="79.75" y="136.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.CodeEditor" target="com.nkcoding.ui.TextFieldBase">
+      <point x="-70.625" y="-254.5" />
+      <point x="3043.0041666666657" y="12211.0" />
+      <point x="1919.253604829135" y="12211.0" />
+      <point x="1919.253604829135" y="8452.0" />
+      <point x="2039.5452714958028" y="8452.0" />
+      <point x="-161.875" y="1079.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.CodeEditor.CodeEditorStyle" target="com.nkcoding.ui.CodeEditor">
+      <point x="0.0" y="145.5" />
+      <point x="3438.9677285908274" y="12191.0" />
+      <point x="3212.5041666666657" y="12191.0" />
+      <point x="98.875" y="-254.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipModel" target="com.nkcoding.interpreter.ConcurrentStackItem">
+      <point x="-83.25" y="-342.5" />
+      <point x="12823.404942344583" y="9525.0" />
+      <point x="12753.869064799535" y="9525.0" />
+      <point x="12753.869064799535" y="4663.0" />
+      <point x="14025.466053455693" y="4663.0" />
+      <point x="14025.466053455693" y="2044.0" />
+      <point x="10318.789960559518" y="2044.0" />
+      <point x="67.95833333333303" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.ui.CodeEditor">
+      <point x="-158.59375" y="-530.5" />
+      <point x="6462.804425253707" y="15200.0" />
+      <point x="3057.1291666666657" y="15200.0" />
+      <point x="-56.5" y="254.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData">
+      <point x="171.28125" y="-530.5" />
+      <point x="6792.679425253707" y="15230.0" />
+      <point x="16968.914568713364" y="15230.0" />
+      <point x="16968.914568713364" y="12221.0" />
+      <point x="16893.298370637094" y="12221.0" />
+      <point x="16893.298370637094" y="10800.0" />
+      <point x="17127.298370637094" y="10800.0" />
+      <point x="17127.298370637094" y="6093.0" />
+      <point x="15639.637584586379" y="6093.0" />
+      <point x="192.8888888888887" y="244.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompileException" target="com.nkcoding.interpreter.compiler.ProgramPosition">
+      <point x="-70.0" y="-68.5" />
+      <point x="4624.379166666666" y="2934.0" />
+      <point x="4838.716104829135" y="2934.0" />
+      <point x="-40.0" y="90.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.Stack" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="-50.35714285714266" y="-156.5" />
+      <point x="8018.891569086651" y="2351.0" />
+      <point x="7724.132640515221" y="2351.0" />
+      <point x="7724.132640515221" y="1430.0" />
+      <point x="9897.113119474247" y="1430.0" />
+      <point x="-28.46511627906966" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.CompilerStack">
+      <point x="190.32786885245878" y="-233.5" />
+      <point x="10391.072951723796" y="5404.0" />
+      <point x="10826.587262472087" y="5404.0" />
+      <point x="-97.75" y="134.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.DataType" target="com.nkcoding.interpreter.compiler.TypeNamePair">
+      <point x="68.0" y="-353.5" />
+      <point x="9993.578235753317" y="433.0" />
+      <point x="11244.311624799355" y="433.0" />
+      <point x="-51.69230769230762" y="101.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ForLoopStatement" target="com.nkcoding.interpreter.Stack">
+      <point x="13.875" y="-80.5" />
+      <point x="8331.067164324744" y="4633.0" />
+      <point x="8322.692164324744" y="4633.0" />
+      <point x="8322.692164324744" y="2944.0" />
+      <point x="8136.391569086651" y="2944.0" />
+      <point x="67.14285714285734" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.Asset">
+      <point x="25.044444444443798" y="-14.5" />
+      <point x="15242.733489684715" y="10690.0" />
+      <point x="15488.388973475268" y="10690.0" />
+      <point x="15488.388973475268" y="9615.0" />
+      <point x="15507.701473475268" y="9615.0" />
+      <point x="-28.125" y="376.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetStackItem" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="-69.33333333333303" y="-47.5" />
+      <point x="7067.971940114067" y="2834.0" />
+      <point x="7126.3052734474" y="2834.0" />
+      <point x="7126.3052734474" y="1360.0" />
+      <point x="9847.299165985874" y="1360.0" />
+      <point x="-78.2790697674418" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerStack.CompilerStackItem" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="-66.5" y="-90.5" />
+      <point x="10454.831627226184" y="4042.0" />
+      <point x="10515.831627226184" y="4042.0" />
+      <point x="10515.831627226184" y="1480.0" />
+      <point x="9996.74102645099" y="1480.0" />
+      <point x="71.16279069767461" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.MethodWrapperStatement" target="com.nkcoding.interpreter.Expression">
+      <point x="0.0" y="-112.5" />
+      <point x="8773.558235753317" y="3493.0" />
+      <point x="8779.328235753317" y="3493.0" />
+      <point x="8779.328235753317" y="323.0" />
+      <point x="7132.176341653539" y="323.0" />
+      <point x="40.333333333333485" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.interpreter.compiler.MethodDefinition">
+      <point x="10.733333333333576" y="-14.5" />
+      <point x="15228.422378573605" y="10540.0" />
+      <point x="15198.582029030824" y="10540.0" />
+      <point x="15198.582029030824" y="4443.0" />
+      <point x="13701.39043412916" y="4443.0" />
+      <point x="13701.39043412916" y="4122.0" />
+      <point x="11905.390662929305" y="4122.0" />
+      <point x="81.19999999999982" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.CodeEditor" target="com.nkcoding.ui.TextFieldBase.TextFieldListener">
+      <point x="-98.875" y="-254.5" />
+      <point x="3014.7541666666657" y="12221.0" />
+      <point x="1900.9827714958028" y="12221.0" />
+      <point x="1900.9827714958028" y="6163.0" />
+      <point x="1947.6250815320018" y="6163.0" />
+      <point x="-93.20000000000073" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceSimulation" target="com.nkcoding.spacegame.ExtAssetManager">
+      <point x="-55.125" y="-672.5" />
+      <point x="17456.157745637094" y="16752.0" />
+      <point x="17509.25311038003" y="16752.0" />
+      <point x="17509.25311038003" y="10460.0" />
+      <point x="16387.64314014194" y="10460.0" />
+      <point x="79.45000000000073" y="70.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.CannonBullet.CannonBulletCreateTransmission" target="com.nkcoding.spacegame.simulation.CannonBullet">
+      <point x="-29.66666666666606" y="47.5" />
+      <point x="19084.44348401125" y="9685.0" />
+      <point x="18339.21866797414" y="9685.0" />
+      <point x="170.83333333333394" y="-166.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceGame" target="com.nkcoding.spacegame.screens.ShipBuilderScreen">
+      <point x="-14.66666666666697" y="-145.5" />
+      <point x="6606.7315085870405" y="16351.0" />
+      <point x="6486.0648419203735" y="16351.0" />
+      <point x="-135.33333333333394" y="530.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication.Connection" target="com.nkcoding.communication.transmissions.IntTransmission">
+      <point x="84.66666666666663" y="-221.5" />
+      <point x="1226.8524508130486" y="10750.0" />
+      <point x="1297.0468952574956" y="10750.0" />
+      <point x="0.0" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase" target="com.nkcoding.ui.TextFieldBase.KeyRepeatTask">
+      <point x="0.0" y="-1079.5" />
+      <point x="2201.420271495803" y="6163.0" />
+      <point x="2194.9500815320025" y="6163.0" />
+      <point x="-52.875" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.SimulatedType" target="com.nkcoding.spacegame.simulation.communication">
+      <point x="58.125" y="80.5" />
+      <point x="18950.735150677916" y="19569.0" />
+      <point x="19304.488102779957" y="19569.0" />
+      <point x="-26.142857142856883" y="-14.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.ui.PropertyBox.PropertyBoxStyle">
+      <point x="120.53125" y="-530.5" />
+      <point x="6741.929425253707" y="15190.0" />
+      <point x="16328.87885442765" y="15190.0" />
+      <point x="-84.79999999999927" y="92.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.CodeEditor.CodeEditorStyle" target="com.nkcoding.ui.ColorParser">
+      <point x="105.79999999999927" y="-145.5" />
+      <point x="3544.7677285908267" y="10780.0" />
+      <point x="3593.3166684709095" y="10780.0" />
+      <point x="0.0" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.IntegerToFloatCast" target="com.nkcoding.interpreter.Stack">
+      <point x="108.0" y="-89.5" />
+      <point x="6036.4302734474" y="2854.0" />
+      <point x="7867.820140515221" y="2854.0" />
+      <point x="-201.42857142857156" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.simulation.spaceship.properties.FloatProperty">
+      <point x="-32.20000000000073" y="-14.5" />
+      <point x="15185.48904524027" y="10660.0" />
+      <point x="13756.8239678018" y="10660.0" />
+      <point x="13756.8239678018" y="9545.0" />
+      <point x="13690.782029030825" y="9545.0" />
+      <point x="52.20000000000073" y="101.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.DataType" target="com.nkcoding.interpreter.Expression">
+      <point x="-136.0" y="-353.5" />
+      <point x="9789.578235753317" y="263.0" />
+      <point x="7154.176341653539" y="263.0" />
+      <point x="62.333333333333485" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper" target="com.nkcoding.interpreter.compiler.OperatorType">
+      <point x="-189.60000000000036" y="-135.5" />
+      <point x="5587.538592896173" y="4112.0" />
+      <point x="5409.1802734474" y="4112.0" />
+      <point x="50.25" y="224.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipModel" target="com.nkcoding.interpreter.compiler.CompileException">
+      <point x="-194.25" y="-342.5" />
+      <point x="12712.404942344583" y="9585.0" />
+      <point x="8071.14055841128" y="9585.0" />
+      <point x="8071.14055841128" y="8442.0" />
+      <point x="6673.258132348734" y="8442.0" />
+      <point x="6673.258132348734" y="5504.0" />
+      <point x="4482.466104829135" y="5504.0" />
+      <point x="4482.466104829135" y="3493.0" />
+      <point x="4676.879166666666" y="3493.0" />
+      <point x="-17.5" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication" target="com.nkcoding.communication.Transmission">
+      <point x="-77.0" y="-265.5" />
+      <point x="875.4513906931315" y="12141.0" />
+      <point x="832.0468952574956" y="12141.0" />
+      <point x="832.0468952574956" y="9705.0" />
+      <point x="856.609393453251" y="9705.0" />
+      <point x="-20.5" y="199.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.StatementBlock" target="com.nkcoding.interpreter.StackStatement">
+      <point x="-25.375" y="-68.5" />
+      <point x="8059.317164324745" y="4633.0" />
+      <point x="8036.442164324745" y="4633.0" />
+      <point x="0.0" y="37.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Program" target="com.nkcoding.interpreter.ConcurrentStackItem">
+      <point x="61.125" y="-58.5" />
+      <point x="12092.841053455693" y="4623.0" />
+      <point x="12381.437589158813" y="4623.0" />
+      <point x="12381.437589158813" y="2064.0" />
+      <point x="10279.956627226184" y="2064.0" />
+      <point x="29.125" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Lexer" target="com.nkcoding.interpreter.compiler.Token">
+      <point x="20.0" y="-167.5" />
+      <point x="2834.3177285908278" y="9585.0" />
+      <point x="2866.3391237616925" y="9585.0" />
+      <point x="-72.79999999999927" y="364.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceSimulation" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler">
+      <point x="7.875" y="-672.5" />
+      <point x="17519.157745637094" y="16792.0" />
+      <point x="17578.14459308381" y="16792.0" />
+      <point x="17578.14459308381" y="9455.0" />
+      <point x="15145.332029030824" y="9455.0" />
+      <point x="213.75" y="91.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Simulated" target="com.nkcoding.spacegame.simulation.SimulatedType">
+      <point x="84.20000000000073" y="430.5" />
+      <point x="18034.476817344585" y="19288.0" />
+      <point x="18799.610150677916" y="19288.0" />
+      <point x="-93.0" y="-80.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.ShipDef" target="com.nkcoding.interpreter.compiler.Compiler">
+      <point x="-172.0" y="-232.5" />
+      <point x="12279.730175910647" y="6143.0" />
+      <point x="10442.620082871337" y="6143.0" />
+      <point x="241.875" y="233.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.ShipDef" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="-86.0" y="-232.5" />
+      <point x="12365.730175910647" y="6143.0" />
+      <point x="12297.716053455693" y="6143.0" />
+      <point x="12297.716053455693" y="4643.0" />
+      <point x="13783.723767462494" y="4643.0" />
+      <point x="13783.723767462494" y="1400.0" />
+      <point x="10053.67125900913" y="1400.0" />
+      <point x="128.09302325581393" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.MethodStatement" target="com.nkcoding.interpreter.Stack">
+      <point x="0.0" y="-79.5" />
+      <point x="10955.587262472087" y="2874.0" />
+      <point x="8293.058235753317" y="2874.0" />
+      <point x="223.80952380952385" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.SimulatedType" target="com.nkcoding.spacegame.simulation.Ship">
+      <point x="93.0" y="-80.5" />
+      <point x="18985.610150677916" y="19328.0" />
+      <point x="18976.169777046696" y="19328.0" />
+      <point x="18976.169777046696" y="9375.0" />
+      <point x="15915.668578738427" y="9375.0" />
+      <point x="120.84210526315837" y="375.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.CannonBullet" target="com.nkcoding.spacegame.SpaceSimulation">
+      <point x="-76.875" y="166.5" />
+      <point x="18091.510334640807" y="10860.0" />
+      <point x="17818.898943713364" y="10860.0" />
+      <point x="17818.898943713364" y="16892.0" />
+      <point x="17676.657745637094" y="16892.0" />
+      <point x="165.375" y="-672.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.simulation.spaceship.properties.BooleanProperty">
+      <point x="-14.31111111111204" y="-14.5" />
+      <point x="15203.37793412916" y="10610.0" />
+      <point x="14216.293140141934" y="10610.0" />
+      <point x="14216.293140141934" y="9565.0" />
+      <point x="14148.582029030824" y="9565.0" />
+      <point x="-69.5" y="101.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.ReturnValueStatement">
+      <point x="74.01639344262276" y="-233.5" />
+      <point x="10274.76147631396" y="5124.0" />
+      <point x="9066.078235753317" y="5124.0" />
+      <point x="0.0" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.MultiColorTextArea" target="com.nkcoding.interpreter.compiler.CompileException">
+      <point x="21.52941176470631" y="-595.5" />
+      <point x="2570.033578431372" y="10700.0" />
+      <point x="2683.8177285908278" y="10700.0" />
+      <point x="2683.8177285908278" y="3473.0" />
+      <point x="4606.879166666666" y="3473.0" />
+      <point x="-87.5" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.FloatToIntegerCast" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="51.600000000000364" y="-89.5" />
+      <point x="5649.530273447401" y="2954.0" />
+      <point x="5687.980273447401" y="2954.0" />
+      <point x="5687.980273447401" y="1260.0" />
+      <point x="9776.136375288199" y="1260.0" />
+      <point x="-149.4418604651164" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase" target="com.nkcoding.ui.TextFieldBase.TextFieldFilter">
+      <point x="-243.76470588235316" y="-1079.5" />
+      <point x="1957.6555656134497" y="6153.0" />
+      <point x="1643.965124436978" y="6153.0" />
+      <point x="-21.75" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData">
+      <point x="205.20000000000073" y="-91.5" />
+      <point x="15136.782029030825" y="8532.0" />
+      <point x="15045.182029030824" y="8532.0" />
+      <point x="15045.182029030824" y="6153.0" />
+      <point x="15350.304251253045" y="6153.0" />
+      <point x="-96.44444444444525" y="244.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.WhileLoopStatement">
+      <point x="-42.295081967213264" y="-233.5" />
+      <point x="10158.450000904124" y="5234.0" />
+      <point x="7796.692164324745" y="5234.0" />
+      <point x="-55.5" y="58.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty">
+      <point x="-205.20000000000073" y="-91.5" />
+      <point x="14726.382029030823" y="8482.0" />
+      <point x="14334.863279030824" y="8482.0" />
+      <point x="226.28125" y="166.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Explosion" target="com.nkcoding.spacegame.simulation.communication">
+      <point x="196.4375" y="210.5" />
+      <point x="18814.322834640807" y="10810.0" />
+      <point x="19573.942212131427" y="10810.0" />
+      <point x="19573.942212131427" y="19539.0" />
+      <point x="19330.63095992281" y="19539.0" />
+      <point x="0.0" y="-14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper" target="com.nkcoding.interpreter.compiler.CompilerHelper.WrongTypeException">
+      <point x="94.80000000000018" y="135.5" />
+      <point x="5871.938592896174" y="4633.0" />
+      <point x="5888.813592896175" y="4633.0" />
+      <point x="44.25" y="-14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.IfConditionStatement" target="com.nkcoding.interpreter.Expression">
+      <point x="-86.57142857142844" y="-69.5" />
+      <point x="6587.644545277127" y="3313.0" />
+      <point x="6614.321182923381" y="3313.0" />
+      <point x="6614.321182923381" y="1220.0" />
+      <point x="6586.821182923381" y="1220.0" />
+      <point x="6586.821182923381" y="363.0" />
+      <point x="7073.509674986872" y="363.0" />
+      <point x="-18.333333333333485" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.operators" target="com.nkcoding.interpreter.Expression">
+      <point x="-68.44444444444434" y="-14.5" />
+      <point x="7071.77152940411" y="3333.0" />
+      <point x="6967.8052734474" y="3333.0" />
+      <point x="6967.8052734474" y="403.0" />
+      <point x="7088.176341653539" y="403.0" />
+      <point x="-3.666666666666515" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData" target="com.nkcoding.interpreter.compiler.MethodType">
+      <point x="-36.16666666666606" y="-244.5" />
+      <point x="15410.582029030824" y="5504.0" />
+      <point x="15452.24869569749" y="5504.0" />
+      <point x="15452.24869569749" y="3413.0" />
+      <point x="11749.587265824994" y="3413.0" />
+      <point x="30.0" y="48.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="50.088888888889414" y="-14.5" />
+      <point x="15267.77793412916" y="10760.0" />
+      <point x="15969.326473475268" y="10760.0" />
+      <point x="15969.326473475268" y="1370.0" />
+      <point x="10075.020096218432" y="1370.0" />
+      <point x="149.4418604651164" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetVariableItemGet" target="com.nkcoding.interpreter.StackItem">
+      <point x="0.0" y="-89.5" />
+      <point x="9492.078235753317" y="3493.0" />
+      <point x="9496.716359365297" y="3493.0" />
+      <point x="9496.716359365297" y="1805.0" />
+      <point x="7680.090973848555" y="1805.0" />
+      <point x="46.958333333333485" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.CannonBullet" target="com.nkcoding.spacegame.simulation.Damageable">
+      <point x="-102.5" y="-166.5" />
+      <point x="18065.885334640807" y="9715.0" />
+      <point x="18024.443484011248" y="9715.0" />
+      <point x="0.0" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipModel" target="com.nkcoding.spacegame.simulation.Ship">
+      <point x="120.25" y="-342.5" />
+      <point x="13026.904942344583" y="9635.0" />
+      <point x="15656.721210317373" y="9635.0" />
+      <point x="-138.10526315789502" y="375.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Operation" target="com.nkcoding.interpreter.compiler.CompilerHelper">
+      <point x="75.33333333333303" y="-90.5" />
+      <point x="5474.471926229507" y="4633.0" />
+      <point x="5682.338592896173" y="4633.0" />
+      <point x="-94.80000000000018" y="135.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.util.Tuple">
+      <point x="31.721311475409493" y="-233.5" />
+      <point x="10232.466394346746" y="5164.0" />
+      <point x="8596.558235753317" y="5164.0" />
+      <point x="30.0" y="58.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.GameScreen" target="com.nkcoding.spacegame.simulation.spaceship.ShipDef">
+      <point x="130.39999999999964" y="-167.5" />
+      <point x="17455.15311038003" y="10830.0" />
+      <point x="17607.943484011248" y="10830.0" />
+      <point x="17607.943484011248" y="8402.0" />
+      <point x="12672.46350924398" y="8402.0" />
+      <point x="220.73333333333358" y="232.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.PropertyBox" target="com.nkcoding.interpreter.compiler.NormalMethodDefinition">
+      <point x="251.57142857142753" y="-265.5" />
+      <point x="16916.48599728479" y="12231.0" />
+      <point x="16882.298370637094" y="12231.0" />
+      <point x="16882.298370637094" y="10790.0" />
+      <point x="17116.298370637094" y="10790.0" />
+      <point x="17116.298370637094" y="5534.0" />
+      <point x="17052.081235380032" y="5534.0" />
+      <point x="17.16666666666788" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ReturnValueStatement" target="com.nkcoding.interpreter.GetVariableItemGet">
+      <point x="111.33333333333303" y="-68.5" />
+      <point x="9177.41156908665" y="4042.0" />
+      <point x="9429.328235753317" y="4042.0" />
+      <point x="-62.75" y="89.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.simulation.spaceship.ShipDef">
+      <point x="-57.244444444444525" y="-14.5" />
+      <point x="15160.444600795827" y="10730.0" />
+      <point x="13461.84869569749" y="10730.0" />
+      <point x="13461.84869569749" y="8442.0" />
+      <point x="12546.330175910647" y="8442.0" />
+      <point x="94.60000000000036" y="232.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.Operation">
+      <point x="-190.32786885245878" y="-233.5" />
+      <point x="10010.417214018878" y="5374.0" />
+      <point x="5455.638592896174" y="5374.0" />
+      <point x="56.5" y="90.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ExternalMethodStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="-109.77777777777737" y="-101.5" />
+      <point x="9652.30045797554" y="3213.0" />
+      <point x="8280.3527734474" y="3213.0" />
+      <point x="45.36000000000013" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.operators">
+      <point x="-74.01639344262276" y="-233.5" />
+      <point x="10126.728689428714" y="5264.0" />
+      <point x="7156.502859094457" y="5264.0" />
+      <point x="7156.502859094457" y="4032.0" />
+      <point x="7162.215973848555" y="4032.0" />
+      <point x="22.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceSimulation" target="com.nkcoding.communication.Communication">
+      <point x="-133.875" y="-672.5" />
+      <point x="17377.407745637094" y="16872.0" />
+      <point x="17085.25311038003" y="16872.0" />
+      <point x="17085.25311038003" y="12121.0" />
+      <point x="16832.798370637094" y="12121.0" />
+      <point x="16832.798370637094" y="10530.0" />
+      <point x="1572.2968952574956" y="10530.0" />
+      <point x="45.75" y="155.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.PropertyBox.PropertyBoxStyle" target="com.nkcoding.ui.PropertyBox">
+      <point x="84.79999999999927" y="92.5" />
+      <point x="16498.143140141936" y="12221.0" />
+      <point x="16581.057425856223" y="12221.0" />
+      <point x="-83.8571428571413" y="-265.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.CreateListExpression">
+      <point x="-148.0327868852455" y="-233.5" />
+      <point x="10052.712295986092" y="5334.0" />
+      <point x="6210.9302734474" y="5334.0" />
+      <point x="0.0" y="89.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty" target="com.nkcoding.interpreter.MethodStatement">
+      <point x="-69.625" y="-166.5" />
+      <point x="14038.957029030824" y="6123.0" />
+      <point x="14085.601703688424" y="6123.0" />
+      <point x="14085.601703688424" y="4463.0" />
+      <point x="11057.149762472087" y="4463.0" />
+      <point x="101.5625" y="79.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.communication" target="com.nkcoding.spacegame.simulation.SimulatedType">
+      <point x="-43.57142857142935" y="-14.5" />
+      <point x="19287.059531351384" y="19589.0" />
+      <point x="18718.235150677916" y="19589.0" />
+      <point x="-174.375" y="80.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ReturnValueStatement" target="com.nkcoding.interpreter.Stack">
+      <point x="-37.11111111111131" y="-68.5" />
+      <point x="9028.967124642204" y="3982.0" />
+      <point x="8942.766359365298" y="3982.0" />
+      <point x="8942.766359365298" y="3463.0" />
+      <point x="8768.328235753317" y="3463.0" />
+      <point x="8768.328235753317" y="2924.0" />
+      <point x="8181.153473848555" y="2924.0" />
+      <point x="111.90476190476193" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipModel" target="com.nkcoding.interpreter.compiler.Compiler">
+      <point x="-175.75" y="-342.5" />
+      <point x="12730.904942344583" y="9575.0" />
+      <point x="11620.788202799471" y="9575.0" />
+      <point x="11620.788202799471" y="8452.0" />
+      <point x="10120.120082871337" y="8452.0" />
+      <point x="-80.625" y="233.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication" target="com.nkcoding.communication.transmissions.TransmissionTransmission">
+      <point x="-25.66666666666606" y="-265.5" />
+      <point x="926.7847240264655" y="12181.0" />
+      <point x="928.7557904283585" y="12181.0" />
+      <point x="928.7557904283585" y="10750.0" />
+      <point x="907.5468952574956" y="10750.0" />
+      <point x="-108.0" y="90.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetVariableItemGet" target="com.nkcoding.interpreter.Stack">
+      <point x="-50.19999999999982" y="-89.5" />
+      <point x="9441.878235753316" y="3223.0" />
+      <point x="9339.039955987082" y="3223.0" />
+      <point x="9339.039955987082" y="2904.0" />
+      <point x="8225.91537861046" y="2904.0" />
+      <point x="156.66666666666697" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipModel" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty">
+      <point x="-27.75" y="-342.5" />
+      <point x="12878.904942344583" y="9525.0" />
+      <point x="13331.869064799535" y="9525.0" />
+      <point x="13331.869064799535" y="8492.0" />
+      <point x="13917.113279030824" y="8492.0" />
+      <point x="-191.46875" y="166.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper" target="com.nkcoding.interpreter.compiler.ProgramTextWrapper.EndReachedException">
+      <point x="-126.39999999999964" y="-135.5" />
+      <point x="5650.738592896174" y="4092.0" />
+      <point x="5447.4302734474" y="4092.0" />
+      <point x="5447.4302734474" y="3463.0" />
+      <point x="5206.679166666667" y="3463.0" />
+      <point x="73.60000000000036" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="116.31147540983602" y="-233.5" />
+      <point x="10317.056558281172" y="5084.0" />
+      <point x="9628.078235753317" y="5084.0" />
+      <point x="9628.078235753317" y="2094.0" />
+      <point x="9864.28899156727" y="2094.0" />
+      <point x="9864.28899156727" y="1500.0" />
+      <point x="9946.927072962619" y="1500.0" />
+      <point x="21.348837209302474" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.CreateListExpression" target="com.nkcoding.interpreter.Expression">
+      <point x="-80.85000000000036" y="-89.5" />
+      <point x="6130.0802734474" y="2764.0" />
+      <point x="6194.796940114067" y="2764.0" />
+      <point x="6194.796940114067" y="323.0" />
+      <point x="7058.843008320206" y="323.0" />
+      <point x="-33.0" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.StackStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="43.0" y="-37.5" />
+      <point x="8079.442164324745" y="4032.0" />
+      <point x="8065.632164324745" y="4032.0" />
+      <point x="8065.632164324745" y="3463.0" />
+      <point x="8219.8727734474" y="3463.0" />
+      <point x="-15.11999999999989" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.WhileLoopStatement" target="com.nkcoding.interpreter.Stack">
+      <point x="0.0" y="-58.5" />
+      <point x="7852.192164324745" y="2934.0" />
+      <point x="8046.867759562841" y="2934.0" />
+      <point x="-22.380952380952294" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ForLoopStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="-13.875" y="-80.5" />
+      <point x="8303.317164324744" y="4633.0" />
+      <point x="8293.990248254186" y="4633.0" />
+      <point x="8293.990248254186" y="3483.0" />
+      <point x="8245.072773447399" y="3483.0" />
+      <point x="10.079999999999927" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.FloatToIntegerCast">
+      <point x="-222.04918032786827" y="-233.5" />
+      <point x="9978.69590254347" y="5404.0" />
+      <point x="5256.726707650272" y="5404.0" />
+      <point x="5256.726707650272" y="3493.0" />
+      <point x="5533.4302734474" y="3493.0" />
+      <point x="-64.5" y="89.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.TypeNamePair" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="-17.23076923076951" y="101.5" />
+      <point x="11278.773163260892" y="453.0" />
+      <point x="10061.578235753317" y="453.0" />
+      <point x="136.0" y="-353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.Stack" target="com.nkcoding.interpreter.ExternalMethodFuture">
+      <point x="83.92857142857156" y="-156.5" />
+      <point x="8153.177283372364" y="2401.0" />
+      <point x="8177.021579748776" y="2401.0" />
+      <point x="8177.021579748776" y="2134.0" />
+      <point x="10972.308865367775" y="2134.0" />
+      <point x="-81.85714285714312" y="69.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.OnscreenKeyboard" target="com.nkcoding.ui.TextFieldBase">
+      <point x="20.375" y="26.5" />
+      <point x="2587.7000815320025" y="5524.0" />
+      <point x="2572.8250815320025" y="5524.0" />
+      <point x="2572.8250815320025" y="6153.0" />
+      <point x="2414.7143891428623" y="6153.0" />
+      <point x="213.29411764705947" y="-1079.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceSimulation" target="com.nkcoding.communication.Transmission">
+      <point x="-23.625" y="-672.5" />
+      <point x="17487.657745637094" y="16772.0" />
+      <point x="17531.25311038003" y="16772.0" />
+      <point x="17531.25311038003" y="10440.0" />
+      <point x="17105.298370637094" y="10440.0" />
+      <point x="17105.298370637094" y="9495.0" />
+      <point x="993.276060119917" y="9495.0" />
+      <point x="116.16666666666606" y="199.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.desktop.DesktopLauncher" target="com.nkcoding.spacegame.SpaceGame">
+      <point x="0.0" y="-26.5" />
+      <point x="-73.33333333333303" y="145.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ReturnValueStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="-74.22222222222263" y="-68.5" />
+      <point x="8991.856013531095" y="3992.0" />
+      <point x="8724.328235753317" y="3992.0" />
+      <point x="8724.328235753317" y="3413.0" />
+      <point x="8275.3127734474" y="3413.0" />
+      <point x="40.320000000000164" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.VirtualProperty" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty">
+      <point x="-67.25" y="-90.5" />
+      <point x="13856.332029030824" y="8522.0" />
+      <point x="14021.550779030824" y="8522.0" />
+      <point x="-87.03125" y="166.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.RawValueExpression" target="com.nkcoding.interpreter.Expression">
+      <point x="85.875" y="-89.5" />
+      <point x="10115.280270637037" y="2954.0" />
+      <point x="10097.248293892852" y="2954.0" />
+      <point x="10097.248293892852" y="223.0" />
+      <point x="7161.509674986872" y="223.0" />
+      <point x="69.66666666666652" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase" target="com.nkcoding.ui.TextFieldBase.OnscreenKeyboard">
+      <point x="182.82352941176396" y="-1079.5" />
+      <point x="2384.2438009075668" y="6143.0" />
+      <point x="2561.8250815320025" y="6143.0" />
+      <point x="2561.8250815320025" y="5534.0" />
+      <point x="2546.9500815320025" y="5534.0" />
+      <point x="-20.375" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.ui.CustomScrollPane">
+      <point x="-171.28125" y="-530.5" />
+      <point x="6450.116925253707" y="15210.0" />
+      <point x="2845.6291666666657" y="15210.0" />
+      <point x="0.0" y="91.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceSimulation" target="com.nkcoding.interpreter.ScriptingEngine">
+      <point x="55.125" y="-672.5" />
+      <point x="17566.407745637094" y="16822.0" />
+      <point x="17629.943484011248" y="16822.0" />
+      <point x="17629.943484011248" y="2381.0" />
+      <point x="11136.987262472085" y="2381.0" />
+      <point x="142.0" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.CompilerHelper.WrongTypeException">
+      <point x="-179.754098360655" y="-233.5" />
+      <point x="10020.990984510681" y="5364.0" />
+      <point x="5844.563592896175" y="5364.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.simulation.Ship">
+      <point x="32.20000000000073" y="-14.5" />
+      <point x="15249.889045240272" y="10710.0" />
+      <point x="15657.061195697492" y="10710.0" />
+      <point x="15657.061195697492" y="9685.0" />
+      <point x="15743.036999791058" y="9685.0" />
+      <point x="-51.78947368420995" y="375.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.Stack" target="com.nkcoding.interpreter.ScriptingEngine">
+      <point x="151.07142857142844" y="-156.5" />
+      <point x="8220.320140515221" y="2381.0" />
+      <point x="10796.187262472085" y="2381.0" />
+      <point x="-198.80000000000018" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.CompilerHelper">
+      <point x="-169.18032786885215" y="-233.5" />
+      <point x="10031.564755002484" y="5354.0" />
+      <point x="5961.693388201499" y="5354.0" />
+      <point x="5961.693388201499" y="4633.0" />
+      <point x="5966.738592896174" y="4633.0" />
+      <point x="189.60000000000036" y="135.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.operators" target="com.nkcoding.interpreter.Statement">
+      <point x="68.44444444444434" y="-14.5" />
+      <point x="7208.660418292999" y="3423.0" />
+      <point x="8199.7127734474" y="3423.0" />
+      <point x="-35.2800000000002" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship" target="com.nkcoding.spacegame.simulation.spaceship.ShipDef">
+      <point x="-136.66666666666606" y="-375.5" />
+      <point x="15658.159806808602" y="8432.0" />
+      <point x="12577.86350924398" y="8432.0" />
+      <point x="126.13333333333321" y="232.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ScriptingEngine" target="com.nkcoding.interpreter.Stack">
+      <point x="-85.19999999999982" y="68.5" />
+      <point x="10909.787262472086" y="2401.0" />
+      <point x="8287.462997658078" y="2401.0" />
+      <point x="218.21428571428532" y="-156.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper" target="com.nkcoding.interpreter.operators">
+      <point x="126.39999999999964" y="-135.5" />
+      <point x="5903.538592896173" y="4022.0" />
+      <point x="7096.215973848555" y="4022.0" />
+      <point x="-44.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Explosion" target="com.nkcoding.spacegame.simulation.Explosion.ExplosionCreateTransmission">
+      <point x="112.25" y="-210.5" />
+      <point x="18730.135334640807" y="9705.0" />
+      <point x="19418.110150677916" y="9705.0" />
+      <point x="-106.0" y="80.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.simulation.spaceship.properties.IntProperty">
+      <point x="-3.577777777778465" y="-14.5" />
+      <point x="15214.111267462493" y="10580.0" />
+      <point x="14659.082029030824" y="10580.0" />
+      <point x="0.0" y="101.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper" target="com.nkcoding.interpreter.compiler.ProgramPosition">
+      <point x="-94.80000000000018" y="-135.5" />
+      <point x="5682.338592896173" y="4082.0" />
+      <point x="5458.4302734474" y="4082.0" />
+      <point x="5458.4302734474" y="2924.0" />
+      <point x="4958.716104829135" y="2924.0" />
+      <point x="80.0" y="90.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceSimulation" target="com.nkcoding.spacegame.simulation.communication">
+      <point x="-126.0" y="672.5" />
+      <point x="17385.282745637094" y="18367.0" />
+      <point x="17451.175626868393" y="18367.0" />
+      <point x="17451.175626868393" y="19609.0" />
+      <point x="19269.63095992281" y="19609.0" />
+      <point x="-61.0" y="-14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ConcurrentStackItem" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="77.66666666666697" y="-68.5" />
+      <point x="10328.498293892852" y="1825.0" />
+      <point x="10276.091538674422" y="1825.0" />
+      <point x="10276.091538674422" y="1500.0" />
+      <point x="9982.508468311455" y="1500.0" />
+      <point x="56.93023255813932" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceSimulation" target="com.nkcoding.spacegame.simulation.Simulated">
+      <point x="168.0" y="672.5" />
+      <point x="17679.282745637094" y="18297.0" />
+      <point x="17905.16967448744" y="18297.0" />
+      <point x="-45.10714285714312" y="-430.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipModel" target="com.nkcoding.interpreter.compiler.Program">
+      <point x="-138.75" y="-342.5" />
+      <point x="12767.904942344583" y="9555.0" />
+      <point x="12709.869064799535" y="9555.0" />
+      <point x="12709.869064799535" y="5504.0" />
+      <point x="12194.716053455693" y="5504.0" />
+      <point x="163.0" y="58.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetListItemGet" target="com.nkcoding.interpreter.ListObject">
+      <point x="-53.25" y="-100.5" />
+      <point x="6330.2219262295075" y="3483.0" />
+      <point x="6381.721940114067" y="3483.0" />
+      <point x="6381.721940114067" y="1230.0" />
+      <point x="6597.821182923381" y="1230.0" />
+      <point x="6597.821182923381" y="453.0" />
+      <point x="8566.393762288459" y="453.0" />
+      <point x="-30.888888888888687" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper" target="com.nkcoding.interpreter.IntegerToFloatCast">
+      <point x="0.0" y="-135.5" />
+      <point x="5777.138592896174" y="3493.0" />
+      <point x="5860.9302734474" y="3493.0" />
+      <point x="-67.5" y="89.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.NormalMethodDefinition">
+      <point x="317.21311475409857" y="-233.5" />
+      <point x="10517.958197625436" y="5524.0" />
+      <point x="16983.414568713364" y="5524.0" />
+      <point x="-51.5" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.ui.ZoomScrollPane.ZoomScrollPaneStyle">
+      <point x="-95.15625" y="-530.5" />
+      <point x="6526.241925253707" y="15150.0" />
+      <point x="3946.0874999999987" y="15150.0" />
+      <point x="3946.0874999999987" y="12231.0" />
+      <point x="3951.3843952574935" y="12231.0" />
+      <point x="-184.58333333333394" y="135.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.Statement" target="com.nkcoding.interpreter.Stack">
+      <point x="0.0" y="-26.5" />
+      <point x="8234.9927734474" y="2954.0" />
+      <point x="8114.010616705697" y="2954.0" />
+      <point x="44.76190476190459" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.ShipDesigner" target="com.nkcoding.spacegame.ExtAssetManager">
+      <point x="273.7777777777774" y="-364.5" />
+      <point x="10449.697065194077" y="12231.0" />
+      <point x="16122.712656351383" y="12231.0" />
+      <point x="16122.712656351383" y="10830.0" />
+      <point x="16274.143140141938" y="10830.0" />
+      <point x="-34.04999999999927" y="70.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipModel" target="com.nkcoding.spacegame.SpaceSimulation">
+      <point x="169.58333333333394" y="342.5" />
+      <point x="13076.238275677917" y="10470.0" />
+      <point x="17498.25311038003" y="10470.0" />
+      <point x="17498.25311038003" y="16742.0" />
+      <point x="17440.407745637094" y="16742.0" />
+      <point x="-70.875" y="-672.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.simulation.Explosion">
+      <point x="75.13333333333321" y="-14.5" />
+      <point x="15292.822378573605" y="10870.0" />
+      <point x="18421.447834640807" y="10870.0" />
+      <point x="-196.4375" y="210.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.simulation.CannonBullet">
+      <point x="71.55555555555475" y="-14.5" />
+      <point x="15289.244600795826" y="10850.0" />
+      <point x="18040.260334640807" y="10850.0" />
+      <point x="-128.125" y="166.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.SimulatedType" target="com.nkcoding.spacegame.simulation.CannonBullet">
+      <point x="0.0" y="-80.5" />
+      <point x="18892.610150677916" y="19308.0" />
+      <point x="18943.169777046696" y="19308.0" />
+      <point x="18943.169777046696" y="10850.0" />
+      <point x="18296.510334640807" y="10850.0" />
+      <point x="128.125" y="166.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.NormalMethodDefinition" target="com.nkcoding.interpreter.compiler.MethodDefinition">
+      <point x="-68.66666666666788" y="-47.5" />
+      <point x="16966.247902046696" y="4693.0" />
+      <point x="15395.746190024023" y="4693.0" />
+      <point x="15395.746190024023" y="4092.0" />
+      <point x="11986.590662929306" y="4092.0" />
+      <point x="162.39999999999964" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.StackStatement" target="com.nkcoding.interpreter.Stack">
+      <point x="-43.0" y="-37.5" />
+      <point x="7993.442164324745" y="4032.0" />
+      <point x="8030.942164324745" y="4032.0" />
+      <point x="8030.942164324745" y="2954.0" />
+      <point x="8091.629664324745" y="2954.0" />
+      <point x="22.380952380952294" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.DefineValueStatement" target="com.nkcoding.interpreter.Stack">
+      <point x="57.0" y="-100.5" />
+      <point x="6966.215973848555" y="3343.0" />
+      <point x="7011.8052734474" y="3343.0" />
+      <point x="7011.8052734474" y="2894.0" />
+      <point x="7957.3439500390305" y="2894.0" />
+      <point x="-111.90476190476193" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.FloatToIntegerCast" target="com.nkcoding.interpreter.Stack">
+      <point x="103.19999999999982" y="-89.5" />
+      <point x="5701.1302734474" y="2844.0" />
+      <point x="7845.439188134269" y="2844.0" />
+      <point x="-223.80952380952385" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.GetVariableItemGet">
+      <point x="105.73770491803316" y="-233.5" />
+      <point x="10306.48278778937" y="5094.0" />
+      <point x="9554.828235753317" y="5094.0" />
+      <point x="62.75" y="89.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.ScriptColorParser" target="com.nkcoding.interpreter.compiler.Token">
+      <point x="42.5" y="-80.5" />
+      <point x="3850.9677285908274" y="10780.0" />
+      <point x="3840.005226786583" y="10780.0" />
+      <point x="3840.005226786583" y="9585.0" />
+      <point x="3011.939123761691" y="9585.0" />
+      <point x="72.79999999999927" y="364.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.MethodWrapperStatement" target="com.nkcoding.interpreter.MethodStatement">
+      <point x="91.63636363636351" y="-112.5" />
+      <point x="8865.19459938968" y="4673.0" />
+      <point x="10885.274762472087" y="4673.0" />
+      <point x="-70.3125" y="79.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.ShipDef" target="com.nkcoding.spacegame.simulation.spaceship.components">
+      <point x="31.53333333333285" y="232.5" />
+      <point x="12483.26350924398" y="8462.0" />
+      <point x="13454.693140141935" y="8462.0" />
+      <point x="13454.693140141935" y="10750.0" />
+      <point x="15153.289045240272" y="10750.0" />
+      <point x="-64.39999999999964" y="-14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.ConcurrentStackItem">
+      <point x="158.60655737704928" y="-233.5" />
+      <point x="10359.351640248387" y="5044.0" />
+      <point x="10210.706627226184" y="5044.0" />
+      <point x="10210.706627226184" y="2124.0" />
+      <point x="10202.289960559518" y="2124.0" />
+      <point x="-48.54166666666697" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.DefaultOnscreenKeyboard" target="com.nkcoding.ui.TextFieldBase.OnscreenKeyboard">
+      <point x="0.0" y="-26.5" />
+      <point x="2444.8250815320025" y="5534.0" />
+      <point x="2506.2000815320025" y="5534.0" />
+      <point x="-61.125" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication.Connection" target="com.nkcoding.communication.transmissions.PeerInfoTransmission.PeerInfo">
+      <point x="-112.88888888888869" y="-221.5" />
+      <point x="1029.2968952574938" y="10740.0" />
+      <point x="326.04689525749563" y="10740.0" />
+      <point x="326.04689525749563" y="9625.0" />
+      <point x="353.5" y="9625.0" />
+      <point x="-14.5" y="90.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler">
+      <point x="7.155555555555111" y="-14.5" />
+      <point x="15224.844600795826" y="10550.0" />
+      <point x="14933.370917919712" y="10550.0" />
+      <point x="14933.370917919712" y="9585.0" />
+      <point x="14974.332029030824" y="9585.0" />
+      <point x="42.75" y="91.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.MethodDefinition" target="com.nkcoding.interpreter.compiler.TypeNamePair">
+      <point x="-33.83333333333303" y="-112.5" />
+      <point x="11790.357329595972" y="3453.0" />
+      <point x="11638.087265824994" y="3453.0" />
+      <point x="11638.087265824994" y="453.0" />
+      <point x="11330.4654709532" y="453.0" />
+      <point x="34.46153846153811" y="101.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceGame" target="com.nkcoding.communication.Communication">
+      <point x="-102.66666666666697" y="-145.5" />
+      <point x="6518.7315085870405" y="16411.0" />
+      <point x="264.33912376169246" y="16411.0" />
+      <point x="264.33912376169246" y="10760.0" />
+      <point x="1419.7968952574956" y="10760.0" />
+      <point x="-106.75" y="155.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.spacegame.simulation.Ship.ShipModel">
+      <point x="-75.13333333333321" y="-14.5" />
+      <point x="15142.555711906938" y="10780.0" />
+      <point x="12872.738275677917" y="10780.0" />
+      <point x="-33.91666666666606" y="342.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetListItemGet" target="com.nkcoding.interpreter.Expression">
+      <point x="-88.75" y="-100.5" />
+      <point x="6294.7219262295075" y="3473.0" />
+      <point x="6368.888606780734" y="3473.0" />
+      <point x="6368.888606780734" y="353.0" />
+      <point x="7069.843008320206" y="353.0" />
+      <point x="-22.0" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship" target="com.nkcoding.spacegame.SpaceSimulation">
+      <point x="69.0526315789466" y="375.5" />
+      <point x="15863.879105054215" y="9435.0" />
+      <point x="17618.943484011248" y="9435.0" />
+      <point x="17618.943484011248" y="16812.0" />
+      <point x="17550.657745637094" y="16812.0" />
+      <point x="39.375" y="-672.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.RawValueExpression" target="com.nkcoding.interpreter.Stack">
+      <point x="-85.875" y="-89.5" />
+      <point x="9943.530270637037" y="2884.0" />
+      <point x="8270.677283372364" y="2884.0" />
+      <point x="201.42857142857156" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper" target="com.nkcoding.interpreter.GetStackItem">
+      <point x="94.80000000000018" y="-135.5" />
+      <point x="5871.938592896174" y="4012.0" />
+      <point x="6562.715973848555" y="4012.0" />
+      <point x="6562.715973848555" y="3363.0" />
+      <point x="7077.876702018829" y="3363.0" />
+      <point x="-59.42857142857156" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Explosion.ExplosionCreateTransmission" target="com.nkcoding.spacegame.simulation.communication">
+      <point x="176.66666666666606" y="80.5" />
+      <point x="19700.77681734458" y="9715.0" />
+      <point x="19661.753007820775" y="9715.0" />
+      <point x="19661.753007820775" y="19589.0" />
+      <point x="19374.20238849424" y="19589.0" />
+      <point x="43.57142857142935" y="-14.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SaveGameManager.SaveGame" target="com.nkcoding.spacegame.simulation.spaceship.ShipDef">
+      <point x="56.66666666666788" y="-79.5" />
+      <point x="1733.1718952574956" y="10780.0" />
+      <point x="1687.5052285908296" y="10780.0" />
+      <point x="1687.5052285908296" y="9585.0" />
+      <point x="2284.7834148653383" y="9585.0" />
+      <point x="2284.7834148653383" y="8492.0" />
+      <point x="12294.06350924398" y="8492.0" />
+      <point x="-157.66666666666697" y="232.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.TextFieldClickListener" target="com.nkcoding.ui.TextFieldBase">
+      <point x="0.0" y="-136.5" />
+      <point x="2114.7834148653383" y="8462.0" />
+      <point x="2169.045271495803" y="8462.0" />
+      <point x="-32.375" y="1079.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.PredefinedMethodStatement" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="37.57142857142844" y="-112.5" />
+      <point x="7423.037402419983" y="3353.0" />
+      <point x="7470.960035352162" y="3353.0" />
+      <point x="7470.960035352162" y="1380.0" />
+      <point x="9861.531724125409" y="1380.0" />
+      <point x="-64.04651162790742" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.CannonBullet.CannonBulletCreateTransmission" target="com.nkcoding.spacegame.simulation.communication">
+      <point x="148.33333333333394" y="47.5" />
+      <point x="19262.44348401125" y="9325.0" />
+      <point x="19600.085069274282" y="9325.0" />
+      <point x="19600.085069274282" y="19569.0" />
+      <point x="19356.773817065667" y="19569.0" />
+      <point x="26.142857142856883" y="-14.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.ShipDesigner" target="com.nkcoding.spacegame.simulation.spaceship.components">
+      <point x="205.33333333333394" y="-364.5" />
+      <point x="10381.252620749634" y="12221.0" />
+      <point x="15235.57793412916" y="12221.0" />
+      <point x="17.888888888888687" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.transmissions.IntTransmission" target="com.nkcoding.communication.Transmission">
+      <point x="43.75" y="-68.5" />
+      <point x="1340.7968952574956" y="9655.0" />
+      <point x="965.9427267865849" y="9655.0" />
+      <point x="88.83333333333326" y="199.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.ProgramTextWrapper">
+      <point x="-264.34426229508153" y="-233.5" />
+      <point x="9936.400820576255" y="5444.0" />
+      <point x="4989.966104829135" y="5444.0" />
+      <point x="4989.966104829135" y="4132.0" />
+      <point x="5007.379166666666" y="4132.0" />
+      <point x="0.0" y="221.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship" target="com.nkcoding.spacegame.simulation.Simulated">
+      <point x="103.57894736842172" y="375.5" />
+      <point x="15898.40542084369" y="9415.0" />
+      <point x="17952.885334640807" y="9415.0" />
+      <point x="17952.885334640807" y="18377.0" />
+      <point x="17965.312531630298" y="18377.0" />
+      <point x="15.035714285713766" y="-430.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipModel" target="com.nkcoding.spacegame.simulation.spaceship.ShipDef">
+      <point x="-157.25" y="-342.5" />
+      <point x="12749.404942344583" y="9565.0" />
+      <point x="12451.730175910647" y="9565.0" />
+      <point x="0.0" y="232.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship" target="com.nkcoding.spacegame.simulation.communication">
+      <point x="155.36842105263167" y="375.5" />
+      <point x="15950.1948945279" y="9345.0" />
+      <point x="19582.656497845714" y="9345.0" />
+      <point x="19582.656497845714" y="19549.0" />
+      <point x="19339.345245637098" y="19549.0" />
+      <point x="8.714285714286234" y="-14.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication" target="com.nkcoding.communication.transmissions.PeerInfoTransmission.PeerInfo">
+      <point x="-179.66666666666606" y="-265.5" />
+      <point x="772.7847240264655" y="12181.0" />
+      <point x="174.64567138073835" y="12181.0" />
+      <point x="174.64567138073835" y="9625.0" />
+      <point x="295.5" y="9625.0" />
+      <point x="-72.5" y="90.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetListItemGet" target="com.nkcoding.interpreter.StackItem">
+      <point x="53.25" y="-100.5" />
+      <point x="6436.7219262295075" y="3323.0" />
+      <point x="6496.481897209094" y="3323.0" />
+      <point x="6496.481897209094" y="1815.0" />
+      <point x="7586.174307181887" y="1815.0" />
+      <point x="-46.958333333333485" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerStack" target="com.nkcoding.interpreter.ConcurrentStackItem">
+      <point x="-167.57142857142844" y="-134.5" />
+      <point x="10756.76583390066" y="4633.0" />
+      <point x="10221.706627226184" y="4633.0" />
+      <point x="-29.125" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.transmissions.StringTransmission" target="com.nkcoding.communication.Transmission">
+      <point x="-52.5" y="-68.5" />
+      <point x="400.04689525749563" y="9655.0" />
+      <point x="788.276060119917" y="9655.0" />
+      <point x="-88.83333333333337" y="199.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.LauncherScreen" target="com.nkcoding.spacegame.SpaceGame">
+      <point x="76.33333333333394" y="365.5" />
+      <point x="1740.666104829137" y="16361.0" />
+      <point x="6592.064841920374" y="16361.0" />
+      <point x="-29.33333333333303" y="-145.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.TextFieldFilter.DigitsOnlyFilter" target="com.nkcoding.ui.TextFieldBase">
+      <point x="87.0" y="-26.5" />
+      <point x="217.5" y="8442.0" />
+      <point x="1974.7952714958028" y="8442.0" />
+      <point x="-226.625" y="1079.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.SocketCommunication" target="com.nkcoding.communication.transmissions.PeerInfoTransmission">
+      <point x="-102.66666666666606" y="-265.5" />
+      <point x="849.7847240264655" y="12151.0" />
+      <point x="639.2968952574956" y="12151.0" />
+      <point x="-60.75" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.ShipDef" target="com.nkcoding.interpreter.compiler.MethodDefinition">
+      <point x="-129.0" y="-232.5" />
+      <point x="12322.730175910647" y="6153.0" />
+      <point x="12286.716053455693" y="6153.0" />
+      <point x="12286.716053455693" y="4503.0" />
+      <point x="11906.366053455693" y="4503.0" />
+      <point x="11906.366053455693" y="4132.0" />
+      <point x="11878.32399626264" y="4132.0" />
+      <point x="54.13333333333321" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.DefineValueStatement" target="com.nkcoding.interpreter.Statement">
+      <point x="95.0" y="-100.5" />
+      <point x="7004.215973848555" y="3413.0" />
+      <point x="8194.672773447399" y="3413.0" />
+      <point x="-40.320000000000164" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.KeyRepeatTask" target="com.nkcoding.ui.TextFieldBase">
+      <point x="17.625" y="47.5" />
+      <point x="2265.4500815320025" y="6163.0" />
+      <point x="2262.36144796639" y="6163.0" />
+      <point x="60.94117647058738" y="-1079.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerStack.CompilerStackItem" target="com.nkcoding.interpreter.compiler.CompilerStack">
+      <point x="99.75" y="90.5" />
+      <point x="10621.081627226184" y="4573.0" />
+      <point x="11091.908691043514" y="4573.0" />
+      <point x="167.57142857142844" y="-134.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.ProgramTextWrapper" target="com.nkcoding.interpreter.compiler.CompileException">
+      <point x="-130.28571428571377" y="-221.5" />
+      <point x="4877.093452380952" y="3493.0" />
+      <point x="4781.879166666666" y="3493.0" />
+      <point x="87.5" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.communication" target="com.nkcoding.spacegame.simulation.communication">
+      <point x="0.0" y="14.5" />
+      <point x="19330.63095992281" y="19708.0" />
+      <point x="19219.13095992281" y="19708.0" />
+      <point x="19219.13095992281" y="19673.5" />
+      <point x="-91.5" y="-0.0" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.CompileException">
+      <point x="-296.06557377049194" y="-233.5" />
+      <point x="9904.679509100846" y="5474.0" />
+      <point x="4773.179219583233" y="5474.0" />
+      <point x="4773.179219583233" y="3493.0" />
+      <point x="4746.879166666666" y="3493.0" />
+      <point x="52.5" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.screens.ShipBuilderScreen" target="com.nkcoding.spacegame.simulation.spaceship.ShipDef">
+      <point x="6.34375" y="-530.5" />
+      <point x="6627.741925253707" y="15100.0" />
+      <point x="6720.299799015401" y="15100.0" />
+      <point x="6720.299799015401" y="8502.0" />
+      <point x="12325.596842577314" y="8502.0" />
+      <point x="-126.13333333333321" y="232.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.properties.IntProperty" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty">
+      <point x="62.25" y="-101.5" />
+      <point x="14721.332029030824" y="9565.0" />
+      <point x="14664.582029030824" y="9565.0" />
+      <point x="14664.582029030824" y="8492.0" />
+      <point x="14300.050779030824" y="8492.0" />
+      <point x="191.46875" y="166.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipModel" target="com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler">
+      <point x="64.75" y="-342.5" />
+      <point x="12971.404942344583" y="9575.0" />
+      <point x="14717.832029030824" y="9575.0" />
+      <point x="-213.75" y="91.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ExternalMethodStatement" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="27.444444444444343" y="-101.5" />
+      <point x="9789.52268019776" y="3463.0" />
+      <point x="9871.405270637037" y="3463.0" />
+      <point x="9871.405270637037" y="1510.0" />
+      <point x="9954.043352032386" y="1510.0" />
+      <point x="28.46511627906966" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Lexer" target="com.nkcoding.interpreter.compiler.CompileException">
+      <point x="-60.0" y="-167.5" />
+      <point x="2754.3177285908278" y="9585.0" />
+      <point x="2763.5677285908278" y="9585.0" />
+      <point x="2763.5677285908278" y="3483.0" />
+      <point x="4641.879166666666" y="3483.0" />
+      <point x="-52.5" y="68.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.TextFieldBase.DefaultOnscreenKeyboard" target="com.nkcoding.ui.TextFieldBase">
+      <point x="53.25" y="26.5" />
+      <point x="2498.0750815320025" y="6133.0" />
+      <point x="2353.773212672273" y="6133.0" />
+      <point x="152.35294117647027" y="-1079.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceGame" target="com.nkcoding.spacegame.SaveGameManager.SaveGame">
+      <point x="-88.0" y="-145.5" />
+      <point x="6533.398175253707" y="16401.0" />
+      <point x="1155.4513906931315" y="16401.0" />
+      <point x="1155.4513906931315" y="12231.0" />
+      <point x="1608.5052285908278" y="12231.0" />
+      <point x="-68.0" y="79.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.MethodDefinition">
+      <point x="243.1967213114758" y="-233.5" />
+      <point x="10443.941804182814" y="5454.0" />
+      <point x="11624.718512472087" y="5454.0" />
+      <point x="11624.718512472087" y="4122.0" />
+      <point x="11824.190662929306" y="4122.0" />
+      <point x="0.0" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ExternalMethodStatement" target="com.nkcoding.interpreter.Stack">
+      <point x="-82.33333333333303" y="-101.5" />
+      <point x="9679.744902419983" y="3203.0" />
+      <point x="9484.689955987084" y="3203.0" />
+      <point x="9484.689955987084" y="2894.0" />
+      <point x="8248.296330991412" y="2894.0" />
+      <point x="179.04761904761926" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.RawValueExpression" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="-28.625" y="-89.5" />
+      <point x="10000.780270637037" y="2954.0" />
+      <point x="10037.512806393719" y="2954.0" />
+      <point x="10037.512806393719" y="1520.0" />
+      <point x="9968.27591017192" y="1520.0" />
+      <point x="42.69767441860495" y="353.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.MethodStatement">
+      <point x="211.4754098360654" y="-233.5" />
+      <point x="10412.220492707402" y="5424.0" />
+      <point x="11130.337262472087" y="5424.0" />
+      <point x="11130.337262472087" y="4563.0" />
+      <point x="10932.149762472087" y="4563.0" />
+      <point x="-23.4375" y="79.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetListItemGet" target="com.nkcoding.interpreter.GetStackItem">
+      <point x="124.25" y="-100.5" />
+      <point x="6507.7219262295075" y="3353.0" />
+      <point x="7048.1624163045435" y="3353.0" />
+      <point x="-89.14285714285688" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.ExtAssetManager" target="com.nkcoding.spacegame.Asset">
+      <point x="0.0" y="-70.5" />
+      <point x="16308.193140141937" y="9615.0" />
+      <point x="15545.201473475268" y="9615.0" />
+      <point x="9.375" y="376.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerStack" target="com.nkcoding.interpreter.compiler.CompilerStack.CompilerStackItem">
+      <point x="111.71428571428532" y="-134.5" />
+      <point x="11036.051548186373" y="4583.0" />
+      <point x="10554.581627226184" y="4583.0" />
+      <point x="33.25" y="90.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.GetListItemGet" target="com.nkcoding.interpreter.Stack">
+      <point x="88.75" y="-100.5" />
+      <point x="6472.2219262295075" y="3333.0" />
+      <point x="6655.6802734474" y="3333.0" />
+      <point x="6655.6802734474" y="2874.0" />
+      <point x="7912.582045277126" y="2874.0" />
+      <point x="-156.66666666666652" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.PredefinedMethodStatement" target="com.nkcoding.interpreter.Stack">
+      <point x="75.14285714285734" y="-112.5" />
+      <point x="7460.608830991412" y="3363.0" />
+      <point x="7481.960035352162" y="3363.0" />
+      <point x="7481.960035352162" y="2924.0" />
+      <point x="8024.486807181888" y="2924.0" />
+      <point x="-44.76190476190459" y="156.5" />
+    </edge>
+    <edge source="com.nkcoding.ui.ZoomScrollPane.ZoomScrollPaneStyle" target="com.nkcoding.ui.ZoomScrollPane">
+      <point x="184.58333333333394" y="135.5" />
+      <point x="4320.551061924161" y="12231.0" />
+      <point x="4273.92189345325" y="12231.0" />
+      <point x="66.60000000000036" y="-1409.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.SpaceGame" target="com.nkcoding.spacegame.SaveGameManager">
+      <point x="-73.33333333333303" y="-145.5" />
+      <point x="6548.064841920374" y="16391.0" />
+      <point x="1539.3327714958032" y="16391.0" />
+      <point x="1539.3327714958032" y="15250.0" />
+      <point x="1655.2552285908278" y="15250.0" />
+      <point x="-42.5" y="69.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.MethodStatement" target="com.nkcoding.interpreter.compiler.MethodDefinition">
+      <point x="107.14285714285688" y="-79.5" />
+      <point x="11062.730119614944" y="4082.0" />
+      <point x="11715.92399626264" y="4082.0" />
+      <point x="-108.26666666666642" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ConcurrentStackItem" target="com.nkcoding.interpreter.Stack">
+      <point x="-67.95833333333303" y="68.5" />
+      <point x="10182.873293892852" y="2124.0" />
+      <point x="8166.021579748776" y="2124.0" />
+      <point x="8166.021579748776" y="2391.0" />
+      <point x="8119.605854800936" y="2391.0" />
+      <point x="50.35714285714312" y="-156.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Ship.ShipCreateTransmission" target="com.nkcoding.spacegame.simulation.communication">
+      <point x="124.375" y="47.5" />
+      <point x="16303.201473475268" y="8372.0" />
+      <point x="19746.610150677916" y="8372.0" />
+      <point x="19746.610150677916" y="19599.0" />
+      <point x="19382.916674208525" y="19599.0" />
+      <point x="52.285714285713766" y="-14.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Methods" target="com.nkcoding.interpreter.MethodStatement">
+      <point x="-169.3125" y="-155.5" />
+      <point x="11240.599762472088" y="4553.0" />
+      <point x="10947.774762472087" y="4553.0" />
+      <point x="-7.8125" y="79.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.ProgramTextWrapper.EndReachedException" target="com.nkcoding.interpreter.compiler.ProgramTextWrapper">
+      <point x="0.0" y="14.5" />
+      <point x="5133.079166666666" y="3493.0" />
+      <point x="5137.6648809523795" y="3493.0" />
+      <point x="130.28571428571377" y="-221.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.DefineValueStatement" target="com.nkcoding.interpreter.Expression">
+      <point x="-57.0" y="-100.5" />
+      <point x="6852.215973848555" y="3313.0" />
+      <point x="6723.376702018829" y="3313.0" />
+      <point x="6723.376702018829" y="393.0" />
+      <point x="7084.509674986872" y="393.0" />
+      <point x="-7.333333333333485" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.communication.transmissions.TransmissionTransmission" target="com.nkcoding.communication.Transmission">
+      <point x="0.0" y="-90.5" />
+      <point x="1015.5468952574956" y="9705.0" />
+      <point x="897.609393453251" y="9705.0" />
+      <point x="20.5" y="199.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.spaceship.components" target="com.nkcoding.util.TriFunction">
+      <point x="-39.35555555555584" y="-14.5" />
+      <point x="15178.333489684715" y="10680.0" />
+      <point x="13591.832029030824" y="10680.0" />
+      <point x="36.25" y="26.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.GetValueExpression">
+      <point x="84.59016393442653" y="-233.5" />
+      <point x="10285.335246805764" y="5114.0" />
+      <point x="9263.291350507414" y="5114.0" />
+      <point x="9263.291350507414" y="4032.0" />
+      <point x="9229.578235753317" y="4032.0" />
+      <point x="0.0" y="79.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ConcurrentStackItem" target="com.nkcoding.interpreter.StackItem">
+      <point x="0.0" y="-68.5" />
+      <point x="10250.831627226184" y="1785.0" />
+      <point x="7706.924307181887" y="1785.0" />
+      <point x="73.79166666666652" y="112.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.Compiler" target="com.nkcoding.interpreter.compiler.TypeNamePair">
+      <point x="274.9180327868853" y="-233.5" />
+      <point x="10475.663115658223" y="5484.0" />
+      <point x="11776.716053455693" y="5484.0" />
+      <point x="11776.716053455693" y="4613.0" />
+      <point x="12217.875089158813" y="4613.0" />
+      <point x="12217.875089158813" y="423.0" />
+      <point x="11382.15777864551" y="423.0" />
+      <point x="86.15384615384573" y="101.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.CannonBullet" target="com.nkcoding.spacegame.simulation.SynchronizationPriority">
+      <point x="-34.16666666666606" y="-166.5" />
+      <point x="18134.21866797414" y="9715.0" />
+      <point x="18140.943484011248" y="9715.0" />
+      <point x="18140.943484011248" y="8532.0" />
+      <point x="17806.568484011248" y="8532.0" />
+      <point x="26.625" y="48.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.ReturnValueStatement" target="com.nkcoding.interpreter.ReturnException">
+      <point x="0.0" y="-68.5" />
+      <point x="9066.078235753317" y="2094.0" />
+      <point x="8898.328235753317" y="2094.0" />
+      <point x="31.0" y="14.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.Explosion" target="com.nkcoding.spacegame.Asset">
+      <point x="-187.08333333333394" y="-210.5" />
+      <point x="18430.80200130747" y="9395.0" />
+      <point x="15601.451473475268" y="9395.0" />
+      <point x="65.625" y="376.5" />
+    </edge>
+    <edge source="com.nkcoding.spacegame.simulation.CannonBullet" target="com.nkcoding.spacegame.simulation.SimulatedType">
+      <point x="76.875" y="166.5" />
+      <point x="18245.260334640807" y="10860.0" />
+      <point x="18932.169777046696" y="10860.0" />
+      <point x="18932.169777046696" y="19298.0" />
+      <point x="18861.610150677916" y="19298.0" />
+      <point x="-31.0" y="-80.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerHelper" target="com.nkcoding.interpreter.Expression">
+      <point x="-31.600000000000364" y="-135.5" />
+      <point x="5745.538592896173" y="4132.0" />
+      <point x="5737.4302734474" y="4132.0" />
+      <point x="5737.4302734474" y="273.0" />
+      <point x="7040.509674986872" y="273.0" />
+      <point x="-51.333333333333485" y="47.5" />
+    </edge>
+    <edge source="com.nkcoding.interpreter.compiler.CompilerStack" target="com.nkcoding.interpreter.compiler.DataType">
+      <point x="-55.85714285714312" y="-134.5" />
+      <point x="10868.480119614944" y="4613.0" />
+      <point x="10377.831627226184" y="4613.0" />
+      <point x="10377.831627226184" y="1490.0" />
+      <point x="9989.624747381224" y="1490.0" />
+      <point x="64.04651162790742" y="353.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.1" x="12611.0" y="11890.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Inner Classes</Category>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
