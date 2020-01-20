@@ -35,7 +35,7 @@ public class CannonBullet extends Simulated {
         this(spaceSimulation, pos, angle, length, velocity, spaceSimulation.getClientID(), spaceSimulation.getNewId());
     }
 
-    private CannonBullet(SpaceSimulation spaceSimulation, Vector2 pos, float angle, float length, Vector2 velocity, int owner, int id) {
+    private CannonBullet(SpaceSimulation spaceSimulation, Vector2 pos, float angle, float length, Vector2 velocity, short owner, int id) {
         super(SimulatedType.CannonBullet, spaceSimulation, BodyDef.BodyType.KinematicBody, 2, owner, id);
         setSyncPriority(SynchronizationPriority.LOW);
 

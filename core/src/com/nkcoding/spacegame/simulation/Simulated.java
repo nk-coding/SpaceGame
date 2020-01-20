@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Transform;
+import com.nkcoding.communication.ResetDataOutputStream;
 import com.nkcoding.spacegame.SpaceSimulation;
 import com.nkcoding.spacegame.simulation.communication.TransmissionID;
 import com.nkcoding.spacegame.simulation.communication.UpdateTransmission;
@@ -35,8 +36,12 @@ public class Simulated {
     private SpaceSimulation spaceSimulation;
     private boolean receivesKeyInput = false;
     private int collisionPriority;
-    private int owner;
+    private short owner;
     private boolean isOwner;
+    /**
+     * the last update on this Simulated (is automatically set)
+     */
+    private int lastBodyUpdate = -1;
 
     /**
      * wrapper for the complex constructor
@@ -47,7 +52,7 @@ public class Simulated {
      * @param collisionPriority a higher priority means that a contact is handled by this instance, but not on this client
      * @param owner             owner id, used to calculate isOwner
      */
-    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority, int owner, int id) {
+    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority, short owner, int id) {
         this(type, spaceSimulation, createBodyDef(bodyType), collisionPriority, owner, id);
     }
 
@@ -60,7 +65,7 @@ public class Simulated {
      * @param collisionPriority a higher priority means that a contact is handled by this instance, but not on this client
      * @param owner             owner id, used to calculate isOwner
      */
-    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef bodyDef, int collisionPriority, int owner, int id) {
+    protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef bodyDef, int collisionPriority, short owner, int id) {
         this.type = type;
         this.spaceSimulation = spaceSimulation;
         this.bodyType = bodyDef.type;
@@ -73,11 +78,11 @@ public class Simulated {
     }
 
     protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef bodyDef, int collisionPriority, DataInputStream inputStream) throws IOException {
-        this(type, spaceSimulation, bodyDef, collisionPriority, inputStream.readInt(), inputStream.readInt());
+        this(type, spaceSimulation, bodyDef, collisionPriority, inputStream.readShort(), inputStream.readInt());
     }
 
     protected Simulated(SimulatedType type, SpaceSimulation spaceSimulation, BodyDef.BodyType bodyType, int collisionPriority, DataInputStream inputStream) throws IOException {
-        this(type, spaceSimulation, bodyType, collisionPriority, inputStream.readInt(), inputStream.readInt());
+        this(type, spaceSimulation, bodyType, collisionPriority, inputStream.readShort(), inputStream.readInt());
     }
 
     //helper method to create bodyDef
@@ -249,7 +254,7 @@ public class Simulated {
         if (isOwner) {
             receiveTransmission(transmission);
         } else {
-            DataOutputStream outputStream = spaceSimulation.getOutputStream(true);
+            ResetDataOutputStream outputStream = spaceSimulation.getOutputStream(true);
             try {
                 outputStream.writeInt(TransmissionID.UPDATE);
                 transmission.serialize(outputStream);
@@ -266,7 +271,7 @@ public class Simulated {
      */
     public void post(UpdateTransmission transmission) {
         receiveTransmission(transmission);
-        DataOutputStream outputStream = spaceSimulation.getOutputStream(true);
+        ResetDataOutputStream outputStream = spaceSimulation.getOutputStream(true);
         try {
             outputStream.writeInt(TransmissionID.UPDATE);
             transmission.serialize(outputStream);
@@ -297,17 +302,21 @@ public class Simulated {
      */
     public void serialize(DataOutputStream outputStream) throws IOException {
         type.serialize(outputStream);
-        outputStream.writeInt(owner);
+        outputStream.writeShort(owner);
         outputStream.writeInt(id);
     }
 
     /**
      * update the Simulated based on the body state
      */
-    public void deserializeBodyState(DataInputStream inputStream) throws IOException {
-        body.setTransform(inputStream.readFloat(), inputStream.readFloat(), inputStream.readFloat());
-        body.setLinearVelocity(inputStream.readFloat(), inputStream.readFloat());
-        body.setAngularVelocity(inputStream.readFloat());
+    public void deserializeBodyState(DataInputStream inputStream, int updateID) throws IOException {
+        if (this.lastBodyUpdate <= updateID) {
+            body.setTransform(inputStream.readFloat(), inputStream.readFloat(), inputStream.readFloat());
+            body.setLinearVelocity(inputStream.readFloat(), inputStream.readFloat());
+            body.setAngularVelocity(inputStream.readFloat());
+            this.lastBodyUpdate = updateID;
+        }
+
     }
 
     public void serializeBodyState(DataOutputStream outputStream) throws IOException {

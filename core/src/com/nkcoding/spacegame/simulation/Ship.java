@@ -22,7 +22,6 @@ import com.nkcoding.spacegame.simulation.spaceship.properties.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -54,7 +53,7 @@ public class Ship extends Simulated {
 
     private boolean componentsChanged = true;
 
-    private Ship(SpaceSimulation spaceSimulation, int owner, int id) {
+    private Ship(SpaceSimulation spaceSimulation, short owner, int id) {
         super(SimulatedType.Ship, spaceSimulation, BodyDef.BodyType.DynamicBody, 1, owner, id);
         setSyncPriority(SynchronizationPriority.HIGH);
         //init the components map

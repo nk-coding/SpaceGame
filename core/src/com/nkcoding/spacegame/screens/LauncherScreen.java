@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nkcoding.communication.Communication;
-import com.nkcoding.communication.SocketCommunication;
+import com.nkcoding.communication.DatagramSocketCommunication;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.SpaceGame;
@@ -159,7 +159,7 @@ public class LauncherScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (communication == null) {
-                    communication = new SocketCommunication(true, Integer.parseInt(serverPortTextField.getText()));
+                    communication = new DatagramSocketCommunication(true, Integer.parseInt(serverPortTextField.getText()));
                     startServerButton.setText("Start Game");
                 } else {
                     spaceGame.startGame(communication);
@@ -188,7 +188,7 @@ public class LauncherScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (communication == null) {
-                    communication = new SocketCommunication(false, Integer.parseInt(clientClientPortTextField.getText()));
+                    communication = new DatagramSocketCommunication(false, Integer.parseInt(clientClientPortTextField.getText()));
                     communication.openCommunication(clientServerIPTextField.getText(), Integer.parseInt(clientServerPortTextField.getText()));
                     startClientButton.setText("Start Game");
                 } else {

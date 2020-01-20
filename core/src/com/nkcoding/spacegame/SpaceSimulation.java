@@ -7,15 +7,18 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.nkcoding.communication.Communication;
+import com.nkcoding.communication.ResetDataOutputStream;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.spacegame.simulation.Simulated;
 import com.nkcoding.spacegame.simulation.SimulatedType;
 import com.nkcoding.spacegame.simulation.SynchronizationPriority;
-import com.nkcoding.spacegame.simulation.communication.*;
+import com.nkcoding.spacegame.simulation.communication.TransmissionID;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,7 +51,7 @@ public class SpaceSimulation implements InputProcessor {
     // this is the physics simulation
     private final World world;
     //the id of the client
-    private int clientID = 0;
+    private short clientID = 0;
     //id counter
     private int idCounter = 0;
     // handles all the ExternalPropertyHandlers
@@ -66,6 +69,7 @@ public class SpaceSimulation implements InputProcessor {
     private float radius, scaledRadius;
     // Simulated that the camera should follow
     private Simulated cameraSimulated;
+    private int bodyUpdateID = 1;
 
     private Communication communication;
 
@@ -151,7 +155,7 @@ public class SpaceSimulation implements InputProcessor {
      */
     public void addSimulated(Simulated simulated) {
         simulatedToAdd.add(simulated);
-        DataOutputStream outputStream = getOutputStream(true);
+        ResetDataOutputStream outputStream = getOutputStream(true);
         try {
             outputStream.writeInt(TransmissionID.CREATE_NEW);
             simulated.serialize(outputStream);
@@ -168,7 +172,7 @@ public class SpaceSimulation implements InputProcessor {
      */
     public void removeSimulated(Simulated simulated) {
         simulatedToRemove.add(simulated);
-        DataOutputStream outputStream = getOutputStream(true);
+        ResetDataOutputStream outputStream = getOutputStream(true);
         try {
             outputStream.writeInt(TransmissionID.REMOVE);
             outputStream.writeInt(simulated.id);
@@ -239,8 +243,10 @@ public class SpaceSimulation implements InputProcessor {
                 int maxAmount = Communication.MAX_SIZE / 28;
                 for (int x = 0; x < Math.ceil(bodyUpdateList.size() / (float)maxAmount); x++) {
                     int max = Math.max(bodyUpdateList.size(), (x + 1) * maxAmount);
-                    DataOutputStream outputStream = getOutputStream(false);
+                    ResetDataOutputStream outputStream = getOutputStream(false);
                     outputStream.writeInt(TransmissionID.UPDATE_BODY_STATE);
+                    //write the id
+                    outputStream.writeInt(bodyUpdateID);
                     outputStream.writeInt(max - x * maxAmount);
                     for (int i = x * maxAmount; i < max; i++) {
                         bodyUpdateList.get(i).serialize(outputStream);
@@ -250,7 +256,8 @@ public class SpaceSimulation implements InputProcessor {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
+            //increase the id
+            bodyUpdateID++;
         }
     }
 
@@ -313,7 +320,7 @@ public class SpaceSimulation implements InputProcessor {
                         case TransmissionID.CREATE_NEW:
                             SimulatedType type = SimulatedType.deserialize(inputStream);
                             Simulated newSimulated = type.constructor.apply(this, inputStream);
-                            newSimulated.deserializeBodyState(inputStream);
+                            newSimulated.deserializeBodyState(inputStream, 0);
                             simulatedToAdd.add(newSimulated);
                             break;
                         case TransmissionID.REMOVE:
@@ -333,12 +340,13 @@ public class SpaceSimulation implements InputProcessor {
                             }
                             break;
                         case TransmissionID.UPDATE_BODY_STATE:
+                            int bodyUpdateID = inputStream.readInt();
                             int amount = inputStream.readInt();
                             for (int x = 0; x < amount; x++) {
                                 int simulatedID = inputStream.readInt();
                                 Simulated updateBody = getSimulated(simulatedID);
                                 if (updateBody != null) {
-                                    updateBody.deserializeBodyState(inputStream);
+                                    updateBody.deserializeBodyState(inputStream, bodyUpdateID);
                                 } else {
                                     System.out.println("cannot update body: " + simulatedID);
                                 }
@@ -494,7 +502,7 @@ public class SpaceSimulation implements InputProcessor {
     }
     //endregion
 
-    public int getClientID() {
+    public short getClientID() {
         return clientID;
     }
 
@@ -502,7 +510,7 @@ public class SpaceSimulation implements InputProcessor {
         return clientID * 1000000 + idCounter++;
     }
 
-    public void sendTo(DataOutputStream transmission, int target) {
+    public void sendTo(ResetDataOutputStream transmission, short target) {
         if (communication != null) {
             communication.sendTo(target, transmission);
         } else {
@@ -514,7 +522,7 @@ public class SpaceSimulation implements InputProcessor {
         }
     }
 
-    public void sendToAll(DataOutputStream transmission) {
+    public void sendToAll(ResetDataOutputStream transmission) {
         if (communication != null) {
             communication.sendToAll(transmission);
         } else {
@@ -526,11 +534,11 @@ public class SpaceSimulation implements InputProcessor {
         }
     }
 
-    public DataOutputStream getOutputStream(boolean reliable) {
+    public ResetDataOutputStream getOutputStream(boolean reliable) {
         if (communication != null) {
             return communication.getOutputStream(reliable);
         } else {
-            return new DataOutputStream(OutputStream.nullOutputStream());
+            return new ResetDataOutputStream();
         }
     }
 }
