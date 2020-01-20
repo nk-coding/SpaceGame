@@ -242,7 +242,7 @@ public class SpaceSimulation implements InputProcessor {
             try {
                 int maxAmount = Communication.MAX_SIZE / 28;
                 for (int x = 0; x < Math.ceil(bodyUpdateList.size() / (float)maxAmount); x++) {
-                    int max = Math.max(bodyUpdateList.size(), (x + 1) * maxAmount);
+                    int max = Math.min(bodyUpdateList.size(), (x + 1) * maxAmount);
                     ResetDataOutputStream outputStream = getOutputStream(false);
                     outputStream.writeInt(TransmissionID.UPDATE_BODY_STATE);
                     //write the id
