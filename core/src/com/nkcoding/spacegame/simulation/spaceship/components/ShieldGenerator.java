@@ -79,7 +79,7 @@ public class ShieldGenerator extends Buffer {
 
     @Override
     public void receiveTransmission(UpdateComponentTransmission transmission) {
-        switch (transmission.updateID) {
+        switch (transmission.componentUpdateID) {
             case ComponentUpdateID.RADIUS:
                 RadiusTransmission radiusTransmission = (RadiusTransmission)transmission;
                 radius = radiusTransmission.radius;

@@ -10,12 +10,12 @@ public class RadiusTransmission extends UpdateComponentTransmission {
     public final float radius;
 
     public RadiusTransmission(Component component, float radius) {
-        super(ComponentUpdateID.SHIELD, component);
+        super(ComponentUpdateID.RADIUS, component);
         this.radius = radius;
     }
 
     public RadiusTransmission(DataInputStream inputStream) throws IOException {
-        super(ComponentUpdateID.SHIELD, inputStream);
+        super(ComponentUpdateID.RADIUS, inputStream);
         this.radius = inputStream.readFloat();
     }
 
