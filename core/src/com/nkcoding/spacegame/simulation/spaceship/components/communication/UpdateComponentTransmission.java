@@ -31,6 +31,7 @@ public class UpdateComponentTransmission extends UpdateTransmission {
     @Override
     public void serialize(DataOutputStream outputStream) throws IOException {
         super.serialize(outputStream);
+        outputStream.writeShort(componentUpdateID);
         outputStream.writeInt(x);
         outputStream.writeInt(y);
     }
