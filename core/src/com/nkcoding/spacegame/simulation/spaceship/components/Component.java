@@ -21,7 +21,6 @@ import com.nkcoding.spacegame.simulation.spaceship.properties.IntProperty;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 
 public abstract class Component implements Damageable {
 
@@ -306,7 +305,7 @@ public abstract class Component implements Damageable {
      * @param transmission the update transmission
      */
     public void receiveTransmission(UpdateComponentTransmission transmission) {
-        switch (transmission.updateID) {
+        switch (transmission.componentUpdateID) {
             case ComponentUpdateID.DAMAGE:
                 DamageTransmission damageTransmission = (DamageTransmission)transmission;
                 if (ship.isOriginal()) {

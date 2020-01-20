@@ -37,6 +37,6 @@ public class UpdateComponentTransmission extends UpdateTransmission {
 
     @Override
     public String toString() {
-        return String.format("%d: (%d, %d)", updateID, x, y);
+        return String.format("%d: (%d, %d)", componentUpdateID, x, y);
     }
 }
