@@ -13,19 +13,19 @@ public class UpdateComponentTransmission extends UpdateTransmission {
     public final int x;
     public final int y;
 
-    public UpdateComponentTransmission(short componentUpdateID, int x, int y) {
-        super(Ship.UPDATE_COMPONENT);
+    public UpdateComponentTransmission(short componentUpdateID, int simulatedID, int x, int y) {
+        super(Ship.UPDATE_COMPONENT, simulatedID);
         this.componentUpdateID = componentUpdateID;
         this.x = x;
         this.y = y;
     }
 
     public UpdateComponentTransmission(short componentUpdateID, Component component) {
-        this(componentUpdateID, component.getX(), component.getY());
+        this(componentUpdateID, component.getShip().id, component.getX(), component.getY());
     }
 
     public UpdateComponentTransmission(short componentUpdateID, DataInputStream inputStream) throws IOException {
-        this(componentUpdateID, inputStream.readInt(), inputStream.readInt());
+        this(componentUpdateID, 0, inputStream.readInt(), inputStream.readInt());
     }
 
     @Override

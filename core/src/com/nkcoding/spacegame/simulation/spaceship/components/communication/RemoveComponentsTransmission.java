@@ -12,8 +12,8 @@ import java.util.List;
 public class RemoveComponentsTransmission extends UpdateTransmission {
     public final int[][] components;
 
-    public RemoveComponentsTransmission(List<Component.ComponentModel> componentModels) {
-        super(Ship.REMOVE_COMPONENTS);
+    public RemoveComponentsTransmission(List<Component.ComponentModel> componentModels, int simulatedID) {
+        super(Ship.REMOVE_COMPONENTS, simulatedID);
         this.components = new int[componentModels.size()][2];
         for (int x = 0; x < componentModels.size(); x++) {
             components[x][0] = componentModels.get(x).getComponentDef().getX();
@@ -22,7 +22,7 @@ public class RemoveComponentsTransmission extends UpdateTransmission {
     }
 
     public RemoveComponentsTransmission(DataInputStream inputStream) throws IOException {
-        super(Ship.REMOVE_COMPONENTS);
+        super(Ship.REMOVE_COMPONENTS, 0);
         int amount = inputStream.readInt();
         components = new int[amount][2];
         for (int i = 0; i < amount; i++) {

@@ -332,9 +332,10 @@ public class SpaceSimulation implements InputProcessor {
                             break;
                         case TransmissionID.UPDATE:
                             short updateID = inputStream.readShort();
-                            Simulated toUpdate = getSimulated(updateID);
+                            int toUpdateID = inputStream.readInt();
+                            Simulated toUpdate = getSimulated(toUpdateID);
                             if (toUpdate != null) {
-                                toUpdate.receiveTransmission(toUpdate.deserializeTransmission(inputStream, inputStream.readShort()));
+                                toUpdate.receiveTransmission(toUpdate.deserializeTransmission(inputStream, updateID));
                             } else {
                                 System.out.println("cannot update " + updateID);
                             }

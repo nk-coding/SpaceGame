@@ -213,7 +213,7 @@ public class Ship extends Simulated {
      * @param component the Component to destroy
      */
     public void destroyComponent(Component component) {
-        post(new RemoveComponentTransmission(component));
+        post(new RemoveComponentTransmission(component, id));
         if (isOriginal()) {
             model.isStructureCheckNecessary = true;
         }
@@ -403,7 +403,7 @@ public class Ship extends Simulated {
                 checkStructureRec(components.get(0));
                 List<Component.ComponentModel> otherComponents = components.stream().filter(com -> !com.structureHelper).collect(Collectors.toList());
                 //remove other components
-                post(new RemoveComponentsTransmission(otherComponents));
+                post(new RemoveComponentsTransmission(otherComponents, id));
                 //reset remaining
                 components.forEach(component -> component.structureHelper = false);
                 //create new ship
