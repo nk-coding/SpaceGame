@@ -326,6 +326,6 @@ public class Simulated {
         outputStream.writeFloat(transform.getRotation());
         outputStream.writeFloat(body.getLinearVelocity().x);
         outputStream.writeFloat(body.getLinearVelocity().y);
-        outputStream.writeFloat(body.getAngle());
+        outputStream.writeFloat(body.getAngularVelocity());
     }
 }
