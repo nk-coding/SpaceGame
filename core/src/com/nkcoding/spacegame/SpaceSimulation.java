@@ -367,6 +367,7 @@ public class SpaceSimulation implements InputProcessor {
             return res;
         } else {
             for (Simulated simulated : simulatedToAdd) {
+                System.out.println("found a simu: " + simulated.id);
                 if (simulated.id == id) return simulated;
             }
             return null;

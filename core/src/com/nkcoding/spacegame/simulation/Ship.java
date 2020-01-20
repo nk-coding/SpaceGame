@@ -49,7 +49,7 @@ public class Ship extends Simulated {
     private List<Component> iterationList;
 
     //the map of the components
-    private final Component[][] componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];;
+    private final Component[][] componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];
 
     private boolean componentsChanged = true;
 
@@ -115,7 +115,8 @@ public class Ship extends Simulated {
             case REMOVE_COMPONENTS:
                 return new RemoveComponentsTransmission(inputStream);
             case UPDATE_COMPONENT:
-                switch(inputStream.readShort()) {
+                short componentUpdateID = inputStream.readShort();
+                switch (componentUpdateID) {
                     case ComponentUpdateID.DAMAGE:
                         return new DamageTransmission(inputStream);
                     case ComponentUpdateID.RADIUS:
@@ -123,7 +124,7 @@ public class Ship extends Simulated {
                     case ComponentUpdateID.SHIELD:
                         return new ShieldTransmission(inputStream);
                     default:
-                        throw new IllegalStateException("unknown ComponentID");
+                        throw new IllegalStateException("unknown ComponentID: " + componentUpdateID);
                 }
             default:
                 return super.deserializeTransmission(inputStream, updateID);
