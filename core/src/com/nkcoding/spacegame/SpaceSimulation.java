@@ -249,7 +249,9 @@ public class SpaceSimulation implements InputProcessor {
                     outputStream.writeInt(bodyUpdateID);
                     outputStream.writeInt(max - x * maxAmount);
                     for (int i = x * maxAmount; i < max; i++) {
-                        bodyUpdateList.get(i).serialize(outputStream);
+                        Simulated simulatedToSend = bodyUpdateList.get(i);
+                        outputStream.writeInt(simulatedToSend.id);
+                        simulatedToSend.serializeBodyState(outputStream);
                     }
                     sendToAll(outputStream);
                 }
