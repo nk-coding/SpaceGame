@@ -102,6 +102,7 @@ public class Ship extends Simulated {
     @Override
     public void serialize(DataOutputStream outputStream) throws IOException{
         super.serialize(outputStream);
+        outputStream.writeInt(components.size());
         for (Component component : components) {
             component.serialize(outputStream);
         }

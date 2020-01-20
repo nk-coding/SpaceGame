@@ -17,7 +17,7 @@ public class DatagramSocketCommunication extends Communication {
     private static final int RESEND_TIMEOUT = 100;
     private static final short PROTOCOL_ID = 8001;
     private static final int HEADER_SIZE = 21;
-    private static final int MAX_SIZE = 29;//Communication.MAX_SIZE + 25;
+    private static final int MAX_SIZE = Communication.MAX_SIZE + 25;
     /**
      * requests to open a connection
      * 0 arguments (right now)
@@ -361,16 +361,6 @@ public class DatagramSocketCommunication extends Communication {
      * DOES NOT MODIFY source
      */
     private void handleMsg(byte[] msg, DatagramPacket source) {
-        //region debugging
-//        if (Math.random() < 0.5) {
-//            return;
-//        }
-//        if (!isServer && readFlag(msg, IS_OPEN_CONNECTION) && !readFlag(msg, IS_INDIRECT) && source.getPort() == 8000) {
-//            System.out.println("drop initial message from other client");
-//            //return;
-//        }
-        //endregion
-
         if (readShort(msg, 0) != PROTOCOL_ID) {
             System.err.println("received illegal package");
             return;
