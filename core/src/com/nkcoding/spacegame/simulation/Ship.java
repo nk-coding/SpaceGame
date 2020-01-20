@@ -49,15 +49,13 @@ public class Ship extends Simulated {
     private List<Component> iterationList;
 
     //the map of the components
-    private Component[][] componentsMap;
+    private final Component[][] componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];;
 
     private boolean componentsChanged = true;
 
     private Ship(SpaceSimulation spaceSimulation, short owner, int id) {
         super(SimulatedType.Ship, spaceSimulation, BodyDef.BodyType.DynamicBody, 1, owner, id);
         setSyncPriority(SynchronizationPriority.HIGH);
-        //init the components map
-        componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];
     }
 
     /**
