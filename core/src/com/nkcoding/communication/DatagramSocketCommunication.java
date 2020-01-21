@@ -138,7 +138,7 @@ public class DatagramSocketCommunication extends Communication {
             @Override
             public void run() {
                 super.run();
-                while (!datagramSocket.isClosed()) {
+                while (!datagramSocket.isClosed() && !Thread.interrupted()) {
                     try {
                         datagramSocket.receive(defaultReceivePacket);
                         handleMsg(Arrays.copyOf(defaultReceivePacket.getData(), defaultReceivePacket.getLength()), defaultReceivePacket);
@@ -149,6 +149,7 @@ public class DatagramSocketCommunication extends Communication {
                 }
             }
         };
+        readingThread.setDaemon(true);
         readingThread.start();
     }
 
@@ -593,6 +594,7 @@ public class DatagramSocketCommunication extends Communication {
         public Connection(InetSocketAddress socketAddress) {
             this.socketAdress = socketAddress;
             this.lastResendTimestamp = System.currentTimeMillis();
+            setDaemon(true);
         }
 
         /**
@@ -1046,7 +1048,7 @@ public class DatagramSocketCommunication extends Communication {
         @Override
         public void run() {
             super.run();
-            while (!shutdown) {
+            while (!shutdown && !Thread.interrupted()) {
                 try {
                     byte[] msg = receiveQueue.poll(RECEIVE_TIMEOUT, TimeUnit.MILLISECONDS);
                     if (msg == null) {

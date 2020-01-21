@@ -333,8 +333,8 @@ public class SpaceSimulation implements InputProcessor {
                             else System.out.println("cannot remove" + removeID);
                             break;
                         case TransmissionID.UPDATE:
-                            short updateID = inputStream.readShort();
                             int toUpdateID = inputStream.readInt();
+                            short updateID = inputStream.readShort();
                             Simulated toUpdate = getSimulated(toUpdateID);
                             if (toUpdate != null) {
                                 toUpdate.receiveTransmission(toUpdate.deserializeTransmission(inputStream, updateID));

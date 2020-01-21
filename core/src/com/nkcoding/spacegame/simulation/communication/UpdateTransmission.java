@@ -13,7 +13,7 @@ public class UpdateTransmission {
     }
 
     public void serialize(DataOutputStream outputStream) throws IOException {
-        outputStream.writeShort(updateID);
         outputStream.writeInt(simulatedID);
+        outputStream.writeShort(updateID);
     }
 }
