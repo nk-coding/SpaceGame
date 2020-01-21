@@ -16,7 +16,12 @@ public class ScriptingEngine {
     //the ThreadPool where all scripts run
     //I probably replace this with a fixed size pool to reduce CPU performance impact, because these scripts run normally
     //at a relatively low priority
-    private ExecutorService executor = Executors.newCachedThreadPool();
+    private ExecutorService executor = Executors.newCachedThreadPool(
+            r -> {
+                Thread t = Executors.defaultThreadFactory().newThread(r);
+                t.setDaemon(true);
+                return t;
+            });
 
     public final ConcurrentLinkedQueue<ExternalMethodFuture> getFutureQueue() {
         return futureQueue;

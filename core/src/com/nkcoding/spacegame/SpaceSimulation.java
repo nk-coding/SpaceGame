@@ -247,6 +247,7 @@ public class SpaceSimulation implements InputProcessor {
                     outputStream.writeInt(TransmissionID.UPDATE_BODY_STATE);
                     //write the id
                     outputStream.writeInt(bodyUpdateID);
+                    outputStream.writeLong(System.currentTimeMillis());
                     outputStream.writeInt(max - x * maxAmount);
                     for (int i = x * maxAmount; i < max; i++) {
                         Simulated simulatedToSend = bodyUpdateList.get(i);
@@ -326,7 +327,6 @@ public class SpaceSimulation implements InputProcessor {
                             simulatedToAdd.add(newSimulated);
                             break;
                         case TransmissionID.REMOVE:
-                            //Simulated toRemove = getSimulated(((RemoveTransmission)transmission).simulatedID);
                             int removeID = inputStream.readInt();
                             Simulated toRemove = getSimulated(removeID);
                             if (toRemove != null) simulatedToRemove.add(toRemove);
@@ -344,6 +344,8 @@ public class SpaceSimulation implements InputProcessor {
                             break;
                         case TransmissionID.UPDATE_BODY_STATE:
                             int bodyUpdateID = inputStream.readInt();
+                            long timestamp = inputStream.readLong();
+                            System.out.println(System.currentTimeMillis() - timestamp);
                             int amount = inputStream.readInt();
                             for (int x = 0; x < amount; x++) {
                                 int simulatedID = inputStream.readInt();
