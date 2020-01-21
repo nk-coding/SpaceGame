@@ -1,15 +1,13 @@
 package com.nkcoding.spacegame.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -424,8 +422,29 @@ public class ShipBuilderScreen implements Screen {
 
         //endregion
 
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                return ShipBuilderScreen.this.keyDown(event, keycode);
+            }
+        });
         parse(true);
         selectedComponentChanged(null, null);
+    }
+
+    private boolean keyDown(InputEvent inputEvent, int keyCode) {
+        switch (keyCode) {
+            case Input.Keys.DEL:
+            case Input.Keys.FORWARD_DEL:
+                ComponentDef component = shipDesigner.getSelectedComponent();
+                if (component != null) {
+                    shipDesigner.removeComponent(component);
+                    return true;
+                }
+                return false;
+            default:
+                return false;
+        }
     }
 
     //helper method to add all components to the componentsStack
