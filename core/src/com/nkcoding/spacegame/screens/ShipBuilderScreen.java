@@ -181,7 +181,7 @@ public class ShipBuilderScreen implements Screen {
         ScrollPane componentsScrollPane = new CustomScrollPane(componentsStack, scrollPaneStyle);
         componentsScrollPane.setFlickScroll(false);
         componentsScrollPane.setScrollingDisabled(true, false);
-
+        UIHelper.activateScrollOnHover(componentsScrollPane);
 
         //shipDesigner
         shipDesigner = new ShipDesigner(shipDef, assetManager, assetManager.getTexture(Asset.NoComponent), assetManager.getTexture(Asset.Selection), this::selectedComponentChanged);
@@ -189,6 +189,7 @@ public class ShipBuilderScreen implements Screen {
         shipDesignerZoomScrollPane.setFlickScroll(false);
         shipDesignerZoomScrollPane.setFadeScrollBars(false);
         shipDesignerZoomScrollPane.setOverscroll(false, false);
+        UIHelper.activateScrollOnHover(shipDesignerZoomScrollPane);
 
         //basicInfoTable
         componentNameLabel = new Label("Ship", labelStyleBig);
@@ -234,6 +235,7 @@ public class ShipBuilderScreen implements Screen {
         propertiesScrollPane.setFlickScroll(false);
         propertiesScrollPane.setScrollingDisabled(true, false);
         propertiesScrollPane.setFadeScrollBars(false);
+        UIHelper.activateScrollOnHover(propertiesScrollPane);
 
         //save Button
         //button which saves (and probably closes?)
@@ -428,6 +430,7 @@ public class ShipBuilderScreen implements Screen {
                 return ShipBuilderScreen.this.keyDown(event, keycode);
             }
         });
+
         parse(true);
         selectedComponentChanged(null, null);
     }

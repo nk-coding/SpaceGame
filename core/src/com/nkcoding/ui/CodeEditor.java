@@ -117,6 +117,7 @@ public class CodeEditor extends WidgetGroup {
         //set attributes on ScrollPane
         codeScrollPane.setFadeScrollBars(false);
         if (Gdx.app.getType() != Application.ApplicationType.Android) codeScrollPane.setFlickScroll(false);
+        UIHelper.activateScrollOnHover(codeScrollPane);
 
         super.addActor(codeScrollPane);
         codeTextArea.setColorParser(codeEditorStyle.colorParser);
