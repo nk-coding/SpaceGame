@@ -10,6 +10,7 @@ import com.nkcoding.communication.Communication;
 import com.nkcoding.communication.ResetDataOutputStream;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
+import com.nkcoding.spacegame.simulation.CoreUnit;
 import com.nkcoding.spacegame.simulation.Simulated;
 import com.nkcoding.spacegame.simulation.SimulatedType;
 import com.nkcoding.spacegame.simulation.SynchronizationPriority;
@@ -41,8 +42,8 @@ public class SpaceSimulation implements InputProcessor {
     private final HashMap<Integer, Simulated> simulatedMap = new HashMap<>();
     private final List<Simulated> simulatedToRemove = new ArrayList<>();
     private final List<Simulated> simulatedToAdd = new ArrayList<>();
-    // list with all simulated that receive key events
-    private final ArrayList<Simulated> keyHandlers = new ArrayList<>();
+    // list with all the core units
+    private List<CoreUnit> coreUnits = new ArrayList<>();
     // map with all objects that can receive futures
     private final HashMap<String, ExternalPropertyHandler> propertyHandlers = new HashMap<>();
     // AssetManager to load the resources
@@ -68,7 +69,7 @@ public class SpaceSimulation implements InputProcessor {
     private Vector2 centerPos;
     private float radius, scaledRadius;
     // Simulated that the camera should follow
-    private Simulated cameraSimulated;
+    private CoreUnit cameraCoreUnit;
     private int bodyUpdateID = 1;
 
     private Communication communication;
@@ -134,14 +135,14 @@ public class SpaceSimulation implements InputProcessor {
         return assetManager;
     }
 
-    public Simulated getCameraSimulated() {
-        return cameraSimulated;
+    public CoreUnit getCameraUnit() {
+        return cameraCoreUnit;
     }
 
-    public void setCameraSimulated(Simulated cameraSimulated) {
-        if (cameraSimulated != this.cameraSimulated && this.cameraSimulated != null)
-            this.cameraSimulated.setCameraFocus(false);
-        this.cameraSimulated = cameraSimulated;
+    public void setCameraSimulated(CoreUnit coreUnit) {
+        if (coreUnit != this.cameraCoreUnit && this.cameraCoreUnit != null)
+            this.cameraCoreUnit.setCameraFocus(false);
+        this.cameraCoreUnit = coreUnit;
     }
 
     public World getWorld() {
@@ -202,14 +203,6 @@ public class SpaceSimulation implements InputProcessor {
 
     public boolean containsExternalPropertyHandler(String str) {
         return propertyHandlers.get(str) != null;
-    }
-
-    public void updateReceivesKeyInput(Simulated simulated) {
-        if (simulated.isReceivesKeyInput()) {
-            keyHandlers.add(simulated);
-        } else {
-            keyHandlers.remove(simulated);
-        }
     }
 
     // calls act on all Simulateds
@@ -287,7 +280,6 @@ public class SpaceSimulation implements InputProcessor {
         //remove the Simulated to remove
         for (Simulated toRemove : simulatedToRemove) {
             simulatedMap.remove(toRemove.id);
-            keyHandlers.remove(toRemove);
             world.destroyBody(toRemove.getBody());
         }
         simulatedToRemove.clear();
@@ -420,10 +412,10 @@ public class SpaceSimulation implements InputProcessor {
 
     // updates the camera
     public void updateCamera() {
-        if (cameraSimulated != null) {
-            centerPos = cameraSimulated.localToWorldCoordinates(cameraSimulated.getCenterPosition());
-            float length = cameraSimulated.getBody().getLinearVelocity().len() + 1;
-            float h = cameraSimulated.getHeight() / (0.15f / (length * length) + 0.08f);
+        if (cameraCoreUnit != null) {
+            centerPos = cameraCoreUnit.localToWorldCoordinates(cameraCoreUnit.getCenterPosition());
+            float length = cameraCoreUnit.getBody().getLinearVelocity().len() + 1;
+            float h = cameraCoreUnit.getHeight() / (0.15f / (length * length) + 0.08f);
             float w = h / height * width;
 
             scaledRadius = radius * h / height;
@@ -458,7 +450,7 @@ public class SpaceSimulation implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        Iterator<Simulated> iter = keyHandlers.iterator();
+        Iterator<CoreUnit> iter = coreUnits.iterator();
         boolean handled = false;
         while (iter.hasNext() && !handled) {
             handled = iter.next().keyDown(keycode);
@@ -468,7 +460,7 @@ public class SpaceSimulation implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        Iterator<Simulated> iter = keyHandlers.iterator();
+        Iterator<CoreUnit> iter = coreUnits.iterator();
         boolean handled = false;
         while (iter.hasNext() && !handled) {
             handled = iter.next().keyUp(keycode);

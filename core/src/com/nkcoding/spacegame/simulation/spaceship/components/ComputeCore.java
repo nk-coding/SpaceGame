@@ -62,6 +62,18 @@ public class ComputeCore extends Component implements CoreUnit {
         return false;
     }
 
+    @Override
+    public void setCameraFocus(boolean cameraFocus) {
+        if (isOriginal()) {
+            model.setCameraFocus(cameraFocus);
+        }
+    }
+
+    @Override
+    public boolean receivesKeyInput() {
+        return isOriginal();
+    }
+
     private class ComputeCoreModel extends ComponentModel {
 
         //region properties
@@ -78,12 +90,12 @@ public class ComputeCore extends Component implements CoreUnit {
             @Override
             public void set(Boolean value) {
                 super.set(value);
-                if (value) getSpaceSimulation().setCameraSimulated(Ship.this);
+                if (value) getSpaceSimulation().setCameraSimulated(ComputeCore.this);
             }
 
             @Override
             public Boolean get2() {
-                return getSpaceSimulation().getCameraSimulated() == Ship.this;
+                return getSpaceSimulation().getCameraUnit() == ComputeCore.this;
             }
         });
 
@@ -91,6 +103,8 @@ public class ComputeCore extends Component implements CoreUnit {
 
         public ComputeCoreModel(Ship.ShipModel shipModel, ComponentDef componentDef) {
             super(shipModel, componentDef);
+            keyUp.allowParallel();
+            keyDown.allowParallel();
         }
 
         //region key input
@@ -106,7 +120,6 @@ public class ComputeCore extends Component implements CoreUnit {
         }
 
         public void setCameraFocus(boolean cameraFocus) {
-            System.out.println("set focus: " + name + ", " + cameraFocus);
             this.cameraFocus.set(cameraFocus);
         }
 

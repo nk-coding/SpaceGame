@@ -179,13 +179,6 @@ public class Ship extends Simulated {
         }
     }
 
-    @Override
-    public void setCameraFocus(boolean cameraFocus) {
-        if (isOriginal()) {
-            model.setCameraFocus(cameraFocus);
-        }
-    }
-
     /**
      * removes a component and performs a structure check if necessary
      *
@@ -288,8 +281,6 @@ public class Ship extends Simulated {
             name = def.getName(); //here
             spaceSimulation.addExternalPropertyHandler(this); //here
             if (!def.getValidated()) throw new IllegalArgumentException("shipDef is not validated"); //here
-            //receives key inputs
-            setReceivesKeyInput(true); //here
             //compile the script
             Compiler compiler = def.createCompiler(def.code); //here
             Program program = null; //here
@@ -307,8 +298,6 @@ public class Ship extends Simulated {
             this.initProperties(def.properties.values(), methods); //here
             //init new list with all the components
             components = new ArrayList<>(def.componentDefs.size()); //here
-            keyUp.allowParallel();
-            keyDown.allowParallel();
         }
         //endregion
 
@@ -321,8 +310,6 @@ public class Ship extends Simulated {
             while (getSpaceSimulation().containsExternalPropertyHandler(nameStart += "#")) ; //here
             name = nameStart; //here
             getSpaceSimulation().addExternalPropertyHandler(this); //here
-            //receives key inputs
-            setReceivesKeyInput(true); //here
             //set globalVariables
             this.globalVariables = oldModel.globalVariables; //here
             //init the externalProperties
@@ -334,8 +321,6 @@ public class Ship extends Simulated {
             body.setTransform(oldBody.getPosition(), oldBody.getAngle()); //here
             updateLinearVelocity(oldBody); //here
             body.setAngularVelocity(oldBody.getAngularVelocity()); //here
-            keyUp.allowParallel();
-            keyDown.allowParallel();
         }
 
         @Override
@@ -462,8 +447,6 @@ public class Ship extends Simulated {
                 updatePowerDistribution();
                 isPowerRequestDifferent = false;
             }
-            //update properties
-            angularVelocity.set(body.getAngularVelocity());
             //property changed
             for (ExternalProperty property : getProperties().values()) {
                 property.startChangedHandler(getSpaceSimulation().getScriptingEngine(), globalVariables);

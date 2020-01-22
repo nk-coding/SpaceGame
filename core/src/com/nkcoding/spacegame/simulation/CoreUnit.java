@@ -10,4 +10,6 @@ public interface CoreUnit {
     boolean keyDown(int keycode);
 
     boolean keyUp(int keycode);
+
+    void setCameraFocus(boolean cameraFocus);
 }

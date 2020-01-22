@@ -113,25 +113,7 @@ public class Simulated {
         return collisionPriority;
     }
 
-    /**
-     * does this Simulated receive key input?
-     * default is false
-     */
-    public boolean isReceivesKeyInput() {
-        return receivesKeyInput && active;
-    }
 
-    /**
-     * does this Simulated receive key input?
-     * default is false
-     */
-    public void setReceivesKeyInput(boolean receivesKeyInput) {
-        boolean old = this.receivesKeyInput;
-        this.receivesKeyInput = receivesKeyInput;
-        if (old != receivesKeyInput) {
-            spaceSimulation.updateReceivesKeyInput(this);
-        }
-    }
 
     /**
      * get the position in box2D
@@ -183,10 +165,6 @@ public class Simulated {
      */
     public void draw(Batch batch) {
 
-    }
-
-
-    public void setCameraFocus(boolean cameraFocus) {
     }
 
     /**
