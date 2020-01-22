@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.interpreter.compiler.NormalMethodDefinition;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 
@@ -213,6 +214,10 @@ public class PropertyBox extends WidgetGroup {
             prefHeight += style.spacing * 2;
         }
         return prefHeight;
+    }
+
+    public DataType getDataType() {
+        return data.type;
     }
 
     public void codeButtonClicked() {
