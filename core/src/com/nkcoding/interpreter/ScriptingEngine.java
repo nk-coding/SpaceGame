@@ -16,7 +16,7 @@ public class ScriptingEngine {
     //the ThreadPool where all scripts run
     //I probably replace this with a fixed size pool to reduce CPU performance impact, because these scripts run normally
     //at a relatively low priority
-    private ExecutorService executor = Executors.newCachedThreadPool(
+    private ExecutorService executor = Executors.newFixedThreadPool( 10,
             r -> {
                 Thread t = Executors.defaultThreadFactory().newThread(r);
                 t.setDaemon(true);
@@ -31,17 +31,21 @@ public class ScriptingEngine {
      * call a method async
      *
      * @param methodStatement the method that is invoked
+     * @param runningState if not null, is set to true when it starts and is set false when method returns
+     * @param globalVariables map with all the global variables in it
      * @param parameters      the parameters for the method
      */
-    public void runMethod(MethodStatement methodStatement,
+    public void runMethod(MethodStatement methodStatement, RunningState runningState,
                           final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables,
                           Object... parameters) {
+        if (runningState != null) {
+            runningState.setRunningState(true);
+        }
         //create the necessary stack
         Stack stack = new Stack(10, this, globalVariables);
         //no parameters and that's ok
         if (methodStatement.getDefinition().getParameters().length == 0 && (parameters == null || parameters.length == 0)) {
             executor.submit(() -> {
-
                 stack.beginStackLevel();
                 try {
                     methodStatement.run(stack);
@@ -51,8 +55,10 @@ public class ScriptingEngine {
                     System.out.println("fatal exception occurred");
                     fatal.printStackTrace();
                 }
+                if (runningState != null) {
+                    runningState.setRunningState(false);
+                }
                 stack.clearStackLevel();
-                System.out.println("this is just a test");
             });
         } else if (parameters != null && parameters.length == methodStatement.getDefinition().getParameters().length) {
             //enough parameters
@@ -89,6 +95,9 @@ public class ScriptingEngine {
                     fatal.printStackTrace();
                 }
                 stack.clearStackLevel();
+                if (runningState != null) {
+                    runningState.setRunningState(false);
+                }
             });
         }
     }

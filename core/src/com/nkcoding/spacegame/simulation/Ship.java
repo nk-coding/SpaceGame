@@ -327,6 +327,7 @@ public class Ship extends Simulated {
         //the name
         private String name;
         private HashMap<String, MethodStatement> methods;
+
         //construct Ship out of ShipDef (public constructor)
         public ShipModel(ShipDef def, SpaceSimulation spaceSimulation) {
             name = def.getName(); //here
@@ -351,6 +352,8 @@ public class Ship extends Simulated {
             this.initProperties(def.properties.values(), methods); //here
             //init new list with all the components
             components = new ArrayList<>(def.componentDefs.size()); //here
+            keyUp.allowParallel();
+            keyDown.allowParallel();
         }
         //endregion
 
@@ -376,6 +379,8 @@ public class Ship extends Simulated {
             body.setTransform(oldBody.getPosition(), oldBody.getAngle()); //here
             updateLinearVelocity(oldBody); //here
             body.setAngularVelocity(oldBody.getAngularVelocity()); //here
+            keyUp.allowParallel();
+            keyDown.allowParallel();
         }
 
         @Override

@@ -48,6 +48,15 @@ public class Methods {
                 {
                     return String.valueOf((boolean) obj[0]);
                 });
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "sleep", DataType.VOID, new TypeNamePair("i", DataType.INTEGER)),
+                (Function<Object[], String>) obj -> {
+                    try {
+                        Thread.sleep((int)obj[0]);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                });
 
     }
 

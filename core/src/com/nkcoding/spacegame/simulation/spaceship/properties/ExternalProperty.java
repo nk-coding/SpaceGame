@@ -2,11 +2,12 @@ package com.nkcoding.spacegame.simulation.spaceship.properties;
 
 import com.nkcoding.interpreter.ConcurrentStackItem;
 import com.nkcoding.interpreter.MethodStatement;
+import com.nkcoding.interpreter.RunningState;
 import com.nkcoding.interpreter.ScriptingEngine;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class ExternalProperty<T> {
+public abstract class ExternalProperty<T> implements RunningState {
 
     /**
      * are setters allowed?
@@ -31,6 +32,16 @@ public abstract class ExternalProperty<T> {
      */
     private MethodStatement changedMethodStatement = null;
 
+    /**
+     * is this running
+     */
+    protected volatile boolean isRunning = false;
+
+    /**
+     * are multiple instances of this allowed?
+     */
+    protected boolean allowParallel = false;
+
     public ExternalProperty(boolean readonly, boolean notifyChanges, String name) {
         this.readonly = readonly;
         this.notifyChanges = notifyChanges;
@@ -46,8 +57,8 @@ public abstract class ExternalProperty<T> {
     }
 
     public void startChangedHandler(ScriptingEngine engine, final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables) {
-        if (notifyChanges && changed && getChangedMethodStatement() != null) {
-            engine.runMethod(getChangedMethodStatement(), globalVariables, get2());
+        if ((!isRunning || allowParallel) && notifyChanges && changed && getChangedMethodStatement() != null) {
+            engine.runMethod(getChangedMethodStatement(), this, globalVariables, get2());
             changed = false;
         }
     }
@@ -69,4 +80,17 @@ public abstract class ExternalProperty<T> {
 
     public abstract T get2();
 
+    @Override
+    public void setRunningState(boolean runningState) {
+        this.isRunning = runningState;
+    }
+
+    @Override
+    public boolean getRunningState() {
+        return isRunning;
+    }
+
+    public void allowParallel() {
+        this.allowParallel = true;
+    }
 }
