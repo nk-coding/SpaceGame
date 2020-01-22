@@ -135,7 +135,20 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
     @Override
     public void setText(String str) {
         super.setText(str);
+        multiLineChange = true;
         updateLinesBreak();
+    }
+
+    @Override
+    void paste(String content, boolean fireChangeEvent, boolean moveCursor) {
+        super.paste(content, fireChangeEvent, moveCursor);
+        multiLineChange = true;
+    }
+
+    @Override
+    void cut(boolean fireChangeEvent) {
+        super.cut(fireChangeEvent);
+        multiLineChange = true;
     }
 
     protected int letterUnderCursor(float x) {

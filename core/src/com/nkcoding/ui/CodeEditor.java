@@ -241,8 +241,16 @@ public class CodeEditor extends WidgetGroup {
         //this is to make scroll available on the ScrollBar
         codeScrollPane.layout();
         codeScrollPane.setScrollX(0);
-        codeScrollPane.setScrollY(codeEditorStyle.font.getLineHeight() * (line - 1));
+        float scrollY = codeEditorStyle.font.getLineHeight() * (line - 1);
+        codeScrollPane.setScrollY(scrollY);
         codeScrollPane.updateVisualScroll();
+    }
+
+    /**
+     * moves to the end
+     */
+    public void moveToEnd() {
+        moveTo(codeTextArea.getLines());
     }
 
     public static class CodeEditorStyle extends MultiColorTextArea.MultiColorTextAreaStyle {

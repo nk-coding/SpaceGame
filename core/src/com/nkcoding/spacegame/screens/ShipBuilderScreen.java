@@ -516,8 +516,15 @@ public class ShipBuilderScreen implements Screen {
                                     codeEditor.moveTo(methodPositions.get(this.getHandlerName()).getLine());
                                 });
                                 codeEditor.addAction(action);
-                            } else {
-                                //TODO implementation create new method
+                            } else if (!this.getHandlerName().isBlank()) {
+                                //actually use \n because it leads to way better results
+                                String codeToAdd = String.format("\n\nvoid %s(%s value) {\n    //TODO\n}", this.getHandlerName(), data.type.name);
+                                codeEditor.setText(codeEditor.getText() + codeToAdd);
+                                switchView();
+
+                                RunnableAction action = new RunnableAction();
+                                action.setRunnable(codeEditor::moveToEnd);
+                                codeEditor.addAction(action);
                             }
                         }
                     });
