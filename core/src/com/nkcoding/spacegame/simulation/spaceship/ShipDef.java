@@ -10,7 +10,6 @@ import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyDa
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ShipDef {
@@ -19,10 +18,7 @@ public class ShipDef {
     //the size of one unit in box2d
     public static final float UNIT_SIZE = 0.1f;
     public final ArrayList<ComponentDef> componentDefs = new ArrayList<>();
-    /**
-     * HashMap with all the ExternalPropertyData
-     */
-    public final LinkedHashMap<String, ExternalPropertyData> properties = new LinkedHashMap<>();
+
     //code for the script
     public String code = "//write your own code here";
 
@@ -45,13 +41,6 @@ public class ShipDef {
         //load code
         shipDef.code = value.getString("code");
         shipDef.validated = value.getBoolean("validated");
-
-        //init all properties
-        for (JsonValue propertyValue : value.get("properties")) {
-            ExternalPropertyData data = shipDef.properties.get(propertyValue.getString("key"));
-            if (!data.readonly) data.initData = propertyValue.getString("initData");
-            data.handlerName = propertyValue.getString("handlerName");
-        }
 
         return shipDef;
     }
@@ -128,12 +117,7 @@ public class ShipDef {
                 }
             }
         }
-        //add from Ship
-        for (ExternalPropertyData data : properties.values()) {
-            if (!externalPropertyDatas.containsKey(data.name)) {
-                externalPropertyDatas.put(data.name, data);
-            }
-        }
+
         ArrayList<MethodDefinition> methodDefinitions = new ArrayList<>();
         for (ExternalPropertyData data : externalPropertyDatas.values()) {
             data.addExternalMethodDefs(methodDefinitions);
@@ -156,13 +140,6 @@ public class ShipDef {
         //write the code
         json.writeValue("code", code);
         json.writeValue("validated", validated);
-
-        ///write all the properties
-        json.writeArrayStart("properties");
-        for (Map.Entry<String, ExternalPropertyData> entry : properties.entrySet()) {
-            entry.getValue().toJson(json, entry.getKey());
-        }
-        json.writeArrayEnd();
 
         json.writeObjectEnd();
     }

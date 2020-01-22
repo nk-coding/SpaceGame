@@ -32,7 +32,6 @@ public class GameScreen implements Screen {
         this.shipDef = shipDef;
         Ship ship = new Ship(shipDef, spaceSimulation, initialPosition);
         spaceSimulation.addSimulated(ship);
-        spaceSimulation.setCameraSimulated(ship);
     }
 
     @Override

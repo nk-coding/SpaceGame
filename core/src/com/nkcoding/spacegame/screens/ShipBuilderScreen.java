@@ -207,7 +207,7 @@ public class ShipBuilderScreen implements Screen {
 
         final Label nameLabel = new Label("name", labelStyleSmall);
 
-        nameTextField = new TextField(shipDef.getName(), textFieldStyle);
+        nameTextField = new TextField("", textFieldStyle);
         nameTextField.setTextFieldListener((textField, c) -> {
             verifyName();
         });
@@ -450,16 +450,21 @@ public class ShipBuilderScreen implements Screen {
         //update the property stack
         Map<String, ExternalPropertyData> properties;
         if (newDef != null) {
-            properties = newDef.properties;
-            nameTextField.setText(newDef.getName());
-            componentNameLabel.setText(newDef.getType().toString());
-            rotateButton.setVisible(true);
+            selectComponent(newDef);
         } else {
-            properties = shipDef.properties;
-            nameTextField.setText(shipDef.getName());
-            componentNameLabel.setText("Ship");
-            rotateButton.setVisible(false);
+            //TODO
         }
+    }
+
+    /**
+     * the case that a real component was selected
+     */
+    private void selectComponent(ComponentDef newDef) {
+        Map<String, ExternalPropertyData> properties;
+        properties = newDef.properties;
+        nameTextField.setText(newDef.getName());
+        componentNameLabel.setText(newDef.getType().toString());
+        rotateButton.setVisible(true);
 
         int oldCount = propertiesVerticalGroup.getChildren().size - 1;
         int newCount = properties.size();
@@ -592,8 +597,6 @@ public class ShipBuilderScreen implements Screen {
         //save name
         if (def != null) {
             def.setName(nameTextField.getText());
-        } else {
-            shipDef.setName(nameTextField.getText());
         }
 
         for (int x = 1; x < children.size; x++) {
