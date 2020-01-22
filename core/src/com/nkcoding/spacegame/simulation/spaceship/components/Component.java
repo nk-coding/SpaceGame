@@ -94,14 +94,16 @@ public abstract class Component implements Damageable {
         return ship;
     }
 
-    //region properties
-
     public void setShip(Ship ship) {
         this.ship = ship;
         if (model != null) {
             model.shipModel = ship.model;
         }
         addFixtures();
+    }
+
+    protected boolean isOriginal() {
+        return ship.isOriginal();
     }
 
     /**

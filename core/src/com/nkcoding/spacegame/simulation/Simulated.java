@@ -136,7 +136,7 @@ public class Simulated {
     /**
      * get the position in box2D
      *
-     * @return body.getPosition()
+     * @return body.getCenterPosition()
      */
     public Vector2 getPosition() {
         return body.getPosition();
@@ -185,13 +185,6 @@ public class Simulated {
 
     }
 
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    public boolean keyUp(int keycode) {
-        return false;
-    }
 
     public void setCameraFocus(boolean cameraFocus) {
     }

@@ -1,6 +1,5 @@
 package com.nkcoding.spacegame.simulation;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -17,7 +16,8 @@ import com.nkcoding.spacegame.simulation.spaceship.components.Component;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDefBase;
 import com.nkcoding.spacegame.simulation.spaceship.components.communication.*;
-import com.nkcoding.spacegame.simulation.spaceship.properties.*;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -30,13 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class Ship extends Simulated {
-    //region keys for the properties
-    public static final String KEY_DOWN_KEY = "KeyDown";
-    public static final String KEY_UP_KEY = "KeyUp";
-    public static final String ANGULAR_VELOCITY_KEY = "AngularVelocity";
-    public static final String VELOCITY_KEY = "Velocity";
-    public static final String CAMERA_FOCUS_KEY = "CameraFocus";
-    //endregion
 
     public static final short REMOVE_COMPONENT = -1;
     public static final short REMOVE_COMPONENTS = -2;
@@ -187,22 +180,6 @@ public class Ship extends Simulated {
     }
 
     @Override
-    public boolean keyDown(int keycode) {
-        if (isOriginal()) {
-            model.keyDown(keycode);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        if (isOriginal()) {
-            model.keyUp(keycode);
-        }
-        return false;
-    }
-
-    @Override
     public void setCameraFocus(boolean cameraFocus) {
         if (isOriginal()) {
             model.setCameraFocus(cameraFocus);
@@ -292,28 +269,6 @@ public class Ship extends Simulated {
     }
 
     public class ShipModel extends ExternalPropertyHandler {
-        //region properties
-        //virtual property when a key is pressed
-        public final NotifyProperty<String> keyDown = register(new NotifyProperty<>(KEY_DOWN_KEY));
-        //virtual property when key is released
-        public final NotifyProperty<String> keyUp = register(new NotifyProperty<>(KEY_UP_KEY));
-        //wrapper for the angularRotation from Body
-        public final FloatProperty angularVelocity = register(new FloatProperty(true, true, ANGULAR_VELOCITY_KEY));
-        //wrapper for the velocity from Body
-        public final FloatProperty velocity = register(new FloatProperty(true, true, VELOCITY_KEY));
-        //focus from SpaceSimulation
-        public final VirtualProperty<Boolean> cameraFocus = register(new VirtualProperty<>(true, true, CAMERA_FOCUS_KEY) {
-            @Override
-            public void set(Boolean value) {
-                super.set(value);
-                if (value) getSpaceSimulation().setCameraSimulated(Ship.this);
-            }
-
-            @Override
-            public Boolean get2() {
-                return getSpaceSimulation().getCameraSimulated() == Ship.this;
-            }
-        });
         //global variables
         private final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables;
         //the list of components which compose the ship
@@ -481,25 +436,6 @@ public class Ship extends Simulated {
 
         public void invalidatePowerDelivery() {
             isPowerRequestDifferent = true;
-        }
-
-        //endregion
-
-        //region key input
-
-        public boolean keyDown(int keycode) {
-            keyDown.set(Input.Keys.toString(keycode));
-            return true;
-        }
-
-        public boolean keyUp(int keycode) {
-            keyUp.set(Input.Keys.toString(keycode));
-            return true;
-        }
-
-        public void setCameraFocus(boolean cameraFocus) {
-            System.out.println("set focus: " + name + ", " + cameraFocus);
-            this.cameraFocus.set(cameraFocus);
         }
 
         //endregion
