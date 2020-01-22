@@ -1,5 +1,6 @@
 package com.nkcoding.ui;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
@@ -64,6 +65,28 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
                 return true;
             }
         });
+
+        addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                return ShipDesigner.this.keyDown(event, keycode);
+            }
+        });
+    }
+
+    private boolean keyDown(InputEvent inputEvent, int keyCode) {
+        switch (keyCode) {
+            case Input.Keys.DEL:
+            case Input.Keys.FORWARD_DEL:
+                ComponentDef component = getSelectedComponent();
+                if (component != null) {
+                    removeComponent(component);
+                    return true;
+                }
+                return false;
+            default:
+                return false;
+        }
     }
 
     public ComponentDef getSelectedComponent() {
