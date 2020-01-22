@@ -13,6 +13,7 @@ public enum Asset {
     ExplosiveCanister("textures/game/explosive.png"),
     Cannon("textures/game/cannon.png"),
     Bullet("textures/game/bullet.png"),
+    ComputeCore("textures/game/computeCore.png"),
     VerySimpleExplosion("textures/game/verySimpleExplosion.png"),
     StarBackground_high("textures/game/starBackground_high.png"),
     StarBackground_medium("textures/game/starBackground_medium.png"),

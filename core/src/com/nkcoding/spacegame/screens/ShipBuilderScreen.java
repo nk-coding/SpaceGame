@@ -59,7 +59,7 @@ public class ShipBuilderScreen implements Screen {
     //temporary storage for PropertyBoxes which are not necessary because of a ComponentDef change
     //the can be updated and used later
     private final ArrayDeque<Actor> oldPropertyBoxes = new ArrayDeque<>();
-    //ZoomScrollOane for the shipDesigner
+    //ZoomScrollPane for the shipDesigner
     private final ZoomScrollPane shipDesignerZoomScrollPane;
     //the main Designer for the Ship
     private final ShipDesigner shipDesigner;
@@ -498,7 +498,7 @@ public class ShipBuilderScreen implements Screen {
                                 codeEditor.addAction(action);
                             } else if (!this.getHandlerName().isBlank()) {
                                 //actually use \n because it leads to way better results
-                                String codeToAdd = String.format("\n\nvoid %s(%s value) {\n    //TODO\n}", this.getHandlerName(), getDataType().name);
+                                String codeToAdd = String.format("\n\nvoid %s(%s value) {\n   //TODO\n}", this.getHandlerName(), getDataType().name);
                                 codeEditor.setText(codeEditor.getText() + codeToAdd);
                                 switchView();
 
