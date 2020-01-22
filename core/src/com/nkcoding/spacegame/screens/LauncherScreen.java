@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -15,11 +16,18 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nkcoding.communication.Communication;
 import com.nkcoding.communication.DatagramSocketCommunication;
+import com.nkcoding.communication.ResetDataOutputStream;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.SpaceGame;
+import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
+
+import java.io.DataInputStream;
+import java.io.IOException;
 
 public class LauncherScreen implements Screen {
+
+    private static final int START_GAME = -1;
 
     private SpaceGame spaceGame;
     private final Stage stage;
@@ -127,7 +135,7 @@ public class LauncherScreen implements Screen {
         singleplayerButton.addCaptureListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                spaceGame.startGame(null);
+                spaceGame.startGame(null, new Vector2());
             }
         });
         serverButton.addCaptureListener(new ChangeListener() {
@@ -162,7 +170,20 @@ public class LauncherScreen implements Screen {
                     communication = new DatagramSocketCommunication(true, Integer.parseInt(serverPortTextField.getText()));
                     startServerButton.setText("Start Game");
                 } else {
-                    spaceGame.startGame(communication);
+                    int counter = 0;
+                    for (short peer : communication.getPeers()) {
+                        counter++;
+                        ResetDataOutputStream outputStream = communication.getOutputStream(true);
+                        try {
+                            outputStream.writeInt(START_GAME);
+                            outputStream.writeFloat(0);
+                            outputStream.writeFloat(counter * ShipDef.UNIT_SIZE * ShipDef.MAX_SIZE);
+                            communication.sendTo(peer, outputStream);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    spaceGame.startGame(communication, new Vector2());
                 }
             }
         });
@@ -190,9 +211,7 @@ public class LauncherScreen implements Screen {
                 if (communication == null) {
                     communication = new DatagramSocketCommunication(false, Integer.parseInt(clientClientPortTextField.getText()));
                     communication.openCommunication(clientServerIPTextField.getText(), Integer.parseInt(clientServerPortTextField.getText()));
-                    startClientButton.setText("Start Game");
-                } else {
-                    spaceGame.startGame(communication);
+                    startClientButton.setVisible(false);
                 }
             }
         });
@@ -217,6 +236,24 @@ public class LauncherScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        if (communication != null) {
+            while (communication.hasTransmissions()) {
+                DataInputStream inputStream = communication.getTransmission();
+                try {
+                    int id = inputStream.readInt();
+                    if (id == START_GAME) {
+                        //start the game
+                        float posX = inputStream.readFloat();
+                        float posY = inputStream.readFloat();
+                        spaceGame.startGame(communication, new Vector2(posX, posY));
+                        break;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();

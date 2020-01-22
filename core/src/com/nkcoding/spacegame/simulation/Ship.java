@@ -71,8 +71,9 @@ public class Ship extends Simulated {
         updateCenterPos();
     }
 
-    public Ship(ShipDef shipDef, SpaceSimulation spaceSimulation) {
+    public Ship(ShipDef shipDef, SpaceSimulation spaceSimulation, Vector2 initialPosition) {
         this(spaceSimulation, spaceSimulation.getClientID(), spaceSimulation.getNewId());
+        getBody().setTransform(initialPosition, 0);
         model = new ShipModel(shipDef, spaceSimulation);
         for (ComponentDef comDef : shipDef.componentDefs) {
             createComponent(comDef);
