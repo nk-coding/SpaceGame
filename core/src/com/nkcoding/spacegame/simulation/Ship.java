@@ -16,8 +16,6 @@ import com.nkcoding.spacegame.simulation.spaceship.components.Component;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDefBase;
 import com.nkcoding.spacegame.simulation.spaceship.components.communication.*;
-import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty;
-import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -261,7 +259,7 @@ public class Ship extends Simulated {
         radius = (float) Math.sqrt(height * height + width * width);
     }
 
-    public class ShipModel extends ExternalPropertyHandler {
+    public class ShipModel {
         //global variables
         private final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables;
         //the list of components which compose the ship
@@ -272,14 +270,10 @@ public class Ship extends Simulated {
         private boolean isPowerRequestDifferent = true;
         //is a structure check necessary
         private boolean isStructureCheckNecessary = true;
-        //the name
-        private String name;
         private HashMap<String, MethodStatement> methods;
 
         //construct Ship out of ShipDef (public constructor)
         public ShipModel(ShipDef def, SpaceSimulation spaceSimulation) {
-            name = def.getName(); //here
-            spaceSimulation.addExternalPropertyHandler(this); //here
             if (!def.getValidated()) throw new IllegalArgumentException("shipDef is not validated"); //here
             //compile the script
             Compiler compiler = def.createCompiler(def.code); //here
@@ -294,8 +288,6 @@ public class Ship extends Simulated {
             for (MethodStatement statement : program.methods) { //here
                 methods.put(statement.getDefinition().getName(), statement); //here
             }
-            //init the externalProperties
-            this.initProperties(def.properties.values(), methods); //here
             //init new list with all the components
             components = new ArrayList<>(def.componentDefs.size()); //here
         }
@@ -304,16 +296,8 @@ public class Ship extends Simulated {
         //package-private constructor to construct Ship out of components (used to split up a ship)
         //pass other ship to copy important stuff (external method stuff etc.)
         ShipModel(Ship oldShip, ShipModel oldModel, List<Component> components) {
-            //check for new name
-            String nameStart = oldModel.getName(); //here
-            //TODO
-            while (getSpaceSimulation().containsExternalPropertyHandler(nameStart += "#")) ; //here
-            name = nameStart; //here
-            getSpaceSimulation().addExternalPropertyHandler(this); //here
             //set globalVariables
             this.globalVariables = oldModel.globalVariables; //here
-            //init the externalProperties
-            this.cloneProperties(oldModel.getProperties().values()); //here
             //set the components
             this.components = new ArrayList<>(components.size()); //here
             Body oldBody = oldShip.getBody(); //here
@@ -321,11 +305,6 @@ public class Ship extends Simulated {
             body.setTransform(oldBody.getPosition(), oldBody.getAngle()); //here
             updateLinearVelocity(oldBody); //here
             body.setAngularVelocity(oldBody.getAngularVelocity()); //here
-        }
-
-        @Override
-        public String getName() {
-            return name;
         }
 
         private void initComponentProperties() {
@@ -446,10 +425,6 @@ public class Ship extends Simulated {
             if (isPowerRequestDifferent) {
                 updatePowerDistribution();
                 isPowerRequestDifferent = false;
-            }
-            //property changed
-            for (ExternalProperty property : getProperties().values()) {
-                property.startChangedHandler(getSpaceSimulation().getScriptingEngine(), globalVariables);
             }
 
             //I know this is hacky, but it's the best I have

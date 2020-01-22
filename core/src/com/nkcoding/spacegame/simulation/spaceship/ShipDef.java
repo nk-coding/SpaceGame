@@ -3,7 +3,6 @@ package com.nkcoding.spacegame.simulation.spaceship;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.nkcoding.interpreter.compiler.Compiler;
-import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentType;
@@ -13,9 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static com.nkcoding.spacegame.simulation.Ship.*;
-import static com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData.of;
 
 public class ShipDef {
     //the max width / height of a ship
@@ -30,8 +26,6 @@ public class ShipDef {
     //code for the script
     public String code = "//write your own code here";
 
-    //every Ship needs a name
-    private String name;
     //is everything ok  -> is the ship usable
     private boolean validated = false;
     //ShipDesignerHelper if one is attached
@@ -39,12 +33,7 @@ public class ShipDef {
 
     //the main Constructor
     public ShipDef() {
-        //add all the properties
-        properties.put(KEY_DOWN_KEY, of(KEY_DOWN_KEY, DataType.STRING, true, true));
-        properties.put(KEY_UP_KEY, of(KEY_UP_KEY, DataType.STRING, true, true));
-        properties.put(ANGULAR_VELOCITY_KEY, of(ANGULAR_VELOCITY_KEY, DataType.FLOAT));
-        properties.put(VELOCITY_KEY, of(VELOCITY_KEY, DataType.FLOAT));
-        properties.put(CAMERA_FOCUS_KEY, of(CAMERA_FOCUS_KEY, DataType.BOOLEAN, false));
+
     }
 
     public static ShipDef fromJson(JsonValue value) {
@@ -55,7 +44,6 @@ public class ShipDef {
         }
         //load code
         shipDef.code = value.getString("code");
-        shipDef.name = value.getString("name");
         shipDef.validated = value.getBoolean("validated");
 
         //init all properties
@@ -66,14 +54,6 @@ public class ShipDef {
         }
 
         return shipDef;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public boolean getValidated() {
@@ -108,8 +88,7 @@ public class ShipDef {
     public boolean verifyNames() {
         long noDuplicates = componentDefs.stream().map(ComponentDef::getName).filter(e -> !e.equals("")).distinct().count();
         long duplicates = componentDefs.stream().map(ComponentDef::getName).filter(e -> !e.equals("")).count();
-        boolean shipName = getComponent(this.name) == null;
-        return noDuplicates == duplicates && shipName;
+        return noDuplicates == duplicates;
     }
 
     /**
@@ -120,11 +99,9 @@ public class ShipDef {
      * @return true if the name is not used or used by def
      */
     public boolean verifyComponentName(ComponentDef def, String name) {
-        if (!name.equals(this.name) || this.name.equals("")) {
-            if (name.equals("")) return true;
-            ComponentDef nameDef = getComponent(name);
-            return nameDef == null || nameDef == def;
-        } else return def == null;
+        if (name.equals("")) return true;
+        ComponentDef nameDef = getComponent(name);
+        return nameDef == null || nameDef == def;
     }
 
     /**
@@ -178,7 +155,6 @@ public class ShipDef {
 
         //write the code
         json.writeValue("code", code);
-        json.writeValue("name", name);
         json.writeValue("validated", validated);
 
         ///write all the properties
