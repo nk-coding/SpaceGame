@@ -24,11 +24,13 @@ public class ComputeCore extends Component implements CoreUnit {
     protected ComputeCore(ComponentDefBase defBase, DataInputStream inputStream, Ship ship) {
         super(defBase, ship);
         this.model = (ComputeCoreModel) super.model;
+        getSpaceSimulation().addCoreUnit(this);
     }
 
     protected ComputeCore(ComponentDef componentDef, Ship ship, Ship.ShipModel shipModel) {
         super(componentDef, ship, shipModel);
         this.model = (ComputeCoreModel) super.model;
+        getSpaceSimulation().addCoreUnit(this);
     }
 
     @Override
@@ -37,19 +39,20 @@ public class ComputeCore extends Component implements CoreUnit {
     }
 
     @Override
-    public Vector2 getCenterPosition() {
-        return getShip().getCenterPosition();
+    public Vector2 getWorldCenterPosition() {
+        return getShip().localToWorldCoordinates(getShip().getCenterPosition());
     }
 
     @Override
-    public float getRadius() {
-        return getShip().getRadius();
+    public float getRequestedHeight() {
+        float length = getShip().getBody().getLinearVelocity().len() + 1;
+        return getShip().getHeight() / (0.15f / (length * length) + 0.08f);
     }
 
     @Override
     public boolean keyDown(int keycode) {
         if (isOriginal()) {
-            model.keyDown(keycode);
+            return model.keyDown(keycode);
         }
         return false;
     }
@@ -57,7 +60,7 @@ public class ComputeCore extends Component implements CoreUnit {
     @Override
     public boolean keyUp(int keycode) {
         if (isOriginal()) {
-            model.keyUp(keycode);
+            return model.keyUp(keycode);
         }
         return false;
     }
@@ -70,8 +73,9 @@ public class ComputeCore extends Component implements CoreUnit {
     }
 
     @Override
-    public boolean receivesKeyInput() {
-        return isOriginal();
+    public void destroy() {
+        super.destroy();
+        getSpaceSimulation().removeCoreUnit(this);
     }
 
     private class ComputeCoreModel extends ComponentModel {
@@ -107,6 +111,13 @@ public class ComputeCore extends Component implements CoreUnit {
             keyDown.allowParallel();
         }
 
+        @Override
+        public void act(float delta) {
+            super.act(delta);
+            velocity.set(getShip().getBody().getLinearVelocity().len());
+            angularVelocity.set(getShip().getBody().getAngularVelocity());
+        }
+
         //region key input
 
         private boolean keyDown(int keycode) {
@@ -122,6 +133,8 @@ public class ComputeCore extends Component implements CoreUnit {
         public void setCameraFocus(boolean cameraFocus) {
             this.cameraFocus.set(cameraFocus);
         }
+
+
 
         //endregion
     }

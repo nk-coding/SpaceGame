@@ -15,6 +15,7 @@ import com.nkcoding.spacegame.simulation.Simulated;
 import com.nkcoding.spacegame.simulation.SimulatedType;
 import com.nkcoding.spacegame.simulation.SynchronizationPriority;
 import com.nkcoding.spacegame.simulation.communication.TransmissionID;
+import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler;
 
 import java.io.DataInputStream;
@@ -181,6 +182,27 @@ public class SpaceSimulation implements InputProcessor {
             e.printStackTrace();
         }
         sendToAll(outputStream);
+    }
+
+    /**
+     * adds a CoreUnit locally
+     */
+    public void addCoreUnit(CoreUnit coreUnit) {
+        coreUnits.add(coreUnit);
+        if (cameraCoreUnit == null && coreUnit.isOriginal()) {
+            cameraCoreUnit = coreUnit;
+        }
+    }
+
+    /**
+     * removes a CoreUnit locally
+     */
+    public void removeCoreUnit(CoreUnit coreUnit) {
+        coreUnits.remove(coreUnit);
+        if (cameraCoreUnit == coreUnit) {
+            cameraCoreUnit = null;
+            //TODO
+        }
     }
 
     /**
@@ -412,39 +434,43 @@ public class SpaceSimulation implements InputProcessor {
 
     // updates the camera
     public void updateCamera() {
+        float h;
         if (cameraCoreUnit != null) {
-            centerPos = cameraCoreUnit.localToWorldCoordinates(cameraCoreUnit.getCenterPosition());
-            float length = cameraCoreUnit.getBody().getLinearVelocity().len() + 1;
-            float h = cameraCoreUnit.getHeight() / (0.15f / (length * length) + 0.08f);
-            float w = h / height * width;
+            h = cameraCoreUnit.getRequestedHeight();
+            centerPos = cameraCoreUnit.getWorldCenterPosition();
+        } else {
+            h = ShipDef.UNIT_SIZE * ShipDef.MAX_SIZE * 2;
+            centerPos = new Vector2();
+        }
 
-            scaledRadius = radius * h / height;
-            camera.setToOrtho(false, w, h);
-            camera.position.x = centerPos.x;
-            camera.position.y = centerPos.y;
-            camera.update();
+        float w = h / height * width;
 
-            // CHANGE THIS WHEN ROTATION IS APPLIED!!!!!!!
-            int x1 = (int) Math.floor((centerPos.x - w / 2) / TILE_SIZE);
-            int y1 = (int) Math.floor((centerPos.y - h / 2) / TILE_SIZE);
-            int x2 = (int) Math.floor((centerPos.x + w / 2) / TILE_SIZE);
-            int y2 = (int) Math.floor((centerPos.y + h / 2) / TILE_SIZE);
-            int deltaX = x2 - x1 + 2;
-            while (tilesToDraw.size() > deltaX) {
-                tilesToDraw.remove(deltaX);
-            }
-            while (tilesToDraw.size() < deltaX) {
-                tilesToDraw.add(new int[3]);
-            }
-            //add all the tiles, also update tile count
-            tileCount = 0;
-            for (int x = 0; x < deltaX; x++) {
-                int[] val = tilesToDraw.get(x);
-                val[0] = x + x1;
-                val[1] = y1;
-                val[2] = y2 + 1;
-                tileCount += y2 - y1 + 1;
-            }
+        scaledRadius = radius * h / height;
+        camera.setToOrtho(false, w, h);
+        camera.position.x = centerPos.x;
+        camera.position.y = centerPos.y;
+        camera.update();
+
+        // CHANGE THIS WHEN ROTATION IS APPLIED!!!!!!!
+        int x1 = (int) Math.floor((centerPos.x - w / 2) / TILE_SIZE);
+        int y1 = (int) Math.floor((centerPos.y - h / 2) / TILE_SIZE);
+        int x2 = (int) Math.floor((centerPos.x + w / 2) / TILE_SIZE);
+        int y2 = (int) Math.floor((centerPos.y + h / 2) / TILE_SIZE);
+        int deltaX = x2 - x1 + 2;
+        while (tilesToDraw.size() > deltaX) {
+            tilesToDraw.remove(deltaX);
+        }
+        while (tilesToDraw.size() < deltaX) {
+            tilesToDraw.add(new int[3]);
+        }
+        //add all the tiles, also update tile count
+        tileCount = 0;
+        for (int x = 0; x < deltaX; x++) {
+            int[] val = tilesToDraw.get(x);
+            val[0] = x + x1;
+            val[1] = y1;
+            val[2] = y2 + 1;
+            tileCount += y2 - y1 + 1;
         }
     }
 

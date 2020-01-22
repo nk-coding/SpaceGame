@@ -239,6 +239,7 @@ public class Ship extends Simulated {
                 componentsMap[_x][_y] = null;
             }
         }
+        component.destroy();
 
         if (isOriginal()) {
             model.removeComponentInternally(component);

@@ -102,7 +102,7 @@ public abstract class Component implements Damageable {
         addFixtures();
     }
 
-    protected boolean isOriginal() {
+    public boolean isOriginal() {
         return ship.isOriginal();
     }
 
@@ -321,6 +321,11 @@ public abstract class Component implements Damageable {
                 break;
         }
     }
+
+    /**
+     * overwrite this to handle destroy messages
+     */
+    public void destroy() {}
 
     public class ComponentModel extends ExternalPropertyHandler {
         /**

@@ -14,24 +14,36 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import static com.nkcoding.spacegame.simulation.spaceship.components.Buffer.BUFFER_LEVEL_KEY;
+import static com.nkcoding.spacegame.simulation.spaceship.components.Cannon.IS_SHOOTING_KEY;
 import static com.nkcoding.spacegame.simulation.spaceship.components.Component.*;
+import static com.nkcoding.spacegame.simulation.spaceship.components.ComputeCore.*;
+import static com.nkcoding.spacegame.simulation.spaceship.components.Engine.ENGINE_POWER_KEY;
+import static com.nkcoding.spacegame.simulation.spaceship.components.ExplosiveCanister.EXPLODE_KEY;
+import static com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.IS_ENABLED_KEY;
+import static com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.RADIUS_KEY;
 import static com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData.of;
 
 public enum ComponentType {
     Engine((short)0, Engine::new, Engine::new, 1, 2, 100, 100, Asset.Engine,
-            of(com.nkcoding.spacegame.simulation.spaceship.components.Engine.ENGINE_POWER_KEY, DataType.INTEGER, false)),
+            of(ENGINE_POWER_KEY, DataType.INTEGER, false)),
     Cannon((short) 1, Cannon::new, Cannon::new, 1, 2, 100, 100, Asset.Cannon,
-            of(com.nkcoding.spacegame.simulation.spaceship.components.Cannon.IS_SHOOTING_KEY, DataType.BOOLEAN, false),
-            of(Buffer.BUFFER_LEVEL_KEY, DataType.FLOAT)),
+            of(IS_SHOOTING_KEY, DataType.BOOLEAN, false),
+            of(BUFFER_LEVEL_KEY, DataType.FLOAT)),
     PowerCore((short) 2, PowerCore::new, PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
     BasicHull((short) 3, BasicHull::new, BasicHull::new, Asset.BasicHull),
     ExplosiveCanister((short) 4, ExplosiveCanister::new, ExplosiveCanister::new, 1, 1, 50, 50, Asset.ExplosiveCanister,
-            of(com.nkcoding.spacegame.simulation.spaceship.components.ExplosiveCanister.EXPLODE_KEY, DataType.BOOLEAN, false)),
+            of(EXPLODE_KEY, DataType.BOOLEAN, false)),
     ShieldGenerator((short) 5, ShieldGenerator::new, ShieldGenerator::new, 2, 2, 200, 100, Asset.CloseSymbol,
-            of(com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.RADIUS_KEY, DataType.FLOAT, false),
-            of(com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.IS_ENABLED_KEY, DataType.BOOLEAN, false),
-            of(Buffer.BUFFER_LEVEL_KEY, DataType.FLOAT)),
-    ComputeCore((short) 6, ComputeCore::new, ComputeCore::new, 2, 2, 400, 800, Asset.ComputeCore);
+            of(RADIUS_KEY, DataType.FLOAT, false),
+            of(IS_ENABLED_KEY, DataType.BOOLEAN, false),
+            of(BUFFER_LEVEL_KEY, DataType.FLOAT)),
+    ComputeCore((short) 6, ComputeCore::new, ComputeCore::new, 2, 2, 400, 800, Asset.ComputeCore,
+            of(KEY_DOWN_KEY, DataType.STRING, true, true),
+            of(KEY_UP_KEY, DataType.STRING, true, true),
+            of(ANGULAR_VELOCITY_KEY, DataType.FLOAT),
+            of(VELOCITY_KEY, DataType.FLOAT),
+            of(CAMERA_FOCUS_KEY, DataType.BOOLEAN, false));
 
     //the width of the component
     public final int width;
