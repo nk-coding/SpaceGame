@@ -135,14 +135,21 @@ public class SpaceSimulation implements InputProcessor {
         return assetManager;
     }
 
-    public CoreUnit getCameraUnit() {
+    public CoreUnit getCameraCoreUnit() {
         return cameraCoreUnit;
     }
 
-    public void setCameraSimulated(CoreUnit coreUnit) {
+    /**
+     * call this to focus a CoreUnit
+     * @param coreUnit null ==> no unit selected
+     */
+    public void setCameraCoreUnit(CoreUnit coreUnit) {
         if (coreUnit != this.cameraCoreUnit && this.cameraCoreUnit != null)
             this.cameraCoreUnit.setCameraFocus(false);
         this.cameraCoreUnit = coreUnit;
+        if (coreUnit != null) {
+            coreUnit.setCameraFocus(true);
+        }
     }
 
     public World getWorld() {
@@ -189,7 +196,7 @@ public class SpaceSimulation implements InputProcessor {
     public void addCoreUnit(CoreUnit coreUnit) {
         coreUnits.add(coreUnit);
         if (cameraCoreUnit == null && coreUnit.isOriginal()) {
-            cameraCoreUnit = coreUnit;
+            setCameraCoreUnit(coreUnit);
         }
     }
 
@@ -199,7 +206,7 @@ public class SpaceSimulation implements InputProcessor {
     public void removeCoreUnit(CoreUnit coreUnit) {
         coreUnits.remove(coreUnit);
         if (cameraCoreUnit == coreUnit) {
-            cameraCoreUnit = null;
+            setCameraCoreUnit(null);
         }
     }
 
