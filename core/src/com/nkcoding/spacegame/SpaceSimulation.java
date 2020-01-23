@@ -15,7 +15,6 @@ import com.nkcoding.spacegame.simulation.Simulated;
 import com.nkcoding.spacegame.simulation.SimulatedType;
 import com.nkcoding.spacegame.simulation.SynchronizationPriority;
 import com.nkcoding.spacegame.simulation.communication.TransmissionID;
-import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler;
 
 import java.io.DataInputStream;
@@ -436,39 +435,36 @@ public class SpaceSimulation implements InputProcessor {
         if (cameraCoreUnit != null) {
             h = cameraCoreUnit.getRequestedHeight();
             centerPos = cameraCoreUnit.getWorldCenterPosition();
-        } else {
-            h = ShipDef.UNIT_SIZE * ShipDef.MAX_SIZE * 2;
-            centerPos = new Vector2();
-        }
 
-        float w = h / height * width;
+            float w = h / height * width;
 
-        scaledRadius = radius * h / height;
-        camera.setToOrtho(false, w, h);
-        camera.position.x = centerPos.x;
-        camera.position.y = centerPos.y;
-        camera.update();
+            scaledRadius = radius * h / height;
+            camera.setToOrtho(false, w, h);
+            camera.position.x = centerPos.x;
+            camera.position.y = centerPos.y;
+            camera.update();
 
-        // CHANGE THIS WHEN ROTATION IS APPLIED!!!!!!!
-        int x1 = (int) Math.floor((centerPos.x - w / 2) / TILE_SIZE);
-        int y1 = (int) Math.floor((centerPos.y - h / 2) / TILE_SIZE);
-        int x2 = (int) Math.floor((centerPos.x + w / 2) / TILE_SIZE);
-        int y2 = (int) Math.floor((centerPos.y + h / 2) / TILE_SIZE);
-        int deltaX = x2 - x1 + 2;
-        while (tilesToDraw.size() > deltaX) {
-            tilesToDraw.remove(deltaX);
-        }
-        while (tilesToDraw.size() < deltaX) {
-            tilesToDraw.add(new int[3]);
-        }
-        //add all the tiles, also update tile count
-        tileCount = 0;
-        for (int x = 0; x < deltaX; x++) {
-            int[] val = tilesToDraw.get(x);
-            val[0] = x + x1;
-            val[1] = y1;
-            val[2] = y2 + 1;
-            tileCount += y2 - y1 + 1;
+            // CHANGE THIS WHEN ROTATION IS APPLIED!!!!!!!
+            int x1 = (int) Math.floor((centerPos.x - w / 2) / TILE_SIZE);
+            int y1 = (int) Math.floor((centerPos.y - h / 2) / TILE_SIZE);
+            int x2 = (int) Math.floor((centerPos.x + w / 2) / TILE_SIZE);
+            int y2 = (int) Math.floor((centerPos.y + h / 2) / TILE_SIZE);
+            int deltaX = x2 - x1 + 2;
+            while (tilesToDraw.size() > deltaX) {
+                tilesToDraw.remove(deltaX);
+            }
+            while (tilesToDraw.size() < deltaX) {
+                tilesToDraw.add(new int[3]);
+            }
+            //add all the tiles, also update tile count
+            tileCount = 0;
+            for (int x = 0; x < deltaX; x++) {
+                int[] val = tilesToDraw.get(x);
+                val[0] = x + x1;
+                val[1] = y1;
+                val[2] = y2 + 1;
+                tileCount += y2 - y1 + 1;
+            }
         }
     }
 
