@@ -327,6 +327,11 @@ public abstract class Component implements Damageable {
      */
     public void destroy() {}
 
+    @Override
+    public String toString() {
+        return ship.getOwner() + "";
+    }
+
     public class ComponentModel extends ExternalPropertyHandler {
         /**
          * health has to be stored again, because it changes during simulation

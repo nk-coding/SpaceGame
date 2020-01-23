@@ -201,7 +201,6 @@ public class SpaceSimulation implements InputProcessor {
         coreUnits.remove(coreUnit);
         if (cameraCoreUnit == coreUnit) {
             cameraCoreUnit = null;
-            //TODO
         }
     }
 
@@ -359,7 +358,7 @@ public class SpaceSimulation implements InputProcessor {
                         case TransmissionID.UPDATE_BODY_STATE:
                             int bodyUpdateID = inputStream.readInt();
                             long timestamp = inputStream.readLong();
-                            System.out.println(System.currentTimeMillis() - timestamp);
+                            //System.out.println(System.currentTimeMillis() - timestamp);
                             int amount = inputStream.readInt();
                             for (int x = 0; x < amount; x++) {
                                 int simulatedID = inputStream.readInt();
@@ -385,7 +384,6 @@ public class SpaceSimulation implements InputProcessor {
             return res;
         } else {
             for (Simulated simulated : simulatedToAdd) {
-                System.out.println("found a simu: " + simulated.id);
                 if (simulated.id == id) return simulated;
             }
             return null;

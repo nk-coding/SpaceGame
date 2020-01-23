@@ -247,6 +247,8 @@ public class LauncherScreen implements Screen {
                         float posY = inputStream.readFloat();
                         spaceGame.startGame(communication, new Vector2(posX, posY));
                         break;
+                    } else {
+                        System.err.println("drop transmission");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

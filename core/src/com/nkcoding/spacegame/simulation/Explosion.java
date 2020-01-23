@@ -64,8 +64,8 @@ public class Explosion extends Simulated {
         this.startRadius = inputStream.readFloat();
         this.currentRadius = startRadius;
         this.endRadius = inputStream.readFloat();
-        this.step = (endRadius - startRadius) / time;
         this.time = inputStream.readFloat();
+        this.step = (endRadius - startRadius) / time;
         this.damage = inputStream.readFloat();
         this.explosionTexture = getSpaceSimulation().getAssetManager().getTexture(Asset.VerySimpleExplosion);
 
