@@ -260,7 +260,7 @@ public class SpaceSimulation implements InputProcessor {
     private void sendBodyUpdates(ArrayList<Simulated> bodyUpdateList) {
         if (!bodyUpdateList.isEmpty()) {
             try {
-                int maxAmount = Communication.MAX_SIZE / 28;
+                int maxAmount = (Communication.MAX_SIZE - 20) / 28;
                 for (int x = 0; x < Math.ceil(bodyUpdateList.size() / (float)maxAmount); x++) {
                     int max = Math.min(bodyUpdateList.size(), (x + 1) * maxAmount);
                     ResetDataOutputStream outputStream = getOutputStream(false);
