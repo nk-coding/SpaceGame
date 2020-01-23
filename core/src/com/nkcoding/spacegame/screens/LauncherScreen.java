@@ -245,6 +245,11 @@ public class LauncherScreen implements Screen {
                         //start the game
                         float posX = inputStream.readFloat();
                         float posY = inputStream.readFloat();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         spaceGame.startGame(communication, new Vector2(posX, posY));
                         break;
                     } else {
