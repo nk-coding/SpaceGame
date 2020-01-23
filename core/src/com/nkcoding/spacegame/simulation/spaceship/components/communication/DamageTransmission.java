@@ -29,4 +29,9 @@ public class DamageTransmission extends UpdateComponentTransmission {
         outputStream.writeInt(damage);
         outputStream.writeInt(damageID);
     }
+
+    @Override
+    public String toString() {
+        return "damageID: " + damageID + ", damage: " + damage;
+    }
 }

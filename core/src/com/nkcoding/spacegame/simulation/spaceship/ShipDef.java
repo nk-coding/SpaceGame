@@ -70,6 +70,15 @@ public class ShipDef {
     }
 
     /**
+     * get the amount of components
+     *
+     * @return the amount of components (0 if there are none)
+     */
+    public int getComponentCount() {
+        return componentDefs.size();
+    }
+
+    /**
      * checks if two components have the same name
      *
      * @return true if everything is ok
