@@ -230,7 +230,6 @@ public class SpaceSimulation implements InputProcessor {
     // calls act on all Simulateds
     // deals with ExternalMethodFutures
     public void act(float time) {
-        if (time > 0.018) System.out.println(time);
         handleScriptingEngine();
         handleMessages();
         int synchronizationMask = getBodySynchronization(time);
