@@ -62,6 +62,7 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 setSelectedComponent(calculateXIndex(x), calculateYIndex(y));
+                getStage().setKeyboardFocus(ShipDesigner.this);
                 return true;
             }
         });
@@ -72,6 +73,8 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
                 return ShipDesigner.this.keyDown(event, keycode);
             }
         });
+
+
     }
 
     private boolean keyDown(InputEvent inputEvent, int keyCode) {

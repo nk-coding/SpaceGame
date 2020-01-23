@@ -538,6 +538,7 @@ public class ShipBuilderScreen implements Screen {
 
     //switches the view
     private void switchView() {
+        shipDesigner.setSelectedComponent(null);
         if (isShipView) {
             stage.addActor(codeRootTable);
             shipRootTable.remove();
