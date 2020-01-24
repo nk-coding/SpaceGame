@@ -60,7 +60,7 @@ public abstract class ExternalProperty<T> implements RunningState {
         this.supportsRead = data.supportsRead;
         this.supportsWrite = data.supportsWrite;
         this.supportsChangedHandler = data.supportsChangedHandler;
-        if (supportsRead) {
+        if (supportsWrite) {
             setInitValue(data.initData);
         }
         if (supportsChangedHandler && !data.handlerName.isBlank()) {

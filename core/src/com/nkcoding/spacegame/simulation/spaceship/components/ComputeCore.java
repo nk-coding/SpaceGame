@@ -104,6 +104,11 @@ public class ComputeCore extends Component implements CoreUnit {
             }
 
             @Override
+            public void setInitValue(String value) {
+                set(value.equals("true"));
+            }
+
+            @Override
             public Boolean get2() {
                 return getSpaceSimulation().getCameraCoreUnit() == ComputeCore.this;
             }
