@@ -32,7 +32,7 @@ public class ComponentDef extends ComponentDefBase {
         super(type);
         //add all ExternalPropertyDefs
         for (ExternalPropertyData data : type.propertyDefs) {
-            properties.put(data.name, (ExternalPropertyData) data.clone());
+            properties.put(data.name, new ExternalPropertyData(data));
         }
     }
 
