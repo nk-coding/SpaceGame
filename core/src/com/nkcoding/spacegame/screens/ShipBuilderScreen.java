@@ -284,7 +284,7 @@ public class ShipBuilderScreen implements Screen {
         //add all the main controls
         shipRootTable.add(componentsScrollPane).left().growY();
         shipRootTable.add(shipDesignerZoomScrollPane).grow();
-        shipRootTable.add(rightLayoutTable).right().width(400).growY();
+        shipRootTable.add(rightLayoutTable).right().width(450).growY();
 
         addDragAndDropListeners();
 

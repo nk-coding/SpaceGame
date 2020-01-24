@@ -49,12 +49,12 @@ public class PropertyBox extends WidgetGroup {
         this.data = data;
         this.methods = methods;
         //create all the UI components
-        nameLabel = new Label("", style.labelStyle);
-        getterLabel = new Label("", style.labelStyle);
-        setterLabel = new Label("", style.labelStyle);
-        valueTextField = new TextField("", style.textFieldStyle);
+        nameLabel = new Label(" ", style.labelStyle);
+        getterLabel = new Label(" ", style.labelStyle);
+        setterLabel = new Label(" ", style.labelStyle);
+        valueTextField = new TextField(" ", style.textFieldStyle);
         valueTextField.setTextFieldListener((textField, c) -> verify());
-        handlerTextField = new TextField("", style.textFieldStyle);
+        handlerTextField = new TextField(" ", style.textFieldStyle);
         handlerTextField.setTextFieldListener((textField, c) -> verify());
         codeImageButton = new ImageButton(style.codeButtonDrawable);
         codeImageButton.addListener(new ChangeListener() {
@@ -114,7 +114,7 @@ public class PropertyBox extends WidgetGroup {
             getterLabel.setText(data.type + " " +  data.getterName + "()");
         }
         if (data.supportsWrite) {
-            getterLabel.setText("void " + data.setterName + "(string id, " + data.type + " val)");
+            setterLabel.setText("void " + data.setterName + "(string, " + data.type + ")");
             valueTextField.setText(data.initData);
         }
         if (data.supportsChangedHandler) {

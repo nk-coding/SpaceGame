@@ -13,6 +13,8 @@ public abstract class ExternalPropertyHandler {
     //map with all properties
     private HashMap<String, ExternalProperty> properties = new HashMap<>();
 
+    private HashMap<String, ExternalProperty> methodNames = new HashMap<>();
+
     public Map<String, ExternalProperty> getProperties() {
         return properties;
     }
@@ -24,6 +26,12 @@ public abstract class ExternalPropertyHandler {
             ExternalProperty property = properties.get(data.name);
             if (property != null) {
                 property.init(data, methods);
+                if (property.supportsWrite) {
+                    methodNames.put(data.setterName, property);
+                }
+                if (property.supportsRead) {
+                    methodNames.put(data.getterName, property);
+                }
             }
         }
     }
@@ -35,11 +43,10 @@ public abstract class ExternalPropertyHandler {
     }
 
     /**
-     * must be overwritten if there is a property with a custom name
-     * //TODO: move this feature to a map
+     * find automatically the correct ExternalProperty
      */
     public boolean handleExternalMethod(ExternalMethodFuture future) {
-        ExternalProperty property = getProperties().get(future.getName().substring(3));
+        ExternalProperty property = methodNames.get(future.getName());
         if (property != null) {
             if (future.getParameters().length == 2) {
                 //it is a setter
