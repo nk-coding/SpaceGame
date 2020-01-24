@@ -323,9 +323,16 @@ public abstract class Component implements Damageable {
     }
 
     /**
-     * overwrite this to handle destroy messages
+     * overwrite this to handle remove messages
      */
-    public void destroy() {}
+    public void removeComponent() {
+    }
+
+    /**
+     * overwrite this to handle add messages
+     */
+    public void addComponent() {
+    }
 
     @Override
     public String toString() {
