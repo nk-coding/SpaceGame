@@ -10,7 +10,7 @@ public class NotifyProperty<T> extends ExternalProperty<T> {
     private LinkedList<T> updatedValues;
 
     public NotifyProperty(String name) {
-        super(true, true, name);
+        super(name);
         updatedValues = new LinkedList<>();
     }
 

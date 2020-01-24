@@ -131,7 +131,7 @@ public class ShieldGenerator extends Buffer {
          * property to check / set if the shield is enabled
          * virtual, because the shield also must have enough power to activate
          */
-        public final VirtualProperty<Boolean> isEnabled = register(new VirtualProperty<>(true, false, IS_ENABLED_KEY) {
+        public final VirtualProperty<Boolean> isEnabled = register(new VirtualProperty<>( IS_ENABLED_KEY) {
             @Override
             public void set(Boolean value) {
                 isSetEnabled = value;
@@ -151,7 +151,7 @@ public class ShieldGenerator extends Buffer {
         //check if the radius changed
         private boolean radiusChanged = true;
 
-        public final FloatProperty radius = register(new FloatProperty(false, true, RADIUS_KEY) {
+        public final FloatProperty radius = register(new FloatProperty( RADIUS_KEY) {
             @Override
             public void set(float value) {
                 super.set(value < 0 ? 0 : value > 100 ? 100 : value);

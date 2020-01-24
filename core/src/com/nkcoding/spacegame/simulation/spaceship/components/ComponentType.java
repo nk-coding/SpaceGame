@@ -22,28 +22,27 @@ import static com.nkcoding.spacegame.simulation.spaceship.components.Engine.ENGI
 import static com.nkcoding.spacegame.simulation.spaceship.components.ExplosiveCanister.EXPLODE_KEY;
 import static com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.IS_ENABLED_KEY;
 import static com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.RADIUS_KEY;
-import static com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData.of;
 
 public enum ComponentType {
     Engine((short)0, Engine::new, Engine::new, 1, 2, 100, 100, Asset.Engine,
-            of(ENGINE_POWER_KEY, DataType.INTEGER, false)),
+            new ExternalPropertyData(ENGINE_POWER_KEY, DataType.INTEGER)),
     Cannon((short) 1, Cannon::new, Cannon::new, 1, 2, 100, 100, Asset.Cannon,
-            of(IS_SHOOTING_KEY, DataType.BOOLEAN, false),
-            of(BUFFER_LEVEL_KEY, DataType.FLOAT)),
+            new ExternalPropertyData(IS_SHOOTING_KEY, DataType.BOOLEAN),
+            new ExternalPropertyData(BUFFER_LEVEL_KEY, DataType.FLOAT, false, true, false)),
     PowerCore((short) 2, PowerCore::new, PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
     BasicHull((short) 3, BasicHull::new, BasicHull::new, Asset.BasicHull),
     ExplosiveCanister((short) 4, ExplosiveCanister::new, ExplosiveCanister::new, 1, 1, 50, 50, Asset.ExplosiveCanister,
-            of(EXPLODE_KEY, DataType.BOOLEAN, false)),
+            new ExternalPropertyData(EXPLODE_KEY, DataType.BOOLEAN)),
     ShieldGenerator((short) 5, ShieldGenerator::new, ShieldGenerator::new, 2, 2, 200, 100, Asset.CloseSymbol,
-            of(RADIUS_KEY, DataType.FLOAT, false),
-            of(IS_ENABLED_KEY, DataType.BOOLEAN, false),
-            of(BUFFER_LEVEL_KEY, DataType.FLOAT)),
+            new ExternalPropertyData(RADIUS_KEY, DataType.FLOAT),
+            new ExternalPropertyData(IS_ENABLED_KEY, DataType.BOOLEAN),
+            new ExternalPropertyData(BUFFER_LEVEL_KEY, DataType.FLOAT, false, true, false)),
     ComputeCore((short) 6, ComputeCore::new, ComputeCore::new, 2, 2, 400, 800, Asset.ComputeCore,
-            of(KEY_DOWN_KEY, DataType.STRING, true, true),
-            of(KEY_UP_KEY, DataType.STRING, true, true),
-            of(ANGULAR_VELOCITY_KEY, DataType.FLOAT),
-            of(VELOCITY_KEY, DataType.FLOAT),
-            of(CAMERA_FOCUS_KEY, DataType.BOOLEAN, false));
+            new ExternalPropertyData(KEY_DOWN_KEY, DataType.STRING, false, false, true),
+            new ExternalPropertyData(KEY_UP_KEY, DataType.STRING, false, false, true),
+            new ExternalPropertyData(ANGULAR_VELOCITY_KEY, DataType.FLOAT, false, true, false),
+            new ExternalPropertyData(VELOCITY_KEY, DataType.FLOAT, false, true, false),
+            new ExternalPropertyData(CAMERA_FOCUS_KEY, DataType.BOOLEAN));
 
     //the width of the component
     public final int width;
@@ -75,11 +74,11 @@ public enum ComponentType {
                   ExternalPropertyData... propertyDefs) {
         ExternalPropertyData[] newPropertyDefs = new ExternalPropertyData[propertyDefs.length + 5];
         System.arraycopy(propertyDefs, 0, newPropertyDefs, 5, propertyDefs.length);
-        newPropertyDefs[0] = new ExternalPropertyData(HEALTH_KEY, DataType.FLOAT);
-        newPropertyDefs[1] = new ExternalPropertyData(POWER_REQUESTED_KEY, DataType.FLOAT);
-        newPropertyDefs[2] = new ExternalPropertyData(REQUEST_LEVEL_KEY, DataType.INTEGER, false);
-        newPropertyDefs[3] = new ExternalPropertyData(HAS_FULL_POWER_KEY, DataType.BOOLEAN);
-        newPropertyDefs[4] = new ExternalPropertyData(POWER_RECEIVED_KEY, DataType.FLOAT);
+        newPropertyDefs[0] = new ExternalPropertyData(HEALTH_KEY, DataType.FLOAT, false);
+        newPropertyDefs[1] = new ExternalPropertyData(POWER_REQUESTED_KEY, DataType.FLOAT, false);
+        newPropertyDefs[2] = new ExternalPropertyData(REQUEST_LEVEL_KEY, DataType.INTEGER, true);
+        newPropertyDefs[3] = new ExternalPropertyData(HAS_FULL_POWER_KEY, DataType.BOOLEAN, false);
+        newPropertyDefs[4] = new ExternalPropertyData(POWER_RECEIVED_KEY, DataType.FLOAT, false);
         this.propertyDefs = newPropertyDefs;
         this.constructor = constructor;
         this.deserializer = deserializer;

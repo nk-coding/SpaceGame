@@ -25,7 +25,7 @@ public abstract class Buffer extends Component {
     public class BufferModel extends ComponentModel {
 
         protected float capacity;
-        public final FloatProperty bufferLevel = register(new FloatProperty(true, true, BUFFER_LEVEL_KEY) {
+        public final FloatProperty bufferLevel = register(new FloatProperty( BUFFER_LEVEL_KEY) {
             @Override
             public void set(float value) {
                 super.set(Math.min(capacity, value));

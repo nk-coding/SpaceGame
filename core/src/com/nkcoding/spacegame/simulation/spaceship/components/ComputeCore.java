@@ -90,17 +90,22 @@ public class ComputeCore extends Component implements CoreUnit {
         //virtual property when key is released
         public final NotifyProperty<String> keyUp = register(new NotifyProperty<>(KEY_UP_KEY));
         //wrapper for the angularRotation from Body
-        public final FloatProperty angularVelocity = register(new FloatProperty(true, true, ANGULAR_VELOCITY_KEY));
+        public final FloatProperty angularVelocity = register(new FloatProperty(ANGULAR_VELOCITY_KEY));
         //wrapper for the velocity from Body
-        public final FloatProperty velocity = register(new FloatProperty(true, true, VELOCITY_KEY));
+        public final FloatProperty velocity = register(new FloatProperty( VELOCITY_KEY));
         //focus from SpaceSimulation
-        public final VirtualProperty<Boolean> cameraFocus = register(new VirtualProperty<>(true, true, CAMERA_FOCUS_KEY) {
+        public final VirtualProperty<Boolean> cameraFocus = register(new VirtualProperty<>(CAMERA_FOCUS_KEY) {
             @Override
             public void set(Boolean value) {
                 super.set(value);
                 if (value && getSpaceSimulation().getCameraCoreUnit() != ComputeCore.this){
                     getSpaceSimulation().setCameraCoreUnit(ComputeCore.this);
                 }
+            }
+
+            @Override
+            public void setInitValue(String value) {
+                set(value.equals("true"));
             }
 
             @Override

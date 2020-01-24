@@ -34,7 +34,7 @@ public class Engine extends Component {
 
     public class EngineModel extends ComponentModel {
 
-        public final IntProperty enginePower = register(new IntProperty(false, true, ENGINE_POWER_KEY));
+        public final IntProperty enginePower = register(new IntProperty(ENGINE_POWER_KEY));
 
         public EngineModel(Ship.ShipModel shipModel, ComponentDef componentDef) {
             super(shipModel, componentDef);
@@ -44,7 +44,7 @@ public class Engine extends Component {
         public void act(float delta) {
             super.act(delta);
             int enginePower = this.enginePower.get();
-            enginePower = (enginePower < 0) ? 0 : (enginePower > 100) ? 100 : enginePower;
+            enginePower = (enginePower < 0) ? 0 : Math.min(enginePower, 100);
             //update requested power
             powerRequested.set(enginePower);
             //System.out.println("received power: " + powerReceived.get());
