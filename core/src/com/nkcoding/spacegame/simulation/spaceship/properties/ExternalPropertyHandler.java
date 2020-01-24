@@ -34,6 +34,10 @@ public abstract class ExternalPropertyHandler {
         return property;
     }
 
+    /**
+     * must be overwritten if there is a property with a custom name
+     * //TODO: move this feature to a map
+     */
     public boolean handleExternalMethod(ExternalMethodFuture future) {
         ExternalProperty property = getProperties().get(future.getName().substring(3));
         if (property != null) {

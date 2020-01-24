@@ -3,8 +3,8 @@ package com.nkcoding.spacegame.simulation.spaceship.properties;
 public class FloatProperty extends ExternalProperty<Float> {
     private float value = 0f;
 
-    public FloatProperty(boolean readonly, boolean notifyChanges, String name) {
-        super(readonly, notifyChanges, name);
+    public FloatProperty(String name) {
+        super(name);
     }
 
     public float get() {
