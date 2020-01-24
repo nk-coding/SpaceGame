@@ -27,20 +27,20 @@ public class PropertyBox extends WidgetGroup {
     //the Label for the Name
     private Label nameLabel;
 
-    //the Label for "value"
-    private Label valueLabel;
-
-    //the Label for "change handler":
-    private Label changedLabel;
-
     //the TextField for "value"
-    private TextField valueTextField;
+    private final TextField valueTextField;
+
+    //the label for the getter
+    private final Label getterLabel;
+
+    //the label for the setter
+    private final Label setterLabel;
 
     //the TextField for "changed handler"
-    private TextField changedTextField;
+    private final TextField handlerTextField;
 
     //the ImageButton which redirects to the code
-    private ImageButton codeImageButton;
+    private final ImageButton codeImageButton;
 
     public PropertyBox(PropertyBoxStyle style, String name, ExternalPropertyData data,
                        Map<String, NormalMethodDefinition> methods) {
@@ -83,15 +83,15 @@ public class PropertyBox extends WidgetGroup {
     private void init() {
         //init the name label
         if (nameLabel == null) {
-            nameLabel = new Label(name, style.labelStyle);
+            nameLabel = new Label(name + ": " + data.type, style.labelStyle);
             addActor(nameLabel);
-        } else nameLabel.setText(name);
+        } else nameLabel.setText(name + ": " + data.type);
         //init the changed handler stuff
         if (changedLabel == null) {
-            changedLabel = new Label("handler: " + data.type, style.labelStyle);
+            changedLabel = new Label("handler", style.labelStyle);
             addActor(changedLabel);
         } else {
-            changedLabel.setText("handler: " + data.type);
+            changedLabel.setText("handler");
         }
         if (changedTextField == null) {
             changedTextField = new TextField(data.handlerName, style.textFieldStyle);

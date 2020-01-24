@@ -42,9 +42,7 @@ public abstract class ExternalProperty<T> implements RunningState {
      */
     protected boolean allowParallel = false;
 
-    public ExternalProperty(boolean readonly, boolean notifyChanges, String name) {
-        this.readonly = readonly;
-        this.notifyChanges = notifyChanges;
+    public ExternalProperty(String name) {
         this.name = name;
     }
 

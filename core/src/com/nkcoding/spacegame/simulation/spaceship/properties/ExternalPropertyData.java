@@ -23,16 +23,25 @@ public class ExternalPropertyData {
     /**
      * can the value be modified by the user
      */
-    public final boolean readonly;
+    public final boolean supportsRead;
 
     /**
      * can the user get the value
      */
-    public final boolean writeonly;
+    public final boolean supportsWrite;
+
+    /**
+     * is the changedHandler used
+     */
+    public final boolean supportsChangedHandler;
 
     public String initData = "";
 
     public String handlerName = "";
+
+    public String getterName = "";
+
+    public String setterName = "";
 
     /**
      * the default constructor
@@ -40,13 +49,14 @@ public class ExternalPropertyData {
      * @param type     the type of the property
      * @param readonly can the value be modified by the user
      */
-    public ExternalPropertyData(String name, DataType type, boolean readonly, boolean writeonly) {
+    public ExternalPropertyData(String name, DataType type, boolean supportsRead, boolean supportsWrite, boolean supportsChangedHandler) {
         //check if type is ok
         if (type.equals(DataType.VOID)) throw new IllegalArgumentException("type cannot be " + DataType.VOID_KW);
         this.name = name;
         this.type = type;
-        this.readonly = readonly;
-        this.writeonly = writeonly;
+        this.supportsRead = supportsRead;
+        this.supportsWrite = supportsWrite;
+        this.supportsChangedHandler = supportsChangedHandler;
     }
 
     /**
