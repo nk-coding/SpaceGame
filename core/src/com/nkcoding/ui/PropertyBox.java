@@ -194,7 +194,7 @@ public class PropertyBox extends WidgetGroup {
             valueTextField.setWidth(getWidth() - style.spacing - bgLeftWidth - bgRightWidth);
             posY += valueTextField.getHeight() + style.spacing;
 
-            setterLabel.setX(bgLeftWidth);
+            setterLabel.setX(bgLeftWidth + style.spacing);
             setterLabel.setY(posY);
             setterLabel.setWidth(getWidth() - bgLeftWidth - bgRightWidth);
             posY += setterLabel.getHeight() + style.spacing;
@@ -202,14 +202,14 @@ public class PropertyBox extends WidgetGroup {
 
         //getter
         if (data.supportsRead) {
-            getterLabel.setX(bgLeftWidth);
+            getterLabel.setX(bgLeftWidth + style.spacing);
             getterLabel.setY(posY);
             getterLabel.setWidth(getWidth() - bgLeftWidth - bgRightWidth);
             posY += getterLabel.getHeight() + style.spacing;
         }
 
         //name label
-        nameLabel.setX(bgLeftWidth);
+        nameLabel.setX(bgLeftWidth + style.spacing);
         nameLabel.setY(posY);
         nameLabel.setWidth(getWidth() - bgLeftWidth - bgRightWidth);
     }
