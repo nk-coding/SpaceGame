@@ -358,6 +358,8 @@ public class SpaceSimulation implements InputProcessor {
                             if (toUpdate != null) {
                                 toUpdate.receiveTransmission(toUpdate.deserializeTransmission(inputStream, updateID));
                             } else {
+                                //IMPORTANT: DISCARD THIS TRANSMISSION COMPLETELY
+                                //it is not safe to reuse any part of this, remember!
                                 System.out.println("cannot update " + updateID);
                             }
                             break;
@@ -372,6 +374,7 @@ public class SpaceSimulation implements InputProcessor {
                                 if (updateBody != null) {
                                     updateBody.deserializeBodyState(inputStream, bodyUpdateID);
                                 } else {
+                                    inputStream.skip(24);
                                     System.out.println("cannot update body: " + simulatedID);
                                 }
                             }
