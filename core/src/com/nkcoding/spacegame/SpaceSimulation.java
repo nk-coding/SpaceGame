@@ -444,7 +444,7 @@ public class SpaceSimulation implements InputProcessor {
         float h;
         if (cameraCoreUnit != null) {
             h = cameraCoreUnit.getRequestedHeight();
-            centerPos = cameraCoreUnit.getWorldCenterPosition();
+            centerPos = new Vector2(cameraCoreUnit.getWorldCenterPosition());
 
             float w = h / height * width;
 

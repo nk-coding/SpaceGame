@@ -3,8 +3,8 @@ package com.nkcoding.spacegame.simulation.spaceship.properties;
 public class BooleanProperty extends ExternalProperty<Boolean> {
     private boolean value = false;
 
-    public BooleanProperty(boolean readonly, boolean notifyChanges, String name) {
-        super(readonly, notifyChanges, name);
+    public BooleanProperty(String name) {
+        super(name);
     }
 
     public boolean get() {

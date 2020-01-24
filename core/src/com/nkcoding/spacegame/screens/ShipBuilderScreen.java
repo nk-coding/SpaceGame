@@ -284,7 +284,7 @@ public class ShipBuilderScreen implements Screen {
         //add all the main controls
         shipRootTable.add(componentsScrollPane).left().growY();
         shipRootTable.add(shipDesignerZoomScrollPane).grow();
-        shipRootTable.add(rightLayoutTable).right().width(400).growY();
+        shipRootTable.add(rightLayoutTable).right().width(450).growY();
 
         addDragAndDropListeners();
 
@@ -355,6 +355,7 @@ public class ShipBuilderScreen implements Screen {
     private void addDragAndDropListeners() {
         //region drag and drop for the Components
         DragAndDrop componentsDragAndDrop = new DragAndDrop();
+        componentsDragAndDrop.setKeepWithinStage(false);
         //add the componentsStack as a source
         componentsDragAndDrop.addSource(new DragAndDrop.Source(componentsStack) {
             @Override
@@ -524,7 +525,7 @@ public class ShipBuilderScreen implements Screen {
                                 codeEditor.addAction(action);
                             } else if (!this.getHandlerName().isBlank()) {
                                 //actually use \n because it leads to way better results
-                                String codeToAdd = String.format("\n\nvoid %s(%s value) {\n   //TODO\n}", this.getHandlerName(), getDataType().name);
+                                String codeToAdd = String.format("\n\nvoid %s(%s value) {\n   \n}", this.getHandlerName(), getDataType().name);
                                 codeEditor.setText(codeEditor.getText() + codeToAdd);
                                 switchView();
 

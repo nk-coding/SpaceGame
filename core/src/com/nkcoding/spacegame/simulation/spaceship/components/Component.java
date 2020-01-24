@@ -323,9 +323,16 @@ public abstract class Component implements Damageable {
     }
 
     /**
-     * overwrite this to handle destroy messages
+     * overwrite this to handle remove messages
      */
-    public void destroy() {}
+    public void removeComponent() {
+    }
+
+    /**
+     * overwrite this to handle add messages
+     */
+    public void addComponent() {
+    }
 
     @Override
     public String toString() {
@@ -339,15 +346,15 @@ public abstract class Component implements Damageable {
          * this check is done in act because of library issues
          * should be initialized in constructor out of componentDef
          */
-        public final IntProperty health = register(new IntProperty(true, true, HEALTH_KEY));
+        public final IntProperty health = register(new IntProperty(HEALTH_KEY));
         /**
          * shows if the component get the full power (used to prevent issues with float rounding)
          */
-        public final BooleanProperty hasFullPower = register(new BooleanProperty(true, true, HAS_FULL_POWER_KEY));
+        public final BooleanProperty hasFullPower = register(new BooleanProperty(HAS_FULL_POWER_KEY));
         /**
          * how much power does it actually get
          */
-        public final FloatProperty powerReceived = register(new FloatProperty(true, true, POWER_RECEIVED_KEY) {
+        public final FloatProperty powerReceived = register(new FloatProperty(POWER_RECEIVED_KEY) {
             @Override
             public void set(float value) {
                 super.set(value);
@@ -362,7 +369,7 @@ public abstract class Component implements Damageable {
         /**
          * power that component requests
          */
-        public final FloatProperty powerRequested = register(new FloatProperty(true, true, POWER_REQUESTED_KEY) {
+        public final FloatProperty powerRequested = register(new FloatProperty( POWER_REQUESTED_KEY) {
             @Override
             public void set(float value) {
                 if (get() != value) shipModel.invalidatePowerDelivery();
@@ -372,7 +379,7 @@ public abstract class Component implements Damageable {
         /**
          * how important is it to get the power
          */
-        public final IntProperty requestLevel = register(new IntProperty(false, true, REQUEST_LEVEL_KEY) {
+        public final IntProperty requestLevel = register(new IntProperty(REQUEST_LEVEL_KEY) {
             @Override
             public void set(int value) {
                 if (get() != value) shipModel.invalidatePowerLevelOrder();

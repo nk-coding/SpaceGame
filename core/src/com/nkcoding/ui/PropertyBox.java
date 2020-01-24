@@ -25,22 +25,22 @@ public class PropertyBox extends WidgetGroup {
     //the style of this
     private PropertyBoxStyle style;
     //the Label for the Name
-    private Label nameLabel;
-
-    //the Label for "value"
-    private Label valueLabel;
-
-    //the Label for "change handler":
-    private Label changedLabel;
+    private final Label nameLabel;
 
     //the TextField for "value"
-    private TextField valueTextField;
+    private final TextField valueTextField;
+
+    //the label for the getter
+    private final Label getterLabel;
+
+    //the label for the setter
+    private final Label setterLabel;
 
     //the TextField for "changed handler"
-    private TextField changedTextField;
+    private final TextField handlerTextField;
 
     //the ImageButton which redirects to the code
-    private ImageButton codeImageButton;
+    private final ImageButton codeImageButton;
 
     public PropertyBox(PropertyBoxStyle style, String name, ExternalPropertyData data,
                        Map<String, NormalMethodDefinition> methods) {
@@ -48,6 +48,27 @@ public class PropertyBox extends WidgetGroup {
         this.name = name;
         this.data = data;
         this.methods = methods;
+        //create all the UI components
+        nameLabel = new Label(" ", style.labelStyle);
+        getterLabel = new Label(" ", style.labelStyle);
+        setterLabel = new Label(" ", style.labelStyle);
+        valueTextField = new TextField(" ", style.textFieldStyle);
+        valueTextField.setTextFieldListener((textField, c) -> verify());
+        handlerTextField = new TextField(" ", style.textFieldStyle);
+        handlerTextField.setTextFieldListener((textField, c) -> verify());
+        codeImageButton = new ImageButton(style.codeButtonDrawable);
+        codeImageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                codeButtonClicked();
+            }
+        });
+        addActor(nameLabel);
+        addActor(getterLabel);
+        addActor(setterLabel);
+        addActor(valueTextField);
+        addActor(handlerTextField);
+        addActor(codeImageButton);
         init();
     }
 
@@ -56,7 +77,7 @@ public class PropertyBox extends WidgetGroup {
     }
 
     protected String getHandlerName() {
-        return changedTextField.getText();
+        return handlerTextField.getText();
     }
 
     /**
@@ -75,60 +96,45 @@ public class PropertyBox extends WidgetGroup {
      */
     public void save() {
         if (data != null) {
-            if (!data.readonly) data.initData = valueTextField.getText();
-            data.handlerName = changedTextField.getText();
+            if (data.supportsWrite) {
+                data.initData = valueTextField.getText();
+            }
+            if (data.supportsChangedHandler) {
+                data.handlerName = handlerTextField.getText();
+            }
         }
     }
 
+    /**
+     * updates this PropertyBox with the data from a new ExternalPropertyData
+     */
     private void init() {
-        //init the name label
-        if (nameLabel == null) {
-            nameLabel = new Label(name, style.labelStyle);
-            addActor(nameLabel);
-        } else nameLabel.setText(name);
-        //init the changed handler stuff
-        if (changedLabel == null) {
-            changedLabel = new Label("handler: " + data.type, style.labelStyle);
-            addActor(changedLabel);
-        } else {
-            changedLabel.setText("handler: " + data.type);
+        nameLabel.setText(name);
+        if (data.supportsRead) {
+            getterLabel.setText(data.type + " " +  data.getterName + "()");
         }
-        if (changedTextField == null) {
-            changedTextField = new TextField(data.handlerName, style.textFieldStyle);
-            changedTextField.setTextFieldListener((textField, c) -> verify());
-            addActor(changedTextField);
-        } else changedTextField.setText(data.handlerName);
-        if (codeImageButton == null) {
-            codeImageButton = new ImageButton(style.codeButtonDrawable);
-            codeImageButton.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    codeButtonClicked();
-                }
-            });
-            addActor(codeImageButton);
+        if (data.supportsWrite) {
+            setterLabel.setText("void " + data.setterName + "(string, " + data.type + ")");
+            valueTextField.setText(data.initData);
         }
-
-        //init the value stuff if necessary
-        if (!data.readonly) {
-            if (valueLabel == null) valueLabel = new Label("value", style.labelStyle);
-            if (valueTextField == null) {
-                valueTextField = new TextField(data.initData, style.textFieldStyle);
-                valueTextField.setTextFieldListener((textField, c) -> verify());
-                verify();
-                addActor(valueTextField);
-            } else valueTextField.setText(data.initData);
+        if (data.supportsChangedHandler) {
+            handlerTextField.setText(data.handlerName);
         }
         verify();
         invalidateHierarchy();
     }
 
     public void verify() {
-        if (valueTextField != null)
+        if (valueTextField != null && data.supportsWrite) {
             valueTextField.setColor(valueTextField.getText().equals("") || data.verifyInit(valueTextField.getText())
                     ? style.legalInputColor : style.illegalInputColor);
-        changedTextField.setColor(data.verifyHandler(changedTextField.getText(), methods)
-                ? style.legalInputColor : style.illegalInputColor);
+        }
+
+        if (data.supportsChangedHandler) {
+            handlerTextField.setColor(data.verifyHandler(handlerTextField.getText(), methods)
+                    ? style.legalInputColor : style.illegalInputColor);
+        }
+
     }
 
     @Override
@@ -143,12 +149,16 @@ public class PropertyBox extends WidgetGroup {
         }
         //draw all the children
         nameLabel.draw(batch, parentAlpha);
-        changedLabel.draw(batch, parentAlpha);
-        changedTextField.draw(batch, parentAlpha);
-        codeImageButton.draw(batch, parentAlpha);
-        if (!data.readonly) {
-            valueLabel.draw(batch, parentAlpha);
+        if (data.supportsRead) {
+            getterLabel.draw(batch, parentAlpha);
+        }
+        if (data.supportsWrite) {
+            setterLabel.draw(batch, parentAlpha);
             valueTextField.draw(batch, parentAlpha);
+        }
+        if (data.supportsChangedHandler) {
+            codeImageButton.draw(batch, parentAlpha);
+            handlerTextField.draw(batch, parentAlpha);
         }
     }
 
@@ -164,31 +174,42 @@ public class PropertyBox extends WidgetGroup {
         float posY = bgBottomHeight;
 
         //changed handler
-        changedTextField.setX(style.spacing + bgLeftWidth);
-        changedTextField.setY(posY);
-        changedTextField.setWidth(getWidth() - style.spacing - bgLeftWidth - bgRightWidth - style.spacing - changedTextField.getHeight());
-        codeImageButton.setX(getWidth() - bgRightWidth - changedTextField.getHeight());
-        codeImageButton.setY(posY);
-        codeImageButton.setWidth(changedTextField.getHeight());
-        codeImageButton.setHeight(changedTextField.getHeight());
-        posY += changedTextField.getHeight() + style.spacing;
-        changedLabel.setX(style.spacing + bgLeftWidth);
-        changedLabel.setY(posY);
-        posY += changedLabel.getHeight() + style.spacing;
+        if (data.supportsChangedHandler) {
+            handlerTextField.setX(style.spacing + bgLeftWidth);
+            handlerTextField.setY(posY);
+            handlerTextField.setWidth(getWidth() - style.spacing - bgLeftWidth - bgRightWidth - style.spacing - handlerTextField.getHeight());
 
-        //value if it exists
-        if (!data.readonly) {
+            codeImageButton.setX(getWidth() - bgRightWidth - handlerTextField.getHeight());
+            codeImageButton.setY(posY);
+            codeImageButton.setWidth(handlerTextField.getHeight());
+            codeImageButton.setHeight(handlerTextField.getHeight());
+
+            posY += handlerTextField.getHeight() + style.spacing;
+        }
+
+        //value text field
+        if (data.supportsWrite) {
             valueTextField.setX(style.spacing + bgLeftWidth);
             valueTextField.setY(posY);
             valueTextField.setWidth(getWidth() - style.spacing - bgLeftWidth - bgRightWidth);
             posY += valueTextField.getHeight() + style.spacing;
-            valueLabel.setX(style.spacing + bgLeftWidth);
-            valueLabel.setY(posY);
-            posY += valueLabel.getHeight() + style.spacing;
+
+            setterLabel.setX(bgLeftWidth + style.spacing);
+            setterLabel.setY(posY);
+            setterLabel.setWidth(getWidth() - bgLeftWidth - bgRightWidth);
+            posY += setterLabel.getHeight() + style.spacing;
+        }
+
+        //getter
+        if (data.supportsRead) {
+            getterLabel.setX(bgLeftWidth + style.spacing);
+            getterLabel.setY(posY);
+            getterLabel.setWidth(getWidth() - bgLeftWidth - bgRightWidth);
+            posY += getterLabel.getHeight() + style.spacing;
         }
 
         //name label
-        nameLabel.setX(bgLeftWidth);
+        nameLabel.setX(bgLeftWidth + style.spacing);
         nameLabel.setY(posY);
         nameLabel.setWidth(getWidth() - bgLeftWidth - bgRightWidth);
     }
@@ -198,21 +219,27 @@ public class PropertyBox extends WidgetGroup {
     public float getPrefHeight() {
         float prefHeight = 0;
         //border from background drawable if it exists
-        if (style.background != null)
+        if (style.background != null) {
             prefHeight += style.background.getTopHeight() + style.background.getBottomHeight();
-        //name label
-        prefHeight += nameLabel.getPrefHeight();
-        prefHeight += style.spacing;
-        //changed handler
-        prefHeight += changedLabel.getPrefHeight();
-        prefHeight += changedTextField.getPrefHeight();
-        prefHeight += style.spacing;
-        //value if it exists
-        if (!data.readonly) {
-            prefHeight += valueLabel.getPrefHeight();
-            prefHeight += valueTextField.getPrefHeight();
-            prefHeight += style.spacing * 2;
         }
+        prefHeight += nameLabel.getPrefHeight();
+
+        if (data.supportsRead) {
+            prefHeight += getterLabel.getPrefHeight();
+            prefHeight += style.spacing;
+        }
+
+        if (data.supportsWrite) {
+            prefHeight += setterLabel.getPrefHeight();
+            prefHeight += valueTextField.getPrefHeight();
+            prefHeight += 2 * style.spacing;
+        }
+
+        if (data.supportsChangedHandler) {
+            prefHeight += handlerTextField.getPrefHeight();
+            prefHeight += style.spacing;
+        }
+
         return prefHeight;
     }
 
@@ -220,6 +247,9 @@ public class PropertyBox extends WidgetGroup {
         return data.type;
     }
 
+    /**
+     * overwrite this to handle the code button events
+     */
     public void codeButtonClicked() {
 
     }
