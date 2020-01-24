@@ -128,3 +128,5 @@ Thumbs.db
 /ios-moe/xcode/native/
 
 ##game specific files
+
+saveGame.json
