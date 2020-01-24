@@ -15,7 +15,6 @@ import com.nkcoding.spacegame.simulation.Simulated;
 import com.nkcoding.spacegame.simulation.SimulatedType;
 import com.nkcoding.spacegame.simulation.SynchronizationPriority;
 import com.nkcoding.spacegame.simulation.communication.TransmissionID;
-import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler;
 
 import java.io.DataInputStream;
@@ -136,14 +135,21 @@ public class SpaceSimulation implements InputProcessor {
         return assetManager;
     }
 
-    public CoreUnit getCameraUnit() {
+    public CoreUnit getCameraCoreUnit() {
         return cameraCoreUnit;
     }
 
-    public void setCameraSimulated(CoreUnit coreUnit) {
+    /**
+     * call this to focus a CoreUnit
+     * @param coreUnit null ==> no unit selected
+     */
+    public void setCameraCoreUnit(CoreUnit coreUnit) {
         if (coreUnit != this.cameraCoreUnit && this.cameraCoreUnit != null)
             this.cameraCoreUnit.setCameraFocus(false);
         this.cameraCoreUnit = coreUnit;
+        if (coreUnit != null) {
+            coreUnit.setCameraFocus(true);
+        }
     }
 
     public World getWorld() {
@@ -190,7 +196,7 @@ public class SpaceSimulation implements InputProcessor {
     public void addCoreUnit(CoreUnit coreUnit) {
         coreUnits.add(coreUnit);
         if (cameraCoreUnit == null && coreUnit.isOriginal()) {
-            cameraCoreUnit = coreUnit;
+            setCameraCoreUnit(coreUnit);
         }
     }
 
@@ -200,8 +206,7 @@ public class SpaceSimulation implements InputProcessor {
     public void removeCoreUnit(CoreUnit coreUnit) {
         coreUnits.remove(coreUnit);
         if (cameraCoreUnit == coreUnit) {
-            cameraCoreUnit = null;
-            //TODO
+            setCameraCoreUnit(null);
         }
     }
 
@@ -255,7 +260,7 @@ public class SpaceSimulation implements InputProcessor {
     private void sendBodyUpdates(ArrayList<Simulated> bodyUpdateList) {
         if (!bodyUpdateList.isEmpty()) {
             try {
-                int maxAmount = Communication.MAX_SIZE / 28;
+                int maxAmount = (Communication.MAX_SIZE - 20) / 28;
                 for (int x = 0; x < Math.ceil(bodyUpdateList.size() / (float)maxAmount); x++) {
                     int max = Math.min(bodyUpdateList.size(), (x + 1) * maxAmount);
                     ResetDataOutputStream outputStream = getOutputStream(false);
@@ -353,13 +358,15 @@ public class SpaceSimulation implements InputProcessor {
                             if (toUpdate != null) {
                                 toUpdate.receiveTransmission(toUpdate.deserializeTransmission(inputStream, updateID));
                             } else {
+                                //IMPORTANT: DISCARD THIS TRANSMISSION COMPLETELY
+                                //it is not safe to reuse any part of this, remember!
                                 System.out.println("cannot update " + updateID);
                             }
                             break;
                         case TransmissionID.UPDATE_BODY_STATE:
                             int bodyUpdateID = inputStream.readInt();
                             long timestamp = inputStream.readLong();
-                            System.out.println(System.currentTimeMillis() - timestamp);
+                            //System.out.println(System.currentTimeMillis() - timestamp);
                             int amount = inputStream.readInt();
                             for (int x = 0; x < amount; x++) {
                                 int simulatedID = inputStream.readInt();
@@ -367,6 +374,7 @@ public class SpaceSimulation implements InputProcessor {
                                 if (updateBody != null) {
                                     updateBody.deserializeBodyState(inputStream, bodyUpdateID);
                                 } else {
+                                    inputStream.skip(24);
                                     System.out.println("cannot update body: " + simulatedID);
                                 }
                             }
@@ -385,7 +393,6 @@ public class SpaceSimulation implements InputProcessor {
             return res;
         } else {
             for (Simulated simulated : simulatedToAdd) {
-                System.out.println("found a simu: " + simulated.id);
                 if (simulated.id == id) return simulated;
             }
             return null;
@@ -437,40 +444,37 @@ public class SpaceSimulation implements InputProcessor {
         float h;
         if (cameraCoreUnit != null) {
             h = cameraCoreUnit.getRequestedHeight();
-            centerPos = cameraCoreUnit.getWorldCenterPosition();
-        } else {
-            h = ShipDef.UNIT_SIZE * ShipDef.MAX_SIZE * 2;
-            centerPos = new Vector2();
-        }
+            centerPos = new Vector2(cameraCoreUnit.getWorldCenterPosition());
 
-        float w = h / height * width;
+            float w = h / height * width;
 
-        scaledRadius = radius * h / height;
-        camera.setToOrtho(false, w, h);
-        camera.position.x = centerPos.x;
-        camera.position.y = centerPos.y;
-        camera.update();
+            scaledRadius = radius * h / height;
+            camera.setToOrtho(false, w, h);
+            camera.position.x = centerPos.x;
+            camera.position.y = centerPos.y;
+            camera.update();
 
-        // CHANGE THIS WHEN ROTATION IS APPLIED!!!!!!!
-        int x1 = (int) Math.floor((centerPos.x - w / 2) / TILE_SIZE);
-        int y1 = (int) Math.floor((centerPos.y - h / 2) / TILE_SIZE);
-        int x2 = (int) Math.floor((centerPos.x + w / 2) / TILE_SIZE);
-        int y2 = (int) Math.floor((centerPos.y + h / 2) / TILE_SIZE);
-        int deltaX = x2 - x1 + 2;
-        while (tilesToDraw.size() > deltaX) {
-            tilesToDraw.remove(deltaX);
-        }
-        while (tilesToDraw.size() < deltaX) {
-            tilesToDraw.add(new int[3]);
-        }
-        //add all the tiles, also update tile count
-        tileCount = 0;
-        for (int x = 0; x < deltaX; x++) {
-            int[] val = tilesToDraw.get(x);
-            val[0] = x + x1;
-            val[1] = y1;
-            val[2] = y2 + 1;
-            tileCount += y2 - y1 + 1;
+            // CHANGE THIS WHEN ROTATION IS APPLIED!!!!!!!
+            int x1 = (int) Math.floor((centerPos.x - w / 2) / TILE_SIZE);
+            int y1 = (int) Math.floor((centerPos.y - h / 2) / TILE_SIZE);
+            int x2 = (int) Math.floor((centerPos.x + w / 2) / TILE_SIZE);
+            int y2 = (int) Math.floor((centerPos.y + h / 2) / TILE_SIZE);
+            int deltaX = x2 - x1 + 2;
+            while (tilesToDraw.size() > deltaX) {
+                tilesToDraw.remove(deltaX);
+            }
+            while (tilesToDraw.size() < deltaX) {
+                tilesToDraw.add(new int[3]);
+            }
+            //add all the tiles, also update tile count
+            tileCount = 0;
+            for (int x = 0; x < deltaX; x++) {
+                int[] val = tilesToDraw.get(x);
+                val[0] = x + x1;
+                val[1] = y1;
+                val[2] = y2 + 1;
+                tileCount += y2 - y1 + 1;
+            }
         }
     }
 
