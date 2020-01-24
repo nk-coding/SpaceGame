@@ -47,8 +47,8 @@ public class ComponentDef extends ComponentDefBase {
         //init all properties
         for (JsonValue propertyValue : value.get("properties")) {
             ExternalPropertyData data = comDef.properties.get(propertyValue.getString("key"));
-            if (!data.readonly) data.initData = propertyValue.getString("initData");
-            data.handlerName = propertyValue.getString("handlerName");
+            if (data.supportsWrite) data.initData = propertyValue.getString("initData");
+            if (data.supportsChangedHandler) data.handlerName = propertyValue.getString("handlerName");
         }
 
         return comDef;

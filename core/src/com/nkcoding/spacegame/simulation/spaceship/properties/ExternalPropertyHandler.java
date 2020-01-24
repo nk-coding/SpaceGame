@@ -23,20 +23,7 @@ public abstract class ExternalPropertyHandler {
         for (ExternalPropertyData data : datas) {
             ExternalProperty property = properties.get(data.name);
             if (property != null) {
-                if (!property.readonly) property.setInitValue(data.initData);
-                if (!data.handlerName.equals(""))
-                    property.setChangedMethodStatement(methods.get(data.handlerName));
-            }
-        }
-    }
-
-    //init the ExternalProperties with the ExternalProperties
-    protected void cloneProperties(Collection<ExternalProperty> toClone) {
-        Map<String, ExternalProperty> properties = getProperties();
-        for (ExternalProperty clone : toClone) {
-            ExternalProperty property = properties.get(clone.name);
-            if (property != null) {
-                property.copyFrom(clone);
+                property.init(data, methods);
             }
         }
     }
