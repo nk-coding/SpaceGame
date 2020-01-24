@@ -355,6 +355,7 @@ public class ShipBuilderScreen implements Screen {
     private void addDragAndDropListeners() {
         //region drag and drop for the Components
         DragAndDrop componentsDragAndDrop = new DragAndDrop();
+        componentsDragAndDrop.setKeepWithinStage(false);
         //add the componentsStack as a source
         componentsDragAndDrop.addSource(new DragAndDrop.Source(componentsStack) {
             @Override
