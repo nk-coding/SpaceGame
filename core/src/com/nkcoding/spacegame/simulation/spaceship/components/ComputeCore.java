@@ -24,13 +24,11 @@ public class ComputeCore extends Component implements CoreUnit {
     protected ComputeCore(ComponentDefBase defBase, DataInputStream inputStream, Ship ship) {
         super(defBase, ship);
         this.model = (ComputeCoreModel) super.model;
-        getSpaceSimulation().addCoreUnit(this);
     }
 
     protected ComputeCore(ComponentDef componentDef, Ship ship, Ship.ShipModel shipModel) {
         super(componentDef, ship, shipModel);
         this.model = (ComputeCoreModel) super.model;
-        getSpaceSimulation().addCoreUnit(this);
     }
 
     @Override
@@ -73,9 +71,15 @@ public class ComputeCore extends Component implements CoreUnit {
     }
 
     @Override
-    public void destroy() {
-        super.destroy();
+    public void removeComponent() {
+        super.removeComponent();
         getSpaceSimulation().removeCoreUnit(this);
+    }
+
+    @Override
+    public void addComponent() {
+        super.addComponent();
+        getSpaceSimulation().addCoreUnit(this);
     }
 
     private class ComputeCoreModel extends ComponentModel {

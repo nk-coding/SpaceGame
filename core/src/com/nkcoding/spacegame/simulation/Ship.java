@@ -239,7 +239,6 @@ public class Ship extends Simulated {
                 componentsMap[_x][_y] = null;
             }
         }
-        component.destroy();
 
         if (isOriginal()) {
             model.removeComponentInternally(component);
@@ -316,11 +315,13 @@ public class Ship extends Simulated {
 
         private void addComponentInternally(Component component) {
             components.add(component.model);
+            component.addComponent();
             getSpaceSimulation().addExternalPropertyHandler(component.model);
         }
 
         private void removeComponentInternally(Component component) {
             components.remove(component.model);
+            component.removeComponent();
             getSpaceSimulation().removeExternalPropertyHandler(component.model);
         }
 
