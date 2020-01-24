@@ -286,8 +286,9 @@ public class Simulated {
             body.setLinearVelocity(inputStream.readFloat(), inputStream.readFloat());
             body.setAngularVelocity(inputStream.readFloat());
             this.lastBodyUpdate = updateID;
+        } else {
+            inputStream.skip(24);
         }
-
     }
 
     public void serializeBodyState(DataOutputStream outputStream) throws IOException {
