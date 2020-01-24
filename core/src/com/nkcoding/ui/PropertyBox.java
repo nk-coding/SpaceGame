@@ -111,7 +111,7 @@ public class PropertyBox extends WidgetGroup {
     private void init() {
         nameLabel.setText(name);
         if (data.supportsRead) {
-            getterLabel.setText(data.type + " " +  data.getterName + "()");
+            getterLabel.setText(data.type + " " +  data.getterName + "(string)");
         }
         if (data.supportsWrite) {
             setterLabel.setText("void " + data.setterName + "(string, " + data.type + ")");
