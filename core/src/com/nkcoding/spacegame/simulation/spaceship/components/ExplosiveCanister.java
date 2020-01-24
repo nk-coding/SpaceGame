@@ -30,7 +30,7 @@ public class ExplosiveCanister extends Component {
 
     public class ExplosiveCanisterModel extends ComponentModel {
 
-        public final BooleanProperty explode = register(new BooleanProperty(false, true, EXPLODE_KEY) {
+        public final BooleanProperty explode = register(new BooleanProperty(EXPLODE_KEY) {
             @Override
             public void set(boolean value) {
                 super.set(value);

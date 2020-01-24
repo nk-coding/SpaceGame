@@ -35,7 +35,7 @@ public class Cannon extends Buffer {
     public class CannonModel extends BufferModel {
 
         //should the cannon fire?
-        protected final BooleanProperty isShootingProperty = register(new BooleanProperty(false, true, IS_SHOOTING_KEY));
+        protected final BooleanProperty isShootingProperty = register(new BooleanProperty(IS_SHOOTING_KEY));
 
         public CannonModel(Ship.ShipModel shipModel, ComponentDef componentDef) {
             super(shipModel, componentDef, 50, 50);
