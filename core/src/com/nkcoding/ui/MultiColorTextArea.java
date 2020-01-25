@@ -884,7 +884,9 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
             if (jump) {
                 cursor = 0;
             } else if (cursorLine * 2 < linesBreak.size) {
-                cursor = linesBreak.get(cursorLine * 2);
+                String currentLine = getTextLine(cursorLine);
+                int amountLeadingWhitespace = currentLine.length() - currentLine.replaceAll("^\\s+", "").length();
+                cursor = linesBreak.get(cursorLine * 2) + amountLeadingWhitespace;
             }
         }
 

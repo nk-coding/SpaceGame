@@ -1,7 +1,5 @@
 package com.nkcoding.interpreter.compiler;
 
-import java.util.Arrays;
-
 public class ProgramTextWrapper {
     private String[] lines;
 
@@ -71,7 +69,6 @@ public class ProgramTextWrapper {
             }
             if (!done) ignoreAt[i] = -1;
         }
-        System.out.println(Arrays.toString(ignoreAt));
     }
 
     public ProgramPosition getPosition() {
