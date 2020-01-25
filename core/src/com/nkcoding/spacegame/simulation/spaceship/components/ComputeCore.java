@@ -4,7 +4,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.nkcoding.spacegame.simulation.CoreUnit;
 import com.nkcoding.spacegame.simulation.Ship;
-import com.nkcoding.spacegame.simulation.spaceship.properties.FloatProperty;
 import com.nkcoding.spacegame.simulation.spaceship.properties.NotifyProperty;
 import com.nkcoding.spacegame.simulation.spaceship.properties.VirtualProperty;
 
@@ -90,9 +89,19 @@ public class ComputeCore extends Component implements CoreUnit {
         //virtual property when key is released
         public final NotifyProperty<String> keyUp = register(new NotifyProperty<>(KEY_UP_KEY));
         //wrapper for the angularRotation from Body
-        public final FloatProperty angularVelocity = register(new FloatProperty(ANGULAR_VELOCITY_KEY));
+        public final VirtualProperty<Float> angularVelocity = register(new VirtualProperty<>(ANGULAR_VELOCITY_KEY) {
+            @Override
+            public Float get2() {
+                return getShip().getBody().getAngularVelocity();
+            }
+        });
         //wrapper for the velocity from Body
-        public final FloatProperty velocity = register(new FloatProperty( VELOCITY_KEY));
+        public final VirtualProperty<Float> velocity = register(new VirtualProperty<>(VELOCITY_KEY) {
+            @Override
+            public Float get2() {
+                return getShip().getBody().getLinearVelocity().len();
+            }
+        });
         //focus from SpaceSimulation
         public final VirtualProperty<Boolean> cameraFocus = register(new VirtualProperty<>(CAMERA_FOCUS_KEY) {
             @Override
@@ -125,8 +134,6 @@ public class ComputeCore extends Component implements CoreUnit {
         @Override
         public void act(float delta) {
             super.act(delta);
-            velocity.set(getShip().getBody().getLinearVelocity().len());
-            angularVelocity.set(getShip().getBody().getAngularVelocity());
         }
 
         //region key input
