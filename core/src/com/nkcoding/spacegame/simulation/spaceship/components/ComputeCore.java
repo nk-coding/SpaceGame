@@ -2,12 +2,15 @@ package com.nkcoding.spacegame.simulation.spaceship.components;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.spacegame.simulation.CoreUnit;
 import com.nkcoding.spacegame.simulation.Ship;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 import com.nkcoding.spacegame.simulation.spaceship.properties.NotifyProperty;
 import com.nkcoding.spacegame.simulation.spaceship.properties.VirtualProperty;
 
 import java.io.DataInputStream;
+import java.util.Map;
 
 public class ComputeCore extends Component implements CoreUnit {
     //region keys for the properties
@@ -16,6 +19,7 @@ public class ComputeCore extends Component implements CoreUnit {
     public static final String ANGULAR_VELOCITY_KEY = "AngularVelocity";
     public static final String VELOCITY_KEY = "Velocity";
     public static final String CAMERA_FOCUS_KEY = "CameraFocus";
+    public static final String INIT_CALLBACK_KEY = "InitCallback";
     //endregion
 
     private ComputeCoreModel model;
@@ -122,7 +126,21 @@ public class ComputeCore extends Component implements CoreUnit {
                 return getSpaceSimulation().getCameraCoreUnit() == ComputeCore.this;
             }
         });
+        //the init handler
+        public final VirtualProperty<String> initCallback = register(new VirtualProperty<>(INIT_CALLBACK_KEY) {
+            @Override
+            public String get2() {
+                return getName();
+            }
 
+            //overwrite init to call the init handler first before anything different happens
+            @Override
+            public void init(ExternalPropertyData data, Map<String, MethodStatement> methods) {
+                super.init(data, methods);
+                changed = true;
+                startChangedHandler(getSpaceSimulation().getScriptingEngine(), getShip().model.globalVariables);
+            }
+        });
         //endregion
 
         public ComputeCoreModel(Ship.ShipModel shipModel, ComponentDef componentDef) {

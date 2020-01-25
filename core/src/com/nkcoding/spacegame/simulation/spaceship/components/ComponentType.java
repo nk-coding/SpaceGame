@@ -42,7 +42,8 @@ public enum ComponentType {
             new ExternalPropertyData(KEY_UP_KEY, DataType.STRING, false, false, true),
             new ExternalPropertyData(ANGULAR_VELOCITY_KEY, DataType.FLOAT, false, true, false),
             new ExternalPropertyData(VELOCITY_KEY, DataType.FLOAT, false, true, false),
-            new ExternalPropertyData(CAMERA_FOCUS_KEY, DataType.BOOLEAN));
+            new ExternalPropertyData(CAMERA_FOCUS_KEY, DataType.BOOLEAN),
+            new ExternalPropertyData(INIT_CALLBACK_KEY, DataType.STRING, false, false, true));
 
     //the width of the component
     public final int width;
