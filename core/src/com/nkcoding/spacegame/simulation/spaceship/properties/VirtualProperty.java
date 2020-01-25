@@ -7,10 +7,12 @@ public abstract class VirtualProperty<T> extends ExternalProperty<T> {
     }
 
     @Override
-    public void set(T value) {
-        changed = true;
+    public void setInitValue(String value) {
+        throw new UnsupportedOperationException("implement this if this functionality is necessary");
     }
 
     @Override
-    public abstract T get2();
+    public void set(T value) {
+        changed = true;
+    }
 }

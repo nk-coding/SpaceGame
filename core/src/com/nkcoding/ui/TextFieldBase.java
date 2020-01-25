@@ -466,6 +466,7 @@ public class TextFieldBase extends Widget implements Disableable {
 
     void paste(String content, boolean fireChangeEvent, boolean moveCursor) {
         if (content == null) return;
+        content = content.replace("\r","" );
         StringBuilder buffer = new StringBuilder();
         int textLength = text.length();
         if (hasSelection) textLength -= Math.abs(cursor - selectionStart);
