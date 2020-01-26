@@ -3,6 +3,7 @@ package com.nkcoding.spacegame.simulation.spaceship.components.communication;
 import com.nkcoding.spacegame.simulation.spaceship.components.Component;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class ShieldTransmission extends UpdateComponentTransmission {
@@ -17,5 +18,11 @@ public class ShieldTransmission extends UpdateComponentTransmission {
     public ShieldTransmission(DataInputStream inputStream) throws IOException {
         super(ComponentUpdateID.SHIELD, inputStream);
         this.shieldEnabled = inputStream.readBoolean();
+    }
+
+    @Override
+    public void serialize(DataOutputStream outputStream) throws IOException {
+        super.serialize(outputStream);
+        outputStream.writeBoolean(shieldEnabled);
     }
 }
