@@ -15,6 +15,8 @@ public enum Asset {
     Bullet("textures/game/bullet.png"),
     ComputeCore("textures/game/computeCore.png"),
     VerySimpleExplosion("textures/game/verySimpleExplosion.png"),
+    SimpleShield("textures/game/simpleShield.png"),
+    ShieldGenerator("textures/game/shieldGenerator.png"),
     StarBackground_high("textures/game/starBackground_high.png"),
     StarBackground_medium("textures/game/starBackground_medium.png"),
     StarBackground_low("textures/game/starBackground_low.png"),

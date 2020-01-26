@@ -33,7 +33,7 @@ public enum ComponentType {
     BasicHull((short) 3, BasicHull::new, BasicHull::new, Asset.BasicHull),
     ExplosiveCanister((short) 4, ExplosiveCanister::new, ExplosiveCanister::new, 1, 1, 50, 50, Asset.ExplosiveCanister,
             new ExternalPropertyData(EXPLODE_KEY, DataType.BOOLEAN)),
-    ShieldGenerator((short) 5, ShieldGenerator::new, ShieldGenerator::new, 2, 2, 200, 100, Asset.CloseSymbol,
+    ShieldGenerator((short) 5, ShieldGenerator::new, ShieldGenerator::new, 2, 2, 200, 100, Asset.ShieldGenerator,
             new ExternalPropertyData(RADIUS_KEY, DataType.FLOAT),
             new ExternalPropertyData(IS_ENABLED_KEY, DataType.BOOLEAN),
             new ExternalPropertyData(BUFFER_LEVEL_KEY, DataType.FLOAT, false, true, false)),

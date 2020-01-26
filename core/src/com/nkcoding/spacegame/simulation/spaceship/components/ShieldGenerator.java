@@ -57,7 +57,7 @@ public class ShieldGenerator extends Buffer {
         super.draw(batch, isOriginal);
 
         if (isEnabled)
-            drawTexture(batch, getAssetManager().getTexture(Asset.VerySimpleExplosion),
+            drawTexture(batch, getAssetManager().getTexture(Asset.SimpleShield),
                     new Vector2(0.1f - getRadius() * 0.01f, 0.1f - getRadius() * 0.01f), 2 * getRadius() * 0.01f, 2 * getRadius() * 0.01f, 0f);
     }
 
