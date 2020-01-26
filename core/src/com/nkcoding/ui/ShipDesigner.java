@@ -100,7 +100,7 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
         ComponentDef oldSelected = getSelectedComponent();
         this.selectedComponent = def;
         ComponentDef newSelected = getSelectedComponent();
-        if (oldSelected != newSelected) selectionChanged.accept(newSelected, oldSelected);
+        selectionChanged.accept(newSelected, oldSelected);
     }
 
     private void setSelectedComponent(int x, int y) {

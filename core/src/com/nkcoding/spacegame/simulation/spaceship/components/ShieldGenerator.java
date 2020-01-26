@@ -48,14 +48,17 @@ public class ShieldGenerator extends Buffer {
         super(componentDef, ship, shipModel);
     }
 
+    private float getRadius() {
+        return radius + 17f;
+    }
+
     @Override
     public void draw(Batch batch, boolean isOriginal) {
         super.draw(batch, isOriginal);
 
-        float currentRadius = radius;
         if (isEnabled)
-            drawTexture(batch, getAssetManager().getTexture(Asset.VerySimpleExplosion),
-                    new Vector2(0.1f - currentRadius * 0.01f, 0.1f - currentRadius * 0.01f), 2 * currentRadius * 0.01f, 2 * currentRadius * 0.01f, 0f);
+            drawTexture(batch, getAssetManager().getTexture(Asset.SimpleShield),
+                    new Vector2(0.1f - getRadius() * 0.01f, 0.1f - getRadius() * 0.01f), 2 * getRadius() * 0.01f, 2 * getRadius() * 0.01f, 0f);
     }
 
     @Override
@@ -84,7 +87,7 @@ public class ShieldGenerator extends Buffer {
                 RadiusTransmission radiusTransmission = (RadiusTransmission)transmission;
                 radius = radiusTransmission.radius;
                 if (shieldFixture != null) {
-                    shieldFixture.getShape().setRadius(radius * 0.01f);
+                    shieldFixture.getShape().setRadius(getRadius() * 0.01f);
                 }
                 break;
             case ComponentUpdateID.SHIELD:

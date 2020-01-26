@@ -94,6 +94,8 @@ public class ShipBuilderScreen implements Screen {
     //normal (ship) view?
     private boolean isShipView = true;
     private final ScrollPane propertiesScrollPane;
+    private boolean shipValidated;
+    private boolean codeValidated;
     //endregion
 
     //constructor
@@ -464,16 +466,10 @@ public class ShipBuilderScreen implements Screen {
         //update the property stack
         Map<String, ExternalPropertyData> properties;
         if (newDef != null) {
-            if (oldDef == null) {
-                propertiesScrollPane.removeActor(shipInfoTable);
-                propertiesScrollPane.setActor(propertiesVerticalGroup);
-            }
+            propertiesScrollPane.setActor(propertiesVerticalGroup);
             selectComponent(newDef);
         } else {
-            if (oldDef != null) {
-                propertiesScrollPane.removeActor(propertiesVerticalGroup);
-                propertiesScrollPane.setActor(shipInfoTable);
-            }
+            propertiesScrollPane.setActor(shipInfoTable);
             selectShip();
         }
     }
@@ -560,9 +556,24 @@ public class ShipBuilderScreen implements Screen {
         StringBuilder sb = new StringBuilder();
         sb.append("Amount of components: ");
         sb.append(shipDef.getComponentCount());
-        sb.append("\nMax power production: ");
-        sb.append("\nMax power consumption: ");
-        sb.append("\nWeight: ");
+        int maxProduction = 0;
+        int maxConsumption = 0;
+        int mass = 0;
+        for (ComponentDef def : shipDef.componentDefs) {
+            if (def.getType().maxPowerLevel < 0) {
+                maxProduction -= def.getType().maxPowerLevel;
+            } else {
+                maxConsumption += def.getType().maxPowerLevel;
+            }
+            mass += def.getType().mass;
+        }
+        validate();
+        sb.append("\nMax power production: " + maxProduction);
+        sb.append("\nMax power consumption: " + maxConsumption);
+        sb.append("\nMass: " + mass);
+        sb.append("\n");
+        sb.append("\nShip status: " + shipValidated);
+        sb.append("\nCode status: " + codeValidated);
         shipInfoLabel.setText(sb.toString());
     }
 
@@ -574,7 +585,6 @@ public class ShipBuilderScreen implements Screen {
 
     //switches the view
     private void switchView() {
-        shipDesigner.setSelectedComponent(null);
         if (isShipView) {
             stage.addActor(codeRootTable);
             shipRootTable.remove();
@@ -590,6 +600,7 @@ public class ShipBuilderScreen implements Screen {
                 ((PropertyBox) ((Container) actor).getActor()).verify();
             }
         }
+        shipDesigner.setSelectedComponent(null);
         isShipView = !isShipView;
     }
 
@@ -615,6 +626,7 @@ public class ShipBuilderScreen implements Screen {
             style = switchButton.getStyle();
             style.imageUp = switchButton_ok;
             switchButton.setStyle(style);
+            codeValidated = true;
             return true;
         } catch (CompileException e) {
             errorLog.setText(e.toString());
@@ -624,6 +636,7 @@ public class ShipBuilderScreen implements Screen {
             style = switchButton.getStyle();
             style.imageUp = switchButton_error;
             switchButton.setStyle(style);
+            codeValidated = false;
             return false;
         }
     }
@@ -646,15 +659,16 @@ public class ShipBuilderScreen implements Screen {
     private void save() {
         shipDef.code = codeEditor.getText();
         saveComponentDef(shipDesigner.getSelectedComponent());
+        validate();
 
-        //verify the ship
-        boolean code = parse(true);
-        boolean componentProperties = shipDef.verifyComponentProperties(methodPositions);
-        boolean names = shipDef.verifyNames();
-        System.out.printf("code: %b, properties: %b, names: %b%n", code, componentProperties, names);
-        //TODO check ship properties
-        shipDef.setValidated(code && componentProperties && names);
+        shipDef.setValidated(codeValidated && shipValidated);
         SaveGameManager.save();
+    }
+
+    private void validate() {
+        //verify the ship
+        codeValidated = parse(true);
+        shipValidated = shipDef.verifyComponentProperties(methodPositions) && shipDef.verifyNames();
     }
 
 

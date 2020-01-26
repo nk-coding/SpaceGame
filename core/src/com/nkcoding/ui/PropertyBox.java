@@ -64,11 +64,6 @@ public class PropertyBox extends WidgetGroup {
             }
         });
         addActor(nameLabel);
-        addActor(getterLabel);
-        addActor(setterLabel);
-        addActor(valueTextField);
-        addActor(handlerTextField);
-        addActor(codeImageButton);
         init();
     }
 
@@ -111,14 +106,25 @@ public class PropertyBox extends WidgetGroup {
     private void init() {
         nameLabel.setText(name);
         if (data.supportsRead) {
+            addActor(getterLabel);
             getterLabel.setText(data.type + " " +  data.getterName + "(string)");
+        } else {
+            removeActor(getterLabel);
         }
         if (data.supportsWrite) {
+            addActor(setterLabel);
+            addActor(valueTextField);
             setterLabel.setText("void " + data.setterName + "(string, " + data.type + ")");
             valueTextField.setText(data.initData);
+        } else {
+            removeActor(setterLabel);
+            removeActor(valueTextField);
         }
         if (data.supportsChangedHandler) {
+            addActor(handlerTextField);
             handlerTextField.setText(data.handlerName);
+        } else {
+            removeActor(handlerTextField);
         }
         verify();
         invalidateHierarchy();
