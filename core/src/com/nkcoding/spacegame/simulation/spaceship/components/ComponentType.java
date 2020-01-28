@@ -20,6 +20,7 @@ import static com.nkcoding.spacegame.simulation.spaceship.components.Component.*
 import static com.nkcoding.spacegame.simulation.spaceship.components.ComputeCore.*;
 import static com.nkcoding.spacegame.simulation.spaceship.components.Engine.ENGINE_POWER_KEY;
 import static com.nkcoding.spacegame.simulation.spaceship.components.ExplosiveCanister.EXPLODE_KEY;
+import static com.nkcoding.spacegame.simulation.spaceship.components.Sensors.IS_SCANNER_ENABLED;
 import static com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.IS_ENABLED_KEY;
 import static com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.RADIUS_KEY;
 
@@ -43,7 +44,9 @@ public enum ComponentType {
             new ExternalPropertyData(ANGULAR_VELOCITY_KEY, DataType.FLOAT, false, true, false),
             new ExternalPropertyData(VELOCITY_KEY, DataType.FLOAT, false, true, false),
             new ExternalPropertyData(CAMERA_FOCUS_KEY, DataType.BOOLEAN),
-            new ExternalPropertyData(INIT_CALLBACK_KEY, DataType.STRING, false, false, true));
+            new ExternalPropertyData(INIT_CALLBACK_KEY, DataType.STRING, false, false, true)),
+    Sensors((short) 7, Sensors::new, Sensors::new, 2, 2, 100, 100, 0, Asset.ErrorSymbol,
+            new ExternalPropertyData(IS_SCANNER_ENABLED, DataType.BOOLEAN));
 
     //the width of the component
     public final int width;
@@ -147,6 +150,8 @@ public enum ComponentType {
                 return ShieldGenerator;
             case 6:
                 return ComputeCore;
+            case 7:
+                return Sensors;
             default:
                 throw new IllegalStateException();
         }

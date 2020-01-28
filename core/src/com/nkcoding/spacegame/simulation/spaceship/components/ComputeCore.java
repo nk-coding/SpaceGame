@@ -26,7 +26,6 @@ public class ComputeCore extends Component implements CoreUnit {
 
     protected ComputeCore(ComponentDefBase defBase, DataInputStream inputStream, Ship ship) {
         super(defBase, ship);
-        this.model = (ComputeCoreModel) super.model;
     }
 
     protected ComputeCore(ComponentDef componentDef, Ship ship, Ship.ShipModel shipModel) {
@@ -47,7 +46,7 @@ public class ComputeCore extends Component implements CoreUnit {
     @Override
     public float getRequestedHeight() {
         float length = getShip().getBody().getLinearVelocity().len() + 1;
-        return getShip().getHeight() / (0.15f / (length * length) + 0.08f);
+        return getShip().getRadius() / (0.2f / (length * length) + 0.08f);
     }
 
     @Override

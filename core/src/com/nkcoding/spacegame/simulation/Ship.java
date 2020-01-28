@@ -211,6 +211,7 @@ public class Ship extends Simulated {
         if (isOriginal()) {
             model.addComponentInternally(component);
         }
+        component.addComponent();
     }
 
     /**
@@ -243,6 +244,7 @@ public class Ship extends Simulated {
         if (isOriginal()) {
             model.removeComponentInternally(component);
         }
+        component.removeComponent();
     }
 
     //update the center position
@@ -315,13 +317,11 @@ public class Ship extends Simulated {
 
         private void addComponentInternally(Component component) {
             components.add(component.model);
-            component.addComponent();
             getSpaceSimulation().addExternalPropertyHandler(component.model);
         }
 
         private void removeComponentInternally(Component component) {
             components.remove(component.model);
-            component.removeComponent();
             getSpaceSimulation().removeExternalPropertyHandler(component.model);
         }
 

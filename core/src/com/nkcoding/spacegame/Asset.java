@@ -20,6 +20,7 @@ public enum Asset {
     StarBackground_high("textures/game/starBackground_high.png"),
     StarBackground_medium("textures/game/starBackground_medium.png"),
     StarBackground_low("textures/game/starBackground_low.png"),
+    Arrow("textures/game/arrow.png"),
     //others
     Numbers("textures/other/numbers.png"),
     //ui
