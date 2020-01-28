@@ -201,6 +201,13 @@ public class SpaceSimulation implements InputProcessor {
     }
 
     /**
+     * get a list with all CoreUnits
+     */
+    public List<CoreUnit> getCoreUnits() {
+        return coreUnits;
+    }
+
+    /**
      * removes a CoreUnit locally
      */
     public void removeCoreUnit(CoreUnit coreUnit) {

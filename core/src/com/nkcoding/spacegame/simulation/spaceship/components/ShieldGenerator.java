@@ -1,5 +1,6 @@
 package com.nkcoding.spacegame.simulation.spaceship.components;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -25,6 +26,8 @@ public class ShieldGenerator extends Buffer {
 
     private Fixture shieldFixture;
 
+    private Texture shieldTexture;
+
     /**
      * is the shield set by the user to be activated
      */
@@ -39,6 +42,7 @@ public class ShieldGenerator extends Buffer {
         super(componentDef, inputStream, ship);
         this.radius = inputStream.readFloat();
         this.isEnabled = inputStream.readBoolean();
+        shieldTexture = getAssetManager().getTexture(Asset.SimpleShield);
     }
 
     /**
@@ -46,6 +50,7 @@ public class ShieldGenerator extends Buffer {
      */
     protected ShieldGenerator(ComponentDef componentDef, Ship ship, Ship.ShipModel shipModel) {
         super(componentDef, ship, shipModel);
+        shieldTexture = getAssetManager().getTexture(Asset.SimpleShield);
     }
 
     private float getRadius() {
@@ -57,7 +62,7 @@ public class ShieldGenerator extends Buffer {
         super.draw(batch, isOriginal);
 
         if (isEnabled)
-            drawTexture(batch, getAssetManager().getTexture(Asset.SimpleShield),
+            drawTexture(batch, shieldTexture,
                     new Vector2(0.1f - getRadius() * 0.01f, 0.1f - getRadius() * 0.01f), 2 * getRadius() * 0.01f, 2 * getRadius() * 0.01f, 0f);
     }
 

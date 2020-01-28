@@ -193,6 +193,9 @@ public abstract class Component implements Damageable {
     public void draw(Batch batch, boolean original) {
         drawTexture(batch, defaultTexture, new Vector2(0, 0),
                 getWidth(), getHeight(), 0);
+        if (isOriginal()) {
+            model.draw(batch);
+        }
     }
 
     /**
@@ -407,11 +410,14 @@ public abstract class Component implements Damageable {
             if (health.get() <= 0) destroy();
         }
 
+        public void draw(Batch batch) {
+        }
+
         /**
          * append some damage on the Component
          *
          * @param damageID the calculated id for the damage
-         * @param damage  the amount of damage
+         * @param damage   the amount of damage
          */
         public boolean damageAt(int damageID, int damage) {
             health.set(health.get() - damage);

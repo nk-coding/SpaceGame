@@ -47,7 +47,7 @@ public class ComputeCore extends Component implements CoreUnit {
     @Override
     public float getRequestedHeight() {
         float length = getShip().getBody().getLinearVelocity().len() + 1;
-        return getShip().getHeight() / (0.15f / (length * length) + 0.08f);
+        return getShip().getRadius() / (0.2f / (length * length) + 0.08f);
     }
 
     @Override
