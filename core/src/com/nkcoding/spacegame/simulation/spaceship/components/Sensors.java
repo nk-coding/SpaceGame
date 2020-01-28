@@ -59,12 +59,12 @@ public class Sensors extends Component {
                     Vector2 unitCenter = unit.getWorldCenterPosition();
                     float deltaX = unitCenter.x - shipCenter.x;
                     float deltaY = unitCenter.y - shipCenter.y;
-                    if (deltaX * deltaX + deltaY * deltaY < shipRadius * shipRadius) continue;
+                    if (deltaX * deltaX + deltaY * deltaY < 4 * shipRadius * shipRadius) continue;
                     float phi = (float) Math.atan2(deltaY, deltaX);
                     batch.draw(this.arrow,
                             shipCenter.x + MathUtils.cos(phi) * shipRadius, shipCenter.y + MathUtils.sin(phi) * shipRadius,
-                            ShipDef.UNIT_SIZE, ShipDef.UNIT_SIZE,
-                            ShipDef.UNIT_SIZE * 2, ShipDef.UNIT_SIZE * 2,
+                            ShipDef.UNIT_SIZE * 0.75f, ShipDef.UNIT_SIZE * 0.75f,
+                            ShipDef.UNIT_SIZE * 1.5f, ShipDef.UNIT_SIZE * 1.5f,
                             1, 1,
                             phi * MathUtils.radiansToDegrees - 90,
                             0, 0,

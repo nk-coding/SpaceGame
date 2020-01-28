@@ -26,7 +26,6 @@ public class ComputeCore extends Component implements CoreUnit {
 
     protected ComputeCore(ComponentDefBase defBase, DataInputStream inputStream, Ship ship) {
         super(defBase, ship);
-        this.model = (ComputeCoreModel) super.model;
     }
 
     protected ComputeCore(ComponentDef componentDef, Ship ship, Ship.ShipModel shipModel) {
