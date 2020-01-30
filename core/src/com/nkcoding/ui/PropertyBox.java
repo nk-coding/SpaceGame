@@ -122,6 +122,7 @@ public class PropertyBox extends WidgetGroup {
         }
         if (data.supportsChangedHandler) {
             addActor(handlerTextField);
+            addActor(codeImageButton);
             handlerTextField.setText(data.handlerName);
         } else {
             removeActor(handlerTextField);
