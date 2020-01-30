@@ -17,6 +17,7 @@ public enum Asset {
     VerySimpleExplosion("textures/game/verySimpleExplosion.png"),
     SimpleShield("textures/game/simpleShield.png"),
     ShieldGenerator("textures/game/shieldGenerator.png"),
+    Sensors("textures/game/sensors.png"),
     StarBackground_high("textures/game/starBackground_high.png"),
     StarBackground_medium("textures/game/starBackground_medium.png"),
     StarBackground_low("textures/game/starBackground_low.png"),

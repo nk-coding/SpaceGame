@@ -45,7 +45,7 @@ public enum ComponentType {
             new ExternalPropertyData(VELOCITY_KEY, DataType.FLOAT, false, true, false),
             new ExternalPropertyData(CAMERA_FOCUS_KEY, DataType.BOOLEAN),
             new ExternalPropertyData(INIT_CALLBACK_KEY, DataType.STRING, false, false, true)),
-    Sensors((short) 7, Sensors::new, Sensors::new, 2, 2, 100, 100, 0, Asset.ErrorSymbol,
+    Sensors((short) 7, Sensors::new, Sensors::new, 2, 1, 100, 100, 0, Asset.Sensors,
             new ExternalPropertyData(IS_SCANNER_ENABLED, DataType.BOOLEAN));
 
     //the width of the component
