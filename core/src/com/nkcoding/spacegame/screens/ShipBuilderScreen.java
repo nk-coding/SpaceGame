@@ -155,6 +155,8 @@ public class ShipBuilderScreen implements Screen {
         propertyBoxStyle = new PropertyBox.PropertyBoxStyle();
         propertyBoxStyle.background = background;
         propertyBoxStyle.codeButtonDrawable = assetManager.getDrawable(Asset.CodeSymbol);
+        propertyBoxStyle.getterButtonDrawable = assetManager.getDrawable(Asset.GetterSymbol);
+        propertyBoxStyle.setterButtonDrawable = assetManager.getDrawable(Asset.SetterSymbol);
         propertyBoxStyle.textFieldStyle = textFieldStyle;
         propertyBoxStyle.illegalInputColor = new Color(0xff0000ff);
         propertyBoxStyle.legalInputColor = new Color(0xffffffff);
@@ -504,7 +506,7 @@ public class ShipBuilderScreen implements Screen {
                 //the component exists
                 Container container = (Container) propertiesVerticalGroup.getChild(x + 1);
                 PropertyBox propertyBox = (PropertyBox) container.getActor();
-                propertyBox.update(data.name, data);
+                propertyBox.update(newDef.getName(), data);
             } else {
                 if (oldPropertyBoxes.isEmpty()) {
                     //the component does not exist yet, and there is no one available on the stack
@@ -537,7 +539,7 @@ public class ShipBuilderScreen implements Screen {
                     //the component does not exist yet, but there is one available on the stack
                     Container container = (Container) oldPropertyBoxes.pop();
                     PropertyBox propertyBox = (PropertyBox) container.getActor();
-                    propertyBox.update(data.name, data);
+                    propertyBox.update(newDef.getName(), data);
                     propertiesVerticalGroup.addActor(container);
                 }
             }
