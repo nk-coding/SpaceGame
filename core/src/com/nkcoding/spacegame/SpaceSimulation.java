@@ -141,7 +141,7 @@ public class SpaceSimulation implements InputProcessor {
 
     /**
      * call this to focus a CoreUnit
-     * @param coreUnit null ==> no unit selected
+     * @param coreUnit null implies no unit selected
      */
     public void setCameraCoreUnit(CoreUnit coreUnit) {
         if (coreUnit != this.cameraCoreUnit && this.cameraCoreUnit != null)
