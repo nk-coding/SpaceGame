@@ -20,29 +20,33 @@ import static com.nkcoding.spacegame.simulation.spaceship.components.Component.*
 import static com.nkcoding.spacegame.simulation.spaceship.components.ComputeCore.*;
 import static com.nkcoding.spacegame.simulation.spaceship.components.Engine.ENGINE_POWER_KEY;
 import static com.nkcoding.spacegame.simulation.spaceship.components.ExplosiveCanister.EXPLODE_KEY;
+import static com.nkcoding.spacegame.simulation.spaceship.components.Sensors.IS_SCANNER_ENABLED;
 import static com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.IS_ENABLED_KEY;
 import static com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.RADIUS_KEY;
 
 public enum ComponentType {
-    Engine((short)0, Engine::new, Engine::new, 1, 2, 100, 100, Asset.Engine,
+    Engine((short)0, Engine::new, Engine::new, 1, 2, 100, 100, 100, Asset.Engine,
             new ExternalPropertyData(ENGINE_POWER_KEY, DataType.INTEGER)),
-    Cannon((short) 1, Cannon::new, Cannon::new, 1, 2, 100, 100, Asset.Cannon,
+    Cannon((short) 1, Cannon::new, Cannon::new, 1, 2, 100, 100, 50, Asset.Cannon,
             new ExternalPropertyData(IS_SHOOTING_KEY, DataType.BOOLEAN),
             new ExternalPropertyData(BUFFER_LEVEL_KEY, DataType.FLOAT, false, true, false)),
-    PowerCore((short) 2, PowerCore::new, PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
+    PowerCore((short) 2, PowerCore::new, PowerCore::new, 2, 2, 200, 500, -100, Asset.PowerCore),
     BasicHull((short) 3, BasicHull::new, BasicHull::new, Asset.BasicHull),
-    ExplosiveCanister((short) 4, ExplosiveCanister::new, ExplosiveCanister::new, 1, 1, 50, 50, Asset.ExplosiveCanister,
+    ExplosiveCanister((short) 4, ExplosiveCanister::new, ExplosiveCanister::new, 1, 1, 50, 50, 0, Asset.ExplosiveCanister,
             new ExternalPropertyData(EXPLODE_KEY, DataType.BOOLEAN)),
-    ShieldGenerator((short) 5, ShieldGenerator::new, ShieldGenerator::new, 2, 2, 200, 100, Asset.CloseSymbol,
+    ShieldGenerator((short) 5, ShieldGenerator::new, ShieldGenerator::new, 2, 2, 200, 100, 30, Asset.ShieldGenerator,
             new ExternalPropertyData(RADIUS_KEY, DataType.FLOAT),
             new ExternalPropertyData(IS_ENABLED_KEY, DataType.BOOLEAN),
             new ExternalPropertyData(BUFFER_LEVEL_KEY, DataType.FLOAT, false, true, false)),
-    ComputeCore((short) 6, ComputeCore::new, ComputeCore::new, 2, 2, 400, 800, Asset.ComputeCore,
+    ComputeCore((short) 6, ComputeCore::new, ComputeCore::new, 2, 2, 400, 800, 0, Asset.ComputeCore,
             new ExternalPropertyData(KEY_DOWN_KEY, DataType.STRING, false, false, true),
             new ExternalPropertyData(KEY_UP_KEY, DataType.STRING, false, false, true),
             new ExternalPropertyData(ANGULAR_VELOCITY_KEY, DataType.FLOAT, false, true, false),
             new ExternalPropertyData(VELOCITY_KEY, DataType.FLOAT, false, true, false),
-            new ExternalPropertyData(CAMERA_FOCUS_KEY, DataType.BOOLEAN));
+            new ExternalPropertyData(CAMERA_FOCUS_KEY, DataType.BOOLEAN),
+            new ExternalPropertyData(INIT_CALLBACK_KEY, DataType.STRING, false, false, true)),
+    Sensors((short) 7, Sensors::new, Sensors::new, 2, 1, 100, 100, 0, Asset.Sensors,
+            new ExternalPropertyData(IS_SCANNER_ENABLED, DataType.BOOLEAN));
 
     //the width of the component
     public final int width;
@@ -63,6 +67,9 @@ public enum ComponentType {
     public final ExternalPropertyData[] propertyDefs;
     //the mass of the Component
     public final float mass;
+    //the maximum power level for the component
+    //negative means that it delivers power
+    public final float maxPowerLevel;
     private PolygonShape shape;
 
     private final short index;
@@ -70,7 +77,8 @@ public enum ComponentType {
     ComponentType(short index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor,
                   IOTriFunction<ComponentDefBase, DataInputStream, Ship, ? extends Component> deserializer,
                   int width, int height,
-                  int health, float mass, Asset defaultTexture,
+                  int health, float mass,
+                  float maxPowerLevel, Asset defaultTexture,
                   ExternalPropertyData... propertyDefs) {
         ExternalPropertyData[] newPropertyDefs = new ExternalPropertyData[propertyDefs.length + 5];
         System.arraycopy(propertyDefs, 0, newPropertyDefs, 5, propertyDefs.length);
@@ -87,14 +95,22 @@ public enum ComponentType {
         this.height = height;
         this.health = health;
         this.mass = mass;
+        this.maxPowerLevel = maxPowerLevel;
         this.index = index;
     }
 
     //sets width and height to 1
     ComponentType(short index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor,
                   IOTriFunction<ComponentDefBase, DataInputStream, Ship, ? extends Component> deserializer,
+                  float powerLevel,
                   Asset previewImg, ExternalPropertyData... propertyDefs) {
-        this(index, constructor, deserializer, 1, 1, 100, 100, previewImg, propertyDefs);
+        this(index, constructor, deserializer, 1, 1, 100, 100, powerLevel, previewImg, propertyDefs);
+    }
+
+    ComponentType(short index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor,
+                  IOTriFunction<ComponentDefBase, DataInputStream, Ship, ? extends Component> deserializer,
+                  Asset previewImg, ExternalPropertyData... propertyDefs) {
+        this(index, constructor, deserializer, 0, previewImg, propertyDefs);
     }
 
     /**
@@ -134,6 +150,8 @@ public enum ComponentType {
                 return ShieldGenerator;
             case 6:
                 return ComputeCore;
+            case 7:
+                return Sensors;
             default:
                 throw new IllegalStateException();
         }

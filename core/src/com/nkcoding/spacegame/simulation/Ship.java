@@ -211,6 +211,7 @@ public class Ship extends Simulated {
         if (isOriginal()) {
             model.addComponentInternally(component);
         }
+        component.addComponent();
     }
 
     /**
@@ -243,6 +244,7 @@ public class Ship extends Simulated {
         if (isOriginal()) {
             model.removeComponentInternally(component);
         }
+        component.removeComponent();
     }
 
     //update the center position
@@ -261,7 +263,7 @@ public class Ship extends Simulated {
 
     public class ShipModel {
         //global variables
-        private final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables;
+        public final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables;
         //the list of components which compose the ship
         private List<Component.ComponentModel> components;
         //corresponds the order of the components to the order of the PowerLevel?
@@ -315,13 +317,11 @@ public class Ship extends Simulated {
 
         private void addComponentInternally(Component component) {
             components.add(component.model);
-            component.addComponent();
             getSpaceSimulation().addExternalPropertyHandler(component.model);
         }
 
         private void removeComponentInternally(Component component) {
             components.remove(component.model);
-            component.removeComponent();
             getSpaceSimulation().removeExternalPropertyHandler(component.model);
         }
 
@@ -411,7 +411,7 @@ public class Ship extends Simulated {
             body.setLinearVelocity(oldBody.getLinearVelocityFromLocalPoint(body.getLocalCenter()));
         }
 
-        public void act(float time) {
+        public void act(float delta) {
             //check structure if necessary
             if (isStructureCheckNecessary) {
                 checkStructure();

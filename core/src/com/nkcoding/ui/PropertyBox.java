@@ -1,5 +1,6 @@
 package com.nkcoding.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Clipboard;
 import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.interpreter.compiler.NormalMethodDefinition;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
@@ -20,6 +22,8 @@ public class PropertyBox extends WidgetGroup {
     private final Map<String, NormalMethodDefinition> methods;
     //the name of the ExternalProperty
     private String name;
+    //name of the component
+    private String componentName;
     //the data for the ExternalProperty
     private ExternalPropertyData data;
     //the style of this
@@ -42,6 +46,12 @@ public class PropertyBox extends WidgetGroup {
     //the ImageButton which redirects to the code
     private final ImageButton codeImageButton;
 
+    //button for the getter
+    private final ImageButton getterImageButton;
+
+    //button for the setter
+    private final ImageButton setterImageButton;
+
     public PropertyBox(PropertyBoxStyle style, String name, ExternalPropertyData data,
                        Map<String, NormalMethodDefinition> methods) {
         this.style = style;
@@ -63,12 +73,21 @@ public class PropertyBox extends WidgetGroup {
                 codeButtonClicked();
             }
         });
+        getterImageButton = new ImageButton(style.getterButtonDrawable);
+        getterImageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.getClipboard().setContents(data.getterName + "(\"" + componentName + "\")");
+            }
+        });
+        setterImageButton = new ImageButton(style.setterButtonDrawable);
+        setterImageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.getClipboard().setContents(data.setterName + "(\"" + componentName + "\", )");
+            }
+        });
         addActor(nameLabel);
-        addActor(getterLabel);
-        addActor(setterLabel);
-        addActor(valueTextField);
-        addActor(handlerTextField);
-        addActor(codeImageButton);
         init();
     }
 
@@ -84,9 +103,10 @@ public class PropertyBox extends WidgetGroup {
      * updates this control to a new ExternalPropertyData
      * automatically calls save()
      */
-    public void update(String name, ExternalPropertyData data) {
+    public void update(String componentName, ExternalPropertyData data) {
         save();
-        this.name = name;
+        this.componentName = componentName;
+        this.name = data.name;
         this.data = data;
         init();
     }
@@ -109,16 +129,32 @@ public class PropertyBox extends WidgetGroup {
      * updates this PropertyBox with the data from a new ExternalPropertyData
      */
     private void init() {
-        nameLabel.setText(name);
+        nameLabel.setText(name + ": " + data.type);
         if (data.supportsRead) {
-            getterLabel.setText(data.type + " " +  data.getterName + "(string)");
+            addActor(getterLabel);
+            addActor(getterImageButton);
+            getterLabel.setText(data.getterName);
+        } else {
+            removeActor(getterLabel);
+            removeActor(getterImageButton);
         }
         if (data.supportsWrite) {
-            setterLabel.setText("void " + data.setterName + "(string, " + data.type + ")");
+            addActor(setterLabel);
+            addActor(setterImageButton);
+            addActor(valueTextField);
+            setterLabel.setText(data.setterName);
             valueTextField.setText(data.initData);
+        } else {
+            removeActor(setterLabel);
+            removeActor(setterImageButton);
+            removeActor(valueTextField);
         }
         if (data.supportsChangedHandler) {
+            addActor(handlerTextField);
+            addActor(codeImageButton);
             handlerTextField.setText(data.handlerName);
+        } else {
+            removeActor(handlerTextField);
         }
         verify();
         invalidateHierarchy();
@@ -151,9 +187,11 @@ public class PropertyBox extends WidgetGroup {
         nameLabel.draw(batch, parentAlpha);
         if (data.supportsRead) {
             getterLabel.draw(batch, parentAlpha);
+            getterImageButton.draw(batch, parentAlpha);
         }
         if (data.supportsWrite) {
             setterLabel.draw(batch, parentAlpha);
+            setterImageButton.draw(batch, parentAlpha);
             valueTextField.draw(batch, parentAlpha);
         }
         if (data.supportsChangedHandler) {
@@ -172,6 +210,9 @@ public class PropertyBox extends WidgetGroup {
             bgBottomHeight = style.background.getBottomHeight();
         }
         float posY = bgBottomHeight;
+        float buttonSize = valueTextField.getHeight();
+        float labelButtonMaxHeight = Math.max(nameLabel.getPrefHeight(), buttonSize);
+        float labelButtonDelta = nameLabel.getPrefHeight() - valueTextField.getPrefHeight();
 
         //changed handler
         if (data.supportsChangedHandler) {
@@ -181,8 +222,8 @@ public class PropertyBox extends WidgetGroup {
 
             codeImageButton.setX(getWidth() - bgRightWidth - handlerTextField.getHeight());
             codeImageButton.setY(posY);
-            codeImageButton.setWidth(handlerTextField.getHeight());
-            codeImageButton.setHeight(handlerTextField.getHeight());
+            codeImageButton.setWidth(buttonSize);
+            codeImageButton.setHeight(buttonSize);
 
             posY += handlerTextField.getHeight() + style.spacing;
         }
@@ -194,18 +235,38 @@ public class PropertyBox extends WidgetGroup {
             valueTextField.setWidth(getWidth() - style.spacing - bgLeftWidth - bgRightWidth);
             posY += valueTextField.getHeight() + style.spacing;
 
-            setterLabel.setX(bgLeftWidth + style.spacing);
+            setterLabel.setX(bgLeftWidth + labelButtonMaxHeight + 2 * style.spacing);
+            setterLabel.setWidth(getWidth() - bgLeftWidth - bgRightWidth - 2 * style.spacing - labelButtonMaxHeight);
+            if (labelButtonDelta < 0) {
+                setterLabel.setY(posY - labelButtonDelta / 2);
+                setterImageButton.setY(posY);
+            } else {
+                setterLabel.setY(posY);
+                setterImageButton.setY(posY + labelButtonDelta / 2);
+            }
             setterLabel.setY(posY);
-            setterLabel.setWidth(getWidth() - bgLeftWidth - bgRightWidth);
-            posY += setterLabel.getHeight() + style.spacing;
+            setterImageButton.setWidth(buttonSize);
+            setterImageButton.setHeight(buttonSize);
+            setterImageButton.setX(bgLeftWidth + style.spacing);
+            posY += labelButtonMaxHeight + style.spacing;
         }
 
         //getter
         if (data.supportsRead) {
-            getterLabel.setX(bgLeftWidth + style.spacing);
+            getterLabel.setX(bgLeftWidth + labelButtonMaxHeight + 2 * style.spacing);
+            getterLabel.setWidth(getWidth() - bgLeftWidth - bgRightWidth - 2 * style.spacing - labelButtonMaxHeight);
+            if (labelButtonDelta < 0) {
+                getterLabel.setY(posY - labelButtonDelta / 2);
+                getterImageButton.setY(posY);
+            } else {
+                getterLabel.setY(posY);
+                getterImageButton.setY(posY + labelButtonDelta / 2);
+            }
             getterLabel.setY(posY);
-            getterLabel.setWidth(getWidth() - bgLeftWidth - bgRightWidth);
-            posY += getterLabel.getHeight() + style.spacing;
+            getterImageButton.setWidth(buttonSize);
+            getterImageButton.setHeight(buttonSize);
+            getterImageButton.setX(bgLeftWidth + style.spacing);
+            posY += labelButtonMaxHeight + style.spacing;
         }
 
         //name label
@@ -218,6 +279,7 @@ public class PropertyBox extends WidgetGroup {
     @Override
     public float getPrefHeight() {
         float prefHeight = 0;
+        float labelPrefHeight = Math.max(nameLabel.getPrefHeight(), valueTextField.getPrefHeight());
         //border from background drawable if it exists
         if (style.background != null) {
             prefHeight += style.background.getTopHeight() + style.background.getBottomHeight();
@@ -225,12 +287,12 @@ public class PropertyBox extends WidgetGroup {
         prefHeight += nameLabel.getPrefHeight();
 
         if (data.supportsRead) {
-            prefHeight += getterLabel.getPrefHeight();
+            prefHeight += labelPrefHeight;
             prefHeight += style.spacing;
         }
 
         if (data.supportsWrite) {
-            prefHeight += setterLabel.getPrefHeight();
+            prefHeight += labelPrefHeight;
             prefHeight += valueTextField.getPrefHeight();
             prefHeight += 2 * style.spacing;
         }
@@ -258,6 +320,10 @@ public class PropertyBox extends WidgetGroup {
         public Drawable background;
 
         public Drawable codeButtonDrawable;
+
+        public Drawable getterButtonDrawable;
+
+        public Drawable setterButtonDrawable;
 
         public Label.LabelStyle labelStyle;
 
