@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -15,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nkcoding.interpreter.MethodStatement;
@@ -41,14 +39,10 @@ public class ShipBuilderScreen implements Screen {
 
     //region data
     public final ShipDef shipDef;
-    //the game
-    private final SpaceGame spaceGame;
     //the stage
     private final Stage stage;
-    //fields from game
-    //spriteBatch for the stage
-    private final SpriteBatch spriteBatch;
     private final ExtAssetManager assetManager;
+    private final Styles styles;
     //the main tables
     private final Table shipRootTable;
     private final Table codeRootTable;
@@ -70,8 +64,6 @@ public class ShipBuilderScreen implements Screen {
     private final Drawable switchButton_error;
     private final ImageButton switchButton;
     private final CodeEditor codeEditor;
-    //the table with the component / ship name
-    private final Table basicInfoTable;
     private final Label componentNameLabel;
     private final ImageButton rotateButton;
     private final TextField nameTextField;
@@ -84,12 +76,8 @@ public class ShipBuilderScreen implements Screen {
     //endregion
     //error log
     private final TextField errorLog;
-    //style for more propertyBoxes
-    PropertyBox.PropertyBoxStyle propertyBoxStyle;
     //compiler to check the code
     private Compiler compiler;
-    //the compiled code
-    private MethodStatement[] methods = new MethodStatement[0];
     private HashMap<String, NormalMethodDefinition> methodPositions = new HashMap<>();
     //normal (ship) view?
     private boolean isShipView = true;
@@ -104,73 +92,20 @@ public class ShipBuilderScreen implements Screen {
         //create new compiler
         compiler = shipDef.createCompiler("");
 
-
-        this.spaceGame = spaceGame;
-        this.spriteBatch = spaceGame.getBatch();
+        //the game
+        //fields from game
+        //spriteBatch for the stage
+        SpriteBatch spriteBatch = spaceGame.getBatch();
         this.assetManager = spaceGame.getAssetManager();
+        styles = new Styles(assetManager);
+        float defaultButtonSize = 4 * styles.defaultScaledAbs;
+
         //region create the stage with and all its components
         ScreenViewport viewport = new ScreenViewport();
-        viewport.setUnitsPerPixel(0.75f / Gdx.graphics.getDensity());
-        System.out.println(Gdx.graphics.getDensity());
+        
         stage = new Stage(viewport, spriteBatch);
         Gdx.input.setInputProcessor(stage);
 
-        //region styles
-
-        Drawable background = new NinePatchDrawable(new NinePatch(assetManager.getTexture(Asset.SimpleBorder), 3, 3, 3, 3));
-        background.setLeftWidth(10);
-        background.setRightWidth(10);
-        background.setTopHeight(10);
-        background.setBottomHeight(10);
-
-        //ScrollPane
-        ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
-        //scrollPaneStyle.background = new SpriteDrawable(new Sprite(assetManager.get("simpleborder.png", Texture.class)));
-        scrollPaneStyle.vScrollKnob = assetManager.getDrawable(Asset.ScrollBarKnob);
-        scrollPaneStyle.vScroll = assetManager.getDrawable(Asset.ScrollBarBackground);
-        scrollPaneStyle.hScrollKnob = assetManager.getDrawable(Asset.ScrollBarKnob);
-        scrollPaneStyle.hScroll = assetManager.getDrawable(Asset.ScrollBarBackground);
-
-        //ZoomScrollPane
-        ZoomScrollPane.ZoomScrollPaneStyle zoomScrollPaneStyle = new ZoomScrollPane.ZoomScrollPaneStyle(scrollPaneStyle);
-
-        //Label
-        Label.LabelStyle labelStyleSmall = new Label.LabelStyle(assetManager.getBitmapFont(Asset.SourceCodePro_18), new Color(0xffffffff));
-        Label.LabelStyle labelStyleBig = new Label.LabelStyle(assetManager.getBitmapFont(Asset.SourceCodePro_32), new Color(0xffffffff));
-
-        //TextField
-        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-        textFieldStyle.font = assetManager.getBitmapFont(Asset.SourceCodePro_18);
-        textFieldStyle.fontColor = new Color(0xffffffff);
-        textFieldStyle.cursor = assetManager.getDrawable(Asset.Cursor);
-        textFieldStyle.selection = assetManager.getDrawable(Asset.Selection);
-        Drawable textFieldBackground = assetManager.getDrawable(Asset.ScrollBarBackground);
-        textFieldBackground.setLeftWidth(5);
-        textFieldBackground.setRightWidth(5);
-        textFieldBackground.setTopHeight(5);
-        textFieldBackground.setBottomHeight(5);
-        textFieldStyle.background = textFieldBackground;
-
-        //PropertyBox
-        propertyBoxStyle = new PropertyBox.PropertyBoxStyle();
-        propertyBoxStyle.background = background;
-        propertyBoxStyle.codeButtonDrawable = assetManager.getDrawable(Asset.CodeSymbol);
-        propertyBoxStyle.getterButtonDrawable = assetManager.getDrawable(Asset.GetterSymbol);
-        propertyBoxStyle.setterButtonDrawable = assetManager.getDrawable(Asset.SetterSymbol);
-        propertyBoxStyle.textFieldStyle = textFieldStyle;
-        propertyBoxStyle.illegalInputColor = new Color(0xff0000ff);
-        propertyBoxStyle.legalInputColor = new Color(0xffffffff);
-        propertyBoxStyle.labelStyle = labelStyleSmall;
-        propertyBoxStyle.spacing = 10f;
-
-        //CodeEditor
-        CodeEditor.CodeEditorStyle codeEditorStyle = new CodeEditor.CodeEditorStyle(textFieldStyle,
-                assetManager.getDrawable(Asset.LightBackground), scrollPaneStyle, new ScriptColorParser());
-
-        //endregion
-
-
-        //I may replace this with a skin later, if I really want to (because I hate json)
 
         //create the root table
         //region ship designer ui
@@ -187,21 +122,21 @@ public class ShipBuilderScreen implements Screen {
 
         //componentsScrollPane
         //ScrollPane for the componentsStack
-        ScrollPane componentsScrollPane = new CustomScrollPane(componentsStack, scrollPaneStyle);
+        ScrollPane componentsScrollPane = new CustomScrollPane(componentsStack, styles.scrollPaneStyle);
         componentsScrollPane.setFlickScroll(false);
         componentsScrollPane.setScrollingDisabled(true, false);
         UIHelper.activateScrollOnHover(componentsScrollPane);
 
         //shipDesigner
         shipDesigner = new ShipDesigner(shipDef, assetManager, assetManager.getTexture(Asset.NoComponent), assetManager.getTexture(Asset.Selection), this::selectedComponentChanged);
-        shipDesignerZoomScrollPane = new ZoomScrollPane(shipDesigner, zoomScrollPaneStyle);
+        shipDesignerZoomScrollPane = new ZoomScrollPane(shipDesigner, styles.zoomScrollPaneStyle);
         shipDesignerZoomScrollPane.setFlickScroll(true);
         shipDesignerZoomScrollPane.setFadeScrollBars(false);
         shipDesignerZoomScrollPane.setOverscroll(false, false);
         UIHelper.activateScrollOnHover(shipDesignerZoomScrollPane);
 
         //basicInfoTable
-        componentNameLabel = new Label("Ship", labelStyleBig);
+        componentNameLabel = new Label("Ship", styles.labelStyleBig);
 
         rotateButton = new ImageButton(assetManager.getDrawable(Asset.RotateSymbol));
         rotateButton.setVisible(false);
@@ -212,25 +147,24 @@ public class ShipBuilderScreen implements Screen {
             }
         });
 
-        final Label nameLabel = new Label("name", labelStyleSmall);
+        final Label nameLabel = new Label("name", styles.labelStyleSmall);
 
-        nameTextField = new TextField("", textFieldStyle);
-        nameTextField.setTextFieldListener((textField, c) -> {
-            verifyName();
-        });
+        nameTextField = new TextField("", styles.textFieldStyle);
+        nameTextField.setTextFieldListener((textField, c) -> verifyName());
         verifyName();
 
-        basicInfoTable = new Table();
-        basicInfoTable.setBackground(background);
-        basicInfoTable.pad(10, 10, 10, 10);
+        //the table with the component / ship name
+        Table basicInfoTable = new Table();
+        basicInfoTable.setBackground(styles.borderBackgroundDrawable);
+        basicInfoTable.pad(styles.defaultScaledAbs, styles.defaultScaledAbs, styles.defaultScaledAbs, styles.defaultScaledAbs);
         basicInfoTable.add(componentNameLabel).growX().left();
-        basicInfoTable.add(rotateButton).size(40, 40).right();
+        basicInfoTable.add(rotateButton).size(defaultButtonSize, defaultButtonSize).right();
         basicInfoTable.row();
-        basicInfoTable.add(nameLabel).left().colspan(2).pad(10, 10, 10, 0);
+        basicInfoTable.add(nameLabel).left().colspan(2).pad(styles.defaultScaledAbs, styles.defaultScaledAbs, styles.defaultScaledAbs, 0);
         basicInfoTable.row();
-        basicInfoTable.add(nameTextField).left().colspan(2).pad(0, 10, 10, 0).fillX();
+        basicInfoTable.add(nameTextField).left().colspan(2).pad(0, styles.defaultScaledAbs, styles.defaultScaledAbs, 0).fillX();
 
-        final Container<Table> basicInfoContainer = new Container<>(basicInfoTable).pad(10, 10, 0, 10).fillX();
+        final Container<Table> basicInfoContainer = new Container<>(basicInfoTable).pad(styles.defaultScaledAbs, styles.defaultScaledAbs, 0, styles.defaultScaledAbs).fillX();
 
 
         //propertiesVerticalGroup
@@ -239,15 +173,15 @@ public class ShipBuilderScreen implements Screen {
         propertiesVerticalGroup.grow();
 
         shipInfoTable = new Table();
-        shipInfoLabel = new Label("", labelStyleSmall);
+        shipInfoLabel = new Label("", styles.labelStyleSmall);
         Container<Label> shipInfoContainer = new Container<>(shipInfoLabel);
         shipInfoContainer.fillX();
-        shipInfoContainer.setBackground(background);
-        shipInfoTable.add(shipInfoContainer).left().top().growX().expandY().pad(10);
+        shipInfoContainer.setBackground(styles.borderBackgroundDrawable);
+        shipInfoTable.add(shipInfoContainer).left().top().growX().expandY().pad(styles.defaultScaledAbs);
 
         //propertiesScrollPane
         //ScrollPane for the propertiesStack
-        propertiesScrollPane = new CustomScrollPane(shipInfoTable, scrollPaneStyle);
+        propertiesScrollPane = new CustomScrollPane(shipInfoTable, styles.scrollPaneStyle);
         propertiesScrollPane.setFlickScroll(false);
         propertiesScrollPane.setScrollingDisabled(true, false);
         propertiesScrollPane.setFadeScrollBars(false);
@@ -279,8 +213,8 @@ public class ShipBuilderScreen implements Screen {
         Table rightLayoutTable = new Table();
         rightLayoutTable.add(propertiesScrollPane).colspan(2).grow();
         rightLayoutTable.row();
-        rightLayoutTable.add(saveButton).size(40, 40).growX().pad(10).right();
-        rightLayoutTable.add(switchButton).size(40, 40).pad(10).right();
+        rightLayoutTable.add(saveButton).size(defaultButtonSize, defaultButtonSize).growX().pad(styles.defaultScaledAbs).right();
+        rightLayoutTable.add(switchButton).size(defaultButtonSize, defaultButtonSize).pad(styles.defaultScaledAbs).right();
 
         //add the components to the rootTable
         //add the buttons
@@ -288,7 +222,7 @@ public class ShipBuilderScreen implements Screen {
         //add all the main controls
         shipRootTable.add(componentsScrollPane).left().growY();
         shipRootTable.add(shipDesignerZoomScrollPane).grow();
-        shipRootTable.add(rightLayoutTable).right().width(450).growY();
+        shipRootTable.add(rightLayoutTable).right().width(450 * styles.scaleFactor).growY();
 
         addDragAndDropListeners();
 
@@ -296,7 +230,7 @@ public class ShipBuilderScreen implements Screen {
 
         //region code editor ui
 
-        codeEditor = new CodeEditor(codeEditorStyle);
+        codeEditor = new CodeEditor(styles.codeEditorStyle);
         codeEditor.setText(shipDef.code);
 
         codeRootTable = new Table();
@@ -312,7 +246,7 @@ public class ShipBuilderScreen implements Screen {
 
 
         //error log
-        errorLog = new TextField("", textFieldStyle);
+        errorLog = new TextField("", styles.textFieldStyle);
         errorLog.setDisabled(true);
 
         //drawables for the checkButton
@@ -345,9 +279,9 @@ public class ShipBuilderScreen implements Screen {
 
         codeRootTable.add(codeEditor).colspan(3).grow();
         codeRootTable.row();
-        codeRootTable.add(errorLog).growX().pad(10);
-        codeRootTable.add(checkButton).size(40, 40).bottom().pad(10).right();
-        codeRootTable.add(closeButton).size(40, 40).bottom().pad(10).right();
+        codeRootTable.add(errorLog).growX().pad(styles.defaultScaledAbs);
+        codeRootTable.add(checkButton).size(defaultButtonSize, defaultButtonSize).bottom().pad(styles.defaultScaledAbs).right();
+        codeRootTable.add(closeButton).size(defaultButtonSize, defaultButtonSize).bottom().pad(styles.defaultScaledAbs).right();
 
 
         //endregion
@@ -420,13 +354,13 @@ public class ShipBuilderScreen implements Screen {
         componentsDragAndDrop.addTarget(new DragAndDrop.Target(shipDesigner) {
             @Override
             public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-                return shipDesigner.drag((ComponentDef) payload.getObject(), x, y, pointer);
+                return shipDesigner.drag((ComponentDef) payload.getObject(), x, y);
             }
 
             @Override
             public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
                 ComponentDef def = (ComponentDef) payload.getObject();
-                shipDesigner.drop(def, x, y, pointer);
+                shipDesigner.drop(def, x, y);
                 shipDesigner.setSelectedComponent(def);
             }
         });
@@ -455,9 +389,9 @@ public class ShipBuilderScreen implements Screen {
             Image img = new Image(assetManager.getTexture(type.defaultTexture));
 
             img.setUserObject(type);
-            componentsStack.add(img).width(ShipDesigner.COMPONENT_SIZE * type.width)
-                    .height(ShipDesigner.COMPONENT_SIZE * type.height)
-                    .pad(10, 10, 0, 10).top().left();
+            componentsStack.add(img).width(ShipDesigner.COMPONENT_SIZE * type.width * styles.scaleFactor)
+                    .height(ShipDesigner.COMPONENT_SIZE * type.height * styles.scaleFactor)
+                    .pad(styles.defaultScaledAbs, styles.defaultScaledAbs, 0, styles.defaultScaledAbs).top().left();
             componentsStack.row();
         }
     }
@@ -466,7 +400,6 @@ public class ShipBuilderScreen implements Screen {
         //save
         saveComponentDef(oldDef);
         //update the property stack
-        Map<String, ExternalPropertyData> properties;
         if (newDef != null) {
             propertiesScrollPane.setActor(propertiesVerticalGroup);
             selectComponent(newDef);
@@ -510,7 +443,7 @@ public class ShipBuilderScreen implements Screen {
             } else {
                 if (oldPropertyBoxes.isEmpty()) {
                     //the component does not exist yet, and there is no one available on the stack
-                    Container<PropertyBox> container = new Container<>(new PropertyBox(propertyBoxStyle, data.name, data, methodPositions) {
+                    Container<PropertyBox> container = new Container<>(new PropertyBox(styles.propertyBoxStyle, data.name, data, methodPositions) {
                         @Override
                         public void codeButtonClicked() {
                             if (methodPositions.containsKey(this.getHandlerName())) {
@@ -533,7 +466,7 @@ public class ShipBuilderScreen implements Screen {
                             }
                         }
                     });
-                    container.pad(10, 10, 0, 10).fill();
+                    container.pad(styles.defaultScaledAbs, styles.defaultScaledAbs, 0, styles.defaultScaledAbs).fill();
                     propertiesVerticalGroup.addActor(container);
                 } else {
                     //the component does not exist yet, but there is one available on the stack
@@ -570,12 +503,12 @@ public class ShipBuilderScreen implements Screen {
             mass += def.getType().mass;
         }
         validate();
-        sb.append("\nMax power production: " + maxProduction);
-        sb.append("\nMax power consumption: " + maxConsumption);
-        sb.append("\nMass: " + mass);
+        sb.append("\nMax power production: ").append(maxProduction);
+        sb.append("\nMax power consumption: ").append(maxConsumption);
+        sb.append("\nMass: ").append(mass);
         sb.append("\n");
-        sb.append("\nShip status: " + shipValidated);
-        sb.append("\nCode status: " + codeValidated);
+        sb.append("\nShip status: ").append(shipValidated);
+        sb.append("\nCode status: ").append(codeValidated);
         shipInfoLabel.setText(sb.toString());
     }
 
@@ -612,7 +545,8 @@ public class ShipBuilderScreen implements Screen {
         try {
             errorLog.setText("");
             long start = System.nanoTime();
-            methods = compiler.compile().methods;
+            //the compiled code
+            MethodStatement[] methods = compiler.compile().methods;
             System.out.println("compile time: " + (System.nanoTime() - start) / 1000000.0 + "ms");
             if (updateMethodsMap) {
                 //update the map, update references and remove old ones

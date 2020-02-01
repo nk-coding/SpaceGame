@@ -1,8 +1,7 @@
 copyright for specific files:
 core/src/ui/TextFieldBase.java: modified version under GPL 2.0, original version copyright see AUTHORS file
 core/src/ui/MultiColorTextArea.java: modified version under GPL 2.0, original version copyright see AUTHORS file
-core/assets/fonts/sourceCodePro_18.png: modified version under OFL, original version copyright see OFL.txt
-core/assets/fonts/sourceCodePro_32.png: modified version under OFL, original version copyright see OFL.txt
+core/assets/fonts/sourceCodePro-Medium.ttf: under OFL, copyright see OFL.txt
 core/assets/ui/saveSymbol.png: modified version under GPL 2.0, original version copyright see https://github.com/google/material-design-icons
 core/assets/ui/okSymbol.png: modified version under GPL 2.0, original version copyright see https://github.com/google/material-design-icons
 core/assets/ui/rotateSymbol.png: modified version under  Creative Commons Attribution-Share Alike 3.0 Unported

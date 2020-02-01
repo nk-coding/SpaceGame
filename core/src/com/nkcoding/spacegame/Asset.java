@@ -1,10 +1,6 @@
 package com.nkcoding.spacegame;
 
 public enum Asset {
-    //fonts
-    SourceCodePro_18("fonts/sourceCodePro_18.fnt"),
-    SourceCodePro_32("fonts/sourceCodePro_32.fnt"),
-
     //textures
     //game
     BasicHull("textures/game/basicHull.png"),
