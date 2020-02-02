@@ -39,6 +39,7 @@ import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Lexer;
 import com.nkcoding.interpreter.compiler.Token;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -605,6 +606,8 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                 invalidateHierarchy();
             }
 
+            updateCurrentLine();
+
             try {
                 if (multiLineChange) {
                     lexer.update(getText(), true);
@@ -614,13 +617,12 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                 }
                 this.autocompletionItems = lexer.getTokens().stream().filter(token -> (token.getType() & (Token.IDENTIFIER | Token.KEYWORD)) != 0)
                         .map(Token::getContent).distinct().collect(Collectors.toList());
+                updateAutocompletion(autocompletionInput);
             } catch (CompileException e) {
                 e.printStackTrace();
             }
 
             multiLineChange = false;
-
-            updateCurrentLine();
         }
     }
 
@@ -856,6 +858,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
 
         @Override
         public boolean keyTyped(InputEvent event, char character) {
+            event.getKeyCode();
             multiLineChange = true;
             boolean hadSelection = hasSelection;
             //preInput
@@ -867,7 +870,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
             //postInput
             if (result) {
                 if (!postInput(event, character) && !hadSelection) {
-                    if (event.getKeyCode() != Input.Keys.DEL && event.getKeyCode() != Input.Keys.FORWARD_DEL) {
+                    if (character != 8 && character != 127) {
                         multiLineChange = false;
                         updateAutocompletion(autocompletionInput + character);
                     }
