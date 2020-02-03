@@ -39,10 +39,7 @@ import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Lexer;
 import com.nkcoding.interpreter.compiler.Token;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MultiColorTextArea extends TextFieldBase implements Cullable {
@@ -311,7 +308,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         //GlyphLayout for the calculation of the offsetX
         Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
         GlyphLayout layout = layoutPool.obtain();
-        ColorRegion region = new ColorRegion(firstLineShowing, lexer.getLineStartIndex(firstLineShowing));
+        ColorRegion region = new ColorRegion(firstLineShowing, lexer.getLineStartIterator(firstLineShowing));
 
         while (getNextColorRegion(region, debug)) {
             if (offsetX <= renderUntilX) {
@@ -428,15 +425,13 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         }
 
         Token currentToken = null;
-        if (cr.tokenIndex > -1) {
-            while (currentToken == null && cr.tokenIndex < lexer.getTokenCount()) {
-                Token possibleToken = lexer.getToken(cr.tokenIndex);
-                if (colorParser.chooseColor(possibleToken.getType()) != null) {
-                    currentToken = possibleToken;
-                    colorStart = currentToken.getPos() + linesBreak.get(currentToken.getLine() * 2);
-                } else {
-                    cr.tokenIndex++;
-                }
+        while (currentToken == null && cr.currentToken != null) {
+            Token possibleToken = cr.currentToken;
+            if (colorParser.chooseColor(possibleToken.getType()) != null) {
+                currentToken = possibleToken;
+                colorStart = currentToken.getPos() + linesBreak.get(currentToken.getLine() * 2);
+            } else {
+                cr.next();
             }
         }
         if (debug) System.out.println(currentToken);
@@ -504,7 +499,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                         cr.endPos = colorEnd;
                         cr.newLineAfter = false;
 
-                        cr.tokenIndex++;
+                        cr.next();
                     }
                     //case 4.2: the line ends first
                     else if (colorEnd > lineEnd) {
@@ -525,7 +520,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                         cr.newLineAfter = true;
 
                         cr.lineBreakIndex++;
-                        cr.tokenIndex++;
+                        cr.next();
                     }
                 }
 
@@ -764,15 +759,20 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
 
         //what should it draw now
         int lineBreakIndex;
-        int tokenIndex;
+        Iterator<Token> tokensIterator;
+        Token currentToken;
+        private void next() {
+            currentToken = tokensIterator.hasNext() ? tokensIterator.next() : null;
+        }
 
-        ColorRegion(int lineBreakIndex, int tokenIndex) {
+        ColorRegion(int lineBreakIndex, Iterator<Token> tokensIterator) {
             this.lineBreakIndex = lineBreakIndex;
-            this.tokenIndex = tokenIndex;
+            this.tokensIterator = tokensIterator;
             if (lineBreakIndex < linesBreak.size / 2) {
                 startPos = linesBreak.get(lineBreakIndex * 2);
                 endPos = startPos - 1;
             }
+            currentToken = tokensIterator.next();
         }
     }
 
