@@ -33,7 +33,16 @@ public class Styles {
     private static final float defaultAbs = 10f;
     public final float defaultScaledAbs;
 
-    public Styles(ExtAssetManager assetManager) {
+    private static Styles singleton;
+
+    public static Styles getDefaultStyles(ExtAssetManager assetManager) {
+        if (singleton == null) {
+            singleton = new Styles(assetManager);
+        }
+        return singleton;
+    }
+
+    private Styles(ExtAssetManager assetManager) {
 
         scaleFactor = Gdx.graphics.getDensity() / 0.75f;
         //scaleFactor = 2.5f;

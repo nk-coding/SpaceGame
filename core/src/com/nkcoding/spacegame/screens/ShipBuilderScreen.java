@@ -97,7 +97,7 @@ public class ShipBuilderScreen implements Screen {
         //spriteBatch for the stage
         SpriteBatch spriteBatch = spaceGame.getBatch();
         this.assetManager = spaceGame.getAssetManager();
-        styles = new Styles(assetManager);
+        styles = Styles.getDefaultStyles(assetManager);
         float defaultButtonSize = 4 * styles.defaultScaledAbs;
 
         //region create the stage with and all its components
