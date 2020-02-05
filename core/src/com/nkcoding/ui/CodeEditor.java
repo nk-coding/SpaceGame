@@ -57,22 +57,34 @@ public class CodeEditor extends WidgetGroup {
             @Override
             public Optional<Boolean> preInput(InputEvent event, char character) {
                 //correct tab
-                if (character == '\t') {
-                    System.out.println("TAB");
-                    paste("   ", true, true);
-                    return Optional.of(true);
-                } else if (character == ')') {
-                    boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == ')';
-                    if (endBracketExists) {
-                        moveCursor(true, false);
+                switch (character) {
+                    case '\t':
+                        System.out.println("TAB");
+                        paste("   ", true, true);
                         return Optional.of(true);
+                    case ')': {
+                        boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == ')';
+                        if (endBracketExists) {
+                            moveCursor(true, false);
+                            return Optional.of(true);
+                        }
+                        break;
                     }
-                } else if (character == ']') {
-                    boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == ']';
-                    if (endBracketExists) {
-                        moveCursor(true, false);
-                        return Optional.of(true);
+                    case ']': {
+                        boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == ']';
+                        if (endBracketExists) {
+                            moveCursor(true, false);
+                            return Optional.of(true);
+                        }
+                        break;
                     }
+                    case '"':
+                        boolean endQuotationMarkExists= text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == '\"';
+                        if (endQuotationMarkExists) {
+                            moveCursor(true, false);
+                            return Optional.of(true);
+                        }
+                        break;
                 }
                 return Optional.empty();
             }
@@ -106,6 +118,8 @@ public class CodeEditor extends WidgetGroup {
                     case '[':
                         paste("]", false, false);
                         return true;
+                    case '"':
+                        paste("\"", false, false);
                     default:
                         return false;
                 }
