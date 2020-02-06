@@ -105,7 +105,8 @@ public class Styles {
 
         //CodeEditor
         codeEditorStyle = new CodeEditor.CodeEditorStyle(textFieldStyle,
-                assetManager.getDrawable(Asset.LightBackground), scrollPaneStyle, new ScriptColorParser());
+                assetManager.getDrawable(Asset.LightBackground), assetManager.getDrawable(Asset.Selection),
+                scrollPaneStyle, new ScriptColorParser());
 
         //TextButton style
         textButtonStyle = new TextButton.TextButtonStyle();

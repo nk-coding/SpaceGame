@@ -280,13 +280,16 @@ public class CodeEditor extends WidgetGroup {
 
         public Drawable vScrollKnob;
 
-        public CodeEditorStyle(BitmapFont font, Color fontColor, Drawable cursor, Drawable selection, Drawable background, Drawable autocompletion, ColorParser colorParser) {
-            super(font, fontColor, cursor, selection, background, autocompletion);
+        public CodeEditorStyle(BitmapFont font, Color fontColor, Drawable cursor,
+                               Drawable selection, Drawable background, Drawable autocompletion, Drawable selectedAutocompletion,
+                               ColorParser colorParser) {
+            super(font, fontColor, cursor, selection, background, autocompletion, selectedAutocompletion);
             this.colorParser = colorParser;
         }
 
-        public CodeEditorStyle(TextField.TextFieldStyle textFieldStyle, Drawable autocompletion, ScrollPane.ScrollPaneStyle scrollPaneStyle, ColorParser colorParser) {
-            super(textFieldStyle, autocompletion);
+        public CodeEditorStyle(TextField.TextFieldStyle textFieldStyle, Drawable autocompletion, Drawable selectedAutocompletion,
+                               ScrollPane.ScrollPaneStyle scrollPaneStyle, ColorParser colorParser) {
+            super(textFieldStyle, autocompletion, selectedAutocompletion);
             this.colorParser = colorParser;
             this.corner = scrollPaneStyle.corner;
             this.hScroll = scrollPaneStyle.hScroll;
@@ -302,7 +305,8 @@ public class CodeEditor extends WidgetGroup {
         }
 
         private MultiColorTextArea.MultiColorTextAreaStyle createTextFieldStyle() {
-            MultiColorTextArea.MultiColorTextAreaStyle style = new MultiColorTextArea.MultiColorTextAreaStyle(this, autocompletion);
+            MultiColorTextArea.MultiColorTextAreaStyle style = new MultiColorTextArea.MultiColorTextAreaStyle(this,
+                    autocompletion, selectedAutocompletion);
             style.background = null;
             return style;
         }
