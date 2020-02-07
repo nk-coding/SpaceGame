@@ -88,7 +88,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
     /**
      * the Strings for the autocompletion popup
      */
-    private TreeSet<String> currentAutocompletionItems = new TreeSet<>();
+    private List<String> currentAutocompletionItems = new ArrayList<>();
 
     private List<String> autocompletionItems = new LinkedList<>();
 
@@ -360,7 +360,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
     @Override
     protected void drawAutocompletion(Batch batch, BitmapFont font, float x, float y) {
         super.drawAutocompletion(batch, font, x, y);
-        if (currentAutocompletionItems.size() > 0) {
+        if (currentAutocompletionItems.size() > 0 && autocompletionEnabled) {
             final float abs = 20;
             Drawable autocompletion = ((MultiColorTextAreaStyle) style).autocompletion;
             Drawable selectedAutocompletion = ((MultiColorTextAreaStyle)style).selectedAutocompletion;
@@ -431,8 +431,12 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
      *
      * @param autocompletionItems new autocompletion
      */
-    public void updateAutocompletionItems(TreeSet<String> autocompletionItems) {
+    public void updateAutocompletionItems(List<String> autocompletionItems) {
+        String lastSelected = currentAutocompletionItems.size() > 0 ? currentAutocompletionItems.get(selectedAutocompletionIndex) : "";
         this.currentAutocompletionItems = autocompletionItems;
+        currentAutocompletionItems.sort(null);
+        selectedAutocompletionIndex = Math.min(currentAutocompletionItems.indexOf(lastSelected), currentAutocompletionItems.size() - 1);
+        selectedAutocompletionIndex = Math.max(selectedAutocompletionIndex, 0);
         Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
         GlyphLayout layout = layoutPool.obtain();
         float maxWidth = 0;
@@ -455,11 +459,11 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         final String input = (autocompletionInput.trim().equals(autocompletionInput)) ? autocompletionInput : "";
         this.autocompletionText = input;
         if (input.equals("")) {
-            updateAutocompletionItems(new TreeSet<>());
+            updateAutocompletionItems(new ArrayList<>());
         } else {
             updateAutocompletionItems(autocompletionItems.stream()
                     .filter(item -> item.contains(input) && !item.equals(autocompletionInput))
-                    .collect(Collectors.toCollection(TreeSet::new)));
+                    .collect(Collectors.toList()));
         }
     }
 
@@ -876,6 +880,9 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
 
         @Override
         public boolean keyDown(InputEvent event, int keycode) {
+            if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT) {
+                updateAutocompletion(false);
+            }
             boolean result = super.keyDown(event, keycode);
             if (keycode == Input.Keys.FORWARD_DEL || keycode == Input.Keys.ENTER || keycode == Input.Keys.SPACE) {
                 updateAutocompletion(false);
