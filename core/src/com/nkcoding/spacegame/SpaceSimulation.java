@@ -373,7 +373,6 @@ public class SpaceSimulation implements InputProcessor {
                         case TransmissionID.UPDATE_BODY_STATE:
                             int bodyUpdateID = inputStream.readInt();
                             long timestamp = inputStream.readLong();
-                            //System.out.println(System.currentTimeMillis() - timestamp);
                             int amount = inputStream.readInt();
                             for (int x = 0; x < amount; x++) {
                                 int simulatedID = inputStream.readInt();

@@ -27,7 +27,6 @@ public class MethodStatement implements Statement {
     @Override
     public void run(Stack stack) throws ReturnException {
         //the stack stuff is done in a wrapper
-        //System.out.println("run method statement");
         for (Statement statement : statements) {
             statement.run(stack);
         }

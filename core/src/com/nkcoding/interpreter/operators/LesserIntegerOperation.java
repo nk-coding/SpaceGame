@@ -7,7 +7,6 @@ import com.nkcoding.interpreter.compiler.DataType;
 public class LesserIntegerOperation extends BinaryExpressionBase<Integer> implements Expression<Boolean> {
     @Override
     public Boolean getResult(Stack stack) {
-        //System.out.println("lesser integer operation get result");
         return firstExpression.getResult(stack) < secondExpression.getResult(stack);
     }
 

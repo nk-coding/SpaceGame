@@ -15,7 +15,6 @@ public class RawValueExpression<T> implements Expression<T> {
 
     @Override
     public T getResult(Stack stack) {
-        //System.out.println("Raw value expression: return " + value);
         return value;
     }
 

@@ -228,11 +228,8 @@ public class Compiler {
 
             //try get the operator
             try {
-                //System.out.println("nextchar: " + text.getNextChar(false));
                 char op1 = text.getNextNonWhitespaceChar();
-                //System.out.println("try get op1: " + op1);
                 if (op1 == '+' || op1 == '-' || op1 == '*' || op1 == '/' || op1 == '%' || op1 == '<' || op1 == '>' || op1 == '=') {
-                    //System.out.println("op1 is in list");
                     try {
                         char op2 = text.getNextChar();
                         if (op2 == '=') {

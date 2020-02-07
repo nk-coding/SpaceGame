@@ -349,7 +349,6 @@ public class TextFieldBase extends Widget implements Disableable {
             drawCursor(cursorPatch, batch, font, x + bgLeftWidth, y + textY);
         }
         if (!disabled) {
-            //System.out.printf("y:%f, textY:%f%n",y, textY + y);
             drawAutocompletion(batch, font, x + bgLeftWidth, y + textY);
         }
     }
