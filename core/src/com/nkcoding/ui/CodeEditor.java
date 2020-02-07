@@ -177,7 +177,7 @@ public class CodeEditor extends WidgetGroup {
         if (ScissorStack.pushScissors(scissors)) {
             //draw line numbers
             float lineHight = font.getLineHeight();
-            float offset = -font.getLineHeight() * codeTextArea.firstLineShowing + codeScrollPane.getVisualScrollY() + numbersAreaClip.height - codeEditorStyle.background.getTopHeight();
+            float offset = -font.getLineHeight() * codeTextArea.firstLineShowing + codeScrollPane.getVisualScrollY() + numbersAreaClip.height - codeEditorStyle.background.getTopHeight() + font.getDescent();
             int drawUntil = Math.max(codeTextArea.linesShowing, 1);
             if (codeTextArea.getLines() < codeTextArea.firstLineShowing + codeTextArea.linesShowing)
                 drawUntil = codeTextArea.getLines() - codeTextArea.firstLineShowing;

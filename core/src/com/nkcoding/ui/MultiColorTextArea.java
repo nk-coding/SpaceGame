@@ -307,8 +307,9 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                 float selectionX = glyphPositions.get(start) - glyphPositions.get(linesBreak.get(i));
                 float selectionWidth = glyphPositions.get(end) - glyphPositions.get(start);
 
-                selection.draw(batch, x + selectionX + fontOffset, y - textHeight - font.getDescent() - offsetY, selectionWidth,
+                selection.draw(batch, x + selectionX + fontOffset, y - textHeight - offsetY, selectionWidth,
                         font.getLineHeight());
+                System.out.println("selection: " + (y - textHeight - offsetY));
             }
 
             offsetY += font.getLineHeight();
@@ -320,7 +321,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
     protected void drawText(Batch batch, BitmapFont font, float x, float y) {
         boolean debug = false;
         if (debug) System.out.println();
-        float offsetY = -firstLineShowing * font.getLineHeight();
+        float offsetY = -firstLineShowing * font.getLineHeight() + font.getDescent();
         float offsetX = 0;
         //GlyphLayout for the calculation of the offsetX
         Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
@@ -352,7 +353,8 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         float textOffset = cursor >= glyphPositions.size || cursorLine * 2 >= linesBreak.size ? 0
                 : glyphPositions.get(cursor) - glyphPositions.get(linesBreak.items[cursorLine * 2]);
         cursorPatch.draw(batch, x + textOffset + fontOffset + font.getData().cursorX,
-                y - font.getDescent() / 2 - (cursorLine + 1) * font.getLineHeight(), cursorPatch.getMinWidth(),
+                y - (cursorLine) * font.getLineHeight() - textHeight,
+                cursorPatch.getMinWidth(),
                 font.getLineHeight());
     }
 
