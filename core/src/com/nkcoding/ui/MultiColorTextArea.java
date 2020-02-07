@@ -309,7 +309,6 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
 
                 selection.draw(batch, x + selectionX + fontOffset, y - textHeight - offsetY, selectionWidth,
                         font.getLineHeight());
-                System.out.println("selection: " + (y - textHeight - offsetY));
             }
 
             offsetY += font.getLineHeight();
@@ -378,23 +377,23 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                 float maxWidth = screenArea.getWidth() - posX - abs;
                 float height;
                 float requestedWidth = this.maxAutocompletionWidth + abs;
-                float requestedHeight = this.currentAutocompletionItems.size() * font.getLineHeight() + abs;
+                float requestedHeight = this.currentAutocompletionItems.size() * font.getLineHeight();
                 float width = Math.min(requestedWidth, maxWidth);
 
                 if (cursorPosY < screenArea.getHeight() / 2) {
                     //above cursor
                     posY = cursorPosY + font.getLineHeight();
-                    height = Math.min(screenArea.getHeight() - abs - posY, requestedHeight);
+                    height = Math.min(screenArea.getHeight() - posY, requestedHeight);
                 } else {
                     //below cursor
                     posY = abs;
-                    height = cursorPosY - abs;
+                    height = cursorPosY;
                     if (height > requestedHeight) {
                         posY += height - requestedHeight;
                         height = requestedHeight;
                     }
                 }
-                int maxLinesAmount = Math.min(currentAutocompletionItems.size(), (int)((height - abs) / font.getLineHeight()));
+                int maxLinesAmount = Math.min(currentAutocompletionItems.size(), (int)((height) / font.getLineHeight()));
                 //correct offset if necessary
                 if (maxLinesAmount >= currentAutocompletionItems.size()) {
                     prefAutocompletionOffset = 0;
@@ -414,10 +413,11 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                         int drawIndex = i - prefAutocompletionOffset;
                         if (i == selectedAutocompletionIndex) {
                             selectedAutocompletion.draw(batch,
-                                    posX, posY + font.getLineHeight() * (drawIndex) - font.getDescent(),
+                                    posX, posY + font.getLineHeight() * (drawIndex),
                                     width, font.getLineHeight());
                         }
-                        font.draw(batch, item, posX + abs / 2, posY + font.getLineHeight() * (drawIndex + 1),
+                        font.draw(batch, item, posX + abs / 2,
+                                posY + font.getLineHeight() * (drawIndex + 1) + font.getDescent(),
                                 0, item.length(), width - abs / 2, Align.left, false, "...");
                     }
                     i++;
