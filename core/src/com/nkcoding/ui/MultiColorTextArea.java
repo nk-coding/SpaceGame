@@ -95,7 +95,6 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
     private float maxAutocompletionWidth = 0;
 
     private boolean autocompletionEnabled = false;
-    private String autocompletionText = "";
     private int autocompletionPosition = 0;
     private int selectedAutocompletionIndex = 0;
     private int prefAutocompletionOffset = 0;
@@ -387,7 +386,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                 } else {
                     //below cursor
                     posY = abs;
-                    height = cursorPosY;
+                    height = cursorPosY - abs;
                     if (height > requestedHeight) {
                         posY += height - requestedHeight;
                         height = requestedHeight;
@@ -457,7 +456,6 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
     public void updateAutocompletionText() {
         String autocompletionInput = autocompletionEnabled ? getAutocompletionText() : "";
         final String input = (autocompletionInput.trim().equals(autocompletionInput)) ? autocompletionInput : "";
-        this.autocompletionText = input;
         if (input.equals("")) {
             updateAutocompletionItems(new ArrayList<>());
         } else {
@@ -884,7 +882,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                 updateAutocompletion(false);
             }
             boolean result = super.keyDown(event, keycode);
-            if (keycode == Input.Keys.FORWARD_DEL || keycode == Input.Keys.ENTER || keycode == Input.Keys.SPACE) {
+            if (keycode == Input.Keys.FORWARD_DEL || keycode == Input.Keys.SPACE) {
                 updateAutocompletion(false);
             } else if (keycode == Input.Keys.DEL) {
                 updateAutocompletion(true);
@@ -892,42 +890,46 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
             if (hasKeyboardFocus()) {
                 boolean repeat = false;
                 boolean shift = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
-                if (keycode == Input.Keys.DOWN) {
-                    if (autocompletionEnabled) {
-                        selectedAutocompletionIndex++;
-                        selectedAutocompletionIndex += currentAutocompletionItems.size();
-                        selectedAutocompletionIndex %= currentAutocompletionItems.size();
-                    } else {
-                        if (shift) {
-                            if (!hasSelection) {
-                                selectionStart = cursor;
-                                hasSelection = true;
-                            }
+                switch (keycode) {
+                    case Input.Keys.DOWN:
+                        if (autocompletionEnabled) {
+                            selectedAutocompletionIndex--;
+                            selectedAutocompletionIndex += currentAutocompletionItems.size();
+                            selectedAutocompletionIndex %= currentAutocompletionItems.size();
                         } else {
-                            clearSelection();
-                        }
-                        moveCursorLine(cursorLine + 1);
-                        repeat = true;
-                    }
-                } else if (keycode == Input.Keys.UP) {
-                    if (autocompletionEnabled) {
-                        selectedAutocompletionIndex--;
-                        selectedAutocompletionIndex += currentAutocompletionItems.size();
-                        selectedAutocompletionIndex %= currentAutocompletionItems.size();
-                    } else {
-                        if (shift) {
-                            if (!hasSelection) {
-                                selectionStart = cursor;
-                                hasSelection = true;
+                            if (shift) {
+                                if (!hasSelection) {
+                                    selectionStart = cursor;
+                                    hasSelection = true;
+                                }
+                            } else {
+                                clearSelection();
                             }
-                        } else {
-                            clearSelection();
+                            moveCursorLine(cursorLine + 1);
+                            repeat = true;
                         }
-                        moveCursorLine(cursorLine - 1);
-                        repeat = true;
-                    }
-                } else {
-                    moveOffset = -1;
+                        break;
+                    case Input.Keys.UP:
+                        if (autocompletionEnabled) {
+                            selectedAutocompletionIndex++;
+                            selectedAutocompletionIndex += currentAutocompletionItems.size();
+                            selectedAutocompletionIndex %= currentAutocompletionItems.size();
+                        } else {
+                            if (shift) {
+                                if (!hasSelection) {
+                                    selectionStart = cursor;
+                                    hasSelection = true;
+                                }
+                            } else {
+                                clearSelection();
+                            }
+                            moveCursorLine(cursorLine - 1);
+                            repeat = true;
+                        }
+                        break;
+                    default:
+                        moveOffset = -1;
+                        break;
                 }
                 if (repeat) {
                     scheduleKeyRepeatTask(keycode);
@@ -943,24 +945,44 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
             event.getKeyCode();
             multiLineChange = true;
             boolean hadSelection = hasSelection;
-            //preInput
-            Optional<Boolean> res = preInput(event, character);
-            if (res.isPresent()) return res.get();
 
-            //every other character
-            boolean result = super.keyTyped(event, character);
-            //postInput
-            if (result) {
-                if (!postInput(event, character) && !hadSelection) {
-                    if (character != 8 && character != 127) {
-                        multiLineChange = false;
-                        updateAutocompletion(true);
+            if ((character == ENTER_ANDROID || character == ENTER_DESKTOP || character == TAB) && insertAutocompletion()) {
+                return true;
+            } else {
+                //preInput
+                Optional<Boolean> res = preInput(event, character);
+                if (res.isPresent()) return res.get();
+
+                //every other character
+                boolean result = super.keyTyped(event, character);
+                //postInput
+                if (result) {
+                    if (!postInput(event, character) && !hadSelection) {
+                        if (character != 8 && character != 127) {
+                            multiLineChange = false;
+                            updateAutocompletion(true);
+                        }
                     }
                 }
-            }
 
-            updateCurrentLine(); //this always produced serious errors, I don't know why I can do this now
-            return result;
+                updateCurrentLine();
+                return result;
+            }
+        }
+
+        private boolean insertAutocompletion() {
+            if (autocompletionEnabled && !currentAutocompletionItems.isEmpty()) {
+                String existingAutocompletion = getAutocompletionText();
+                String completeAutocompletion = currentAutocompletionItems.get(selectedAutocompletionIndex);
+                selectionStart = getCursorPosition() - existingAutocompletion.length();
+                hasSelection = true;
+                paste(completeAutocompletion, true, true);
+                autocompletionEnabled = false;
+                updateCurrentLine();
+                return true;
+            }
+            autocompletionEnabled = false;
+            return false;
         }
 
         @Override

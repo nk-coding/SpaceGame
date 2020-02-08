@@ -65,7 +65,7 @@ public class TextFieldBase extends Widget implements Disableable {
     static protected final char ENTER_DESKTOP = '\r';
     static protected final char ENTER_ANDROID = '\n';
     static private final char BACKSPACE = 8;
-    static private final char TAB = '\t';
+    static protected final char TAB = '\t';
     static private final char DELETE = 127;
     static private final char BULLET = 149;
 
