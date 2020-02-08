@@ -433,6 +433,9 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
     public void updateAutocompletionItems(List<String> autocompletionItems) {
         String lastSelected = currentAutocompletionItems.size() > 0 ? currentAutocompletionItems.get(selectedAutocompletionIndex) : "";
         this.currentAutocompletionItems = autocompletionItems;
+        if (currentAutocompletionItems.isEmpty()) {
+            autocompletionEnabled = false;
+        }
         currentAutocompletionItems.sort(null);
         selectedAutocompletionIndex = Math.min(currentAutocompletionItems.indexOf(lastSelected), currentAutocompletionItems.size() - 1);
         selectedAutocompletionIndex = Math.max(selectedAutocompletionIndex, 0);
