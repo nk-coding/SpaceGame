@@ -449,10 +449,6 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         layoutPool.free(layout);
     }
 
-    public void updateAutocompletion(boolean enabled) {
-        autocompletionEnabled = enabled;
-    }
-
     public void updateAutocompletionText() {
         String autocompletionInput = autocompletionEnabled ? getAutocompletionText() : "";
         final String input = (autocompletionInput.trim().equals(autocompletionInput)) ? autocompletionInput : "";
@@ -678,13 +674,13 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
     @Override
     public void setSelection(int selectionStart, int selectionEnd) {
         super.setSelection(selectionStart, selectionEnd);
-        updateAutocompletion(false);
+        autocompletionEnabled = false;
         updateCurrentLine();
     }
 
     @Override
     protected void moveCursor(boolean forward, boolean jump) {
-        updateAutocompletion(false);
+        autocompletionEnabled = false;
         int count = forward ? 1 : -1;
         int index = (cursorLine * 2) + count;
         if (index >= 0 && index + 1 < linesBreak.size && linesBreak.items[index] == cursor
@@ -853,7 +849,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         @Override
         protected void setCursorPosition(float x, float y) {
             moveOffset = -1;
-            updateAutocompletion(false);
+            autocompletionEnabled = false;
 
             Drawable background = style.background;
             BitmapFont font = style.font;
@@ -879,13 +875,13 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         @Override
         public boolean keyDown(InputEvent event, int keycode) {
             if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT) {
-                updateAutocompletion(false);
+                autocompletionEnabled = false;
             }
             boolean result = super.keyDown(event, keycode);
             if (keycode == Input.Keys.FORWARD_DEL || keycode == Input.Keys.SPACE) {
-                updateAutocompletion(false);
+                autocompletionEnabled = false;
             } else if (keycode == Input.Keys.DEL) {
-                updateAutocompletion(true);
+                autocompletionEnabled = true;
             }
             if (hasKeyboardFocus()) {
                 boolean repeat = false;
@@ -960,7 +956,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                     if (!postInput(event, character) && !hadSelection) {
                         if (character != 8 && character != 127) {
                             multiLineChange = false;
-                            updateAutocompletion(true);
+                            autocompletionEnabled = true;
                         }
                     }
                 }
@@ -987,7 +983,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
 
         @Override
         protected void goHome(boolean jump) {
-            updateAutocompletion(false);
+            autocompletionEnabled = false;
             if (jump) {
                 cursor = 0;
             } else if (cursorLine * 2 < linesBreak.size) {
@@ -999,7 +995,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
 
         @Override
         protected void goEnd(boolean jump) {
-            updateAutocompletion(false);
+            autocompletionEnabled = false;
             if (jump || cursorLine >= getLines()) {
                 cursor = text.length();
             } else if (cursorLine * 2 + 1 < linesBreak.size) {
