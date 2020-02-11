@@ -403,7 +403,7 @@ public class ShipBuilderScreen implements Screen {
 
     private void selectedComponentChanged(List<ComponentDef> newDef, List<ComponentDef> oldDef) {
         //save
-        //TODO saveComponentDef(oldDef);
+        saveComponentDef(oldDef);
         //update the property stack
         if (newDef != null) {
             propertiesScrollPane.setActor(propertiesVerticalGroup);
@@ -583,11 +583,11 @@ public class ShipBuilderScreen implements Screen {
     }
 
     //saves the verticalPropertiesGroup
-    private void saveComponentDef(ComponentDef def) {
+    private void saveComponentDef(List<ComponentDef> components) {
         SnapshotArray<Actor> children = propertiesVerticalGroup.getChildren();
         //save name
-        if (def != null) {
-            def.setName(nameTextField.getText());
+        if (components.size() == 1) {
+            components.get(0).setName(nameTextField.getText());
         }
 
         for (int x = 1; x < children.size; x++) {
