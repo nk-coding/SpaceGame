@@ -7,49 +7,34 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
+import com.nkcoding.spacegame.simulation.spaceship.components.Component;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.BiConsumer;
 
-public class ShipDesigner extends Widget implements Zoomable, Disposable {
+public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
 
-    //default size of a single component
-    public static final float COMPONENT_SIZE = 40f;
-    //AssetManager to load ComponentDef textures
-    private final ExtAssetManager assetManager;
-    //HashMap with all textures for the different components
-    private final HashMap<ComponentType, Texture> componentTextureMap = new HashMap<>();
     //helper
     private ShipDef.ShipDesignerHelper designerHelper;
-    private ComponentDef selectedComponent;
-    //region implementation of Zoomable
-    //where should it start to draw
-    private int startDrawX = 0;
-    private int startDrawY = 0;
-    //where how much should it draw
-    private int amountDrawX;
-    private int amountDrawY;
-    //the zoom
-    private float zoom = 1f;
-    //the Texture shown when no component would be at this place
-    private Texture noComponent;
-    //the Texture drawn when selecting something or if a component is selected
-    private Texture selection;
+    private List<ComponentDef> selectedComponents;
     //endregion
     //Consumer for when the selection changed
-    private BiConsumer<ComponentDef, ComponentDef> selectionChanged;
+    private BiConsumer<List<ComponentDef>, List<ComponentDef>> selectionChanged;
 
     //constructor with a shipDef
-    public ShipDesigner(ShipDef shipDef, ExtAssetManager assetManager, Texture noComponent, Texture selection, BiConsumer<ComponentDef, ComponentDef> selectionChanged) {
+    public ShipDesigner(ShipDef shipDef, ExtAssetManager assetManager, Texture noComponent, Texture selection,
+                        BiConsumer<List<ComponentDef>, List<ComponentDef>> selectionChanged) {
+        super(assetManager, selection, noComponent);
         //ShipDef that contains all ComponentDefs
-        this.assetManager = assetManager;
-        this.noComponent = noComponent;
-        this.selection = selection;
         this.selectionChanged = selectionChanged;
 
         this.designerHelper = shipDef.getShipDesignerHelper();
@@ -59,7 +44,18 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
         addCaptureListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                setSelectedComponent(calculateXIndex(x), calculateYIndex(y));
+                if (UIUtils.shift()) {
+                    ComponentDef def = getComponentAt(x, y);
+                    if (def != null) {
+                        toggleSelectedComponent(getComponentAt(x, y));
+                    }
+                } else {
+                    clearSelectedComponents();
+                    ComponentDef def = getComponentAt(x, y);
+                    if (def != null) {
+                        addSelectedComponent(def);
+                    }
+                }
                 getStage().setKeyboardFocus(ShipDesigner.this);
                 return true;
             }
@@ -79,9 +75,11 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
         switch (keyCode) {
             case Input.Keys.DEL:
             case Input.Keys.FORWARD_DEL:
-                ComponentDef component = getSelectedComponent();
-                if (component != null) {
-                    removeComponent(component);
+
+                if (getSelectedComponents().size() > 0) {
+                    for (ComponentDef def : getSelectedComponents()) {
+                        removeComponent(def);
+                    }
                     return true;
                 }
                 return false;
@@ -90,133 +88,51 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
         }
     }
 
-    public ComponentDef getSelectedComponent() {
-        return selectedComponent;
+    public List<ComponentDef> getSelectedComponents() {
+        return selectedComponents;
     }
 
-    public void setSelectedComponent(ComponentDef def) {
-        ComponentDef oldSelected = getSelectedComponent();
-        this.selectedComponent = def;
-        ComponentDef newSelected = getSelectedComponent();
+    private void addSelectedComponent(ComponentDef def) {
+        List<ComponentDef> currentSelected = new ArrayList<>(selectedComponents);
+        currentSelected.add(def);
+        updateSelectedComponents(currentSelected);
+    }
+
+    private void removeSelectedComponent(ComponentDef def) {
+        List<ComponentDef> currentSelected = new ArrayList<>(selectedComponents);
+        currentSelected.remove(def);
+        updateSelectedComponents(currentSelected);
+    }
+
+    private void clearSelectedComponents() {
+        updateSelectedComponents(new LinkedList<>());
+    }
+
+    private void toggleSelectedComponent(ComponentDef def) {
+        if (getSelectedComponents().contains(def)) {
+            removeSelectedComponent(def);
+        } else {
+            addSelectedComponent(def);
+        }
+    }
+
+    private void updateSelectedComponents(List<ComponentDef> newSelected) {
+        List<ComponentDef> oldSelected = getSelectedComponents();
+        this.selectedComponents = newSelected;
         selectionChanged.accept(newSelected, oldSelected);
     }
 
-    private void setSelectedComponent(int x, int y) {
-        setSelectedComponent(designerHelper.getComponent(x, y));
-    }
-
-    private Texture getComponentTexture(ComponentDef def) {
-        if (!componentTextureMap.containsKey(def.getType())) {
-            componentTextureMap.put(def.getType(), assetManager.getTexture(def.getDefaultTexture()));
-        }
-        return componentTextureMap.get(def.getType());
+    private ComponentDef getComponentAt(float x, float y) {
+        return designerHelper.getComponent(calculateXIndex(x), calculateYIndex(y));
     }
 
     /**
      * tries to rotate the selected component
      */
     public void rotateSelectedComponent() {
-        designerHelper.rotateComponent(getSelectedComponent());
-    }
-
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        validate();
-        //TODO draw background
-        //draw all components
-        float componentSize = COMPONENT_SIZE * zoom;
-        for (int x = startDrawX; x < (startDrawX + amountDrawX); x++) {
-            for (int y = startDrawY; y < (startDrawY + amountDrawY); y++) {
-                ComponentDef def = designerHelper.getComponent(x, y);
-
-                if (def != null) {
-                    if (((def.getX() == x && def.getY() == y) ||        //if it is set at the current position or
-                            ((x == startDrawX && y == startDrawY) ||        //it is in the bottom left corner or
-                                    (x == startDrawX && def.getY() == y) ||         //it is the left line and the y pos fits or
-                                    (y == startDrawY && def.getX() == x)))) {       //it is bottom line and the x pos fits
-                        Texture texture = getComponentTexture(def);
-                        if (def == getSelectedComponent()) {
-                            //draw selection and a smaller component
-                            batch.draw(selection, getX() + def.getX() * componentSize, getY() + def.getY() * componentSize,
-                                    def.getRealWidth() * componentSize, def.getRealHeight() * componentSize);
-                            switch (def.getRotation()) {
-                                case 0:
-                                    batch.draw(texture,
-                                            getX() + def.getX() * componentSize + 0.1f * componentSize,
-                                            getY() + def.getY() * componentSize + 0.1f * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth() - 0.2f) * componentSize, (def.getHeight() - 0.2f) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                                case 1:
-                                    batch.draw(texture,
-                                            getX() + (def.getX() + def.getRealWidth()) * componentSize - 0.1f * componentSize,
-                                            getY() + def.getY() * componentSize + 0.1f * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth() - 0.2f) * componentSize, (def.getHeight() - 0.2f) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                                case 2:
-                                    batch.draw(texture,
-                                            getX() + (def.getX() + def.getRealWidth()) * componentSize - 0.1f * componentSize,
-                                            getY() + (def.getY() + def.getRealHeight()) * componentSize - 0.1f * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth() - 0.2f) * componentSize, (def.getHeight() - 0.2f) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                                case 3:
-                                    batch.draw(texture,
-                                            getX() + def.getX() * componentSize + 0.1f * componentSize,
-                                            getY() + (def.getY() + def.getRealHeight()) * componentSize - 0.1f * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth() - 0.2f) * componentSize, (def.getHeight() - 0.2f) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                            }
-
-                        } else {
-                            //draw component normal
-                            switch (def.getRotation()) {
-                                case 0:
-                                    batch.draw(texture,
-                                            getX() + def.getX() * componentSize,
-                                            getY() + def.getY() * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth()) * componentSize, (def.getHeight()) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                                case 1:
-                                    batch.draw(texture,
-                                            getX() + (def.getX() + def.getRealWidth()) * componentSize,
-                                            getY() + def.getY() * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth()) * componentSize, (def.getHeight()) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                                case 2:
-                                    batch.draw(texture,
-                                            getX() + (def.getX() + def.getRealWidth()) * componentSize,
-                                            getY() + (def.getY() + def.getRealHeight()) * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth()) * componentSize, (def.getHeight()) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                                case 3:
-                                    batch.draw(texture,
-                                            getX() + def.getX() * componentSize,
-                                            getY() + (def.getY() + def.getRealHeight()) * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth()) * componentSize, (def.getHeight()) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                            }
-                        }
-                    }
-                } else {
-                    //draw the noComponent Texture
-                    batch.draw(noComponent, getX() + x * componentSize, getY() + y * componentSize, componentSize, componentSize);
-                }
-            }
+        //TODO support for multiple Components
+        if (getSelectedComponents().size() == 1) {
+            designerHelper.rotateComponent(getSelectedComponents().get(0));
         }
     }
 
@@ -272,5 +188,15 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
     @Override
     public void dispose() {
         componentTextureMap.clear();
+    }
+
+    @Override
+    protected ComponentDef getComponentAt(int x, int y) {
+        return designerHelper.getComponent(x, y);
+    }
+
+    @Override
+    protected DrawMode getDrawMode(ComponentDef componentDef) {
+        return selectedComponents.contains(componentDef) ? DrawMode.SELECTED : DrawMode.NORMAL;
     }
 }

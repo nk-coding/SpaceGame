@@ -396,7 +396,7 @@ public class ShipBuilderScreen implements Screen {
         }
     }
 
-    private void selectedComponentChanged(ComponentDef newDef, ComponentDef oldDef) {
+    private void selectedComponentChanged(List<ComponentDef> newDef, List<ComponentDef> oldDef) {
         //save
         saveComponentDef(oldDef);
         //update the property stack
