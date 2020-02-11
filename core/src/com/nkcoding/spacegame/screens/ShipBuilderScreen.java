@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -30,9 +31,8 @@ import com.nkcoding.spacegame.simulation.spaceship.components.ComponentType;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 import com.nkcoding.ui.*;
 
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 
 public class ShipBuilderScreen implements Screen {
@@ -304,14 +304,18 @@ public class ShipBuilderScreen implements Screen {
                 Image image = (Image) actor;
                 DragAndDrop.Payload payload = new DragAndDrop.Payload();
                 ComponentType type = (ComponentType) image.getUserObject();
-                payload.setObject(new ComponentDef(type));
-                Image dragActor = new Image(image.getDrawable());
-                float componentSize = ShipDesigner.COMPONENT_SIZE * shipDesignerZoomScrollPane.getZoom();
-                dragActor.setSize(
-                        componentSize * type.width,
-                        componentSize * type.height);
+
+                Vector2 localPos = componentsStack.localToDescendantCoordinates(actor, new Vector2(x, y));
+                localPos.scl(shipDesignerZoomScrollPane.getZoom() / actor.getWidth() * type.width * ShipWidget.COMPONENT_SIZE);
+
+                List<ComponentDef> components = List.of(new ComponentDef(type));
+                payload.setObject(components);
+                DragShipWidget dragActor = new DragShipWidget(components, assetManager,
+                        shipDesignerZoomScrollPane.getZoom());
+
                 payload.setDragActor(dragActor);
-                componentsDragAndDrop.setDragActorPosition(dragActor.getWidth() - componentSize / 2, -componentSize / 2);
+                componentsDragAndDrop.setDragActorPosition(dragActor.getWidth() - localPos.x, -localPos.y);
+                dragActor.dragOffset = new Vector2(localPos);
                 return payload;
             }
         });
@@ -320,31 +324,22 @@ public class ShipBuilderScreen implements Screen {
         componentsDragAndDrop.addSource(new DragAndDrop.Source(shipDesigner) {
             @Override
             public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer) {
-                ComponentDef def = shipDesigner.getSelectedComponent();
-                if (def != null) {
+                List<ComponentDef> selectedComponents = new ArrayList<>(shipDesigner.getSelectedComponents());
+                if (!selectedComponents.isEmpty()) {
                     DragAndDrop.Payload payload = new DragAndDrop.Payload();
-                    payload.setObject(def);
-                    float componentSize = ShipDesigner.COMPONENT_SIZE * shipDesignerZoomScrollPane.getZoom();
-                    Image dragActor = new Image(assetManager.getTexture(def.getDefaultTexture()));
-                    dragActor.setRotation(def.getRotation() * 90);
-                    dragActor.setSize(
-                            componentSize * def.getWidth(),
-                            componentSize * def.getHeight());
+                    payload.setObject(selectedComponents);
+
+                    DragShipWidget dragActor = new DragShipWidget(selectedComponents, assetManager,
+                            shipDesignerZoomScrollPane.getZoom());
                     payload.setDragActor(dragActor);
-                    switch (def.getRotation()) {
-                        case 0:
-                            componentsDragAndDrop.setDragActorPosition(componentSize * (def.getWidth() - 0.5f), -componentSize / 2);
-                            break;
-                        case 1:
-                            componentsDragAndDrop.setDragActorPosition(componentSize * (def.getWidth() + def.getHeight() - 0.5f), -componentSize / 2);
-                            break;
-                        case 2:
-                            componentsDragAndDrop.setDragActorPosition(componentSize * (2 * def.getWidth() - 0.5f), componentSize * (def.getHeight() - 0.5f));
-                            break;
-                        case 3:
-                            componentsDragAndDrop.setDragActorPosition(componentSize * (def.getHeight() - def.getWidth() - 0.5f), componentSize * (def.getWidth() - 0.5f));
-                            break;
-                    }
+
+                    float componentSize = ShipWidget.COMPONENT_SIZE * shipDesignerZoomScrollPane.getZoom();
+                    Vector2 localPos = new Vector2(
+                            x - dragActor.offsetX * componentSize,
+                            y - dragActor.offsetY * componentSize);
+
+                    componentsDragAndDrop.setDragActorPosition(dragActor.getWidth() - localPos.x, -localPos.y);
+                    dragActor.dragOffset = localPos;
                     return payload;
                 } else return null;
             }
@@ -354,14 +349,24 @@ public class ShipBuilderScreen implements Screen {
         componentsDragAndDrop.addTarget(new DragAndDrop.Target(shipDesigner) {
             @Override
             public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-                return shipDesigner.drag((ComponentDef) payload.getObject(), x, y);
+                List<ComponentDef> components = (List<ComponentDef>) payload.getObject();
+                DragShipWidget dragShip = (DragShipWidget)payload.getDragActor();
+                float componentSize = ShipWidget.COMPONENT_SIZE * shipDesignerZoomScrollPane.getZoom();
+                return shipDesigner.drag(components,
+                        dragShip.calculateXIndex(x - dragShip.dragOffset.x + componentSize / 2) - dragShip.offsetX,
+                        dragShip.calculateYIndex(y - dragShip.dragOffset.y + componentSize / 2) - dragShip.offsetY);
             }
 
             @Override
             public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-                ComponentDef def = (ComponentDef) payload.getObject();
-                shipDesigner.drop(def, x, y);
-                shipDesigner.setSelectedComponent(def);
+                List<ComponentDef> components = (List<ComponentDef>) payload.getObject();
+                DragShipWidget dragShip = (DragShipWidget)payload.getDragActor();
+                float componentSize = ShipWidget.COMPONENT_SIZE * shipDesignerZoomScrollPane.getZoom();
+                shipDesigner.drop(components,
+                        dragShip.calculateXIndex(x - dragShip.dragOffset.x + componentSize / 2) - dragShip.offsetX,
+                        dragShip.calculateYIndex(y - dragShip.dragOffset.y + componentSize / 2) - dragShip.offsetY);
+                shipDesigner.clearSelectedComponents();
+                components.forEach(shipDesigner::addSelectedComponent);
             }
         });
 
@@ -398,11 +403,11 @@ public class ShipBuilderScreen implements Screen {
 
     private void selectedComponentChanged(List<ComponentDef> newDef, List<ComponentDef> oldDef) {
         //save
-        saveComponentDef(oldDef);
+        //TODO saveComponentDef(oldDef);
         //update the property stack
         if (newDef != null) {
             propertiesScrollPane.setActor(propertiesVerticalGroup);
-            selectComponent(newDef);
+            //TODO selectComponent(newDef);
         } else {
             propertiesScrollPane.setActor(shipInfoTable);
             selectShip();
@@ -514,8 +519,8 @@ public class ShipBuilderScreen implements Screen {
 
     //checks if the name is ok
     private void verifyName() {
-        nameTextField.setColor(shipDef.verifyComponentName(shipDesigner.getSelectedComponent(), nameTextField.getText()) ?
-                new Color(0xffffffff) : new Color(0xff0000ff));
+        //TODO nameTextField.setColor(shipDef.verifyComponentName(shipDesigner.getSelectedComponent(), nameTextField.getText()) ?
+               // new Color(0xffffffff) : new Color(0xff0000ff));
     }
 
     //switches the view
@@ -535,7 +540,7 @@ public class ShipBuilderScreen implements Screen {
                 ((PropertyBox) ((Container) actor).getActor()).verify();
             }
         }
-        shipDesigner.setSelectedComponent(null);
+        shipDesigner.clearSelectedComponents();
         isShipView = !isShipView;
     }
 
@@ -594,7 +599,7 @@ public class ShipBuilderScreen implements Screen {
     //saves the current state
     private void save() {
         shipDef.code = codeEditor.getText();
-        saveComponentDef(shipDesigner.getSelectedComponent());
+        //TODO saveComponentDef(shipDesigner.getSelectedComponent());
         validate();
 
         shipDef.setValidated(codeValidated && shipValidated);

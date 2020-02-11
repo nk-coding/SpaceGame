@@ -50,10 +50,12 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
                         toggleSelectedComponent(getComponentAt(x, y));
                     }
                 } else {
-                    clearSelectedComponents();
                     ComponentDef def = getComponentAt(x, y);
-                    if (def != null) {
+                    if (def != null && !selectedComponents.contains(def)) {
+                        clearSelectedComponents();
                         addSelectedComponent(def);
+                    } else if (def == null) {
+                        clearSelectedComponents();
                     }
                 }
                 getStage().setKeyboardFocus(ShipDesigner.this);
@@ -92,7 +94,7 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
         return selectedComponents;
     }
 
-    private void addSelectedComponent(ComponentDef def) {
+    public void addSelectedComponent(ComponentDef def) {
         List<ComponentDef> currentSelected = new ArrayList<>(selectedComponents);
         currentSelected.add(def);
         updateSelectedComponents(currentSelected);
@@ -104,7 +106,7 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
         updateSelectedComponents(currentSelected);
     }
 
-    private void clearSelectedComponents() {
+    public void clearSelectedComponents() {
         updateSelectedComponents(new LinkedList<>());
     }
 
@@ -137,28 +139,23 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
     }
 
     //checks if def could be placed there
-    public boolean drag(ComponentDef def, float x, float y) {
-        return designerHelper.tryMoveComponent(def, calculateXIndex(x), calculateYIndex(y), def.getRotation());
+    public boolean drag(List<ComponentDef> components, int offsetX, int offsetY) {
+        return components.stream().allMatch(
+                def -> designerHelper.tryMoveComponent(def,
+                        def.getX() + offsetX, def.getY() + offsetY, def.getRotation(), components)
+        );
     }
 
     //drops at the position
-    public void drop(ComponentDef def, float x, float y) {
-        designerHelper.moveComponent(def, calculateXIndex(x), calculateYIndex(y), def.getRotation());
+    public void drop(List<ComponentDef> components, int offsetX, int offsetY) {
+        for (ComponentDef def : components) {
+            designerHelper.moveComponent(def, def.getX() + offsetX, def.getY() + offsetY, def.getRotation());
+        }
     }
 
     //removes a component
     public void removeComponent(ComponentDef def) {
         designerHelper.removeComponent(def);
-    }
-
-    //calculates the x index
-    private int calculateXIndex(float x) {
-        return (int) (x / (COMPONENT_SIZE * zoom));
-    }
-
-    //calculates the y index
-    private int calculateYIndex(float y) {
-        return (int) (y / (COMPONENT_SIZE * zoom));
     }
 
     @Override
@@ -196,7 +193,14 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
     }
 
     @Override
-    protected DrawMode getDrawMode(ComponentDef componentDef) {
-        return selectedComponents.contains(componentDef) ? DrawMode.SELECTED : DrawMode.NORMAL;
+    protected DrawMode getDrawMode(ComponentDef def, int x, int y) {
+        if (((def.getX() == x && def.getY() == y) ||        //if it is set at the current position or
+                ((x == startDrawX && y == startDrawY) ||        //it is in the bottom left corner or
+                        (x == startDrawX && def.getY() == y) ||         //it is the left line and the y pos fits or
+                        (y == startDrawY && def.getX() == x)))) {
+            return selectedComponents.contains(def) ? DrawMode.SELECTED : DrawMode.NORMAL;
+        } else {
+            return null;
+        }
     }
 }

@@ -9,7 +9,7 @@ import com.nkcoding.spacegame.simulation.spaceship.components.ComponentType;
 
 import java.util.HashMap;
 
-abstract class ShipWidget extends Widget {
+public abstract class ShipWidget extends Widget {
     //default size of a single component
     public static final float COMPONENT_SIZE = 40f;
     //AssetManager to load ComponentDef textures
@@ -53,99 +53,117 @@ abstract class ShipWidget extends Widget {
                 ComponentDef def = getComponentAt(x, y);
 
                 if (def != null) {
-                    if (((def.getX() == x && def.getY() == y) ||        //if it is set at the current position or
-                            ((x == startDrawX && y == startDrawY) ||        //it is in the bottom left corner or
-                                    (x == startDrawX && def.getY() == y) ||         //it is the left line and the y pos fits or
-                                    (y == startDrawY && def.getX() == x)))) {       //it is bottom line and the x pos fits
-                        Texture texture = getComponentTexture(def);
-                        if (getDrawMode(def) == DrawMode.SELECTED) {
-                            //draw selection and a smaller component
-                            batch.draw(selection, getX() + def.getX() * componentSize, getY() + def.getY() * componentSize,
-                                    def.getRealWidth() * componentSize, def.getRealHeight() * componentSize);
-                            switch (def.getRotation()) {
-                                case 0:
-                                    batch.draw(texture,
-                                            getX() + def.getX() * componentSize + 0.1f * componentSize,
-                                            getY() + def.getY() * componentSize + 0.1f * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth() - 0.2f) * componentSize, (def.getHeight() - 0.2f) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                                case 1:
-                                    batch.draw(texture,
-                                            getX() + (def.getX() + def.getRealWidth()) * componentSize - 0.1f * componentSize,
-                                            getY() + def.getY() * componentSize + 0.1f * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth() - 0.2f) * componentSize, (def.getHeight() - 0.2f) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                                case 2:
-                                    batch.draw(texture,
-                                            getX() + (def.getX() + def.getRealWidth()) * componentSize - 0.1f * componentSize,
-                                            getY() + (def.getY() + def.getRealHeight()) * componentSize - 0.1f * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth() - 0.2f) * componentSize, (def.getHeight() - 0.2f) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                                case 3:
-                                    batch.draw(texture,
-                                            getX() + def.getX() * componentSize + 0.1f * componentSize,
-                                            getY() + (def.getY() + def.getRealHeight()) * componentSize - 0.1f * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth() - 0.2f) * componentSize, (def.getHeight() - 0.2f) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                            }
+                    Texture texture = getComponentTexture(def);
+                    DrawMode mode = getDrawMode(def, x, y);
+                    if (mode == DrawMode.SELECTED) {
+                        //draw selection and a smaller component
+                        batch.draw(selection, getDrawX() + def.getX() * componentSize, getDrawY() + def.getY() * componentSize,
+                                def.getRealWidth() * componentSize, def.getRealHeight() * componentSize);
+                        switch (def.getRotation()) {
+                            case 0:
+                                batch.draw(texture,
+                                        getDrawX() + def.getX() * componentSize + 0.1f * componentSize,
+                                        getDrawY() + def.getY() * componentSize + 0.1f * componentSize,
+                                        0f, 0f,
+                                        (def.getWidth() - 0.2f) * componentSize, (def.getHeight() - 0.2f) * componentSize,
+                                        1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+                                break;
+                            case 1:
+                                batch.draw(texture,
+                                        getDrawX() + (def.getX() + def.getRealWidth()) * componentSize - 0.1f * componentSize,
+                                        getDrawY() + def.getY() * componentSize + 0.1f * componentSize,
+                                        0f, 0f,
+                                        (def.getWidth() - 0.2f) * componentSize, (def.getHeight() - 0.2f) * componentSize,
+                                        1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+                                break;
+                            case 2:
+                                batch.draw(texture,
+                                        getDrawX() + (def.getX() + def.getRealWidth()) * componentSize - 0.1f * componentSize,
+                                        getDrawY() + (def.getY() + def.getRealHeight()) * componentSize - 0.1f * componentSize,
+                                        0f, 0f,
+                                        (def.getWidth() - 0.2f) * componentSize, (def.getHeight() - 0.2f) * componentSize,
+                                        1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+                                break;
+                            case 3:
+                                batch.draw(texture,
+                                        getDrawX() + def.getX() * componentSize + 0.1f * componentSize,
+                                        getDrawY() + (def.getY() + def.getRealHeight()) * componentSize - 0.1f * componentSize,
+                                        0f, 0f,
+                                        (def.getWidth() - 0.2f) * componentSize, (def.getHeight() - 0.2f) * componentSize,
+                                        1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+                                break;
+                        }
 
-                        } else {
-                            //draw component normal
-                            switch (def.getRotation()) {
-                                case 0:
-                                    batch.draw(texture,
-                                            getX() + def.getX() * componentSize,
-                                            getY() + def.getY() * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth()) * componentSize, (def.getHeight()) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                                case 1:
-                                    batch.draw(texture,
-                                            getX() + (def.getX() + def.getRealWidth()) * componentSize,
-                                            getY() + def.getY() * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth()) * componentSize, (def.getHeight()) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                                case 2:
-                                    batch.draw(texture,
-                                            getX() + (def.getX() + def.getRealWidth()) * componentSize,
-                                            getY() + (def.getY() + def.getRealHeight()) * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth()) * componentSize, (def.getHeight()) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                                case 3:
-                                    batch.draw(texture,
-                                            getX() + def.getX() * componentSize,
-                                            getY() + (def.getY() + def.getRealHeight()) * componentSize,
-                                            0f, 0f,
-                                            (def.getWidth()) * componentSize, (def.getHeight()) * componentSize,
-                                            1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
-                                    break;
-                            }
+                    } else if (mode == DrawMode.NORMAL) {
+                        //draw component normal
+                        switch (def.getRotation()) {
+                            case 0:
+                                batch.draw(texture,
+                                        getDrawX() + def.getX() * componentSize,
+                                        getDrawY() + def.getY() * componentSize,
+                                        0f, 0f,
+                                        (def.getWidth()) * componentSize, (def.getHeight()) * componentSize,
+                                        1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+                                break;
+                            case 1:
+                                batch.draw(texture,
+                                        getDrawX() + (def.getX() + def.getRealWidth()) * componentSize,
+                                        getDrawY() + def.getY() * componentSize,
+                                        0f, 0f,
+                                        (def.getWidth()) * componentSize, (def.getHeight()) * componentSize,
+                                        1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+                                break;
+                            case 2:
+                                batch.draw(texture,
+                                        getDrawX() + (def.getX() + def.getRealWidth()) * componentSize,
+                                        getDrawY() + (def.getY() + def.getRealHeight()) * componentSize,
+                                        0f, 0f,
+                                        (def.getWidth()) * componentSize, (def.getHeight()) * componentSize,
+                                        1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+                                break;
+                            case 3:
+                                batch.draw(texture,
+                                        getDrawX() + def.getX() * componentSize,
+                                        getDrawY() + (def.getY() + def.getRealHeight()) * componentSize,
+                                        0f, 0f,
+                                        (def.getWidth()) * componentSize, (def.getHeight()) * componentSize,
+                                        1f, 1f, def.getRotation() * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+                                break;
                         }
                     }
                 } else if (noComponent != null) {
                     //draw the noComponent Texture
-                    batch.draw(noComponent, getX() + x * componentSize, getY() + y * componentSize, componentSize, componentSize);
+                    batch.draw(noComponent, getDrawX() + x * componentSize, getDrawY() + y * componentSize, componentSize, componentSize);
                 }
             }
         }
     }
 
+    protected float getDrawX() {
+        return getX();
+    }
+
+    protected float getDrawY() {
+        return getY();
+    }
+
+    /**
+     * calculates the x index based on local coordinates
+     */
+    public int calculateXIndex(float x) {
+        return (int) (x / (COMPONENT_SIZE * zoom));
+    }
+
+    /**
+     * calculates the y index based on local coordinates
+     */
+    public int calculateYIndex(float y) {
+        return (int) (y / (COMPONENT_SIZE * zoom));
+    }
+
     protected abstract ComponentDef getComponentAt(int x, int y);
 
-    protected abstract DrawMode getDrawMode(ComponentDef componentDef);
+    protected abstract DrawMode getDrawMode(ComponentDef componentDef, int x, int y);
 
     enum DrawMode {NORMAL, SELECTED};
 

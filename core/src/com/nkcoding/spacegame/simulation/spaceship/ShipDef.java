@@ -10,6 +10,7 @@ import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyDa
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ShipDef {
@@ -207,7 +208,7 @@ public class ShipDef {
         }
 
         //is it possible to move a component to a specific position
-        public boolean tryMoveComponent(ComponentDef componentDef, int x, int y, int rotation) {
+        public boolean tryMoveComponent(ComponentDef componentDef, int x, int y, int rotation, List<ComponentDef> toIgnore) {
             //calculate resulting width and height
             int width = (rotation % 2 == 0) ? componentDef.getWidth() : componentDef.getHeight();
             int height = (rotation % 2 == 0) ? componentDef.getHeight() : componentDef.getWidth();
@@ -216,7 +217,8 @@ public class ShipDef {
                 for (int _y = y; _y < (y + height); _y++) {
                     //check if it is in range
                     //check if there is no component or (the not moved) same
-                    result = result && (_x < MAX_SIZE && _x >= 0 && _y >= 0 && _y < MAX_SIZE && (componentsMap[_x][_y] == null || componentsMap[_x][_y] == componentDef));
+                    result = result && (_x < MAX_SIZE && _x >= 0 && _y >= 0 && _y < MAX_SIZE
+                            && (componentsMap[_x][_y] == null || toIgnore.contains(componentsMap[_x][_y])));
                 }
             }
             return result;
@@ -249,7 +251,7 @@ public class ShipDef {
                         y -= def.getWidth() - 1;
                         break;
                 }
-                if (tryMoveComponent(def, x, y, rotation)) {
+                if (tryMoveComponent(def, x, y, rotation, List.of(def))) {
                     moveComponent(def, x, y, rotation);
                     return;
                 }
