@@ -3,14 +3,16 @@ package com.nkcoding.spacegame.simulation.spaceship.components;
 import com.nkcoding.spacegame.simulation.Ship;
 import com.nkcoding.spacegame.simulation.spaceship.properties.FloatProperty;
 
+import java.io.DataInputStream;
+
 public abstract class Buffer extends Component {
     public static final String BUFFER_LEVEL_KEY = "BufferLevel";
 
     /**
      * mirror constructor
      */
-    protected Buffer(ComponentDefBase defBase, Ship ship) {
-        super(defBase, ship);
+    protected Buffer(ComponentDefBase componentDef, DataInputStream inputStream, Ship ship) {
+        super(componentDef, ship);
     }
 
     /**
@@ -23,7 +25,7 @@ public abstract class Buffer extends Component {
     public class BufferModel extends ComponentModel {
 
         protected float capacity;
-        public final FloatProperty bufferLevel = register(new FloatProperty(true, true, BUFFER_LEVEL_KEY) {
+        public final FloatProperty bufferLevel = register(new FloatProperty( BUFFER_LEVEL_KEY) {
             @Override
             public void set(float value) {
                 super.set(Math.min(capacity, value));

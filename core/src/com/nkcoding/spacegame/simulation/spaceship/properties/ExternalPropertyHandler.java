@@ -13,6 +13,8 @@ public abstract class ExternalPropertyHandler {
     //map with all properties
     private HashMap<String, ExternalProperty> properties = new HashMap<>();
 
+    private HashMap<String, ExternalProperty> methodNames = new HashMap<>();
+
     public Map<String, ExternalProperty> getProperties() {
         return properties;
     }
@@ -23,20 +25,13 @@ public abstract class ExternalPropertyHandler {
         for (ExternalPropertyData data : datas) {
             ExternalProperty property = properties.get(data.name);
             if (property != null) {
-                if (!property.readonly) property.setInitValue(data.initData);
-                if (!data.handlerName.equals(""))
-                    property.setChangedMethodStatement(methods.get(data.handlerName));
-            }
-        }
-    }
-
-    //init the ExternalProperties with the ExternalProperties
-    protected void cloneProperties(Collection<ExternalProperty> toClone) {
-        Map<String, ExternalProperty> properties = getProperties();
-        for (ExternalProperty clone : toClone) {
-            ExternalProperty property = properties.get(clone.name);
-            if (property != null) {
-                property.copyFrom(clone);
+                property.init(data, methods);
+                if (property.supportsWrite) {
+                    methodNames.put(data.setterName, property);
+                }
+                if (property.supportsRead) {
+                    methodNames.put(data.getterName, property);
+                }
             }
         }
     }
@@ -47,8 +42,11 @@ public abstract class ExternalPropertyHandler {
         return property;
     }
 
+    /**
+     * find automatically the correct ExternalProperty
+     */
     public boolean handleExternalMethod(ExternalMethodFuture future) {
-        ExternalProperty property = getProperties().get(future.getName().substring(3));
+        ExternalProperty property = methodNames.get(future.getName());
         if (property != null) {
             if (future.getParameters().length == 2) {
                 //it is a setter

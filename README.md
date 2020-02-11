@@ -1,3 +1,3 @@
 # SpaceGame
 my custom space game\
-licenses see authors file
+licenses see licenses/DESCRIPTION file

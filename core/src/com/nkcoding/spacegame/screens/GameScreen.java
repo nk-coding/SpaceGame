@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.nkcoding.communication.Communication;
 import com.nkcoding.spacegame.SpaceGame;
 import com.nkcoding.spacegame.SpaceSimulation;
@@ -22,16 +23,15 @@ public class GameScreen implements Screen {
     //Ship for the simulation
     private ShipDef shipDef;
 
-    public GameScreen(SpaceGame spaceGame, ShipDef shipDef, Communication communication) {
+    public GameScreen(SpaceGame spaceGame, ShipDef shipDef, Communication communication, Vector2 initialPosition) {
         this.spaceGame = spaceGame;
         this.batch = spaceGame.getBatch();
         //create and init spaceSimulation
         this.spaceSimulation = new SpaceSimulation(spaceGame, communication);
         Gdx.input.setInputProcessor(spaceSimulation);
         this.shipDef = shipDef;
-        Ship ship = new Ship(shipDef, spaceSimulation);
+        Ship ship = new Ship(shipDef, spaceSimulation, initialPosition);
         spaceSimulation.addSimulated(ship);
-        spaceSimulation.setCameraSimulated(ship);
     }
 
     @Override

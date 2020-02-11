@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
+import com.badlogic.gdx.math.Vector2;
 import com.nkcoding.communication.Communication;
 import com.nkcoding.spacegame.screens.GameScreen;
 import com.nkcoding.spacegame.screens.LauncherScreen;
@@ -45,8 +46,8 @@ public class SpaceGame extends Game {
         setScreen(new ShipBuilderScreen(this, saveGame.shipDef));
     }
 
-    public void startGame(Communication communication) {
-        setScreen(new GameScreen(this, saveGame.shipDef, communication));
+    public void startGame(Communication communication, Vector2 initialPosition) {
+        setScreen(new GameScreen(this, saveGame.shipDef, communication, initialPosition));
     }
 
     @Override

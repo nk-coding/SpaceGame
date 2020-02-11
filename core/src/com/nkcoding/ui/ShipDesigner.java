@@ -1,5 +1,6 @@
 package com.nkcoding.ui;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
@@ -18,13 +19,11 @@ import java.util.function.BiConsumer;
 public class ShipDesigner extends Widget implements Zoomable, Disposable {
 
     //default size of a single component
-    public static final float COMPONENT_SIZE = 50f;
+    public static final float COMPONENT_SIZE = 40f;
     //AssetManager to load ComponentDef textures
     private final ExtAssetManager assetManager;
     //HashMap with all textures for the different components
     private final HashMap<ComponentType, Texture> componentTextureMap = new HashMap<>();
-    //ShipDef that contains all ComponentDefs
-    private ShipDef shipDef;
     //helper
     private ShipDef.ShipDesignerHelper designerHelper;
     private ComponentDef selectedComponent;
@@ -47,7 +46,7 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
 
     //constructor with a shipDef
     public ShipDesigner(ShipDef shipDef, ExtAssetManager assetManager, Texture noComponent, Texture selection, BiConsumer<ComponentDef, ComponentDef> selectionChanged) {
-        this.shipDef = shipDef;
+        //ShipDef that contains all ComponentDefs
         this.assetManager = assetManager;
         this.noComponent = noComponent;
         this.selection = selection;
@@ -61,9 +60,34 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 setSelectedComponent(calculateXIndex(x), calculateYIndex(y));
+                getStage().setKeyboardFocus(ShipDesigner.this);
                 return true;
             }
         });
+
+        addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                return ShipDesigner.this.keyDown(keycode);
+            }
+        });
+
+
+    }
+
+    private boolean keyDown(int keyCode) {
+        switch (keyCode) {
+            case Input.Keys.DEL:
+            case Input.Keys.FORWARD_DEL:
+                ComponentDef component = getSelectedComponent();
+                if (component != null) {
+                    removeComponent(component);
+                    return true;
+                }
+                return false;
+            default:
+                return false;
+        }
     }
 
     public ComponentDef getSelectedComponent() {
@@ -74,7 +98,7 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
         ComponentDef oldSelected = getSelectedComponent();
         this.selectedComponent = def;
         ComponentDef newSelected = getSelectedComponent();
-        if (oldSelected != newSelected) selectionChanged.accept(newSelected, oldSelected);
+        selectionChanged.accept(newSelected, oldSelected);
     }
 
     private void setSelectedComponent(int x, int y) {
@@ -197,12 +221,12 @@ public class ShipDesigner extends Widget implements Zoomable, Disposable {
     }
 
     //checks if def could be placed there
-    public boolean drag(ComponentDef def, float x, float y, int pointer) {
+    public boolean drag(ComponentDef def, float x, float y) {
         return designerHelper.tryMoveComponent(def, calculateXIndex(x), calculateYIndex(y), def.getRotation());
     }
 
     //drops at the position
-    public void drop(ComponentDef def, float x, float y, int pointer) {
+    public void drop(ComponentDef def, float x, float y) {
         designerHelper.moveComponent(def, calculateXIndex(x), calculateYIndex(y), def.getRotation());
     }
 

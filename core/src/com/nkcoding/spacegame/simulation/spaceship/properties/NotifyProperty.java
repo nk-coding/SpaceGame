@@ -10,7 +10,7 @@ public class NotifyProperty<T> extends ExternalProperty<T> {
     private LinkedList<T> updatedValues;
 
     public NotifyProperty(String name) {
-        super(true, true, name);
+        super(name);
         updatedValues = new LinkedList<>();
     }
 
@@ -27,9 +27,16 @@ public class NotifyProperty<T> extends ExternalProperty<T> {
 
     @Override
     public void startChangedHandler(ScriptingEngine engine, final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables) {
-        while (!updatedValues.isEmpty() && getChangedMethodStatement() != null) {
-            engine.runMethod(getChangedMethodStatement(), globalVariables, updatedValues.pop());
+        if (allowParallel) {
+            while (!updatedValues.isEmpty() && getChangedMethodStatement() != null) {
+                engine.runMethod(getChangedMethodStatement(), this, globalVariables, updatedValues.pop());
+            }
+        } else if (!isRunning) {
+            if (!updatedValues.isEmpty() && getChangedMethodStatement() != null) {
+                engine.runMethod(getChangedMethodStatement(), this, globalVariables, updatedValues.pop());
+            }
         }
+
     }
 
     @Override

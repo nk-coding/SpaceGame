@@ -48,6 +48,64 @@ public class Methods {
                 {
                     return String.valueOf((boolean) obj[0]);
                 });
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "sleep", DataType.VOID, new TypeNamePair("i", DataType.INTEGER)),
+                (Function<Object[], String>) obj -> {
+                    try {
+                        Thread.sleep((int)obj[0]);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                });
+
+        //math functions
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "sin", DataType.FLOAT, new TypeNamePair("x", DataType.FLOAT)),
+                (Function<Object[], Float>) obj ->
+                {
+                    return (float)Math.sin((float)obj[0]);
+                });
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "asin", DataType.FLOAT, new TypeNamePair("x", DataType.FLOAT)),
+                (Function<Object[], Float>) obj ->
+                {
+                    return (float)Math.asin((float)obj[0]);
+                });
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "cos", DataType.FLOAT, new TypeNamePair("x", DataType.FLOAT)),
+                (Function<Object[], Float>) obj ->
+                {
+                    return (float)Math.cos((float)obj[0]);
+                });
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "acos", DataType.FLOAT, new TypeNamePair("x", DataType.FLOAT)),
+                (Function<Object[], Float>) obj ->
+                {
+                    return (float)Math.acos((float)obj[0]);
+                });
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "tan", DataType.FLOAT, new TypeNamePair("x", DataType.FLOAT)),
+                (Function<Object[], Float>) obj ->
+                {
+                    return (float)Math.tan((float)obj[0]);
+                });
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "atan", DataType.FLOAT, new TypeNamePair("x", DataType.FLOAT)),
+                (Function<Object[], Float>) obj ->
+                {
+                    return (float)Math.atan((float)obj[0]);
+                });
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "atan2", DataType.FLOAT, new TypeNamePair("x", DataType.FLOAT), new TypeNamePair("y", DataType.FLOAT)),
+                (Function<Object[], Float>) obj ->
+                {
+                    return (float)Math.atan2((float)obj[0], (float)obj[1]);
+                });
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "random", DataType.FLOAT),
+                (Function<Object[], Float>) obj ->
+                {
+                    return (float)Math.random();
+                });
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "randomInt", DataType.FLOAT, new TypeNamePair("min", DataType.INTEGER), new TypeNamePair("max", DataType.INTEGER)),
+                (Function<Object[], Integer>) obj ->
+                {
+                    int min = (int)obj[0];
+                    int max = (int)obj[1];
+                    return (int)(Math.random() * (max - min) + min);
+                });
 
     }
 

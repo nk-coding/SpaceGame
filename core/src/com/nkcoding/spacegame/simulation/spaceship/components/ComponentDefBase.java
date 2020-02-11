@@ -4,9 +4,11 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.simulation.Ship;
 
-import java.io.Serializable;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class ComponentDefBase implements Serializable {
+public class ComponentDefBase {
     //ComponentInfo with all necessary information
     protected final ComponentType componentType;
     //0 = not rotated, 1 = 90°, 2 = 180°, 3 = 270°, everything different will be normalised, negative values are not allowed
@@ -100,7 +102,22 @@ public class ComponentDefBase implements Serializable {
         return componentType.getShape(rotation % 2 == 1, posX, posY);
     }
 
-    public Component createMirrorComponent(Ship ship) {
-        return componentType.mirrorConstructor.apply(this, ship);
+    public Component deserializeComponent(Ship ship, DataInputStream inputStream) throws IOException{
+        return componentType.deserializer.apply(this, inputStream, ship);
+    }
+
+    public void serialize(DataOutputStream outputStream) throws IOException {
+        componentType.serialize(outputStream);
+        outputStream.writeInt(x);
+        outputStream.writeInt(y);
+        outputStream.writeInt(rotation);
+    }
+
+    public static ComponentDefBase deserialize(DataInputStream inputStream) throws IOException {
+        ComponentDefBase defBase = new ComponentDefBase(ComponentType.deserialize(inputStream));
+        defBase.setX(inputStream.readInt());
+        defBase.setY(inputStream.readInt());
+        defBase.setRotation(inputStream.readInt());
+        return defBase;
     }
 }

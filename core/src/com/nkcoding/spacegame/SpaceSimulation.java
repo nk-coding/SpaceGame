@@ -7,15 +7,19 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.nkcoding.communication.Communication;
-import com.nkcoding.communication.Transmission;
+import com.nkcoding.communication.ResetDataOutputStream;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
-import com.nkcoding.spacegame.simulation.BodyState;
+import com.nkcoding.spacegame.simulation.CoreUnit;
 import com.nkcoding.spacegame.simulation.Simulated;
+import com.nkcoding.spacegame.simulation.SimulatedType;
 import com.nkcoding.spacegame.simulation.SynchronizationPriority;
-import com.nkcoding.spacegame.simulation.communication.*;
+import com.nkcoding.spacegame.simulation.communication.TransmissionID;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,8 +42,8 @@ public class SpaceSimulation implements InputProcessor {
     private final HashMap<Integer, Simulated> simulatedMap = new HashMap<>();
     private final List<Simulated> simulatedToRemove = new ArrayList<>();
     private final List<Simulated> simulatedToAdd = new ArrayList<>();
-    // list with all simulated that receive key events
-    private final ArrayList<Simulated> keyHandlers = new ArrayList<>();
+    // list with all the core units
+    private List<CoreUnit> coreUnits = new ArrayList<>();
     // map with all objects that can receive futures
     private final HashMap<String, ExternalPropertyHandler> propertyHandlers = new HashMap<>();
     // AssetManager to load the resources
@@ -48,7 +52,7 @@ public class SpaceSimulation implements InputProcessor {
     // this is the physics simulation
     private final World world;
     //the id of the client
-    private int clientID = 0;
+    private short clientID = 0;
     //id counter
     private int idCounter = 0;
     // handles all the ExternalPropertyHandlers
@@ -65,7 +69,8 @@ public class SpaceSimulation implements InputProcessor {
     private Vector2 centerPos;
     private float radius, scaledRadius;
     // Simulated that the camera should follow
-    private Simulated cameraSimulated;
+    private CoreUnit cameraCoreUnit;
+    private int bodyUpdateID = 1;
 
     private Communication communication;
 
@@ -130,14 +135,21 @@ public class SpaceSimulation implements InputProcessor {
         return assetManager;
     }
 
-    public Simulated getCameraSimulated() {
-        return cameraSimulated;
+    public CoreUnit getCameraCoreUnit() {
+        return cameraCoreUnit;
     }
 
-    public void setCameraSimulated(Simulated cameraSimulated) {
-        if (cameraSimulated != this.cameraSimulated && this.cameraSimulated != null)
-            this.cameraSimulated.setCameraFocus(false);
-        this.cameraSimulated = cameraSimulated;
+    /**
+     * call this to focus a CoreUnit
+     * @param coreUnit null implies no unit selected
+     */
+    public void setCameraCoreUnit(CoreUnit coreUnit) {
+        if (coreUnit != this.cameraCoreUnit && this.cameraCoreUnit != null)
+            this.cameraCoreUnit.setCameraFocus(false);
+        this.cameraCoreUnit = coreUnit;
+        if (coreUnit != null) {
+            coreUnit.setCameraFocus(true);
+        }
     }
 
     public World getWorld() {
@@ -151,7 +163,14 @@ public class SpaceSimulation implements InputProcessor {
      */
     public void addSimulated(Simulated simulated) {
         simulatedToAdd.add(simulated);
-        sendToAll(simulated.getMirrorData());
+        ResetDataOutputStream outputStream = getOutputStream(true);
+        try {
+            outputStream.writeInt(TransmissionID.CREATE_NEW);
+            simulated.serialize(outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        sendToAll(outputStream);
     }
 
     /**
@@ -161,7 +180,41 @@ public class SpaceSimulation implements InputProcessor {
      */
     public void removeSimulated(Simulated simulated) {
         simulatedToRemove.add(simulated);
-        sendToAll(new RemoveTransmission(simulated.id));
+        ResetDataOutputStream outputStream = getOutputStream(true);
+        try {
+            outputStream.writeInt(TransmissionID.REMOVE);
+            outputStream.writeInt(simulated.id);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        sendToAll(outputStream);
+    }
+
+    /**
+     * adds a CoreUnit locally
+     */
+    public void addCoreUnit(CoreUnit coreUnit) {
+        coreUnits.add(coreUnit);
+        if (cameraCoreUnit == null && coreUnit.isOriginal()) {
+            setCameraCoreUnit(coreUnit);
+        }
+    }
+
+    /**
+     * get a list with all CoreUnits
+     */
+    public List<CoreUnit> getCoreUnits() {
+        return coreUnits;
+    }
+
+    /**
+     * removes a CoreUnit locally
+     */
+    public void removeCoreUnit(CoreUnit coreUnit) {
+        coreUnits.remove(coreUnit);
+        if (cameraCoreUnit == coreUnit) {
+            setCameraCoreUnit(null);
+        }
     }
 
     /**
@@ -186,14 +239,6 @@ public class SpaceSimulation implements InputProcessor {
         return propertyHandlers.get(str) != null;
     }
 
-    public void updateReceivesKeyInput(Simulated simulated) {
-        if (simulated.isReceivesKeyInput()) {
-            keyHandlers.add(simulated);
-        } else {
-            keyHandlers.remove(simulated);
-        }
-    }
-
     // calls act on all Simulateds
     // deals with ExternalMethodFutures
     public void act(float time) {
@@ -202,18 +247,48 @@ public class SpaceSimulation implements InputProcessor {
         int synchronizationMask = getBodySynchronization(time);
         // call step on the world
         world.step(time, 6, 2);
-        List<BodyState> bodyStatesToSend = new ArrayList<>();
+
+        DataOutputStream outputStream = null;
+        ArrayList<Simulated> bodyUpdateList = new ArrayList<>();
         //act on simulateds
         for (Simulated simulated : simulatedMap.values()) {
             simulated.act(time);
             if (simulated.getOwner() == clientID && (simulated.getSyncPriority() & synchronizationMask) != 0) {
-                bodyStatesToSend.add(simulated.getBodyState());
+                bodyUpdateList.add(simulated);
             }
         }
-        if (!bodyStatesToSend.isEmpty()) sendToAll(new UpdateBodysTransmission(bodyStatesToSend.toArray(new BodyState[0])));
+        sendBodyUpdates(bodyUpdateList);
+
         updateSimulatedMap();
         // update the camera
         updateCamera();
+    }
+
+    private void sendBodyUpdates(ArrayList<Simulated> bodyUpdateList) {
+        if (!bodyUpdateList.isEmpty()) {
+            try {
+                int maxAmount = (Communication.MAX_SIZE - 20) / 28;
+                for (int x = 0; x < Math.ceil(bodyUpdateList.size() / (float)maxAmount); x++) {
+                    int max = Math.min(bodyUpdateList.size(), (x + 1) * maxAmount);
+                    ResetDataOutputStream outputStream = getOutputStream(false);
+                    outputStream.writeInt(TransmissionID.UPDATE_BODY_STATE);
+                    //write the id
+                    outputStream.writeInt(bodyUpdateID);
+                    outputStream.writeLong(System.currentTimeMillis());
+                    outputStream.writeInt(max - x * maxAmount);
+                    for (int i = x * maxAmount; i < max; i++) {
+                        Simulated simulatedToSend = bodyUpdateList.get(i);
+                        outputStream.writeInt(simulatedToSend.id);
+                        simulatedToSend.serializeBodyState(outputStream);
+                    }
+                    sendToAll(outputStream);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //increase the id
+            bodyUpdateID++;
+        }
     }
 
     private void handleScriptingEngine() {
@@ -239,7 +314,6 @@ public class SpaceSimulation implements InputProcessor {
         //remove the Simulated to remove
         for (Simulated toRemove : simulatedToRemove) {
             simulatedMap.remove(toRemove.id);
-            keyHandlers.remove(toRemove);
             world.destroyBody(toRemove.getBody());
         }
         simulatedToRemove.clear();
@@ -268,44 +342,53 @@ public class SpaceSimulation implements InputProcessor {
 
     private void handleMessages() {
         if (communication != null) {
-            while (communication.hasTransmissions()) {
-                Transmission transmission = communication.getTransmission();
-                switch (transmission.getId()) {
-                    case TransmissionID.CREATE_NEW:
-                        CreateTransmission createTransmission = (CreateTransmission)transmission;
-                        Simulated newSimulated = createTransmission.type.constructor.apply(this, createTransmission);
-                        newSimulated.update(createTransmission.bodyState);
-                        simulatedToAdd.add(newSimulated);
-                        break;
-                    case TransmissionID.REMOVE:
-                        Simulated toRemove = getSimulated(((RemoveTransmission)transmission).simulatedID);
-                        if (toRemove != null) simulatedToRemove.add(toRemove);
-                        else System.out.println("cannot remove" + transmission);
-                        break;
-                    case TransmissionID.UPDATE:
-                        UpdateTransmission updateTransmission = (UpdateTransmission)transmission;
-                        Simulated toUpdate = getSimulated(updateTransmission.simulatedID);
-                        if (toUpdate != null) {
-                            toUpdate.receiveTransmission(updateTransmission);
-                        } else {
-                            System.out.println("cannot update " + transmission);
-                        }
-                        break;
-                    case TransmissionID.UPDATE_BODY_STATE:
-                        UpdateBodysTransmission updateBodysTransmission = (UpdateBodysTransmission) transmission;
-                        for (BodyState bodyState : updateBodysTransmission.bodyStates) {
-                            Simulated updateBody = getSimulated(bodyState.id);
-                            if (updateBody != null) {
-                                float dist = updateBody.getBody().getPosition().sub(bodyState.position()).len();
-                                if (dist > 0.05) System.out.println(dist);
-                                updateBody.update(bodyState);
+            try {
+                while (communication.hasTransmissions()) {
+                    DataInputStream inputStream = communication.getTransmission();
+                    switch (inputStream.readInt()) {
+                        case TransmissionID.CREATE_NEW:
+                            SimulatedType type = SimulatedType.deserialize(inputStream);
+                            Simulated newSimulated = type.constructor.apply(this, inputStream);
+                            newSimulated.deserializeBodyState(inputStream, 0);
+                            simulatedToAdd.add(newSimulated);
+                            break;
+                        case TransmissionID.REMOVE:
+                            int removeID = inputStream.readInt();
+                            Simulated toRemove = getSimulated(removeID);
+                            if (toRemove != null) simulatedToRemove.add(toRemove);
+                            else System.out.println("cannot remove" + removeID);
+                            break;
+                        case TransmissionID.UPDATE:
+                            int toUpdateID = inputStream.readInt();
+                            short updateID = inputStream.readShort();
+                            Simulated toUpdate = getSimulated(toUpdateID);
+                            if (toUpdate != null) {
+                                toUpdate.receiveTransmission(toUpdate.deserializeTransmission(inputStream, updateID));
                             } else {
-                                System.out.println("cannot update body: " + bodyState);
+                                //IMPORTANT: DISCARD THIS TRANSMISSION COMPLETELY
+                                //it is not safe to reuse any part of this, remember!
+                                System.out.println("cannot update " + updateID);
                             }
-
-                        }
-                        break;
+                            break;
+                        case TransmissionID.UPDATE_BODY_STATE:
+                            int bodyUpdateID = inputStream.readInt();
+                            long timestamp = inputStream.readLong();
+                            int amount = inputStream.readInt();
+                            for (int x = 0; x < amount; x++) {
+                                int simulatedID = inputStream.readInt();
+                                Simulated updateBody = getSimulated(simulatedID);
+                                if (updateBody != null) {
+                                    updateBody.deserializeBodyState(inputStream, bodyUpdateID);
+                                } else {
+                                    inputStream.skip(24);
+                                    System.out.println("cannot update body: " + simulatedID);
+                                }
+                            }
+                            break;
+                    }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -364,10 +447,11 @@ public class SpaceSimulation implements InputProcessor {
 
     // updates the camera
     public void updateCamera() {
-        if (cameraSimulated != null) {
-            centerPos = cameraSimulated.localToWorldCoordinates(cameraSimulated.getCenterPosition());
-            float length = cameraSimulated.getBody().getLinearVelocity().len() + 1;
-            float h = cameraSimulated.getHeight() / (0.15f / (length * length) + 0.08f);
+        float h;
+        if (cameraCoreUnit != null) {
+            h = cameraCoreUnit.getRequestedHeight();
+            centerPos = new Vector2(cameraCoreUnit.getWorldCenterPosition());
+
             float w = h / height * width;
 
             scaledRadius = radius * h / height;
@@ -402,7 +486,7 @@ public class SpaceSimulation implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        Iterator<Simulated> iter = keyHandlers.iterator();
+        Iterator<CoreUnit> iter = coreUnits.iterator();
         boolean handled = false;
         while (iter.hasNext() && !handled) {
             handled = iter.next().keyDown(keycode);
@@ -412,7 +496,7 @@ public class SpaceSimulation implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        Iterator<Simulated> iter = keyHandlers.iterator();
+        Iterator<CoreUnit> iter = coreUnits.iterator();
         boolean handled = false;
         while (iter.hasNext() && !handled) {
             handled = iter.next().keyUp(keycode);
@@ -452,7 +536,7 @@ public class SpaceSimulation implements InputProcessor {
     }
     //endregion
 
-    public int getClientID() {
+    public short getClientID() {
         return clientID;
     }
 
@@ -460,15 +544,35 @@ public class SpaceSimulation implements InputProcessor {
         return clientID * 1000000 + idCounter++;
     }
 
-    public void sendTo(Transmission transmission, int target) {
+    public void sendTo(ResetDataOutputStream transmission, short target) {
         if (communication != null) {
             communication.sendTo(target, transmission);
+        } else {
+            try {
+                transmission.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void sendToAll(Transmission transmission) {
+    public void sendToAll(ResetDataOutputStream transmission) {
         if (communication != null) {
             communication.sendToAll(transmission);
+        } else {
+            try {
+                transmission.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public ResetDataOutputStream getOutputStream(boolean reliable) {
+        if (communication != null) {
+            return communication.getOutputStream(reliable);
+        } else {
+            return new ResetDataOutputStream();
         }
     }
 }

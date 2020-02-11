@@ -1,10 +1,6 @@
 package com.nkcoding.spacegame;
 
 public enum Asset {
-    //fonts
-    SourceCodePro_18("fonts/sourceCodePro_18.fnt"),
-    SourceCodePro_32("fonts/sourceCodePro_32.fnt"),
-
     //textures
     //game
     BasicHull("textures/game/basicHull.png"),
@@ -13,10 +9,15 @@ public enum Asset {
     ExplosiveCanister("textures/game/explosive.png"),
     Cannon("textures/game/cannon.png"),
     Bullet("textures/game/bullet.png"),
+    ComputeCore("textures/game/computeCore.png"),
     VerySimpleExplosion("textures/game/verySimpleExplosion.png"),
+    SimpleShield("textures/game/simpleShield.png"),
+    ShieldGenerator("textures/game/shieldGenerator.png"),
+    Sensors("textures/game/sensors.png"),
     StarBackground_high("textures/game/starBackground_high.png"),
     StarBackground_medium("textures/game/starBackground_medium.png"),
     StarBackground_low("textures/game/starBackground_low.png"),
+    Arrow("textures/game/arrow.png"),
     //others
     Numbers("textures/other/numbers.png"),
     //ui
@@ -35,7 +36,9 @@ public enum Asset {
     ActionNecessarySymbol("textures/ui/actionNecessarySymbol.png"),
     Selection("textures/ui/selection.png"),
     BasicBackground("textures/ui/basicBackground.png"),
-    LightBackground("textures/ui/lightBackground.png");
+    LightBackground("textures/ui/lightBackground.png"),
+    GetterSymbol("textures/ui/getterSymbol.png"),
+    SetterSymbol("textures/ui/setterSymbol.png");
 
     private String value;
 

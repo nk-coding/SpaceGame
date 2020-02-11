@@ -9,7 +9,10 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.SpaceSimulation;
-import com.nkcoding.spacegame.simulation.communication.CreateTransmission;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 public class Explosion extends Simulated {
     //the radius of this explosion
@@ -33,8 +36,10 @@ public class Explosion extends Simulated {
     }
 
     private Explosion(SpaceSimulation spaceSimulation, float startRadius, float endRadius, float time,
-                      Vector2 pos, Vector2 linearVelocity, float damage, int owner, int id) {
-        super(SimulatedType.Explosion, spaceSimulation, BodyDef.BodyType.KinematicBody, 3, owner, SynchronizationPriority.LOW, id);
+                      Vector2 pos, Vector2 linearVelocity, float damage, short owner, int id) {
+        super(SimulatedType.Explosion, spaceSimulation, BodyDef.BodyType.KinematicBody, 3, owner, id);
+        setSyncPriority(SynchronizationPriority.LOW);
+
         this.startRadius = startRadius;
         this.currentRadius = startRadius;
         this.endRadius = endRadius;
@@ -53,18 +58,40 @@ public class Explosion extends Simulated {
         this.time = time;
     }
 
+    private Explosion(SpaceSimulation spaceSimulation, DataInputStream inputStream) throws IOException {
+        super(SimulatedType.Explosion, spaceSimulation, BodyDef.BodyType.KinematicBody, 3, inputStream);
+
+        this.startRadius = inputStream.readFloat();
+        this.currentRadius = startRadius;
+        this.endRadius = inputStream.readFloat();
+        this.time = inputStream.readFloat();
+        this.step = (endRadius - startRadius) / time;
+        this.damage = inputStream.readFloat();
+        this.explosionTexture = getSpaceSimulation().getAssetManager().getTexture(Asset.VerySimpleExplosion);
+
+        CircleShape shape = new CircleShape();
+        shape.setRadius(startRadius);
+        sensorFixture = body.createFixture(shape, 1);
+        sensorFixture.setSensor(true);
+        this.centerPosition = new Vector2(0, 0);
+        this.radius = endRadius;
+    }
+
     /**
      * constructor only for mirror instance
      */
-    public static Explosion mirror(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
-        ExplosionCreateTransmission createTransmission = (ExplosionCreateTransmission) transmission;
-        return new Explosion(spaceSimulation, createTransmission.startRadius, createTransmission.endRadius, createTransmission.time, createTransmission.bodyState.position(),
-                createTransmission.bodyState.linearVelocity(), createTransmission.damage, createTransmission.owner, createTransmission.simulatedID);
+    public static Explosion deserialize(SpaceSimulation spaceSimulation, DataInputStream inputStream) throws IOException{
+        return new Explosion(spaceSimulation, inputStream);
     }
 
     @Override
-    public CreateTransmission getMirrorData() {
-        return new ExplosionCreateTransmission(id, getOwner(), getBodyState(), startRadius, endRadius, time, damage);
+    public void serialize(DataOutputStream outputStream) throws IOException {
+        super.serialize(outputStream);
+        outputStream.writeFloat(startRadius);
+        outputStream.writeFloat(endRadius);
+        outputStream.writeFloat(time);
+        outputStream.writeFloat(damage);
+        serializeBodyState(outputStream);
     }
 
     @Override
@@ -93,21 +120,6 @@ public class Explosion extends Simulated {
         Object userData = f2.getUserData();
         if (userData instanceof Damageable) {
             ((Damageable) userData).damageAt(f2, (int) (damage * (1 - ((currentRadius - startRadius) / (endRadius - startRadius)))));
-        }
-    }
-
-    private static class ExplosionCreateTransmission extends CreateTransmission {
-        public final float startRadius;
-        public final float endRadius;
-        public final float time;
-        public final float damage;
-
-        public ExplosionCreateTransmission(int simulatedID, int owner, BodyState bodyState, float startRadius, float endRadius, float time, float damage) {
-            super(SimulatedType.Explosion, simulatedID, owner, bodyState);
-            this.startRadius = startRadius;
-            this.endRadius = endRadius;
-            this.time = time;
-            this.damage = damage;
         }
     }
 }

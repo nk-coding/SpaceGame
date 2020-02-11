@@ -2,21 +2,28 @@ package com.nkcoding.spacegame.simulation.spaceship.properties;
 
 import com.nkcoding.interpreter.ConcurrentStackItem;
 import com.nkcoding.interpreter.MethodStatement;
+import com.nkcoding.interpreter.RunningState;
 import com.nkcoding.interpreter.ScriptingEngine;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class ExternalProperty<T> {
+public abstract class ExternalProperty<T> implements RunningState {
 
     /**
      * are setters allowed?
      */
-    public final boolean readonly;
+    public boolean supportsWrite;
 
     /**
-     * should changed be notified?
+     * are getters allowed
      */
-    public final boolean notifyChanges;
+    public boolean supportsRead;
+
+    /**
+     * must changes be notified
+     */
+    public boolean supportsChangedHandler;
 
     /**
      * the name of the property
@@ -31,10 +38,34 @@ public abstract class ExternalProperty<T> {
      */
     private MethodStatement changedMethodStatement = null;
 
-    public ExternalProperty(boolean readonly, boolean notifyChanges, String name) {
-        this.readonly = readonly;
-        this.notifyChanges = notifyChanges;
+    /**
+     * is this running
+     */
+    protected volatile boolean isRunning = false;
+
+    /**
+     * are multiple instances of this allowed?
+     */
+    protected boolean allowParallel = false;
+
+    public ExternalProperty(String name) {
         this.name = name;
+    }
+
+    /**
+     * inits this ExternalProperty based on the data found in data
+     * should be called in init
+     */
+    public void init(ExternalPropertyData data,  Map<String, MethodStatement> methods) {
+        this.supportsRead = data.supportsRead;
+        this.supportsWrite = data.supportsWrite;
+        this.supportsChangedHandler = data.supportsChangedHandler;
+        if (supportsWrite) {
+            setInitValue(data.initData);
+        }
+        if (supportsChangedHandler && !data.handlerName.isBlank()) {
+            this.setChangedMethodStatement(methods.get(data.handlerName));
+        }
     }
 
     public MethodStatement getChangedMethodStatement() {
@@ -46,21 +77,10 @@ public abstract class ExternalProperty<T> {
     }
 
     public void startChangedHandler(ScriptingEngine engine, final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables) {
-        if (notifyChanges && changed && getChangedMethodStatement() != null) {
-            engine.runMethod(getChangedMethodStatement(), globalVariables, get2());
+        if ((!isRunning || allowParallel) && supportsChangedHandler && changed && getChangedMethodStatement() != null) {
+            engine.runMethod(getChangedMethodStatement(), this, globalVariables, get2());
             changed = false;
         }
-    }
-
-    /**
-     * a simple clone method
-     * should be overwritten, if cloning should be done differently or not at all
-     *
-     * @param from the ExternalProperty to clone
-     */
-    public void copyFrom(ExternalProperty<T> from) {
-        set(from.get2());
-        setChangedMethodStatement(from.getChangedMethodStatement());
     }
 
     public abstract void setInitValue(String value);
@@ -69,4 +89,17 @@ public abstract class ExternalProperty<T> {
 
     public abstract T get2();
 
+    @Override
+    public void setRunningState(boolean runningState) {
+        this.isRunning = runningState;
+    }
+
+    @Override
+    public boolean getRunningState() {
+        return isRunning;
+    }
+
+    public void allowParallel() {
+        this.allowParallel = true;
+    }
 }

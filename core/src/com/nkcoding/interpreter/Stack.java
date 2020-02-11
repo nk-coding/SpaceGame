@@ -29,7 +29,6 @@ public class Stack {
     }
 
     public <T> void addToStack(String name, T value, DataType type) {
-        //System.out.println("stack: add to stack: " + name);
         StackItem<T> item = new StackItem<T>(type);
         item.setName(name);
         item.setValue(value);

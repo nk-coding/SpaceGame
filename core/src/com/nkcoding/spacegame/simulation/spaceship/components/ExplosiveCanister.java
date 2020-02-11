@@ -4,14 +4,16 @@ import com.nkcoding.spacegame.simulation.Ship;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.properties.BooleanProperty;
 
+import java.io.DataInputStream;
+
 public class ExplosiveCanister extends Component {
     public static final String EXPLODE_KEY = "Explode";
 
     /**
      * mirror constructor
      */
-    protected ExplosiveCanister(ComponentDefBase defBase, Ship ship) {
-        super(defBase, ship);
+    protected ExplosiveCanister(ComponentDefBase componentDef, DataInputStream inputStream, Ship ship) {
+        super(componentDef, ship);
     }
 
     /**
@@ -28,7 +30,7 @@ public class ExplosiveCanister extends Component {
 
     public class ExplosiveCanisterModel extends ComponentModel {
 
-        public final BooleanProperty explode = register(new BooleanProperty(false, true, EXPLODE_KEY) {
+        public final BooleanProperty explode = register(new BooleanProperty(EXPLODE_KEY) {
             @Override
             public void set(boolean value) {
                 super.set(value);

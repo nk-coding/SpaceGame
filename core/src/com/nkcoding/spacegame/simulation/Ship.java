@@ -1,6 +1,5 @@
 package com.nkcoding.spacegame.simulation;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -11,17 +10,16 @@ import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.Program;
 import com.nkcoding.spacegame.SpaceSimulation;
-import com.nkcoding.spacegame.simulation.communication.CreateTransmission;
 import com.nkcoding.spacegame.simulation.communication.UpdateTransmission;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.Component;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDefBase;
-import com.nkcoding.spacegame.simulation.spaceship.components.communication.RemoveComponentTransmission;
-import com.nkcoding.spacegame.simulation.spaceship.components.communication.RemoveComponentsTransmission;
-import com.nkcoding.spacegame.simulation.spaceship.components.communication.UpdateComponentTransmission;
-import com.nkcoding.spacegame.simulation.spaceship.properties.*;
+import com.nkcoding.spacegame.simulation.spaceship.components.communication.*;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -30,16 +28,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class Ship extends Simulated {
-    //region keys for the properties
-    public static final String KEY_DOWN_KEY = "KeyDown";
-    public static final String KEY_UP_KEY = "KeyUp";
-    public static final String ANGULAR_VELOCITY_KEY = "AngularVelocity";
-    public static final String VELOCITY_KEY = "Velocity";
-    public static final String CAMERA_FOCUS_KEY = "CameraFocus";
-    //endregion
 
-    public static final int REMOVE_COMPONENT = -1;
-    public static final int REMOVE_COMPONENTS = -2;
+    public static final short REMOVE_COMPONENT = -1;
+    public static final short REMOVE_COMPONENTS = -2;
+    public static final short UPDATE_COMPONENT = -3;
 
     public ShipModel model = null;
 
@@ -48,26 +40,31 @@ public class Ship extends Simulated {
     private List<Component> iterationList;
 
     //the map of the components
-    private Component[][] componentsMap;
+    private final Component[][] componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];
 
     private boolean componentsChanged = true;
 
-    private Ship(SpaceSimulation spaceSimulation, int owner, int id) {
-        super(SimulatedType.Ship, spaceSimulation, BodyDef.BodyType.DynamicBody, 1, owner, SynchronizationPriority.HIGH, id);
-        //init the components map
-        componentsMap = new Component[ShipDef.MAX_SIZE][ShipDef.MAX_SIZE];
+    private Ship(SpaceSimulation spaceSimulation, short owner, int id) {
+        super(SimulatedType.Ship, spaceSimulation, BodyDef.BodyType.DynamicBody, 1, owner, id);
+        setSyncPriority(SynchronizationPriority.HIGH);
     }
 
-    private Ship(SpaceSimulation spaceSimulation, int owner, int id, ComponentDefBase[] components) {
-        this(spaceSimulation, owner, id);
-        for (ComponentDefBase def : components) {
-            createMirrorComponent(def);
+    /**
+     * constructor for deserialization
+     */
+    private Ship(SpaceSimulation spaceSimulation, DataInputStream inputStream) throws IOException{
+        super(SimulatedType.Ship, spaceSimulation, BodyDef.BodyType.DynamicBody, 1, inputStream);
+
+        int componentAmount = inputStream.readInt();
+        for (int i = 0; i < componentAmount; i++) {
+            addComponent(ComponentDefBase.deserialize(inputStream).deserializeComponent(this, inputStream));
         }
         updateCenterPos();
     }
 
-    public Ship(ShipDef shipDef, SpaceSimulation spaceSimulation) {
+    public Ship(ShipDef shipDef, SpaceSimulation spaceSimulation, Vector2 initialPosition) {
         this(spaceSimulation, spaceSimulation.getClientID(), spaceSimulation.getNewId());
+        getBody().setTransform(initialPosition, 0);
         model = new ShipModel(shipDef, spaceSimulation);
         for (ComponentDef comDef : shipDef.componentDefs) {
             createComponent(comDef);
@@ -88,15 +85,42 @@ public class Ship extends Simulated {
         updateCenterPos();
     }
 
-    public static Ship mirror(SpaceSimulation spaceSimulation, CreateTransmission transmission) {
-        ShipCreateTransmission createTransmission = (ShipCreateTransmission) transmission;
-        return new Ship(spaceSimulation, createTransmission.owner, createTransmission.simulatedID, createTransmission.components);
+    public static Ship deserialize(SpaceSimulation spaceSimulation, DataInputStream inputStream) throws IOException {
+        return new Ship(spaceSimulation, inputStream);
     }
 
     @Override
-    public CreateTransmission getMirrorData() {
-        return new ShipCreateTransmission(id, getOwner(), getBodyState(),
-                components.stream().map(Component::getMirrorData).toArray(ComponentDefBase[]::new));
+    public void serialize(DataOutputStream outputStream) throws IOException{
+        super.serialize(outputStream);
+        outputStream.writeInt(components.size());
+        for (Component component : components) {
+            component.serialize(outputStream);
+        }
+        serializeBodyState(outputStream);
+    }
+
+    @Override
+    public UpdateTransmission deserializeTransmission(DataInputStream inputStream, short updateID) throws IOException{
+        switch (updateID) {
+            case REMOVE_COMPONENT:
+                return new RemoveComponentTransmission(inputStream);
+            case REMOVE_COMPONENTS:
+                return new RemoveComponentsTransmission(inputStream);
+            case UPDATE_COMPONENT:
+                short componentUpdateID = inputStream.readShort();
+                switch (componentUpdateID) {
+                    case ComponentUpdateID.DAMAGE:
+                        return new DamageTransmission(inputStream);
+                    case ComponentUpdateID.RADIUS:
+                        return new RadiusTransmission(inputStream);
+                    case ComponentUpdateID.SHIELD:
+                        return new ShieldTransmission(inputStream);
+                    default:
+                        throw new IllegalStateException("unknown ComponentID: " + componentUpdateID);
+                }
+            default:
+                return super.deserializeTransmission(inputStream, updateID);
+        }
     }
 
     /**
@@ -153,36 +177,13 @@ public class Ship extends Simulated {
         }
     }
 
-    @Override
-    public boolean keyDown(int keycode) {
-        if (isOriginal()) {
-            model.keyDown(keycode);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        if (isOriginal()) {
-            model.keyUp(keycode);
-        }
-        return false;
-    }
-
-    @Override
-    public void setCameraFocus(boolean cameraFocus) {
-        if (isOriginal()) {
-            model.setCameraFocus(cameraFocus);
-        }
-    }
-
     /**
      * removes a component and performs a structure check if necessary
      *
      * @param component the Component to destroy
      */
     public void destroyComponent(Component component) {
-        post(new RemoveComponentTransmission(component));
+        post(new RemoveComponentTransmission(component, id));
         if (isOriginal()) {
             model.isStructureCheckNecessary = true;
         }
@@ -210,6 +211,7 @@ public class Ship extends Simulated {
         if (isOriginal()) {
             model.addComponentInternally(component);
         }
+        component.addComponent();
     }
 
     /**
@@ -217,14 +219,6 @@ public class Ship extends Simulated {
      */
     private void createComponent(ComponentDef comDef) {
         Component component = comDef.createComponent(this, model);
-        addComponent(component);
-    }
-
-    /**
-     * create a mirror Component from a ComponentDefBase
-     */
-    private void createMirrorComponent(ComponentDefBase comDef) {
-        Component component = comDef.createMirrorComponent(this);
         addComponent(component);
     }
 
@@ -250,6 +244,7 @@ public class Ship extends Simulated {
         if (isOriginal()) {
             model.removeComponentInternally(component);
         }
+        component.removeComponent();
     }
 
     //update the center position
@@ -266,41 +261,9 @@ public class Ship extends Simulated {
         radius = (float) Math.sqrt(height * height + width * width);
     }
 
-    private static class ShipCreateTransmission extends CreateTransmission {
-
-        public final ComponentDefBase[] components;
-
-        public ShipCreateTransmission(int simulatedID, int owner, BodyState bodyState, ComponentDefBase[] components) {
-            super(SimulatedType.Ship, simulatedID, owner, bodyState);
-            this.components = components;
-        }
-    }
-
-    public class ShipModel extends ExternalPropertyHandler {
-        //region properties
-        //virtual property when a key is pressed
-        public final NotifyProperty<String> keyDown = register(new NotifyProperty<>(KEY_DOWN_KEY));
-        //virtual property when key is released
-        public final NotifyProperty<String> keyUp = register(new NotifyProperty<>(KEY_UP_KEY));
-        //wrapper for the angularRotation from Body
-        public final FloatProperty angularVelocity = register(new FloatProperty(true, true, ANGULAR_VELOCITY_KEY));
-        //wrapper for the velocity from Body
-        public final FloatProperty velocity = register(new FloatProperty(true, true, VELOCITY_KEY));
-        //focus from SpaceSimulation
-        public final VirtualProperty<Boolean> cameraFocus = register(new VirtualProperty<>(true, true, CAMERA_FOCUS_KEY) {
-            @Override
-            public void set(Boolean value) {
-                super.set(value);
-                if (value) getSpaceSimulation().setCameraSimulated(Ship.this);
-            }
-
-            @Override
-            public Boolean get2() {
-                return getSpaceSimulation().getCameraSimulated() == Ship.this;
-            }
-        });
+    public class ShipModel {
         //global variables
-        private final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables;
+        public final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables;
         //the list of components which compose the ship
         private List<Component.ComponentModel> components;
         //corresponds the order of the components to the order of the PowerLevel?
@@ -309,16 +272,11 @@ public class Ship extends Simulated {
         private boolean isPowerRequestDifferent = true;
         //is a structure check necessary
         private boolean isStructureCheckNecessary = true;
-        //the name
-        private String name;
         private HashMap<String, MethodStatement> methods;
+
         //construct Ship out of ShipDef (public constructor)
         public ShipModel(ShipDef def, SpaceSimulation spaceSimulation) {
-            name = def.getName(); //here
-            spaceSimulation.addExternalPropertyHandler(this); //here
             if (!def.getValidated()) throw new IllegalArgumentException("shipDef is not validated"); //here
-            //receives key inputs
-            setReceivesKeyInput(true); //here
             //compile the script
             Compiler compiler = def.createCompiler(def.code); //here
             Program program = null; //here
@@ -332,8 +290,6 @@ public class Ship extends Simulated {
             for (MethodStatement statement : program.methods) { //here
                 methods.put(statement.getDefinition().getName(), statement); //here
             }
-            //init the externalProperties
-            this.initProperties(def.properties.values(), methods); //here
             //init new list with all the components
             components = new ArrayList<>(def.componentDefs.size()); //here
         }
@@ -342,18 +298,8 @@ public class Ship extends Simulated {
         //package-private constructor to construct Ship out of components (used to split up a ship)
         //pass other ship to copy important stuff (external method stuff etc.)
         ShipModel(Ship oldShip, ShipModel oldModel, List<Component> components) {
-            //check for new name
-            String nameStart = oldModel.getName(); //here
-            //TODO
-            while (getSpaceSimulation().containsExternalPropertyHandler(nameStart += "#")) ; //here
-            name = nameStart; //here
-            getSpaceSimulation().addExternalPropertyHandler(this); //here
-            //receives key inputs
-            setReceivesKeyInput(true); //here
             //set globalVariables
             this.globalVariables = oldModel.globalVariables; //here
-            //init the externalProperties
-            this.cloneProperties(oldModel.getProperties().values()); //here
             //set the components
             this.components = new ArrayList<>(components.size()); //here
             Body oldBody = oldShip.getBody(); //here
@@ -361,11 +307,6 @@ public class Ship extends Simulated {
             body.setTransform(oldBody.getPosition(), oldBody.getAngle()); //here
             updateLinearVelocity(oldBody); //here
             body.setAngularVelocity(oldBody.getAngularVelocity()); //here
-        }
-
-        @Override
-        public String getName() {
-            return name;
         }
 
         private void initComponentProperties() {
@@ -390,7 +331,7 @@ public class Ship extends Simulated {
                 checkStructureRec(components.get(0));
                 List<Component.ComponentModel> otherComponents = components.stream().filter(com -> !com.structureHelper).collect(Collectors.toList());
                 //remove other components
-                post(new RemoveComponentsTransmission(id, otherComponents));
+                post(new RemoveComponentsTransmission(otherComponents, id));
                 //reset remaining
                 components.forEach(component -> component.structureHelper = false);
                 //create new ship
@@ -430,7 +371,7 @@ public class Ship extends Simulated {
                 }
             }
             //check right side
-            if ((comDef.getX() + comDef.getRealWidth()) < (ShipDef.MAX_SIZE - 1)) {
+            if ((comDef.getX() + comDef.getRealWidth()) < (ShipDef.MAX_SIZE)) {
                 //there is a right side
                 for (int y = comDef.getY(); y < (comDef.getY() + comDef.getRealHeight()); y++) {
                     Component nextComponent = componentsMap[comDef.getX() + comDef.getRealWidth()][y];
@@ -441,7 +382,7 @@ public class Ship extends Simulated {
                 }
             }
             //check top side
-            if ((comDef.getY() + comDef.getRealHeight()) < (ShipDef.MAX_SIZE - 1)) {
+            if ((comDef.getY() + comDef.getRealHeight()) < (ShipDef.MAX_SIZE)) {
                 //there is a bottom side
                 for (int x = comDef.getX(); x < (comDef.getX() + comDef.getRealWidth()); x++) {
                     Component nextComponent = componentsMap[x][comDef.getY() + comDef.getRealHeight()];
@@ -465,31 +406,12 @@ public class Ship extends Simulated {
 
         //endregion
 
-        //region key input
-
-        public boolean keyDown(int keycode) {
-            keyDown.set(Input.Keys.toString(keycode));
-            return true;
-        }
-
-        public boolean keyUp(int keycode) {
-            keyUp.set(Input.Keys.toString(keycode));
-            return true;
-        }
-
-        public void setCameraFocus(boolean cameraFocus) {
-            System.out.println("set focus: " + name + ", " + cameraFocus);
-            this.cameraFocus.set(cameraFocus);
-        }
-
-        //endregion
-
         //update the linear velocity, after some structure changes
         private void updateLinearVelocity(Body oldBody) {
             body.setLinearVelocity(oldBody.getLinearVelocityFromLocalPoint(body.getLocalCenter()));
         }
 
-        public void act(float time) {
+        public void act(float delta) {
             //check structure if necessary
             if (isStructureCheckNecessary) {
                 checkStructure();
@@ -505,12 +427,6 @@ public class Ship extends Simulated {
             if (isPowerRequestDifferent) {
                 updatePowerDistribution();
                 isPowerRequestDifferent = false;
-            }
-            //update properties
-            angularVelocity.set(body.getAngularVelocity());
-            //property changed
-            for (ExternalProperty property : getProperties().values()) {
-                property.startChangedHandler(getSpaceSimulation().getScriptingEngine(), globalVariables);
             }
 
             //I know this is hacky, but it's the best I have

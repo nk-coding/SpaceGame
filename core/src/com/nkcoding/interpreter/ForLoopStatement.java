@@ -25,20 +25,15 @@ public class ForLoopStatement extends StackStatement {
 
     @Override
     void runOverride(Stack stack) throws ReturnException {
-        //System.out.println("run override in for loop statement");
         //run init statement once if it exists
         if (initStatement != null) {
-            //System.out.println("for loop: run init statement");
             try {
                 initStatement.run(stack);
             } catch (ReturnException e) {
                 System.out.println("return exception is not allowed in init statement of for loop");
             }
-            //System.out.println("for loop end run init statement");
         }
-        //System.out.println("run condition: " + runCondition.getResult(stack));
         while (runCondition.getResult(stack)) {
-            //System.out.println("in while loop of for loop statement");
             for (Statement statement : statements) {
                 statement.run(stack);
             }

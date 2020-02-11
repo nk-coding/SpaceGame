@@ -7,27 +7,46 @@ import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.simulation.Ship;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
+import com.nkcoding.util.IOTriFunction;
 import com.nkcoding.util.TriFunction;
 
-import java.util.function.BiFunction;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
+import static com.nkcoding.spacegame.simulation.spaceship.components.Buffer.BUFFER_LEVEL_KEY;
+import static com.nkcoding.spacegame.simulation.spaceship.components.Cannon.IS_SHOOTING_KEY;
 import static com.nkcoding.spacegame.simulation.spaceship.components.Component.*;
-import static com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData.of;
+import static com.nkcoding.spacegame.simulation.spaceship.components.ComputeCore.*;
+import static com.nkcoding.spacegame.simulation.spaceship.components.Engine.ENGINE_POWER_KEY;
+import static com.nkcoding.spacegame.simulation.spaceship.components.ExplosiveCanister.EXPLODE_KEY;
+import static com.nkcoding.spacegame.simulation.spaceship.components.Sensors.IS_SCANNER_ENABLED;
+import static com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.IS_ENABLED_KEY;
+import static com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.RADIUS_KEY;
 
 public enum ComponentType {
-    Engine(Engine::new, Engine::new, 1, 2, 100, 100, Asset.Engine,
-            of(com.nkcoding.spacegame.simulation.spaceship.components.Engine.ENGINE_POWER_KEY, DataType.INTEGER, false)),
-    Cannon(Cannon::new, Cannon::new, 1, 2, 100, 100, Asset.Cannon,
-            of(com.nkcoding.spacegame.simulation.spaceship.components.Cannon.IS_SHOOTING_KEY, DataType.BOOLEAN, false),
-            of(Buffer.BUFFER_LEVEL_KEY, DataType.FLOAT)),
-    PowerCore(PowerCore::new, PowerCore::new, 2, 2, 200, 500, Asset.PowerCore),
-    BasicHull(BasicHull::new, BasicHull::new, Asset.BasicHull),
-    ExplosiveCanister(ExplosiveCanister::new, ExplosiveCanister::new, 1, 1, 50, 50, Asset.ExplosiveCanister,
-            of(com.nkcoding.spacegame.simulation.spaceship.components.ExplosiveCanister.EXPLODE_KEY, DataType.BOOLEAN, false)),
-    ShieldGenerator(ShieldGenerator::new, ShieldGenerator::new, 2, 2, 200, 100, Asset.CloseSymbol,
-            of(com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.RADIUS_KEY, DataType.FLOAT, false),
-            of(com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.IS_ENABLED_KEY, DataType.BOOLEAN, false),
-            of(Buffer.BUFFER_LEVEL_KEY, DataType.FLOAT));
+    Engine((short)0, Engine::new, Engine::new, 1, 2, 100, 100, 100, Asset.Engine,
+            new ExternalPropertyData(ENGINE_POWER_KEY, DataType.INTEGER)),
+    Cannon((short) 1, Cannon::new, Cannon::new, 1, 2, 100, 100, 50, Asset.Cannon,
+            new ExternalPropertyData(IS_SHOOTING_KEY, DataType.BOOLEAN),
+            new ExternalPropertyData(BUFFER_LEVEL_KEY, DataType.FLOAT, false, true, false)),
+    PowerCore((short) 2, PowerCore::new, PowerCore::new, 2, 2, 200, 500, -100, Asset.PowerCore),
+    BasicHull((short) 3, BasicHull::new, BasicHull::new, Asset.BasicHull),
+    ExplosiveCanister((short) 4, ExplosiveCanister::new, ExplosiveCanister::new, 1, 1, 50, 50, 0, Asset.ExplosiveCanister,
+            new ExternalPropertyData(EXPLODE_KEY, DataType.BOOLEAN)),
+    ShieldGenerator((short) 5, ShieldGenerator::new, ShieldGenerator::new, 2, 2, 200, 100, 30, Asset.ShieldGenerator,
+            new ExternalPropertyData(RADIUS_KEY, DataType.FLOAT),
+            new ExternalPropertyData(IS_ENABLED_KEY, DataType.BOOLEAN),
+            new ExternalPropertyData(BUFFER_LEVEL_KEY, DataType.FLOAT, false, true, false)),
+    ComputeCore((short) 6, ComputeCore::new, ComputeCore::new, 2, 2, 400, 800, 0, Asset.ComputeCore,
+            new ExternalPropertyData(KEY_DOWN_KEY, DataType.STRING, false, false, true),
+            new ExternalPropertyData(KEY_UP_KEY, DataType.STRING, false, false, true),
+            new ExternalPropertyData(ANGULAR_VELOCITY_KEY, DataType.FLOAT, false, true, false),
+            new ExternalPropertyData(VELOCITY_KEY, DataType.FLOAT, false, true, false),
+            new ExternalPropertyData(CAMERA_FOCUS_KEY, DataType.BOOLEAN),
+            new ExternalPropertyData(INIT_CALLBACK_KEY, DataType.STRING, false, false, true)),
+    Sensors((short) 7, Sensors::new, Sensors::new, 2, 1, 100, 100, 0, Asset.Sensors,
+            new ExternalPropertyData(IS_SCANNER_ENABLED, DataType.BOOLEAN));
 
     //the width of the component
     public final int width;
@@ -41,40 +60,57 @@ public enum ComponentType {
     //constructor to create a new instance
     public final TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor;
     //constructor to create a new instance on another client
-    public final BiFunction<ComponentDefBase, Ship, ? extends Component> mirrorConstructor;
+    public final IOTriFunction<ComponentDefBase, DataInputStream, Ship, ? extends Component> deserializer;
     //file position of the preview image
     public final Asset defaultTexture;
     //array with all the keys for the ExternalProperties
     public final ExternalPropertyData[] propertyDefs;
     //the mass of the Component
     public final float mass;
+    //the maximum power level for the component
+    //negative means that it delivers power
+    public final float maxPowerLevel;
     private PolygonShape shape;
 
-    ComponentType(TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor, BiFunction<ComponentDefBase, Ship, ? extends Component> mirrorConstructor,
+    private final short index;
+
+    ComponentType(short index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor,
+                  IOTriFunction<ComponentDefBase, DataInputStream, Ship, ? extends Component> deserializer,
                   int width, int height,
-                  int health, float mass, Asset defaultTexture,
+                  int health, float mass,
+                  float maxPowerLevel, Asset defaultTexture,
                   ExternalPropertyData... propertyDefs) {
         ExternalPropertyData[] newPropertyDefs = new ExternalPropertyData[propertyDefs.length + 5];
         System.arraycopy(propertyDefs, 0, newPropertyDefs, 5, propertyDefs.length);
-        newPropertyDefs[0] = new ExternalPropertyData(HEALTH_KEY, DataType.FLOAT);
-        newPropertyDefs[1] = new ExternalPropertyData(POWER_REQUESTED_KEY, DataType.FLOAT);
-        newPropertyDefs[2] = new ExternalPropertyData(REQUEST_LEVEL_KEY, DataType.INTEGER, false);
-        newPropertyDefs[3] = new ExternalPropertyData(HAS_FULL_POWER_KEY, DataType.BOOLEAN);
-        newPropertyDefs[4] = new ExternalPropertyData(POWER_RECEIVED_KEY, DataType.FLOAT);
+        newPropertyDefs[0] = new ExternalPropertyData(HEALTH_KEY, DataType.FLOAT, false);
+        newPropertyDefs[1] = new ExternalPropertyData(POWER_REQUESTED_KEY, DataType.FLOAT, false);
+        newPropertyDefs[2] = new ExternalPropertyData(REQUEST_LEVEL_KEY, DataType.INTEGER, true);
+        newPropertyDefs[3] = new ExternalPropertyData(HAS_FULL_POWER_KEY, DataType.BOOLEAN, false);
+        newPropertyDefs[4] = new ExternalPropertyData(POWER_RECEIVED_KEY, DataType.FLOAT, false);
         this.propertyDefs = newPropertyDefs;
         this.constructor = constructor;
-        this.mirrorConstructor = mirrorConstructor;
+        this.deserializer = deserializer;
         this.defaultTexture = defaultTexture;
         this.width = width;
         this.height = height;
         this.health = health;
         this.mass = mass;
+        this.maxPowerLevel = maxPowerLevel;
+        this.index = index;
     }
 
     //sets width and height to 1
-    ComponentType(TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor, BiFunction<ComponentDefBase, Ship, ? extends Component> mirrorConstructor,
+    ComponentType(short index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor,
+                  IOTriFunction<ComponentDefBase, DataInputStream, Ship, ? extends Component> deserializer,
+                  float powerLevel,
                   Asset previewImg, ExternalPropertyData... propertyDefs) {
-        this(constructor, mirrorConstructor, 1, 1, 100, 100, previewImg, propertyDefs);
+        this(index, constructor, deserializer, 1, 1, 100, 100, powerLevel, previewImg, propertyDefs);
+    }
+
+    ComponentType(short index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor,
+                  IOTriFunction<ComponentDefBase, DataInputStream, Ship, ? extends Component> deserializer,
+                  Asset previewImg, ExternalPropertyData... propertyDefs) {
+        this(index, constructor, deserializer, 0, previewImg, propertyDefs);
     }
 
     /**
@@ -96,5 +132,32 @@ public enum ComponentType {
         shape.setAsBox(w * ShipDef.UNIT_SIZE / 2, h * ShipDef.UNIT_SIZE / 2,
                 new Vector2(ShipDef.UNIT_SIZE * (w / 2 + posX), ShipDef.UNIT_SIZE * (h / 2 + posY)), 0);
         return shape;
+    }
+
+    public static ComponentType deserialize(DataInputStream inputStream) throws IOException {
+        switch (inputStream.readInt()) {
+            case 0:
+                return Engine;
+            case 1:
+                return Cannon;
+            case 2:
+                return PowerCore;
+            case 3:
+                return BasicHull;
+            case 4:
+                return ExplosiveCanister;
+            case 5:
+                return ShieldGenerator;
+            case 6:
+                return ComputeCore;
+            case 7:
+                return Sensors;
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+    public void serialize(DataOutputStream outputStream) throws IOException{
+        outputStream.writeInt(index);
     }
 }

@@ -50,7 +50,7 @@ import java.lang.StringBuilder;
  * <p>
  * The text field will copy the currently selected text when ctrl+c is pressed, and paste any text in the clipboard when ctrl+v is
  * pressed. Clipboard functionality is provided via the {@link Clipboard} interface. Currently there are two standard
- * implementations, one for the desktop and one for Android. The Android clipboard is a stub, as copy & pasting on Android is not
+ * implementations, one for the desktop and one for Android. The Android clipboard is a stub, as copy and pasting on Android is not
  * supported yet.
  * <p>
  * The text field allows you to specify an {@link OnscreenKeyboard} for displaying a softkeyboard and piping all key events
@@ -65,7 +65,7 @@ public class TextFieldBase extends Widget implements Disableable {
     static protected final char ENTER_DESKTOP = '\r';
     static protected final char ENTER_ANDROID = '\n';
     static private final char BACKSPACE = 8;
-    static private final char TAB = '\t';
+    static protected final char TAB = '\t';
     static private final char DELETE = 127;
     static private final char BULLET = 149;
 
@@ -349,7 +349,6 @@ public class TextFieldBase extends Widget implements Disableable {
             drawCursor(cursorPatch, batch, font, x + bgLeftWidth, y + textY);
         }
         if (!disabled) {
-            //System.out.printf("y:%f, textY:%f%n",y, textY + y);
             drawAutocompletion(batch, font, x + bgLeftWidth, y + textY);
         }
     }
@@ -466,6 +465,7 @@ public class TextFieldBase extends Widget implements Disableable {
 
     void paste(String content, boolean fireChangeEvent, boolean moveCursor) {
         if (content == null) return;
+        content = content.replace("\r","" );
         StringBuilder buffer = new StringBuilder();
         int textLength = text.length();
         if (hasSelection) textLength -= Math.abs(cursor - selectionStart);

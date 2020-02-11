@@ -2,121 +2,73 @@ package com.nkcoding.spacegame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nkcoding.communication.Communication;
-import com.nkcoding.communication.SocketCommunication;
-import com.nkcoding.spacegame.Asset;
+import com.nkcoding.communication.DatagramSocketCommunication;
+import com.nkcoding.communication.ResetDataOutputStream;
 import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.SpaceGame;
+import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
+import com.nkcoding.ui.Styles;
+
+import java.io.DataInputStream;
+import java.io.IOException;
 
 public class LauncherScreen implements Screen {
 
+    private static final int START_GAME = -1;
+
     private SpaceGame spaceGame;
     private final Stage stage;
-    private final ExtAssetManager assetManager;
-    private final Batch spriteBatch;
-
-    private final Table selectionTable;
-    private final TextButton editorButton;
-    private final TextButton singleplayerButton;
-    private final TextButton serverButton;
-    private final TextButton clientButton;
 
     private Communication communication;
 
     private final Table serverTable;
-    private final Label serverPortLabel;
     private final TextField serverPortTextField;
     private final TextButton startServerButton;
 
     private final Table clientTable;
-    private final Label clientClientPortLabel;
     private final TextField clientClientPortTextField;
-    private final Label clientServerPortLabel;
     private final TextField clientServerPortTextField;
-    private final Label clientServerIPLabel;
     private final TextField clientServerIPTextField;
     private final TextButton startClientButton;
 
-    //private final Table serverTable;
+    private final float defaultPadding;
 
-    //private final Table clientTable;
-
-    public LauncherScreen(SpaceGame spaceGame) {
+    public LauncherScreen(SpaceGame spaceGame) {        
         this.spaceGame = spaceGame;
-        this.spriteBatch = spaceGame.getBatch();
-        this.assetManager = spaceGame.getAssetManager();
+        Batch spriteBatch = spaceGame.getBatch();
+        ExtAssetManager assetManager = spaceGame.getAssetManager();
+        final Styles styles = Styles.getDefaultStyles(assetManager);
+        defaultPadding = 15 * styles.scaleFactor;
+
         //region create the stage with and all its components
         ScreenViewport viewport = new ScreenViewport();
-        viewport.setUnitsPerPixel(0.75f / Gdx.graphics.getDensity());
+
         stage = new Stage(viewport, spriteBatch);
         Gdx.input.setInputProcessor(stage);
 
-        //region styles
-
-        Drawable background = new NinePatchDrawable(new NinePatch(assetManager.getTexture(Asset.SimpleBorder), 3, 3, 3, 3));
-        background.setLeftWidth(10);
-        background.setRightWidth(10);
-        background.setTopHeight(10);
-        background.setBottomHeight(10);
-
-        //ScrollPane
-        ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
-        //scrollPaneStyle.background = new SpriteDrawable(new Sprite(assetManager.get("simpleborder.png", Texture.class)));
-        scrollPaneStyle.vScrollKnob = assetManager.getDrawable(Asset.ScrollBarKnob);
-        scrollPaneStyle.vScroll = assetManager.getDrawable(Asset.ScrollBarBackground);
-        scrollPaneStyle.hScrollKnob = assetManager.getDrawable(Asset.ScrollBarKnob);
-        scrollPaneStyle.hScroll = assetManager.getDrawable(Asset.ScrollBarBackground);
-
-        //Label
-        Label.LabelStyle labelStyleSmall = new Label.LabelStyle(assetManager.getBitmapFont(Asset.SourceCodePro_18), new Color(0xffffffff));
-        Label.LabelStyle labelStyleBig = new Label.LabelStyle(assetManager.getBitmapFont(Asset.SourceCodePro_32), new Color(0xffffffff));
-
-        //TextField
-        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-        textFieldStyle.font = assetManager.getBitmapFont(Asset.SourceCodePro_18);
-        textFieldStyle.fontColor = new Color(0xffffffff);
-        textFieldStyle.cursor = assetManager.getDrawable(Asset.Cursor);
-        textFieldStyle.selection = assetManager.getDrawable(Asset.Selection);
-        Drawable textFieldBackground = assetManager.getDrawable(Asset.ScrollBarBackground);
-        textFieldBackground.setLeftWidth(5);
-        textFieldBackground.setRightWidth(5);
-        textFieldBackground.setTopHeight(5);
-        textFieldBackground.setBottomHeight(5);
-        textFieldStyle.background = textFieldBackground;
-
-        //textbutton style
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = assetManager.getBitmapFont(Asset.SourceCodePro_32);
-        textButtonStyle.fontColor = new Color(0xffffffff);
-        textButtonStyle.down = background;
-        textButtonStyle.up = background;
-        //endregion
-
         //region selection table
-        selectionTable = new Table();
+        Table selectionTable = new Table();
         selectionTable.setFillParent(true);
         stage.addActor(selectionTable);
 
-        editorButton = new TextButton("Editor", textButtonStyle);
-        singleplayerButton = new TextButton("Singleplayer", textButtonStyle);
-        serverButton = new TextButton("Server", textButtonStyle);
-        clientButton = new TextButton("Client", textButtonStyle);
+        TextButton editorButton = new TextButton("Editor", styles.textButtonStyle);
+        TextButton singleplayerButton = new TextButton("Singleplayer", styles.textButtonStyle);
+        TextButton serverButton = new TextButton("Server", styles.textButtonStyle);
+        TextButton clientButton = new TextButton("Client", styles.textButtonStyle);
 
-        selectionTable.add(editorButton).pad(15);
-        selectionTable.add(singleplayerButton).pad(15);
-        selectionTable.add(serverButton).pad(15);
-        selectionTable.add(clientButton).pad(15);
+        selectionTable.add(editorButton).pad(defaultPadding);
+        selectionTable.add(singleplayerButton).pad(defaultPadding);
+        selectionTable.add(serverButton).pad(defaultPadding);
+        selectionTable.add(clientButton).pad(defaultPadding);
 
         editorButton.addCaptureListener(new ChangeListener() {
             @Override
@@ -127,7 +79,7 @@ public class LauncherScreen implements Screen {
         singleplayerButton.addCaptureListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                spaceGame.startGame(null);
+                spaceGame.startGame(null, new Vector2());
             }
         });
         serverButton.addCaptureListener(new ChangeListener() {
@@ -151,25 +103,38 @@ public class LauncherScreen implements Screen {
 
         serverTable = new Table();
         serverTable.setFillParent(true);
-        serverPortLabel = new Label("Port", labelStyleBig);
-        serverPortTextField = new TextField("8001", textFieldStyle);
+        Label serverPortLabel = new Label("Port", styles.labelStyleBig);
+        serverPortTextField = new TextField("8001", styles.textFieldStyle);
         serverPortTextField.setTextFieldFilter(new TextField.TextFieldFilter.DigitsOnlyFilter());
-        startServerButton = new TextButton("Start server", textButtonStyle);
+        startServerButton = new TextButton("Start server", styles.textButtonStyle);
         startServerButton.addCaptureListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (communication == null) {
-                    communication = new SocketCommunication(true, Integer.parseInt(serverPortTextField.getText()));
+                    communication = new DatagramSocketCommunication(true, Integer.parseInt(serverPortTextField.getText()));
                     startServerButton.setText("Start Game");
                 } else {
-                    spaceGame.startGame(communication);
+                    int counter = 0;
+                    for (short peer : communication.getPeers()) {
+                        counter++;
+                        ResetDataOutputStream outputStream = communication.getOutputStream(true);
+                        try {
+                            outputStream.writeInt(START_GAME);
+                            outputStream.writeFloat(0);
+                            outputStream.writeFloat(counter * ShipDef.UNIT_SIZE * ShipDef.MAX_SIZE);
+                            communication.sendTo(peer, outputStream);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    spaceGame.startGame(communication, new Vector2());
                 }
             }
         });
 
-        serverTable.add(serverPortLabel).pad(15).row();
-        serverTable.add(serverPortTextField).pad(15).row();
-        serverTable.add(startServerButton).pad(15);
+        serverTable.add(serverPortLabel).pad(defaultPadding).row();
+        serverTable.add(serverPortTextField).pad(defaultPadding).row();
+        serverTable.add(startServerButton).pad(defaultPadding);
 
         //endregion
 
@@ -177,33 +142,31 @@ public class LauncherScreen implements Screen {
 
         clientTable = new Table();
         clientTable.setFillParent(true);
-        clientClientPortLabel = new Label("Client Port", labelStyleBig);
-        clientClientPortTextField = new TextField("8000", textFieldStyle);
-        clientServerIPLabel = new Label("Server IP", labelStyleBig);
-        clientServerIPTextField = new TextField("", textFieldStyle);
-        clientServerPortLabel = new Label("Server Port", labelStyleBig);
-        clientServerPortTextField = new TextField("8001", textFieldStyle);
-        startClientButton = new TextButton("Start Client", textButtonStyle);
+        Label clientClientPortLabel = new Label("Client Port", styles.labelStyleBig);
+        clientClientPortTextField = new TextField("8000", styles.textFieldStyle);
+        Label clientServerIPLabel = new Label("Server IP", styles.labelStyleBig);
+        clientServerIPTextField = new TextField("", styles.textFieldStyle);
+        Label clientServerPortLabel = new Label("Server Port", styles.labelStyleBig);
+        clientServerPortTextField = new TextField("8001", styles.textFieldStyle);
+        startClientButton = new TextButton("Start Client", styles.textButtonStyle);
         startClientButton.addCaptureListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (communication == null) {
-                    communication = new SocketCommunication(false, Integer.parseInt(clientClientPortTextField.getText()));
+                    communication = new DatagramSocketCommunication(false, Integer.parseInt(clientClientPortTextField.getText()));
                     communication.openCommunication(clientServerIPTextField.getText(), Integer.parseInt(clientServerPortTextField.getText()));
-                    startClientButton.setText("Start Game");
-                } else {
-                    spaceGame.startGame(communication);
+                    startClientButton.setVisible(false);
                 }
             }
         });
 
-        clientTable.add(clientClientPortLabel).pad(15).row();
-        clientTable.add(clientClientPortTextField).pad(15).row();
-        clientTable.add(clientServerIPLabel).pad(15).row();
-        clientTable.add(clientServerIPTextField).pad(15).row();
-        clientTable.add(clientServerPortLabel).pad(15).row();
-        clientTable.add(clientServerPortTextField).pad(15).row();
-        clientTable.add(startClientButton).pad(15);
+        clientTable.add(clientClientPortLabel).pad(defaultPadding).row();
+        clientTable.add(clientClientPortTextField).pad(defaultPadding).row();
+        clientTable.add(clientServerIPLabel).pad(defaultPadding).row();
+        clientTable.add(clientServerIPTextField).pad(defaultPadding).row();
+        clientTable.add(clientServerPortLabel).pad(defaultPadding).row();
+        clientTable.add(clientServerPortTextField).pad(defaultPadding).row();
+        clientTable.add(startClientButton).pad(defaultPadding);
 
 
         //endregion
@@ -217,6 +180,31 @@ public class LauncherScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        if (communication != null) {
+            while (communication.hasTransmissions()) {
+                DataInputStream inputStream = communication.getTransmission();
+                try {
+                    int id = inputStream.readInt();
+                    if (id == START_GAME) {
+                        //start the game
+                        float posX = inputStream.readFloat();
+                        float posY = inputStream.readFloat();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        spaceGame.startGame(communication, new Vector2(posX, posY));
+                        break;
+                    } else {
+                        System.err.println("drop transmission");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();

@@ -3,8 +3,8 @@ package com.nkcoding.spacegame.simulation.spaceship.properties;
 public class IntProperty extends ExternalProperty<Integer> {
     private int value = 0;
 
-    public IntProperty(boolean readonly, boolean notifyChanges, String name) {
-        super(readonly, notifyChanges, name);
+    public IntProperty(String name) {
+        super(name);
     }
 
     public int get() {

@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
@@ -39,9 +40,7 @@ import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Lexer;
 import com.nkcoding.interpreter.compiler.Token;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MultiColorTextArea extends TextFieldBase implements Cullable {
@@ -89,13 +88,16 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
     /**
      * the Strings for the autocompletion popup
      */
-    private List<String> currentAutocompletionItems = new LinkedList<>();
+    private List<String> currentAutocompletionItems = new ArrayList<>();
 
     private List<String> autocompletionItems = new LinkedList<>();
 
     private float maxAutocompletionWidth = 0;
 
-    private String autocompletionInput = "";
+    private boolean autocompletionEnabled = false;
+    private int autocompletionPosition = 0;
+    private int selectedAutocompletionIndex = 0;
+    private int prefAutocompletionOffset = 0;
 
     //constructors
     public MultiColorTextArea(String text, MultiColorTextAreaStyle style) {
@@ -132,10 +134,35 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         }
     }
 
+    /**
+     * gets the current position of the cursor, counting starts a the beginning of the line
+     */
+    public int getCursorPosInLine() {
+        if (2 * getCursorLine() < linesBreak.size) {
+            return getCursorPosition() - linesBreak.get(2 * getCursorLine());
+        } else {
+            return 0;
+        }
+
+    }
+
     @Override
     public void setText(String str) {
         super.setText(str);
+        multiLineChange = true;
         updateLinesBreak();
+    }
+
+    @Override
+    void paste(String content, boolean fireChangeEvent, boolean moveCursor) {
+        super.paste(content, fireChangeEvent, moveCursor);
+        multiLineChange = true;
+    }
+
+    @Override
+    void cut(boolean fireChangeEvent) {
+        super.cut(fireChangeEvent);
+        multiLineChange = true;
     }
 
     protected int letterUnderCursor(float x) {
@@ -190,7 +217,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
      * Moves the cursor to the given number line
      **/
     public void moveCursorLine(int line) {
-        updateAutocompletion("");
+
         if (line < 0) {
             cursorLine = 0;
             cursor = 0;
@@ -279,7 +306,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                 float selectionX = glyphPositions.get(start) - glyphPositions.get(linesBreak.get(i));
                 float selectionWidth = glyphPositions.get(end) - glyphPositions.get(start);
 
-                selection.draw(batch, x + selectionX + fontOffset, y - textHeight - font.getDescent() - offsetY, selectionWidth,
+                selection.draw(batch, x + selectionX + fontOffset, y - textHeight - offsetY, selectionWidth,
                         font.getLineHeight());
             }
 
@@ -292,12 +319,12 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
     protected void drawText(Batch batch, BitmapFont font, float x, float y) {
         boolean debug = false;
         if (debug) System.out.println();
-        float offsetY = -firstLineShowing * font.getLineHeight();
+        float offsetY = -firstLineShowing * font.getLineHeight() + font.getDescent();
         float offsetX = 0;
         //GlyphLayout for the calculation of the offsetX
         Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
         GlyphLayout layout = layoutPool.obtain();
-        ColorRegion region = new ColorRegion(firstLineShowing, lexer.getLineStartIndex(firstLineShowing));
+        ColorRegion region = new ColorRegion(firstLineShowing, lexer.getLineStartIterator(firstLineShowing));
 
         while (getNextColorRegion(region, debug)) {
             if (offsetX <= renderUntilX) {
@@ -324,36 +351,38 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         float textOffset = cursor >= glyphPositions.size || cursorLine * 2 >= linesBreak.size ? 0
                 : glyphPositions.get(cursor) - glyphPositions.get(linesBreak.items[cursorLine * 2]);
         cursorPatch.draw(batch, x + textOffset + fontOffset + font.getData().cursorX,
-                y - font.getDescent() / 2 - (cursorLine + 1) * font.getLineHeight(), cursorPatch.getMinWidth(),
+                y - (cursorLine) * font.getLineHeight() - textHeight,
+                cursorPatch.getMinWidth(),
                 font.getLineHeight());
     }
 
     @Override
     protected void drawAutocompletion(Batch batch, BitmapFont font, float x, float y) {
         super.drawAutocompletion(batch, font, x, y);
-        if (currentAutocompletionItems.size() > 0) {
+        if (currentAutocompletionItems.size() > 0 && autocompletionEnabled) {
             final float abs = 20;
             Drawable autocompletion = ((MultiColorTextAreaStyle) style).autocompletion;
+            Drawable selectedAutocompletion = ((MultiColorTextAreaStyle)style).selectedAutocompletion;
             if (autocompletion != null) {
-                float textOffset = cursor >= glyphPositions.size || cursorLine * 2 >= linesBreak.size ? 0
-                        : glyphPositions.get(cursor) - glyphPositions.get(linesBreak.items[cursorLine * 2]);
+                float textOffset = (linesBreak.items[cursorLine * 2] + autocompletionPosition) >= glyphPositions.size || cursorLine * 2 >= linesBreak.size ? 0
+                        : glyphPositions.get(linesBreak.items[cursorLine * 2] + autocompletionPosition) - glyphPositions.get(linesBreak.items[cursorLine * 2]);
                 Rectangle screenArea = getArea();
 
-                float cursorPosX = x + textOffset + fontOffset + abs;
+                float cursorPosX = x + textOffset + fontOffset;
                 float cursorPosY = y - font.getDescent() / 2 - (cursorLine + 1) * font.getLineHeight();
 
-                float posX = cursorPosX - abs;
+                float posX = cursorPosX - abs / 2;
                 float posY;
                 float maxWidth = screenArea.getWidth() - posX - abs;
                 float height;
                 float requestedWidth = this.maxAutocompletionWidth + abs;
-                float requestedHeight = this.currentAutocompletionItems.size() * font.getLineHeight() + abs;
+                float requestedHeight = this.currentAutocompletionItems.size() * font.getLineHeight();
                 float width = Math.min(requestedWidth, maxWidth);
 
                 if (cursorPosY < screenArea.getHeight() / 2) {
                     //above cursor
                     posY = cursorPosY + font.getLineHeight();
-                    height = Math.min(screenArea.getHeight() - abs - posY, requestedHeight);
+                    height = Math.min(screenArea.getHeight() - posY, requestedHeight);
                 } else {
                     //below cursor
                     posY = abs;
@@ -363,12 +392,34 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                         height = requestedHeight;
                     }
                 }
+                int maxLinesAmount = Math.min(currentAutocompletionItems.size(), (int)((height) / font.getLineHeight()));
+                //correct offset if necessary
+                if (maxLinesAmount >= currentAutocompletionItems.size()) {
+                    prefAutocompletionOffset = 0;
+                }
+                if (prefAutocompletionOffset > selectedAutocompletionIndex) {
+                    prefAutocompletionOffset = selectedAutocompletionIndex;
+                } else if (prefAutocompletionOffset + maxLinesAmount < selectedAutocompletionIndex) {
+                    prefAutocompletionOffset = selectedAutocompletionIndex - maxLinesAmount;
+                }
+
                 autocompletion.draw(batch, posX, posY, width, height);
 
-                for (int i = 0; i < Math.min(currentAutocompletionItems.size(), (height - abs) / font.getLineHeight()); i++) {
-                    String item = currentAutocompletionItems.get(i);
-                    font.draw(batch, item, posX + abs / 2, posY + font.getLineHeight() * (i + 1) + abs / 2,
-                            0, item.length(), width - abs / 2, Align.left, false, "...");
+                int i = 0;
+
+                for (String item : currentAutocompletionItems) {
+                    if (i >= prefAutocompletionOffset && i < prefAutocompletionOffset + maxLinesAmount) {
+                        int drawIndex = i - prefAutocompletionOffset;
+                        if (i == selectedAutocompletionIndex) {
+                            selectedAutocompletion.draw(batch,
+                                    posX, posY + font.getLineHeight() * (drawIndex),
+                                    width, font.getLineHeight());
+                        }
+                        font.draw(batch, item, posX + abs / 2,
+                                posY + font.getLineHeight() * (drawIndex + 1) + font.getDescent(),
+                                0, item.length(), width - abs / 2, Align.left, false, "...");
+                    }
+                    i++;
                 }
             }
         }
@@ -380,7 +431,14 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
      * @param autocompletionItems new autocompletion
      */
     public void updateAutocompletionItems(List<String> autocompletionItems) {
+        String lastSelected = currentAutocompletionItems.size() > 0 ? currentAutocompletionItems.get(selectedAutocompletionIndex) : "";
         this.currentAutocompletionItems = autocompletionItems;
+        if (currentAutocompletionItems.isEmpty()) {
+            autocompletionEnabled = false;
+        }
+        currentAutocompletionItems.sort(null);
+        selectedAutocompletionIndex = Math.min(currentAutocompletionItems.indexOf(lastSelected), currentAutocompletionItems.size() - 1);
+        selectedAutocompletionIndex = Math.max(selectedAutocompletionIndex, 0);
         Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
         GlyphLayout layout = layoutPool.obtain();
         float maxWidth = 0;
@@ -394,14 +452,15 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         layoutPool.free(layout);
     }
 
-    public void updateAutocompletion(String autocompletionInput) {
+    public void updateAutocompletionText() {
+        String autocompletionInput = autocompletionEnabled ? getAutocompletionText() : "";
         final String input = (autocompletionInput.trim().equals(autocompletionInput)) ? autocompletionInput : "";
-        this.autocompletionInput = input;
         if (input.equals("")) {
-            updateAutocompletionItems(new LinkedList<>());
+            updateAutocompletionItems(new ArrayList<>());
         } else {
             updateAutocompletionItems(autocompletionItems.stream()
-                    .filter(item -> item.contains(input)).collect(Collectors.toList()));
+                    .filter(item -> item.contains(input) && !item.equals(autocompletionInput))
+                    .collect(Collectors.toList()));
         }
     }
 
@@ -414,15 +473,13 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         }
 
         Token currentToken = null;
-        if (cr.tokenIndex > -1) {
-            while (currentToken == null && cr.tokenIndex < lexer.getTokenCount()) {
-                Token possibleToken = lexer.getToken(cr.tokenIndex);
-                if (colorParser.chooseColor(possibleToken.getType()) != null) {
-                    currentToken = possibleToken;
-                    colorStart = currentToken.getPos() + linesBreak.get(currentToken.getLine() * 2);
-                } else {
-                    cr.tokenIndex++;
-                }
+        while (currentToken == null && cr.currentToken != null) {
+            Token possibleToken = cr.currentToken;
+            if (colorParser.chooseColor(possibleToken.getType()) != null) {
+                currentToken = possibleToken;
+                colorStart = currentToken.getPos() + linesBreak.get(currentToken.getLine() * 2);
+            } else {
+                cr.next();
             }
         }
         if (debug) System.out.println(currentToken);
@@ -490,7 +547,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                         cr.endPos = colorEnd;
                         cr.newLineAfter = false;
 
-                        cr.tokenIndex++;
+                        cr.next();
                     }
                     //case 4.2: the line ends first
                     else if (colorEnd > lineEnd) {
@@ -511,7 +568,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                         cr.newLineAfter = true;
 
                         cr.lineBreakIndex++;
-                        cr.tokenIndex++;
+                        cr.next();
                     }
                 }
 
@@ -592,6 +649,8 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                 invalidateHierarchy();
             }
 
+            updateCurrentLine();
+
             try {
                 if (multiLineChange) {
                     lexer.update(getText(), true);
@@ -601,13 +660,12 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
                 }
                 this.autocompletionItems = lexer.getTokens().stream().filter(token -> (token.getType() & (Token.IDENTIFIER | Token.KEYWORD)) != 0)
                         .map(Token::getContent).distinct().collect(Collectors.toList());
+                updateAutocompletionText();
             } catch (CompileException e) {
                 e.printStackTrace();
             }
 
             multiLineChange = false;
-
-            updateCurrentLine();
         }
     }
 
@@ -619,13 +677,13 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
     @Override
     public void setSelection(int selectionStart, int selectionEnd) {
         super.setSelection(selectionStart, selectionEnd);
-        updateAutocompletion("");
+        autocompletionEnabled = false;
         updateCurrentLine();
     }
 
     @Override
     protected void moveCursor(boolean forward, boolean jump) {
-        updateAutocompletion("");
+        autocompletionEnabled = false;
         int count = forward ? 1 : -1;
         int index = (cursorLine * 2) + count;
         if (index >= 0 && index + 1 < linesBreak.size && linesBreak.items[index] == cursor
@@ -719,8 +777,26 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         return x;
     }
 
+    private String getAutocompletionText() {
+        int cursorPos = getCursorPosInLine() - 1;
+        Token cursorToken = lexer.getTokenBefore(getCursorLine(), cursorPos);
+        if (cursorToken == null) {
+            return "";
+        } else if (cursorToken.getLine() != getCursorLine()) {
+            return "";
+        } else if (cursorToken.getType() == Token.COMMENT || cursorToken.getType() == Token.STRING_LITERAL) {
+            return "";
+        } else if (cursorToken.getPos() + cursorToken.getLength() <= cursorPos) {
+            return "";
+        } else {
+            autocompletionPosition = cursorToken.getPos();
+            return cursorToken.getContent().substring(0, cursorPos - cursorToken.getPos() + 1);
+        }
+    }
+
     public static class MultiColorTextAreaStyle extends TextField.TextFieldStyle {
         public Drawable autocompletion;
+        public Drawable selectedAutocompletion;
 
         /**
          * default constructor
@@ -730,14 +806,16 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         }
 
         public MultiColorTextAreaStyle(BitmapFont font, Color fontColor, Drawable cursor,
-                                       Drawable selection, Drawable background, Drawable autocompletion) {
+                                       Drawable selection, Drawable background, Drawable autocompletion, Drawable selectedAutocompletion) {
             super(font, fontColor, cursor, selection, background);
             this.autocompletion = autocompletion;
+            this.selectedAutocompletion = selectedAutocompletion;
         }
 
-        public MultiColorTextAreaStyle(TextField.TextFieldStyle style, Drawable autocompletion) {
+        public MultiColorTextAreaStyle(TextField.TextFieldStyle style, Drawable autocompletion, Drawable selectedAutocompletion) {
             super(style);
             this.autocompletion = autocompletion;
+            this.selectedAutocompletion = selectedAutocompletion;
         }
     }
 
@@ -749,15 +827,20 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
 
         //what should it draw now
         int lineBreakIndex;
-        int tokenIndex;
+        Iterator<Token> tokensIterator;
+        Token currentToken;
+        private void next() {
+            currentToken = tokensIterator.hasNext() ? tokensIterator.next() : null;
+        }
 
-        ColorRegion(int lineBreakIndex, int tokenIndex) {
+        ColorRegion(int lineBreakIndex, Iterator<Token> tokensIterator) {
             this.lineBreakIndex = lineBreakIndex;
-            this.tokenIndex = tokenIndex;
+            this.tokensIterator = tokensIterator;
             if (lineBreakIndex < linesBreak.size / 2) {
                 startPos = linesBreak.get(lineBreakIndex * 2);
                 endPos = startPos - 1;
             }
+            currentToken = tokensIterator.next();
         }
     }
 
@@ -769,7 +852,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
         @Override
         protected void setCursorPosition(float x, float y) {
             moveOffset = -1;
-            updateAutocompletion("");
+            autocompletionEnabled = false;
 
             Drawable background = style.background;
             BitmapFont font = style.font;
@@ -794,43 +877,58 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
 
         @Override
         public boolean keyDown(InputEvent event, int keycode) {
+            if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT) {
+                autocompletionEnabled = false;
+            }
             boolean result = super.keyDown(event, keycode);
-            if (keycode == Input.Keys.FORWARD_DEL || keycode == Input.Keys.ENTER || keycode == Input.Keys.SPACE) {
-                updateAutocompletion("");
+            if (keycode == Input.Keys.FORWARD_DEL || keycode == Input.Keys.SPACE) {
+                autocompletionEnabled = false;
             } else if (keycode == Input.Keys.DEL) {
-                if (autocompletionInput.length() > 0) {
-                    updateAutocompletion(autocompletionInput.substring(0, autocompletionInput.length() - 1));
-                }
+                autocompletionEnabled = true;
             }
             if (hasKeyboardFocus()) {
                 boolean repeat = false;
                 boolean shift = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
-                if (keycode == Input.Keys.DOWN) {
-                    if (shift) {
-                        if (!hasSelection) {
-                            selectionStart = cursor;
-                            hasSelection = true;
+                switch (keycode) {
+                    case Input.Keys.DOWN:
+                        if (autocompletionEnabled) {
+                            selectedAutocompletionIndex--;
+                            selectedAutocompletionIndex += currentAutocompletionItems.size();
+                            selectedAutocompletionIndex %= currentAutocompletionItems.size();
+                        } else {
+                            if (shift) {
+                                if (!hasSelection) {
+                                    selectionStart = cursor;
+                                    hasSelection = true;
+                                }
+                            } else {
+                                clearSelection();
+                            }
+                            moveCursorLine(cursorLine + 1);
+                            repeat = true;
                         }
-                    } else {
-                        clearSelection();
-                    }
-                    moveCursorLine(cursorLine + 1);
-                    repeat = true;
-
-                } else if (keycode == Input.Keys.UP) {
-                    if (shift) {
-                        if (!hasSelection) {
-                            selectionStart = cursor;
-                            hasSelection = true;
+                        break;
+                    case Input.Keys.UP:
+                        if (autocompletionEnabled) {
+                            selectedAutocompletionIndex++;
+                            selectedAutocompletionIndex += currentAutocompletionItems.size();
+                            selectedAutocompletionIndex %= currentAutocompletionItems.size();
+                        } else {
+                            if (shift) {
+                                if (!hasSelection) {
+                                    selectionStart = cursor;
+                                    hasSelection = true;
+                                }
+                            } else {
+                                clearSelection();
+                            }
+                            moveCursorLine(cursorLine - 1);
+                            repeat = true;
                         }
-                    } else {
-                        clearSelection();
-                    }
-                    moveCursorLine(cursorLine - 1);
-                    repeat = true;
-
-                } else {
-                    moveOffset = -1;
+                        break;
+                    default:
+                        moveOffset = -1;
+                        break;
                 }
                 if (repeat) {
                     scheduleKeyRepeatTask(keycode);
@@ -843,41 +941,64 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
 
         @Override
         public boolean keyTyped(InputEvent event, char character) {
+            event.getKeyCode();
             multiLineChange = true;
             boolean hadSelection = hasSelection;
-            //preInput
-            Optional<Boolean> res = preInput(event, character);
-            if (res.isPresent()) return res.get();
 
-            //every other character
-            boolean result = super.keyTyped(event, character);
-            //postInput
-            if (result) {
-                if (!postInput(event, character) && !hadSelection) {
-                    if (event.getKeyCode() != Input.Keys.DEL && event.getKeyCode() != Input.Keys.FORWARD_DEL) {
-                        multiLineChange = false;
-                        updateAutocompletion(autocompletionInput + character);
+            if ((character == ENTER_ANDROID || character == ENTER_DESKTOP || character == TAB) && insertAutocompletion()) {
+                return true;
+            } else {
+                //preInput
+                Optional<Boolean> res = preInput(event, character);
+                if (res.isPresent()) return res.get();
+
+                //every other character
+                boolean result = super.keyTyped(event, character);
+                //postInput
+                if (result) {
+                    if (!postInput(event, character) && !hadSelection) {
+                        if (character != 8 && character != 127) {
+                            multiLineChange = false;
+                            autocompletionEnabled = true;
+                        }
                     }
                 }
-            }
 
-            updateCurrentLine(); //this always produced serious errors, I don't know why I can do this now
-            return result;
+                updateCurrentLine();
+                return result;
+            }
+        }
+
+        private boolean insertAutocompletion() {
+            if (autocompletionEnabled && !currentAutocompletionItems.isEmpty()) {
+                String existingAutocompletion = getAutocompletionText();
+                String completeAutocompletion = currentAutocompletionItems.get(selectedAutocompletionIndex);
+                selectionStart = getCursorPosition() - existingAutocompletion.length();
+                hasSelection = true;
+                paste(completeAutocompletion, true, true);
+                autocompletionEnabled = false;
+                updateCurrentLine();
+                return true;
+            }
+            autocompletionEnabled = false;
+            return false;
         }
 
         @Override
         protected void goHome(boolean jump) {
-            updateAutocompletion("");
+            autocompletionEnabled = false;
             if (jump) {
                 cursor = 0;
             } else if (cursorLine * 2 < linesBreak.size) {
-                cursor = linesBreak.get(cursorLine * 2);
+                String currentLine = getTextLine(cursorLine);
+                int amountLeadingWhitespace = currentLine.length() - currentLine.replaceAll("^\\s+", "").length();
+                cursor = linesBreak.get(cursorLine * 2) + amountLeadingWhitespace;
             }
         }
 
         @Override
         protected void goEnd(boolean jump) {
-            updateAutocompletion("");
+            autocompletionEnabled = false;
             if (jump || cursorLine >= getLines()) {
                 cursor = text.length();
             } else if (cursorLine * 2 + 1 < linesBreak.size) {

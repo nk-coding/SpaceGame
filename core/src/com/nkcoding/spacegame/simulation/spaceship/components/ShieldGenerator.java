@@ -1,5 +1,6 @@
 package com.nkcoding.spacegame.simulation.spaceship.components;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -13,6 +14,10 @@ import com.nkcoding.spacegame.simulation.spaceship.components.communication.Upda
 import com.nkcoding.spacegame.simulation.spaceship.properties.FloatProperty;
 import com.nkcoding.spacegame.simulation.spaceship.properties.VirtualProperty;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 public class ShieldGenerator extends Buffer {
     public static final String IS_ENABLED_KEY = "IsEnabled";
     public static final String RADIUS_KEY = "Radius";
@@ -20,6 +25,8 @@ public class ShieldGenerator extends Buffer {
     private static final int DAMAGE_SHIELD = 1;
 
     private Fixture shieldFixture;
+
+    private Texture shieldTexture;
 
     /**
      * is the shield set by the user to be activated
@@ -31,11 +38,11 @@ public class ShieldGenerator extends Buffer {
     /**
      * mirror constructor
      */
-    protected ShieldGenerator(ComponentDefBase defBase, Ship ship) {
-        super(defBase, ship);
-        ShieldComponentDef shieldComponentDef = (ShieldComponentDef) defBase;
-        this.radius = shieldComponentDef.radius;
-        this.isEnabled = shieldComponentDef.isEnabled;
+    protected ShieldGenerator(ComponentDefBase componentDef, DataInputStream inputStream, Ship ship) throws IOException {
+        super(componentDef, inputStream, ship);
+        this.radius = inputStream.readFloat();
+        this.isEnabled = inputStream.readBoolean();
+        shieldTexture = getAssetManager().getTexture(Asset.SimpleShield);
     }
 
     /**
@@ -43,16 +50,20 @@ public class ShieldGenerator extends Buffer {
      */
     protected ShieldGenerator(ComponentDef componentDef, Ship ship, Ship.ShipModel shipModel) {
         super(componentDef, ship, shipModel);
+        shieldTexture = getAssetManager().getTexture(Asset.SimpleShield);
+    }
+
+    private float getRadius() {
+        return radius + 17f;
     }
 
     @Override
     public void draw(Batch batch, boolean isOriginal) {
         super.draw(batch, isOriginal);
 
-        float currentRadius = radius;
         if (isEnabled)
-            drawTexture(batch, getAssetManager().getTexture(Asset.VerySimpleExplosion),
-                    new Vector2(0.1f - currentRadius * 0.01f, 0.1f - currentRadius * 0.01f), 2 * currentRadius * 0.01f, 2 * currentRadius * 0.01f, 0f);
+            drawTexture(batch, shieldTexture,
+                    new Vector2(0.1f - getRadius() * 0.01f, 0.1f - getRadius() * 0.01f), 2 * getRadius() * 0.01f, 2 * getRadius() * 0.01f, 0f);
     }
 
     @Override
@@ -76,12 +87,12 @@ public class ShieldGenerator extends Buffer {
 
     @Override
     public void receiveTransmission(UpdateComponentTransmission transmission) {
-        switch (transmission.updateID) {
+        switch (transmission.componentUpdateID) {
             case ComponentUpdateID.RADIUS:
                 RadiusTransmission radiusTransmission = (RadiusTransmission)transmission;
                 radius = radiusTransmission.radius;
                 if (shieldFixture != null) {
-                    shieldFixture.getShape().setRadius(radius * 0.01f);
+                    shieldFixture.getShape().setRadius(getRadius() * 0.01f);
                 }
                 break;
             case ComponentUpdateID.SHIELD:
@@ -100,14 +111,16 @@ public class ShieldGenerator extends Buffer {
     }
 
     @Override
-    public ComponentDefBase getMirrorData() {
-        return new ShieldComponentDef(defBase, radius, isEnabled);
-    }
-
-    @Override
     protected int getDamageID(Fixture fixture) {
         if (fixture == shieldFixture) return DAMAGE_SHIELD;
         else return super.getDamageID(fixture);
+    }
+
+    @Override
+    public void serialize(DataOutputStream outputStream) throws IOException {
+        super.serialize(outputStream);
+        outputStream.writeFloat(radius);
+        outputStream.writeBoolean(isEnabled);
     }
 
     public class ShieldGeneratorModel extends BufferModel {
@@ -126,7 +139,7 @@ public class ShieldGenerator extends Buffer {
          * property to check / set if the shield is enabled
          * virtual, because the shield also must have enough power to activate
          */
-        public final VirtualProperty<Boolean> isEnabled = register(new VirtualProperty<>(true, false, IS_ENABLED_KEY) {
+        public final VirtualProperty<Boolean> isEnabled = register(new VirtualProperty<>( IS_ENABLED_KEY) {
             @Override
             public void set(Boolean value) {
                 isSetEnabled = value;
@@ -146,7 +159,7 @@ public class ShieldGenerator extends Buffer {
         //check if the radius changed
         private boolean radiusChanged = true;
 
-        public final FloatProperty radius = register(new FloatProperty(false, true, RADIUS_KEY) {
+        public final FloatProperty radius = register(new FloatProperty( RADIUS_KEY) {
             @Override
             public void set(float value) {
                 super.set(value < 0 ? 0 : value > 100 ? 100 : value);
@@ -191,17 +204,6 @@ public class ShieldGenerator extends Buffer {
             } else {
                 return super.damageAt(damageID, damage);
             }
-        }
-    }
-
-    private static class ShieldComponentDef extends ComponentDefBase {
-        public final float radius;
-        public final boolean isEnabled;
-
-        public ShieldComponentDef(ComponentDefBase toCopy, float radius, boolean isEnabled) {
-            super(toCopy);
-            this.radius = radius;
-            this.isEnabled = isEnabled;
         }
     }
 

@@ -3,8 +3,8 @@ package com.nkcoding.spacegame.simulation.spaceship.properties;
 public class StringProperty extends ExternalProperty<String> {
     private String value = "";
 
-    public StringProperty(boolean readonly, boolean notifyChanges, String name) {
-        super(readonly, notifyChanges, name);
+    public StringProperty(String name) {
+        super(name);
     }
 
     public String get() {

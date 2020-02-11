@@ -19,6 +19,9 @@ import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHa
 import com.nkcoding.spacegame.simulation.spaceship.properties.FloatProperty;
 import com.nkcoding.spacegame.simulation.spaceship.properties.IntProperty;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 public abstract class Component implements Damageable {
 
     //region names for the ExternalProperties
@@ -91,14 +94,16 @@ public abstract class Component implements Damageable {
         return ship;
     }
 
-    //region properties
-
     public void setShip(Ship ship) {
         this.ship = ship;
         if (model != null) {
             model.shipModel = ship.model;
         }
         addFixtures();
+    }
+
+    public boolean isOriginal() {
+        return ship.isOriginal();
     }
 
     /**
@@ -115,12 +120,8 @@ public abstract class Component implements Damageable {
         return new ComponentModel(shipModel, componentDef);
     }
 
-    /**
-     * create the data for mirror creation
-     * overwrite in subclasses if necessary
-     */
-    public ComponentDefBase getMirrorData() {
-        return new ComponentDefBase(this.defBase);
+    public void serialize(DataOutputStream outputStream) throws IOException {
+        defBase.serialize(outputStream);
     }
 
     //helper methods
@@ -192,6 +193,9 @@ public abstract class Component implements Damageable {
     public void draw(Batch batch, boolean original) {
         drawTexture(batch, defaultTexture, new Vector2(0, 0),
                 getWidth(), getHeight(), 0);
+        if (isOriginal()) {
+            model.draw(batch);
+        }
     }
 
     /**
@@ -306,7 +310,7 @@ public abstract class Component implements Damageable {
      * @param transmission the update transmission
      */
     public void receiveTransmission(UpdateComponentTransmission transmission) {
-        switch (transmission.updateID) {
+        switch (transmission.componentUpdateID) {
             case ComponentUpdateID.DAMAGE:
                 DamageTransmission damageTransmission = (DamageTransmission)transmission;
                 if (ship.isOriginal()) {
@@ -321,6 +325,23 @@ public abstract class Component implements Damageable {
         }
     }
 
+    /**
+     * overwrite this to handle remove messages
+     */
+    public void removeComponent() {
+    }
+
+    /**
+     * overwrite this to handle add messages
+     */
+    public void addComponent() {
+    }
+
+    @Override
+    public String toString() {
+        return ship.getOwner() + "";
+    }
+
     public class ComponentModel extends ExternalPropertyHandler {
         /**
          * health has to be stored again, because it changes during simulation
@@ -328,15 +349,15 @@ public abstract class Component implements Damageable {
          * this check is done in act because of library issues
          * should be initialized in constructor out of componentDef
          */
-        public final IntProperty health = register(new IntProperty(true, true, HEALTH_KEY));
+        public final IntProperty health = register(new IntProperty(HEALTH_KEY));
         /**
          * shows if the component get the full power (used to prevent issues with float rounding)
          */
-        public final BooleanProperty hasFullPower = register(new BooleanProperty(true, true, HAS_FULL_POWER_KEY));
+        public final BooleanProperty hasFullPower = register(new BooleanProperty(HAS_FULL_POWER_KEY));
         /**
          * how much power does it actually get
          */
-        public final FloatProperty powerReceived = register(new FloatProperty(true, true, POWER_RECEIVED_KEY) {
+        public final FloatProperty powerReceived = register(new FloatProperty(POWER_RECEIVED_KEY) {
             @Override
             public void set(float value) {
                 super.set(value);
@@ -351,7 +372,7 @@ public abstract class Component implements Damageable {
         /**
          * power that component requests
          */
-        public final FloatProperty powerRequested = register(new FloatProperty(true, true, POWER_REQUESTED_KEY) {
+        public final FloatProperty powerRequested = register(new FloatProperty( POWER_REQUESTED_KEY) {
             @Override
             public void set(float value) {
                 if (get() != value) shipModel.invalidatePowerDelivery();
@@ -361,7 +382,7 @@ public abstract class Component implements Damageable {
         /**
          * how important is it to get the power
          */
-        public final IntProperty requestLevel = register(new IntProperty(false, true, REQUEST_LEVEL_KEY) {
+        public final IntProperty requestLevel = register(new IntProperty(REQUEST_LEVEL_KEY) {
             @Override
             public void set(int value) {
                 if (get() != value) shipModel.invalidatePowerLevelOrder();
@@ -389,11 +410,14 @@ public abstract class Component implements Damageable {
             if (health.get() <= 0) destroy();
         }
 
+        public void draw(Batch batch) {
+        }
+
         /**
          * append some damage on the Component
          *
          * @param damageID the calculated id for the damage
-         * @param damage  the amount of damage
+         * @param damage   the amount of damage
          */
         public boolean damageAt(int damageID, int damage) {
             health.set(health.get() - damage);

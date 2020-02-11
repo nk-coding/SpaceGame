@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -15,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nkcoding.interpreter.MethodStatement;
@@ -41,14 +39,10 @@ public class ShipBuilderScreen implements Screen {
 
     //region data
     public final ShipDef shipDef;
-    //the game
-    private final SpaceGame spaceGame;
     //the stage
     private final Stage stage;
-    //fields from game
-    //spriteBatch for the stage
-    private final SpriteBatch spriteBatch;
     private final ExtAssetManager assetManager;
+    private final Styles styles;
     //the main tables
     private final Table shipRootTable;
     private final Table codeRootTable;
@@ -56,10 +50,12 @@ public class ShipBuilderScreen implements Screen {
     private final Table componentsStack;
     //Stack for the external properties for the selected Component
     private final VerticalGroup propertiesVerticalGroup;
+    private final Table shipInfoTable;
+    private final Label shipInfoLabel;
     //temporary storage for PropertyBoxes which are not necessary because of a ComponentDef change
     //the can be updated and used later
     private final ArrayDeque<Actor> oldPropertyBoxes = new ArrayDeque<>();
-    //ZoomScrollOane for the shipDesigner
+    //ZoomScrollPane for the shipDesigner
     private final ZoomScrollPane shipDesignerZoomScrollPane;
     //the main Designer for the Ship
     private final ShipDesigner shipDesigner;
@@ -68,8 +64,6 @@ public class ShipBuilderScreen implements Screen {
     private final Drawable switchButton_error;
     private final ImageButton switchButton;
     private final CodeEditor codeEditor;
-    //the table with the component / ship name
-    private final Table basicInfoTable;
     private final Label componentNameLabel;
     private final ImageButton rotateButton;
     private final TextField nameTextField;
@@ -82,15 +76,14 @@ public class ShipBuilderScreen implements Screen {
     //endregion
     //error log
     private final TextField errorLog;
-    //style for more propertyBoxes
-    PropertyBox.PropertyBoxStyle propertyBoxStyle;
     //compiler to check the code
     private Compiler compiler;
-    //the compiled code
-    private MethodStatement[] methods = new MethodStatement[0];
     private HashMap<String, NormalMethodDefinition> methodPositions = new HashMap<>();
     //normal (ship) view?
     private boolean isShipView = true;
+    private final ScrollPane propertiesScrollPane;
+    private boolean shipValidated;
+    private boolean codeValidated;
     //endregion
 
     //constructor
@@ -99,71 +92,20 @@ public class ShipBuilderScreen implements Screen {
         //create new compiler
         compiler = shipDef.createCompiler("");
 
-
-        this.spaceGame = spaceGame;
-        this.spriteBatch = spaceGame.getBatch();
+        //the game
+        //fields from game
+        //spriteBatch for the stage
+        SpriteBatch spriteBatch = spaceGame.getBatch();
         this.assetManager = spaceGame.getAssetManager();
+        styles = Styles.getDefaultStyles(assetManager);
+        float defaultButtonSize = 4 * styles.defaultScaledAbs;
+
         //region create the stage with and all its components
         ScreenViewport viewport = new ScreenViewport();
-        viewport.setUnitsPerPixel(0.75f / Gdx.graphics.getDensity());
-        System.out.println(Gdx.graphics.getDensity());
+        
         stage = new Stage(viewport, spriteBatch);
         Gdx.input.setInputProcessor(stage);
 
-        //region styles
-
-        Drawable background = new NinePatchDrawable(new NinePatch(assetManager.getTexture(Asset.SimpleBorder), 3, 3, 3, 3));
-        background.setLeftWidth(10);
-        background.setRightWidth(10);
-        background.setTopHeight(10);
-        background.setBottomHeight(10);
-
-        //ScrollPane
-        ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
-        //scrollPaneStyle.background = new SpriteDrawable(new Sprite(assetManager.get("simpleborder.png", Texture.class)));
-        scrollPaneStyle.vScrollKnob = assetManager.getDrawable(Asset.ScrollBarKnob);
-        scrollPaneStyle.vScroll = assetManager.getDrawable(Asset.ScrollBarBackground);
-        scrollPaneStyle.hScrollKnob = assetManager.getDrawable(Asset.ScrollBarKnob);
-        scrollPaneStyle.hScroll = assetManager.getDrawable(Asset.ScrollBarBackground);
-
-        //ZoomScrollPane
-        ZoomScrollPane.ZoomScrollPaneStyle zoomScrollPaneStyle = new ZoomScrollPane.ZoomScrollPaneStyle(scrollPaneStyle);
-
-        //Label
-        Label.LabelStyle labelStyleSmall = new Label.LabelStyle(assetManager.getBitmapFont(Asset.SourceCodePro_18), new Color(0xffffffff));
-        Label.LabelStyle labelStyleBig = new Label.LabelStyle(assetManager.getBitmapFont(Asset.SourceCodePro_32), new Color(0xffffffff));
-
-        //TextField
-        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-        textFieldStyle.font = assetManager.getBitmapFont(Asset.SourceCodePro_18);
-        textFieldStyle.fontColor = new Color(0xffffffff);
-        textFieldStyle.cursor = assetManager.getDrawable(Asset.Cursor);
-        textFieldStyle.selection = assetManager.getDrawable(Asset.Selection);
-        Drawable textFieldBackground = assetManager.getDrawable(Asset.ScrollBarBackground);
-        textFieldBackground.setLeftWidth(5);
-        textFieldBackground.setRightWidth(5);
-        textFieldBackground.setTopHeight(5);
-        textFieldBackground.setBottomHeight(5);
-        textFieldStyle.background = textFieldBackground;
-
-        //PropertyBox
-        propertyBoxStyle = new PropertyBox.PropertyBoxStyle();
-        propertyBoxStyle.background = background;
-        propertyBoxStyle.codeButtonDrawable = assetManager.getDrawable(Asset.CodeSymbol);
-        propertyBoxStyle.textFieldStyle = textFieldStyle;
-        propertyBoxStyle.illegalInputColor = new Color(0xff0000ff);
-        propertyBoxStyle.legalInputColor = new Color(0xffffffff);
-        propertyBoxStyle.labelStyle = labelStyleSmall;
-        propertyBoxStyle.spacing = 10f;
-
-        //CodeEditor
-        CodeEditor.CodeEditorStyle codeEditorStyle = new CodeEditor.CodeEditorStyle(textFieldStyle,
-                assetManager.getDrawable(Asset.LightBackground), scrollPaneStyle, new ScriptColorParser());
-
-        //endregion
-
-
-        //I may replace this with a skin later, if I really want to (because I hate json)
 
         //create the root table
         //region ship designer ui
@@ -180,20 +122,21 @@ public class ShipBuilderScreen implements Screen {
 
         //componentsScrollPane
         //ScrollPane for the componentsStack
-        ScrollPane componentsScrollPane = new CustomScrollPane(componentsStack, scrollPaneStyle);
+        ScrollPane componentsScrollPane = new CustomScrollPane(componentsStack, styles.scrollPaneStyle);
         componentsScrollPane.setFlickScroll(false);
         componentsScrollPane.setScrollingDisabled(true, false);
-
+        UIHelper.activateScrollOnHover(componentsScrollPane);
 
         //shipDesigner
         shipDesigner = new ShipDesigner(shipDef, assetManager, assetManager.getTexture(Asset.NoComponent), assetManager.getTexture(Asset.Selection), this::selectedComponentChanged);
-        shipDesignerZoomScrollPane = new ZoomScrollPane(shipDesigner, zoomScrollPaneStyle);
-        shipDesignerZoomScrollPane.setFlickScroll(false);
+        shipDesignerZoomScrollPane = new ZoomScrollPane(shipDesigner, styles.zoomScrollPaneStyle);
+        shipDesignerZoomScrollPane.setFlickScroll(true);
         shipDesignerZoomScrollPane.setFadeScrollBars(false);
         shipDesignerZoomScrollPane.setOverscroll(false, false);
+        UIHelper.activateScrollOnHover(shipDesignerZoomScrollPane);
 
         //basicInfoTable
-        componentNameLabel = new Label("Ship", labelStyleBig);
+        componentNameLabel = new Label("Ship", styles.labelStyleBig);
 
         rotateButton = new ImageButton(assetManager.getDrawable(Asset.RotateSymbol));
         rotateButton.setVisible(false);
@@ -204,25 +147,24 @@ public class ShipBuilderScreen implements Screen {
             }
         });
 
-        final Label nameLabel = new Label("name", labelStyleSmall);
+        final Label nameLabel = new Label("name", styles.labelStyleSmall);
 
-        nameTextField = new TextField(shipDef.getName(), textFieldStyle);
-        nameTextField.setTextFieldListener((textField, c) -> {
-            verifyName();
-        });
+        nameTextField = new TextField("", styles.textFieldStyle);
+        nameTextField.setTextFieldListener((textField, c) -> verifyName());
         verifyName();
 
-        basicInfoTable = new Table();
-        basicInfoTable.setBackground(background);
-        basicInfoTable.pad(10, 10, 10, 10);
+        //the table with the component / ship name
+        Table basicInfoTable = new Table();
+        basicInfoTable.setBackground(styles.borderBackgroundDrawable);
+        basicInfoTable.pad(styles.defaultScaledAbs, styles.defaultScaledAbs, styles.defaultScaledAbs, styles.defaultScaledAbs);
         basicInfoTable.add(componentNameLabel).growX().left();
-        basicInfoTable.add(rotateButton).size(40, 40).right();
+        basicInfoTable.add(rotateButton).size(defaultButtonSize, defaultButtonSize).right();
         basicInfoTable.row();
-        basicInfoTable.add(nameLabel).left().colspan(2).pad(10, 10, 10, 0);
+        basicInfoTable.add(nameLabel).left().colspan(2).pad(styles.defaultScaledAbs, styles.defaultScaledAbs, styles.defaultScaledAbs, 0);
         basicInfoTable.row();
-        basicInfoTable.add(nameTextField).left().colspan(2).pad(0, 10, 10, 0).fillX();
+        basicInfoTable.add(nameTextField).left().colspan(2).pad(0, styles.defaultScaledAbs, styles.defaultScaledAbs, 0).fillX();
 
-        final Container<Table> basicInfoContainer = new Container<>(basicInfoTable).pad(10, 10, 0, 10).fillX();
+        final Container<Table> basicInfoContainer = new Container<>(basicInfoTable).pad(styles.defaultScaledAbs, styles.defaultScaledAbs, 0, styles.defaultScaledAbs).fillX();
 
 
         //propertiesVerticalGroup
@@ -230,12 +172,20 @@ public class ShipBuilderScreen implements Screen {
         propertiesVerticalGroup.addActor(basicInfoContainer);
         propertiesVerticalGroup.grow();
 
+        shipInfoTable = new Table();
+        shipInfoLabel = new Label("", styles.labelStyleSmall);
+        Container<Label> shipInfoContainer = new Container<>(shipInfoLabel);
+        shipInfoContainer.fillX();
+        shipInfoContainer.setBackground(styles.borderBackgroundDrawable);
+        shipInfoTable.add(shipInfoContainer).left().top().growX().expandY().pad(styles.defaultScaledAbs);
+
         //propertiesScrollPane
         //ScrollPane for the propertiesStack
-        ScrollPane propertiesScrollPane = new CustomScrollPane(propertiesVerticalGroup, scrollPaneStyle);
+        propertiesScrollPane = new CustomScrollPane(shipInfoTable, styles.scrollPaneStyle);
         propertiesScrollPane.setFlickScroll(false);
         propertiesScrollPane.setScrollingDisabled(true, false);
         propertiesScrollPane.setFadeScrollBars(false);
+        UIHelper.activateScrollOnHover(propertiesScrollPane);
 
         //save Button
         //button which saves (and probably closes?)
@@ -263,8 +213,8 @@ public class ShipBuilderScreen implements Screen {
         Table rightLayoutTable = new Table();
         rightLayoutTable.add(propertiesScrollPane).colspan(2).grow();
         rightLayoutTable.row();
-        rightLayoutTable.add(saveButton).size(40, 40).growX().pad(10).right();
-        rightLayoutTable.add(switchButton).size(40, 40).pad(10).right();
+        rightLayoutTable.add(saveButton).size(defaultButtonSize, defaultButtonSize).growX().pad(styles.defaultScaledAbs).right();
+        rightLayoutTable.add(switchButton).size(defaultButtonSize, defaultButtonSize).pad(styles.defaultScaledAbs).right();
 
         //add the components to the rootTable
         //add the buttons
@@ -272,11 +222,78 @@ public class ShipBuilderScreen implements Screen {
         //add all the main controls
         shipRootTable.add(componentsScrollPane).left().growY();
         shipRootTable.add(shipDesignerZoomScrollPane).grow();
-        shipRootTable.add(rightLayoutTable).right().width(400).growY();
+        shipRootTable.add(rightLayoutTable).right().width(450 * styles.scaleFactor).growY();
+
+        addDragAndDropListeners();
+
+        //endregion
+
+        //region code editor ui
+
+        codeEditor = new CodeEditor(styles.codeEditorStyle);
+        codeEditor.setText(shipDef.code);
+
+        codeRootTable = new Table();
+        codeRootTable.setFillParent(true);
+        //switch button
+        ImageButton closeButton = new ImageButton(assetManager.getDrawable(Asset.CloseSymbol));
+        closeButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                switchView();
+            }
+        });
 
 
+        //error log
+        errorLog = new TextField("", styles.textFieldStyle);
+        errorLog.setDisabled(true);
+
+        //drawables for the checkButton
+        checkButton_ok = assetManager.getDrawable(Asset.OkSymbol);
+        checkButton_error = assetManager.getDrawable(Asset.ErrorSymbol);
+        checkButton_actionNecessary = assetManager.getDrawable(Asset.ActionNecessarySymbol);
+        //check Button
+        checkButton = new ImageButton(checkButton_actionNecessary);
+        checkButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                //check if compiler has to check code again
+                if (checkButton.getStyle().imageUp == checkButton_error || checkButton.getStyle().imageUp == checkButton_actionNecessary) {
+                    long time = System.currentTimeMillis();
+                    parse(false);
+                    System.out.println(System.currentTimeMillis() - time);
+                }
+            }
+        });
+
+        //code editor
+        //CodeEditor for the file with all methods
+        codeEditor.setTextFieldListener((textFieldBase, c) -> {
+            if (checkButton.getStyle().imageUp != checkButton_actionNecessary) {
+                ImageButton.ImageButtonStyle style = checkButton.getStyle();
+                style.imageUp = checkButton_actionNecessary;
+                checkButton.setStyle(style);
+            }
+        });
+
+        codeRootTable.add(codeEditor).colspan(3).grow();
+        codeRootTable.row();
+        codeRootTable.add(errorLog).growX().pad(styles.defaultScaledAbs);
+        codeRootTable.add(checkButton).size(defaultButtonSize, defaultButtonSize).bottom().pad(styles.defaultScaledAbs).right();
+        codeRootTable.add(closeButton).size(defaultButtonSize, defaultButtonSize).bottom().pad(styles.defaultScaledAbs).right();
+
+
+        //endregion
+
+        parse(true);
+        selectedComponentChanged(null, null);
+    }
+
+    private void addDragAndDropListeners() {
         //region drag and drop for the Components
         DragAndDrop componentsDragAndDrop = new DragAndDrop();
+        componentsDragAndDrop.setKeepWithinStage(false);
         //add the componentsStack as a source
         componentsDragAndDrop.addSource(new DragAndDrop.Source(componentsStack) {
             @Override
@@ -337,13 +354,13 @@ public class ShipBuilderScreen implements Screen {
         componentsDragAndDrop.addTarget(new DragAndDrop.Target(shipDesigner) {
             @Override
             public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-                return shipDesigner.drag((ComponentDef) payload.getObject(), x, y, pointer);
+                return shipDesigner.drag((ComponentDef) payload.getObject(), x, y);
             }
 
             @Override
             public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
                 ComponentDef def = (ComponentDef) payload.getObject();
-                shipDesigner.drop(def, x, y, pointer);
+                shipDesigner.drop(def, x, y);
                 shipDesigner.setSelectedComponent(def);
             }
         });
@@ -363,69 +380,6 @@ public class ShipBuilderScreen implements Screen {
         });
 
         //endregion
-
-        //endregion
-
-        //region code editor ui
-
-        codeEditor = new CodeEditor(codeEditorStyle);
-        codeEditor.setText(shipDef.code);
-
-        codeRootTable = new Table();
-        codeRootTable.setFillParent(true);
-        //switch button
-        ImageButton closeButton = new ImageButton(assetManager.getDrawable(Asset.CloseSymbol));
-        closeButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                switchView();
-            }
-        });
-
-
-        //error log
-        errorLog = new TextField("", textFieldStyle);
-        errorLog.setDisabled(true);
-
-        //drawables for the checkButton
-        checkButton_ok = assetManager.getDrawable(Asset.OkSymbol);
-        checkButton_error = assetManager.getDrawable(Asset.ErrorSymbol);
-        checkButton_actionNecessary = assetManager.getDrawable(Asset.ActionNecessarySymbol);
-        //check Button
-        checkButton = new ImageButton(checkButton_actionNecessary);
-        checkButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                //check if compiler has to check code again
-                if (checkButton.getStyle().imageUp == checkButton_error || checkButton.getStyle().imageUp == checkButton_actionNecessary) {
-                    long time = System.currentTimeMillis();
-                    parse(false);
-                    System.out.println(System.currentTimeMillis() - time);
-                }
-            }
-        });
-
-        //code editor
-        //CodeEditor for the file with all methods
-        codeEditor.setTextFieldListener((textFieldBase, c) -> {
-            if (checkButton.getStyle().imageUp != checkButton_actionNecessary) {
-                ImageButton.ImageButtonStyle style = checkButton.getStyle();
-                style.imageUp = checkButton_actionNecessary;
-                checkButton.setStyle(style);
-            }
-        });
-
-        codeRootTable.add(codeEditor).colspan(3).grow();
-        codeRootTable.row();
-        codeRootTable.add(errorLog).growX().pad(10);
-        codeRootTable.add(checkButton).size(40, 40).bottom().pad(10).right();
-        codeRootTable.add(closeButton).size(40, 40).bottom().pad(10).right();
-
-
-        //endregion
-
-        parse(true);
-        selectedComponentChanged(null, null);
     }
 
     //helper method to add all components to the componentsStack
@@ -435,9 +389,9 @@ public class ShipBuilderScreen implements Screen {
             Image img = new Image(assetManager.getTexture(type.defaultTexture));
 
             img.setUserObject(type);
-            componentsStack.add(img).width(ShipDesigner.COMPONENT_SIZE * type.width)
-                    .height(ShipDesigner.COMPONENT_SIZE * type.height)
-                    .pad(10, 10, 0, 10).top().left();
+            componentsStack.add(img).width(ShipDesigner.COMPONENT_SIZE * type.width * styles.scaleFactor)
+                    .height(ShipDesigner.COMPONENT_SIZE * type.height * styles.scaleFactor)
+                    .pad(styles.defaultScaledAbs, styles.defaultScaledAbs, 0, styles.defaultScaledAbs).top().left();
             componentsStack.row();
         }
     }
@@ -446,18 +400,24 @@ public class ShipBuilderScreen implements Screen {
         //save
         saveComponentDef(oldDef);
         //update the property stack
-        Map<String, ExternalPropertyData> properties;
         if (newDef != null) {
-            properties = newDef.properties;
-            nameTextField.setText(newDef.getName());
-            componentNameLabel.setText(newDef.getType().toString());
-            rotateButton.setVisible(true);
+            propertiesScrollPane.setActor(propertiesVerticalGroup);
+            selectComponent(newDef);
         } else {
-            properties = shipDef.properties;
-            nameTextField.setText(shipDef.getName());
-            componentNameLabel.setText("Ship");
-            rotateButton.setVisible(false);
+            propertiesScrollPane.setActor(shipInfoTable);
+            selectShip();
         }
+    }
+
+    /**
+     * the case that a real component was selected
+     */
+    private void selectComponent(ComponentDef newDef) {
+        Map<String, ExternalPropertyData> properties;
+        properties = newDef.properties;
+        nameTextField.setText(newDef.getName());
+        componentNameLabel.setText(newDef.getType().toString());
+        rotateButton.setVisible(true);
 
         int oldCount = propertiesVerticalGroup.getChildren().size - 1;
         int newCount = properties.size();
@@ -479,11 +439,11 @@ public class ShipBuilderScreen implements Screen {
                 //the component exists
                 Container container = (Container) propertiesVerticalGroup.getChild(x + 1);
                 PropertyBox propertyBox = (PropertyBox) container.getActor();
-                propertyBox.update(data.name, data);
+                propertyBox.update(newDef.getName(), data);
             } else {
                 if (oldPropertyBoxes.isEmpty()) {
                     //the component does not exist yet, and there is no one available on the stack
-                    Container<PropertyBox> container = new Container<>(new PropertyBox(propertyBoxStyle, data.name, data, methodPositions) {
+                    Container<PropertyBox> container = new Container<>(new PropertyBox(styles.propertyBoxStyle, data.name, data, methodPositions) {
                         @Override
                         public void codeButtonClicked() {
                             if (methodPositions.containsKey(this.getHandlerName())) {
@@ -494,18 +454,25 @@ public class ShipBuilderScreen implements Screen {
                                     codeEditor.moveTo(methodPositions.get(this.getHandlerName()).getLine());
                                 });
                                 codeEditor.addAction(action);
-                            } else {
-                                //TODO implementation create new method
+                            } else if (!this.getHandlerName().isBlank()) {
+                                //actually use \n because it leads to way better results
+                                String codeToAdd = String.format("\n\nvoid %s(%s value) {\n   \n}", this.getHandlerName(), getDataType().name);
+                                codeEditor.setText(codeEditor.getText() + codeToAdd);
+                                switchView();
+
+                                RunnableAction action = new RunnableAction();
+                                action.setRunnable(codeEditor::moveToEnd);
+                                codeEditor.addAction(action);
                             }
                         }
                     });
-                    container.pad(10, 10, 0, 10).fill();
+                    container.pad(styles.defaultScaledAbs, styles.defaultScaledAbs, 0, styles.defaultScaledAbs).fill();
                     propertiesVerticalGroup.addActor(container);
                 } else {
                     //the component does not exist yet, but there is one available on the stack
                     Container container = (Container) oldPropertyBoxes.pop();
                     PropertyBox propertyBox = (PropertyBox) container.getActor();
-                    propertyBox.update(data.name, data);
+                    propertyBox.update(newDef.getName(), data);
                     propertiesVerticalGroup.addActor(container);
                 }
             }
@@ -514,6 +481,35 @@ public class ShipBuilderScreen implements Screen {
 
         //validate the color of the nameTextField
         verifyName();
+    }
+
+    /**
+     * the case that no Component -> the ship was selected
+     * update the shipInfoTable
+     */
+    private void selectShip() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Amount of components: ");
+        sb.append(shipDef.getComponentCount());
+        int maxProduction = 0;
+        int maxConsumption = 0;
+        int mass = 0;
+        for (ComponentDef def : shipDef.componentDefs) {
+            if (def.getType().maxPowerLevel < 0) {
+                maxProduction -= def.getType().maxPowerLevel;
+            } else {
+                maxConsumption += def.getType().maxPowerLevel;
+            }
+            mass += def.getType().mass;
+        }
+        validate();
+        sb.append("\nMax power production: ").append(maxProduction);
+        sb.append("\nMax power consumption: ").append(maxConsumption);
+        sb.append("\nMass: ").append(mass);
+        sb.append("\n");
+        sb.append("\nShip status: ").append(shipValidated);
+        sb.append("\nCode status: ").append(codeValidated);
+        shipInfoLabel.setText(sb.toString());
     }
 
     //checks if the name is ok
@@ -539,6 +535,7 @@ public class ShipBuilderScreen implements Screen {
                 ((PropertyBox) ((Container) actor).getActor()).verify();
             }
         }
+        shipDesigner.setSelectedComponent(null);
         isShipView = !isShipView;
     }
 
@@ -548,7 +545,8 @@ public class ShipBuilderScreen implements Screen {
         try {
             errorLog.setText("");
             long start = System.nanoTime();
-            methods = compiler.compile().methods;
+            //the compiled code
+            MethodStatement[] methods = compiler.compile().methods;
             System.out.println("compile time: " + (System.nanoTime() - start) / 1000000.0 + "ms");
             if (updateMethodsMap) {
                 //update the map, update references and remove old ones
@@ -564,6 +562,7 @@ public class ShipBuilderScreen implements Screen {
             style = switchButton.getStyle();
             style.imageUp = switchButton_ok;
             switchButton.setStyle(style);
+            codeValidated = true;
             return true;
         } catch (CompileException e) {
             errorLog.setText(e.toString());
@@ -573,6 +572,7 @@ public class ShipBuilderScreen implements Screen {
             style = switchButton.getStyle();
             style.imageUp = switchButton_error;
             switchButton.setStyle(style);
+            codeValidated = false;
             return false;
         }
     }
@@ -583,8 +583,6 @@ public class ShipBuilderScreen implements Screen {
         //save name
         if (def != null) {
             def.setName(nameTextField.getText());
-        } else {
-            shipDef.setName(nameTextField.getText());
         }
 
         for (int x = 1; x < children.size; x++) {
@@ -597,15 +595,16 @@ public class ShipBuilderScreen implements Screen {
     private void save() {
         shipDef.code = codeEditor.getText();
         saveComponentDef(shipDesigner.getSelectedComponent());
+        validate();
 
-        //verify the ship
-        boolean code = parse(true);
-        boolean componentProperties = shipDef.verifyComponentProperties(methodPositions);
-        boolean names = shipDef.verifyNames();
-        System.out.printf("code: %b, properties: %b, names: %b%n", code, componentProperties, names);
-        //TODO check ship properties
-        shipDef.setValidated(code && componentProperties && names);
+        shipDef.setValidated(codeValidated && shipValidated);
         SaveGameManager.save();
+    }
+
+    private void validate() {
+        //verify the ship
+        codeValidated = parse(true);
+        shipValidated = shipDef.verifyComponentProperties(methodPositions) && shipDef.verifyNames();
     }
 
 

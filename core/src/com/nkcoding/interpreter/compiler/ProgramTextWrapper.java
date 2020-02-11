@@ -17,7 +17,7 @@ public class ProgramTextWrapper {
             String line = program[i];
             boolean inString = false;
             boolean escaped = false;
-            boolean lastIsStart = false;
+            int lastIsStart = Integer.MIN_VALUE;
             boolean done = false;
 
             setPosition(new ProgramPosition(0, 0));
@@ -29,13 +29,13 @@ public class ProgramTextWrapper {
                         case '/':
                             if (!inString) {
                                 //not in String
-                                if (lastIsStart) {
+                                if (lastIsStart == x - 1) {
                                     //complete line escape
                                     done = true;
                                     ignoreAt[i] = x - 1;
                                 } else {
                                     //could be start
-                                    lastIsStart = true;
+                                    lastIsStart = x;
                                 }
 
                             }
