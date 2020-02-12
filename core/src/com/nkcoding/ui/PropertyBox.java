@@ -55,11 +55,12 @@ public class PropertyBox extends WidgetGroup {
     //button for the setter
     private final ImageButton setterImageButton;
 
-    public PropertyBox(PropertyBoxStyle style, String name,
+    public PropertyBox(PropertyBoxStyle style, String componentName,
                        ExternalPropertySpecification specification, List<ExternalPropertyData> propertyDatas,
                        Map<String, NormalMethodDefinition> methods) {
         this.style = style;
-        this.name = name;
+        this.name = specification.name;
+        this.componentName = componentName;
         this.specification = specification;
         this.propertyDatas = propertyDatas;
         this.methods = methods;
@@ -82,14 +83,16 @@ public class PropertyBox extends WidgetGroup {
         getterImageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.getClipboard().setContents(specification.getterName + "(\"" + componentName + "\")");
+                Gdx.app.getClipboard().setContents(specification.getterName + "(\""
+                        + (componentName != null ? componentName : "") + "\")");
             }
         });
         setterImageButton = new ImageButton(style.setterButtonDrawable);
         setterImageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.getClipboard().setContents(specification.setterName + "(\"" + componentName + "\", )");
+                Gdx.app.getClipboard().setContents(specification.setterName + "(\""
+                        + (componentName != null ? componentName : "") + "\", )");
             }
         });
         addActor(nameLabel);
@@ -123,10 +126,19 @@ public class PropertyBox extends WidgetGroup {
     public void save() {
         if (specification != null) {
             if (specification.supportsWrite) {
-                specification.initData = valueTextField.getText();
+                if (!valueTextField.getText().equals("~")) {
+                    for (ExternalPropertyData data : propertyDatas) {
+                        data.initData = valueTextField.getText();
+                    }
+                }
             }
             if (specification.supportsChangedHandler) {
-                specification.handlerName = handlerTextField.getText();
+                if (!handlerTextField.getText().equals("~")) {
+                    for (ExternalPropertyData data : propertyDatas) {
+                        data.handlerName = handlerTextField.getText();
+                    }
+                }
+
             }
         }
     }
@@ -149,7 +161,7 @@ public class PropertyBox extends WidgetGroup {
             addActor(setterImageButton);
             addActor(valueTextField);
             setterLabel.setText(specification.setterName);
-            valueTextField.setText(specification.initData);
+            valueTextField.setText(generateInitData());
         } else {
             removeActor(setterLabel);
             removeActor(setterImageButton);
@@ -158,7 +170,7 @@ public class PropertyBox extends WidgetGroup {
         if (specification.supportsChangedHandler) {
             addActor(handlerTextField);
             addActor(codeImageButton);
-            handlerTextField.setText(specification.handlerName);
+            handlerTextField.setText(generateHandlerName());
         } else {
             removeActor(handlerTextField);
         }
@@ -177,6 +189,28 @@ public class PropertyBox extends WidgetGroup {
                     ? style.legalInputColor : style.illegalInputColor);
         }
 
+    }
+
+    private String generateHandlerName() {
+        String handlerName = propertyDatas.get(0).handlerName;
+        for (ExternalPropertyData data : propertyDatas) {
+            if (!data.handlerName.equals(handlerName)) {
+                handlerName = "~";
+                break;
+            }
+        }
+        return handlerName;
+    }
+
+    private String generateInitData() {
+        String initData = propertyDatas.get(0).initData;
+        for (ExternalPropertyData data : propertyDatas) {
+            if (!data.initData.equals(initData)) {
+                initData = "~";
+                break;
+            }
+        }
+        return initData;
     }
 
     @Override

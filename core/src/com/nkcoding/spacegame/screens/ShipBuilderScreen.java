@@ -25,11 +25,13 @@ import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.SaveGameManager;
 import com.nkcoding.spacegame.SpaceGame;
+import com.nkcoding.spacegame.simulation.spaceship.ExternalPropertySpecification;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentType;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 import com.nkcoding.ui.*;
+import com.nkcoding.util.Tuple;
 
 import java.util.*;
 import java.util.List;
@@ -401,11 +403,17 @@ public class ShipBuilderScreen implements Screen {
         }
     }
 
+    /**
+     * updates the selected component
+     * an empty list means that no Component is selected
+     * @param newDef non null
+     * @param oldDef non null
+     */
     private void selectedComponentChanged(List<ComponentDef> newDef, List<ComponentDef> oldDef) {
         //save
         saveComponentDef(oldDef);
         //update the property stack
-        if (newDef != null) {
+        if (!newDef.isEmpty()) {
             propertiesScrollPane.setActor(propertiesVerticalGroup);
             selectComponent(newDef);
         } else {
@@ -419,16 +427,32 @@ public class ShipBuilderScreen implements Screen {
      * newDefs must NOT be empty
      */
     private void selectComponent(List<ComponentDef> newDefs) {
-        Map<String, ExternalPropertyData> properties;
-
-
-        //TODO
-
-
-        properties = newDef.properties;
-        nameTextField.setText(newDef.getName());
-        componentNameLabel.setText(newDef.getType().toString());
-        rotateButton.setVisible(true);
+        Collection<ExternalPropertyData> allPossibleExternalProperties = newDefs.get(0).properties.values();
+        Map<ExternalPropertySpecification, List<ExternalPropertyData>> properties = new LinkedHashMap<>();
+        for (ExternalPropertyData data : allPossibleExternalProperties) {
+            ExternalPropertySpecification spec = data.specification;
+            boolean allMatch = true;
+            List<ExternalPropertyData> allDatas = new ArrayList<>();
+            for (ComponentDef def : newDefs) {
+                ExternalPropertyData dataToCheck = def.properties.get(spec.name);
+                if (dataToCheck != null && dataToCheck.specification.equals(spec)) {
+                    allDatas.add(dataToCheck);
+                } else {
+                    allMatch = false;
+                    break;
+                }
+            }
+            if (allMatch) {
+                properties.put(spec, allDatas);
+            }
+        }
+        String componentName = null;
+        if (newDefs.size() == 1) {
+            componentName = newDefs.get(0).getName();
+            nameTextField.setText(componentName);
+            componentNameLabel.setText(newDefs.get(0).getType().toString());
+            rotateButton.setVisible(true);
+        }
 
         int oldCount = propertiesVerticalGroup.getChildren().size - 1;
         int newCount = properties.size();
@@ -445,16 +469,17 @@ public class ShipBuilderScreen implements Screen {
         }
 
         int x = 0;
-        for (ExternalPropertyData data : properties.values()) {
+        for (Map.Entry<ExternalPropertySpecification, List<ExternalPropertyData>> entry : properties.entrySet()) {
             if (x < oldCount) {
                 //the component exists
-                Container container = (Container) propertiesVerticalGroup.getChild(x + 1);
-                PropertyBox propertyBox = (PropertyBox) container.getActor();
-                propertyBox.update(newDef.getName(), data);
+                Container<PropertyBox> container = (Container<PropertyBox>) propertiesVerticalGroup.getChild(x + 1);
+                PropertyBox propertyBox = container.getActor();
+                propertyBox.update(componentName, entry.getKey(), entry.getValue());
             } else {
                 if (oldPropertyBoxes.isEmpty()) {
                     //the component does not exist yet, and there is no one available on the stack
-                    Container<PropertyBox> container = new Container<>(new PropertyBox(styles.propertyBoxStyle, data.name, data, methodPositions) {
+                    Container<PropertyBox> container = new Container<>(new PropertyBox(styles.propertyBoxStyle, componentName,
+                            entry.getKey(), entry.getValue(), methodPositions) {
                         @Override
                         public void codeButtonClicked() {
                             if (methodPositions.containsKey(this.getHandlerName())) {
@@ -483,7 +508,7 @@ public class ShipBuilderScreen implements Screen {
                     //the component does not exist yet, but there is one available on the stack
                     Container container = (Container) oldPropertyBoxes.pop();
                     PropertyBox propertyBox = (PropertyBox) container.getActor();
-                    propertyBox.update(newDef.getName(), data);
+                    propertyBox.update(componentName, entry.getKey(), entry.getValue());
                     propertiesVerticalGroup.addActor(container);
                 }
             }

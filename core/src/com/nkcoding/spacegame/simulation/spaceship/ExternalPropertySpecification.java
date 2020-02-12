@@ -43,7 +43,8 @@ public class ExternalPropertySpecification {
     /**
      * the default constructor
      */
-    public ExternalPropertySpecification(String name, DataType type, boolean supportsRead, boolean supportsWrite, boolean supportsChangedHandler, String getterName, String setterName) {
+    public ExternalPropertySpecification(String name, DataType type, boolean supportsRead, boolean supportsWrite,
+                                         boolean supportsChangedHandler, String getterName, String setterName) {
         //check if type is ok
         if (type.equals(DataType.VOID)) throw new IllegalArgumentException("type cannot be " + DataType.VOID_KW);
         this.name = name;
@@ -58,7 +59,8 @@ public class ExternalPropertySpecification {
     /**
      * wrapper that sets getter- and setterName to the default get / set
      */
-    public ExternalPropertySpecification(String name, DataType type, boolean supportsWrite, boolean supportsRead, boolean supportsChangedHandler) {
+    public ExternalPropertySpecification(String name, DataType type, boolean supportsWrite,
+                                         boolean supportsRead, boolean supportsChangedHandler) {
         this(name, type, supportsRead, supportsWrite, supportsChangedHandler, "get" + name, "set" + name);
     }
 
@@ -87,7 +89,7 @@ public class ExternalPropertySpecification {
     }
 
     public boolean verifyInit(String init) {
-        if (init.equals("")) return true;
+        if (init.equals("") || init.equals("~")) return true;
         switch (type.name) {
             case DataType.BOOLEAN_KW:
                 return init.equalsIgnoreCase("true") || init.equalsIgnoreCase("false");
@@ -122,6 +124,7 @@ public class ExternalPropertySpecification {
      * @return true if everything is ok
      */
     public boolean verifyHandler(String handlerName, Map<String, ? extends MethodDefinition> methods) {
+        if (handlerName.equals("") || handlerName.equals("~")) return true;
         boolean correctHandler = false;
         MethodDefinition def = methods.get(handlerName);
         if (def != null) {
@@ -130,7 +133,7 @@ public class ExternalPropertySpecification {
             }
         }
 
-        return handlerName.equals("") || correctHandler;
+        return correctHandler;
     }
 
     /**
