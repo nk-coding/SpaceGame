@@ -204,7 +204,9 @@ public class ShipDef {
                 componentDefs.remove(componentDef);
                 for (int _x = componentDef.getX(); _x < (componentDef.getX() + componentDef.getRealWidth()); _x++) {
                     for (int _y = componentDef.getY(); _y < (componentDef.getY() + componentDef.getRealHeight()); _y++) {
-                        componentsMap[_x][_y] = null;
+                        if (componentsMap[_x][_y] == componentDef) {
+                            componentsMap[_x][_y] = null;
+                        }
                     }
                 }
             }

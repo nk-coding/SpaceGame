@@ -1,20 +1,19 @@
 package com.nkcoding.spacegame.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nkcoding.interpreter.MethodStatement;
@@ -285,8 +284,14 @@ public class ShipBuilderScreen implements Screen {
         codeRootTable.add(checkButton).size(defaultButtonSize, defaultButtonSize).bottom().pad(styles.defaultScaledAbs).right();
         codeRootTable.add(closeButton).size(defaultButtonSize, defaultButtonSize).bottom().pad(styles.defaultScaledAbs).right();
 
-
         //endregion
+
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                return ShipBuilderScreen.this.keyDown(event, keycode);
+            }
+        });
 
         parse(true);
         selectedComponentChanged(new LinkedList<>(), new LinkedList<>());
@@ -406,6 +411,14 @@ public class ShipBuilderScreen implements Screen {
                     .pad(styles.defaultScaledAbs, styles.defaultScaledAbs, 0, styles.defaultScaledAbs).top().left();
             componentsStack.row();
         }
+    }
+
+    //keyTyped handler
+    private boolean keyDown(InputEvent event, int keyCode) {
+        if (keyCode == Input.Keys.S && UIUtils.ctrl()) {
+            save();
+        }
+        return false;
     }
 
     /**
