@@ -7,7 +7,6 @@ import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.simulation.Ship;
 import com.nkcoding.spacegame.simulation.spaceship.ExternalPropertySpecification;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
-import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 import com.nkcoding.util.IOTriFunction;
 import com.nkcoding.util.TriFunction;
 

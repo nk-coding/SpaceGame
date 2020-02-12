@@ -56,12 +56,12 @@ public class PropertyBox extends WidgetGroup {
     private final ImageButton setterImageButton;
 
     public PropertyBox(PropertyBoxStyle style, String componentName,
-                       ExternalPropertySpecification specification, List<ExternalPropertyData> propertyDatas,
+                       ExternalPropertySpecification spec, List<ExternalPropertyData> propertyDatas,
                        Map<String, NormalMethodDefinition> methods) {
+        this.specification = spec;
         this.style = style;
         this.name = specification.name;
         this.componentName = componentName;
-        this.specification = specification;
         this.propertyDatas = propertyDatas;
         this.methods = methods;
         //create all the UI components
