@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.spacegame.simulation.Ship;
+import com.nkcoding.spacegame.simulation.spaceship.ExternalPropertySpecification;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 
@@ -31,7 +32,7 @@ public class ComponentDef extends ComponentDefBase {
     public ComponentDef(ComponentType type) {
         super(type);
         //add all ExternalPropertyDefs
-        for (ExternalPropertyData data : type.propertyDefs) {
+        for (ExternalPropertySpecification data : type.propertyDefs) {
             properties.put(data.name, new ExternalPropertyData(data));
         }
     }
@@ -47,8 +48,8 @@ public class ComponentDef extends ComponentDefBase {
         //init all properties
         for (JsonValue propertyValue : value.get("properties")) {
             ExternalPropertyData data = comDef.properties.get(propertyValue.getString("key"));
-            if (data.supportsWrite) data.initData = propertyValue.getString("initData");
-            if (data.supportsChangedHandler) data.handlerName = propertyValue.getString("handlerName");
+            if (data.supportsWrite()) data.initData = propertyValue.getString("initData");
+            if (data.supportsChangedHandler()) data.handlerName = propertyValue.getString("handlerName");
         }
 
         return comDef;

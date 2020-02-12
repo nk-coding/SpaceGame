@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.simulation.Ship;
+import com.nkcoding.spacegame.simulation.spaceship.ExternalPropertySpecification;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 import com.nkcoding.util.IOTriFunction;
@@ -26,27 +27,27 @@ import static com.nkcoding.spacegame.simulation.spaceship.components.ShieldGener
 
 public enum ComponentType {
     Engine((short)0, Engine::new, Engine::new, 1, 2, 100, 100, 100, Asset.Engine,
-            new ExternalPropertyData(ENGINE_POWER_KEY, DataType.INTEGER)),
+            new ExternalPropertySpecification(ENGINE_POWER_KEY, DataType.INTEGER)),
     Cannon((short) 1, Cannon::new, Cannon::new, 1, 2, 100, 100, 50, Asset.Cannon,
-            new ExternalPropertyData(IS_SHOOTING_KEY, DataType.BOOLEAN),
-            new ExternalPropertyData(BUFFER_LEVEL_KEY, DataType.FLOAT, false, true, false)),
+            new ExternalPropertySpecification(IS_SHOOTING_KEY, DataType.BOOLEAN),
+            new ExternalPropertySpecification(BUFFER_LEVEL_KEY, DataType.FLOAT, false, true, false)),
     PowerCore((short) 2, PowerCore::new, PowerCore::new, 2, 2, 200, 500, -100, Asset.PowerCore),
     BasicHull((short) 3, BasicHull::new, BasicHull::new, Asset.BasicHull),
     ExplosiveCanister((short) 4, ExplosiveCanister::new, ExplosiveCanister::new, 1, 1, 50, 50, 0, Asset.ExplosiveCanister,
-            new ExternalPropertyData(EXPLODE_KEY, DataType.BOOLEAN)),
+            new ExternalPropertySpecification(EXPLODE_KEY, DataType.BOOLEAN)),
     ShieldGenerator((short) 5, ShieldGenerator::new, ShieldGenerator::new, 2, 2, 200, 100, 30, Asset.ShieldGenerator,
-            new ExternalPropertyData(RADIUS_KEY, DataType.FLOAT),
-            new ExternalPropertyData(IS_ENABLED_KEY, DataType.BOOLEAN),
-            new ExternalPropertyData(BUFFER_LEVEL_KEY, DataType.FLOAT, false, true, false)),
+            new ExternalPropertySpecification(RADIUS_KEY, DataType.FLOAT),
+            new ExternalPropertySpecification(IS_ENABLED_KEY, DataType.BOOLEAN),
+            new ExternalPropertySpecification(BUFFER_LEVEL_KEY, DataType.FLOAT, false, true, false)),
     ComputeCore((short) 6, ComputeCore::new, ComputeCore::new, 2, 2, 400, 800, 0, Asset.ComputeCore,
-            new ExternalPropertyData(KEY_DOWN_KEY, DataType.STRING, false, false, true),
-            new ExternalPropertyData(KEY_UP_KEY, DataType.STRING, false, false, true),
-            new ExternalPropertyData(ANGULAR_VELOCITY_KEY, DataType.FLOAT, false, true, false),
-            new ExternalPropertyData(VELOCITY_KEY, DataType.FLOAT, false, true, false),
-            new ExternalPropertyData(CAMERA_FOCUS_KEY, DataType.BOOLEAN),
-            new ExternalPropertyData(INIT_CALLBACK_KEY, DataType.STRING, false, false, true)),
+            new ExternalPropertySpecification(KEY_DOWN_KEY, DataType.STRING, false, false, true),
+            new ExternalPropertySpecification(KEY_UP_KEY, DataType.STRING, false, false, true),
+            new ExternalPropertySpecification(ANGULAR_VELOCITY_KEY, DataType.FLOAT, false, true, false),
+            new ExternalPropertySpecification(VELOCITY_KEY, DataType.FLOAT, false, true, false),
+            new ExternalPropertySpecification(CAMERA_FOCUS_KEY, DataType.BOOLEAN),
+            new ExternalPropertySpecification(INIT_CALLBACK_KEY, DataType.STRING, false, false, true)),
     Sensors((short) 7, Sensors::new, Sensors::new, 2, 1, 100, 100, 0, Asset.Sensors,
-            new ExternalPropertyData(IS_SCANNER_ENABLED, DataType.BOOLEAN));
+            new ExternalPropertySpecification(IS_SCANNER_ENABLED, DataType.BOOLEAN));
 
     //the width of the component
     public final int width;
@@ -64,7 +65,7 @@ public enum ComponentType {
     //file position of the preview image
     public final Asset defaultTexture;
     //array with all the keys for the ExternalProperties
-    public final ExternalPropertyData[] propertyDefs;
+    public final ExternalPropertySpecification[] propertyDefs;
     //the mass of the Component
     public final float mass;
     //the maximum power level for the component
@@ -79,14 +80,14 @@ public enum ComponentType {
                   int width, int height,
                   int health, float mass,
                   float maxPowerLevel, Asset defaultTexture,
-                  ExternalPropertyData... propertyDefs) {
-        ExternalPropertyData[] newPropertyDefs = new ExternalPropertyData[propertyDefs.length + 5];
+                  ExternalPropertySpecification... propertyDefs) {
+        ExternalPropertySpecification[] newPropertyDefs = new ExternalPropertySpecification[propertyDefs.length + 5];
         System.arraycopy(propertyDefs, 0, newPropertyDefs, 5, propertyDefs.length);
-        newPropertyDefs[0] = new ExternalPropertyData(HEALTH_KEY, DataType.FLOAT, false);
-        newPropertyDefs[1] = new ExternalPropertyData(POWER_REQUESTED_KEY, DataType.FLOAT, false);
-        newPropertyDefs[2] = new ExternalPropertyData(REQUEST_LEVEL_KEY, DataType.INTEGER, true);
-        newPropertyDefs[3] = new ExternalPropertyData(HAS_FULL_POWER_KEY, DataType.BOOLEAN, false);
-        newPropertyDefs[4] = new ExternalPropertyData(POWER_RECEIVED_KEY, DataType.FLOAT, false);
+        newPropertyDefs[0] = new ExternalPropertySpecification(HEALTH_KEY, DataType.FLOAT, false);
+        newPropertyDefs[1] = new ExternalPropertySpecification(POWER_REQUESTED_KEY, DataType.FLOAT, false);
+        newPropertyDefs[2] = new ExternalPropertySpecification(REQUEST_LEVEL_KEY, DataType.INTEGER, true);
+        newPropertyDefs[3] = new ExternalPropertySpecification(HAS_FULL_POWER_KEY, DataType.BOOLEAN, false);
+        newPropertyDefs[4] = new ExternalPropertySpecification(POWER_RECEIVED_KEY, DataType.FLOAT, false);
         this.propertyDefs = newPropertyDefs;
         this.constructor = constructor;
         this.deserializer = deserializer;
@@ -103,13 +104,13 @@ public enum ComponentType {
     ComponentType(short index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor,
                   IOTriFunction<ComponentDefBase, DataInputStream, Ship, ? extends Component> deserializer,
                   float powerLevel,
-                  Asset previewImg, ExternalPropertyData... propertyDefs) {
+                  Asset previewImg, ExternalPropertySpecification... propertyDefs) {
         this(index, constructor, deserializer, 1, 1, 100, 100, powerLevel, previewImg, propertyDefs);
     }
 
     ComponentType(short index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor,
                   IOTriFunction<ComponentDefBase, DataInputStream, Ship, ? extends Component> deserializer,
-                  Asset previewImg, ExternalPropertyData... propertyDefs) {
+                  Asset previewImg, ExternalPropertySpecification... propertyDefs) {
         this(index, constructor, deserializer, 0, previewImg, propertyDefs);
     }
 

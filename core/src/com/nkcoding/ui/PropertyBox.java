@@ -10,11 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Clipboard;
 import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.interpreter.compiler.NormalMethodDefinition;
+import com.nkcoding.spacegame.simulation.spaceship.ExternalPropertySpecification;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 
+import java.util.List;
 import java.util.Map;
 
 public class PropertyBox extends WidgetGroup {
@@ -25,7 +26,9 @@ public class PropertyBox extends WidgetGroup {
     //name of the component
     private String componentName;
     //the data for the ExternalProperty
-    private ExternalPropertyData data;
+    private ExternalPropertySpecification specification;
+    //List with all ExternalPropertyData which have to be served
+    private List<ExternalPropertyData> propertyDatas;
     //the style of this
     private PropertyBoxStyle style;
     //the Label for the Name
@@ -52,11 +55,14 @@ public class PropertyBox extends WidgetGroup {
     //button for the setter
     private final ImageButton setterImageButton;
 
-    public PropertyBox(PropertyBoxStyle style, String name, ExternalPropertyData data,
+    public PropertyBox(PropertyBoxStyle style, String componentName,
+                       ExternalPropertySpecification specification, List<ExternalPropertyData> propertyDatas,
                        Map<String, NormalMethodDefinition> methods) {
         this.style = style;
-        this.name = name;
-        this.data = data;
+        this.name = specification.name;
+        this.componentName = componentName;
+        this.specification = specification;
+        this.propertyDatas = propertyDatas;
         this.methods = methods;
         //create all the UI components
         nameLabel = new Label(" ", style.labelStyle);
@@ -77,14 +83,16 @@ public class PropertyBox extends WidgetGroup {
         getterImageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.getClipboard().setContents(data.getterName + "(\"" + componentName + "\")");
+                Gdx.app.getClipboard().setContents(specification.getterName + "(\""
+                        + (componentName != null ? componentName : "") + "\")");
             }
         });
         setterImageButton = new ImageButton(style.setterButtonDrawable);
         setterImageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.getClipboard().setContents(data.setterName + "(\"" + componentName + "\", )");
+                Gdx.app.getClipboard().setContents(specification.setterName + "(\""
+                        + (componentName != null ? componentName : "") + "\", )");
             }
         });
         addActor(nameLabel);
@@ -103,11 +111,12 @@ public class PropertyBox extends WidgetGroup {
      * updates this control to a new ExternalPropertyData
      * automatically calls save()
      */
-    public void update(String componentName, ExternalPropertyData data) {
+    public void update(String componentName, ExternalPropertySpecification specification, List<ExternalPropertyData> propertyDatas) {
         save();
         this.componentName = componentName;
-        this.name = data.name;
-        this.data = data;
+        this.name = specification.name;
+        this.specification = specification;
+        this.propertyDatas = propertyDatas;
         init();
     }
 
@@ -115,12 +124,21 @@ public class PropertyBox extends WidgetGroup {
      * saves the TextFields to the ExternalPropertyData, should be called before it is deleted
      */
     public void save() {
-        if (data != null) {
-            if (data.supportsWrite) {
-                data.initData = valueTextField.getText();
+        if (specification != null) {
+            if (specification.supportsWrite) {
+                if (!valueTextField.getText().equals("~")) {
+                    for (ExternalPropertyData data : propertyDatas) {
+                        data.initData = valueTextField.getText();
+                    }
+                }
             }
-            if (data.supportsChangedHandler) {
-                data.handlerName = handlerTextField.getText();
+            if (specification.supportsChangedHandler) {
+                if (!handlerTextField.getText().equals("~")) {
+                    for (ExternalPropertyData data : propertyDatas) {
+                        data.handlerName = handlerTextField.getText();
+                    }
+                }
+
             }
         }
     }
@@ -129,30 +147,30 @@ public class PropertyBox extends WidgetGroup {
      * updates this PropertyBox with the data from a new ExternalPropertyData
      */
     private void init() {
-        nameLabel.setText(name + ": " + data.type);
-        if (data.supportsRead) {
+        nameLabel.setText(name + ": " + specification.type);
+        if (specification.supportsRead) {
             addActor(getterLabel);
             addActor(getterImageButton);
-            getterLabel.setText(data.getterName);
+            getterLabel.setText(specification.getterName);
         } else {
             removeActor(getterLabel);
             removeActor(getterImageButton);
         }
-        if (data.supportsWrite) {
+        if (specification.supportsWrite) {
             addActor(setterLabel);
             addActor(setterImageButton);
             addActor(valueTextField);
-            setterLabel.setText(data.setterName);
-            valueTextField.setText(data.initData);
+            setterLabel.setText(specification.setterName);
+            valueTextField.setText(generateInitData());
         } else {
             removeActor(setterLabel);
             removeActor(setterImageButton);
             removeActor(valueTextField);
         }
-        if (data.supportsChangedHandler) {
+        if (specification.supportsChangedHandler) {
             addActor(handlerTextField);
             addActor(codeImageButton);
-            handlerTextField.setText(data.handlerName);
+            handlerTextField.setText(generateHandlerName());
         } else {
             removeActor(handlerTextField);
         }
@@ -161,16 +179,36 @@ public class PropertyBox extends WidgetGroup {
     }
 
     public void verify() {
-        if (valueTextField != null && data.supportsWrite) {
-            valueTextField.setColor(valueTextField.getText().equals("") || data.verifyInit(valueTextField.getText())
-                    ? style.legalInputColor : style.illegalInputColor);
+        if (valueTextField != null && specification.supportsWrite) {
+            valueTextField.setColor(specification.verifyInit(valueTextField.getText()).color);
         }
 
-        if (data.supportsChangedHandler) {
-            handlerTextField.setColor(data.verifyHandler(handlerTextField.getText(), methods)
-                    ? style.legalInputColor : style.illegalInputColor);
+        if (specification.supportsChangedHandler) {
+            handlerTextField.setColor(specification.verifyHandler(handlerTextField.getText(), methods).color);
         }
 
+    }
+
+    private String generateHandlerName() {
+        String handlerName = propertyDatas.get(0).handlerName;
+        for (ExternalPropertyData data : propertyDatas) {
+            if (!data.handlerName.equals(handlerName)) {
+                handlerName = "~";
+                break;
+            }
+        }
+        return handlerName;
+    }
+
+    private String generateInitData() {
+        String initData = propertyDatas.get(0).initData;
+        for (ExternalPropertyData data : propertyDatas) {
+            if (!data.initData.equals(initData)) {
+                initData = "~";
+                break;
+            }
+        }
+        return initData;
     }
 
     @Override
@@ -185,16 +223,16 @@ public class PropertyBox extends WidgetGroup {
         }
         //draw all the children
         nameLabel.draw(batch, parentAlpha);
-        if (data.supportsRead) {
+        if (specification.supportsRead) {
             getterLabel.draw(batch, parentAlpha);
             getterImageButton.draw(batch, parentAlpha);
         }
-        if (data.supportsWrite) {
+        if (specification.supportsWrite) {
             setterLabel.draw(batch, parentAlpha);
             setterImageButton.draw(batch, parentAlpha);
             valueTextField.draw(batch, parentAlpha);
         }
-        if (data.supportsChangedHandler) {
+        if (specification.supportsChangedHandler) {
             codeImageButton.draw(batch, parentAlpha);
             handlerTextField.draw(batch, parentAlpha);
         }
@@ -215,7 +253,7 @@ public class PropertyBox extends WidgetGroup {
         float labelButtonDelta = nameLabel.getPrefHeight() - valueTextField.getPrefHeight();
 
         //changed handler
-        if (data.supportsChangedHandler) {
+        if (specification.supportsChangedHandler) {
             handlerTextField.setX(style.spacing + bgLeftWidth);
             handlerTextField.setY(posY);
             handlerTextField.setWidth(getWidth() - style.spacing - bgLeftWidth - bgRightWidth - style.spacing - handlerTextField.getHeight());
@@ -229,7 +267,7 @@ public class PropertyBox extends WidgetGroup {
         }
 
         //value text field
-        if (data.supportsWrite) {
+        if (specification.supportsWrite) {
             valueTextField.setX(style.spacing + bgLeftWidth);
             valueTextField.setY(posY);
             valueTextField.setWidth(getWidth() - style.spacing - bgLeftWidth - bgRightWidth);
@@ -252,7 +290,7 @@ public class PropertyBox extends WidgetGroup {
         }
 
         //getter
-        if (data.supportsRead) {
+        if (specification.supportsRead) {
             getterLabel.setX(bgLeftWidth + labelButtonMaxHeight + 2 * style.spacing);
             getterLabel.setWidth(getWidth() - bgLeftWidth - bgRightWidth - 2 * style.spacing - labelButtonMaxHeight);
             if (labelButtonDelta < 0) {
@@ -286,18 +324,18 @@ public class PropertyBox extends WidgetGroup {
         }
         prefHeight += nameLabel.getPrefHeight();
 
-        if (data.supportsRead) {
+        if (specification.supportsRead) {
             prefHeight += labelPrefHeight;
             prefHeight += style.spacing;
         }
 
-        if (data.supportsWrite) {
+        if (specification.supportsWrite) {
             prefHeight += labelPrefHeight;
             prefHeight += valueTextField.getPrefHeight();
             prefHeight += 2 * style.spacing;
         }
 
-        if (data.supportsChangedHandler) {
+        if (specification.supportsChangedHandler) {
             prefHeight += handlerTextField.getPrefHeight();
             prefHeight += style.spacing;
         }
@@ -306,7 +344,7 @@ public class PropertyBox extends WidgetGroup {
     }
 
     public DataType getDataType() {
-        return data.type;
+        return specification.type;
     }
 
     /**
@@ -328,10 +366,6 @@ public class PropertyBox extends WidgetGroup {
         public Label.LabelStyle labelStyle;
 
         public TextField.TextFieldStyle textFieldStyle;
-
-        public Color illegalInputColor;
-
-        public Color legalInputColor;
 
         public float spacing;
     }

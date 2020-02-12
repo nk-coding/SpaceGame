@@ -23,14 +23,14 @@ public abstract class ExternalPropertyHandler {
     public void initProperties(Collection<ExternalPropertyData> datas, Map<String, MethodStatement> methods) {
         Map<String, ExternalProperty> properties = getProperties();
         for (ExternalPropertyData data : datas) {
-            ExternalProperty property = properties.get(data.name);
+            ExternalProperty property = properties.get(data.getName());
             if (property != null) {
                 property.init(data, methods);
                 if (property.supportsWrite) {
-                    methodNames.put(data.setterName, property);
+                    methodNames.put(data.getSetterName(), property);
                 }
                 if (property.supportsRead) {
-                    methodNames.put(data.getterName, property);
+                    methodNames.put(data.getGetterName(), property);
                 }
             }
         }

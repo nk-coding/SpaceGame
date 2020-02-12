@@ -10,7 +10,9 @@ import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyDa
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ShipDef {
     //the max width / height of a ship
@@ -98,8 +100,10 @@ public class ShipDef {
      */
     public boolean verifyComponentName(ComponentDef def, String name) {
         if (name.equals("")) return true;
-        ComponentDef nameDef = getComponent(name);
-        return nameDef == null || nameDef == def;
+        List<ComponentDef> matches = componentDefs.stream().filter(comDef -> comDef.getName().equals(name)).collect(Collectors.toList());
+        if (matches.size() == 0) return true;
+        else if (matches.size() > 1) return false;
+        else return matches.get(0) == def;
     }
 
     /**
@@ -118,9 +122,9 @@ public class ShipDef {
 
     public Compiler createCompiler(String text) {
         //create the external method statements for the components
-        HashMap<String, ExternalPropertyData> externalPropertyDatas = new HashMap<>();
+        HashMap<String, ExternalPropertySpecification> externalPropertyDatas = new HashMap<>();
         for (ComponentType com : ComponentType.values()) {
-            for (ExternalPropertyData data : com.propertyDefs) {
+            for (ExternalPropertySpecification data : com.propertyDefs) {
                 if (!externalPropertyDatas.containsKey(data.name)) {
                     externalPropertyDatas.put(data.name, data);
                 }
@@ -128,7 +132,7 @@ public class ShipDef {
         }
 
         ArrayList<MethodDefinition> methodDefinitions = new ArrayList<>();
-        for (ExternalPropertyData data : externalPropertyDatas.values()) {
+        for (ExternalPropertySpecification data : externalPropertyDatas.values()) {
             data.addExternalMethodDefs(methodDefinitions);
         }
         String[] lines = text.split("\\r?\\n");
@@ -207,7 +211,7 @@ public class ShipDef {
         }
 
         //is it possible to move a component to a specific position
-        public boolean tryMoveComponent(ComponentDef componentDef, int x, int y, int rotation) {
+        public boolean tryMoveComponent(ComponentDef componentDef, int x, int y, int rotation, List<ComponentDef> toIgnore) {
             //calculate resulting width and height
             int width = (rotation % 2 == 0) ? componentDef.getWidth() : componentDef.getHeight();
             int height = (rotation % 2 == 0) ? componentDef.getHeight() : componentDef.getWidth();
@@ -216,7 +220,8 @@ public class ShipDef {
                 for (int _y = y; _y < (y + height); _y++) {
                     //check if it is in range
                     //check if there is no component or (the not moved) same
-                    result = result && (_x < MAX_SIZE && _x >= 0 && _y >= 0 && _y < MAX_SIZE && (componentsMap[_x][_y] == null || componentsMap[_x][_y] == componentDef));
+                    result = result && (_x < MAX_SIZE && _x >= 0 && _y >= 0 && _y < MAX_SIZE
+                            && (componentsMap[_x][_y] == null || toIgnore.contains(componentsMap[_x][_y])));
                 }
             }
             return result;
@@ -249,7 +254,7 @@ public class ShipDef {
                         y -= def.getWidth() - 1;
                         break;
                 }
-                if (tryMoveComponent(def, x, y, rotation)) {
+                if (tryMoveComponent(def, x, y, rotation, List.of(def))) {
                     moveComponent(def, x, y, rotation);
                     return;
                 }
