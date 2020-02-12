@@ -133,7 +133,7 @@ public class LauncherScreen implements Screen {
         });
 
         serverTable.add(serverPortLabel).pad(defaultPadding).row();
-        serverTable.add(serverPortTextField).pad(defaultPadding).row();
+        serverTable.add(serverPortTextField).minWidth(200 * styles.scaleFactor).pad(defaultPadding).row();
         serverTable.add(startServerButton).pad(defaultPadding);
 
         //endregion
@@ -161,11 +161,11 @@ public class LauncherScreen implements Screen {
         });
 
         clientTable.add(clientClientPortLabel).pad(defaultPadding).row();
-        clientTable.add(clientClientPortTextField).pad(defaultPadding).row();
+        clientTable.add(clientClientPortTextField).minWidth(200 * styles.scaleFactor).pad(defaultPadding).row();
         clientTable.add(clientServerIPLabel).pad(defaultPadding).row();
-        clientTable.add(clientServerIPTextField).pad(defaultPadding).row();
+        clientTable.add(clientServerIPTextField).minWidth(200 * styles.scaleFactor).pad(defaultPadding).row();
         clientTable.add(clientServerPortLabel).pad(defaultPadding).row();
-        clientTable.add(clientServerPortTextField).pad(defaultPadding).row();
+        clientTable.add(clientServerPortTextField).minWidth(200 * styles.scaleFactor).pad(defaultPadding).row();
         clientTable.add(startClientButton).pad(defaultPadding);
 
 
