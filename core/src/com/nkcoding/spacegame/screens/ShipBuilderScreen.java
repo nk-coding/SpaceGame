@@ -287,7 +287,7 @@ public class ShipBuilderScreen implements Screen {
         //endregion
 
         parse(true);
-        selectedComponentChanged(null, null);
+        selectedComponentChanged(new LinkedList<>(), new LinkedList<>());
     }
 
     private void addDragAndDropListeners() {
@@ -407,7 +407,7 @@ public class ShipBuilderScreen implements Screen {
         //update the property stack
         if (newDef != null) {
             propertiesScrollPane.setActor(propertiesVerticalGroup);
-            //TODO selectComponent(newDef);
+            selectComponent(newDef);
         } else {
             propertiesScrollPane.setActor(shipInfoTable);
             selectShip();
@@ -416,9 +416,15 @@ public class ShipBuilderScreen implements Screen {
 
     /**
      * the case that a real component was selected
+     * newDefs must NOT be empty
      */
-    private void selectComponent(ComponentDef newDef) {
+    private void selectComponent(List<ComponentDef> newDefs) {
         Map<String, ExternalPropertyData> properties;
+
+
+        //TODO
+
+
         properties = newDef.properties;
         nameTextField.setText(newDef.getName());
         componentNameLabel.setText(newDef.getType().toString());

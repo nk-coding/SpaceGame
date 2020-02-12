@@ -119,9 +119,9 @@ public class ShipDef {
 
     public Compiler createCompiler(String text) {
         //create the external method statements for the components
-        HashMap<String, ExternalPropertyData> externalPropertyDatas = new HashMap<>();
+        HashMap<String, ExternalPropertySpecification> externalPropertyDatas = new HashMap<>();
         for (ComponentType com : ComponentType.values()) {
-            for (ExternalPropertyData data : com.propertyDefs) {
+            for (ExternalPropertySpecification data : com.propertyDefs) {
                 if (!externalPropertyDatas.containsKey(data.name)) {
                     externalPropertyDatas.put(data.name, data);
                 }
@@ -129,7 +129,7 @@ public class ShipDef {
         }
 
         ArrayList<MethodDefinition> methodDefinitions = new ArrayList<>();
-        for (ExternalPropertyData data : externalPropertyDatas.values()) {
+        for (ExternalPropertySpecification data : externalPropertyDatas.values()) {
             data.addExternalMethodDefs(methodDefinitions);
         }
         String[] lines = text.split("\\r?\\n");

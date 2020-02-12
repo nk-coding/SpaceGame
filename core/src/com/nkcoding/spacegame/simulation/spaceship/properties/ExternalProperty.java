@@ -57,9 +57,9 @@ public abstract class ExternalProperty<T> implements RunningState {
      * should be called in init
      */
     public void init(ExternalPropertyData data,  Map<String, MethodStatement> methods) {
-        this.supportsRead = data.supportsRead;
-        this.supportsWrite = data.supportsWrite;
-        this.supportsChangedHandler = data.supportsChangedHandler;
+        this.supportsRead = data.supportsRead();
+        this.supportsWrite = data.supportsWrite();
+        this.supportsChangedHandler = data.supportsChangedHandler();
         if (supportsWrite) {
             setInitValue(data.initData);
         }

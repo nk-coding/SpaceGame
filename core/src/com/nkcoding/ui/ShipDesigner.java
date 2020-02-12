@@ -25,7 +25,7 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
 
     //helper
     private ShipDef.ShipDesignerHelper designerHelper;
-    private List<ComponentDef> selectedComponents;
+    private List<ComponentDef> selectedComponents = new LinkedList<>();
     //endregion
     //Consumer for when the selection changed
     private BiConsumer<List<ComponentDef>, List<ComponentDef>> selectionChanged;
