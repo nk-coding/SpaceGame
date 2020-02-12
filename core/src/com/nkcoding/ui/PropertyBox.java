@@ -180,13 +180,11 @@ public class PropertyBox extends WidgetGroup {
 
     public void verify() {
         if (valueTextField != null && specification.supportsWrite) {
-            valueTextField.setColor(valueTextField.getText().equals("") || specification.verifyInit(valueTextField.getText())
-                    ? style.legalInputColor : style.illegalInputColor);
+            valueTextField.setColor(specification.verifyInit(valueTextField.getText()).color);
         }
 
         if (specification.supportsChangedHandler) {
-            handlerTextField.setColor(specification.verifyHandler(handlerTextField.getText(), methods)
-                    ? style.legalInputColor : style.illegalInputColor);
+            handlerTextField.setColor(specification.verifyHandler(handlerTextField.getText(), methods).color);
         }
 
     }
@@ -368,10 +366,6 @@ public class PropertyBox extends WidgetGroup {
         public Label.LabelStyle labelStyle;
 
         public TextField.TextFieldStyle textFieldStyle;
-
-        public Color illegalInputColor;
-
-        public Color legalInputColor;
 
         public float spacing;
     }

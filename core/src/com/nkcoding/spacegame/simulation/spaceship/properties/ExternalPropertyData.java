@@ -6,6 +6,7 @@ import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.interpreter.compiler.MethodType;
 import com.nkcoding.interpreter.compiler.TypeNamePair;
 import com.nkcoding.spacegame.simulation.spaceship.ExternalPropertySpecification;
+import com.nkcoding.ui.ValueStatus;
 
 import java.util.Collection;
 import java.util.Map;
@@ -31,20 +32,6 @@ public class ExternalPropertyData {
         this.initData = toCopy.initData;
     }
 
-
-    public boolean verifyInit(String init) {
-        return specification.verifyInit(init);
-    }
-
-    /**
-     * checks if the method exists and has the correct signature
-     *
-     * @param methods map with all methods
-     * @return true if everything is ok
-     */
-    public boolean verifyHandler(String handlerName, Map<String, ? extends MethodDefinition> methods) {
-        return specification.verifyHandler(handlerName, methods);
-    }
 
     /**
      * checks for correct handler and init

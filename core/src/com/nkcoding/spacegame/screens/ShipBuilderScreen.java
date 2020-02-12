@@ -2,7 +2,6 @@ package com.nkcoding.spacegame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -31,7 +30,6 @@ import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentType;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 import com.nkcoding.ui.*;
-import com.nkcoding.util.Tuple;
 
 import java.util.*;
 import java.util.List;
@@ -51,6 +49,7 @@ public class ShipBuilderScreen implements Screen {
     //Stack for the possible components
     private final Table componentsStack;
     //Stack for the external properties for the selected Component
+    private final Container<Table> basicInfoContainer;
     private final VerticalGroup propertiesVerticalGroup;
     private final Table shipInfoTable;
     private final Label shipInfoLabel;
@@ -156,7 +155,7 @@ public class ShipBuilderScreen implements Screen {
         verifyName();
 
         //the table with the component / ship name
-        Table basicInfoTable = new Table();
+        final Table basicInfoTable = new Table();
         basicInfoTable.setBackground(styles.borderBackgroundDrawable);
         basicInfoTable.pad(styles.defaultScaledAbs, styles.defaultScaledAbs, styles.defaultScaledAbs, styles.defaultScaledAbs);
         basicInfoTable.add(componentNameLabel).growX().left();
@@ -166,7 +165,7 @@ public class ShipBuilderScreen implements Screen {
         basicInfoTable.row();
         basicInfoTable.add(nameTextField).left().colspan(2).pad(0, styles.defaultScaledAbs, styles.defaultScaledAbs, 0).fillX();
 
-        final Container<Table> basicInfoContainer = new Container<>(basicInfoTable).pad(styles.defaultScaledAbs, styles.defaultScaledAbs, 0, styles.defaultScaledAbs).fillX();
+        basicInfoContainer = new Container<>(basicInfoTable).pad(styles.defaultScaledAbs, styles.defaultScaledAbs, 0, styles.defaultScaledAbs).fillX();
 
 
         //propertiesVerticalGroup
@@ -382,7 +381,12 @@ public class ShipBuilderScreen implements Screen {
 
             @Override
             public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-                if (source.getActor() == shipDesigner) shipDesigner.removeComponent((ComponentDef) payload.getObject());
+                List<ComponentDef> components = (List<ComponentDef>) payload.getObject();
+                if (source.getActor() == shipDesigner) {
+                    for (ComponentDef def : components) {
+                        shipDesigner.removeComponent(def);
+                    }
+                }
             }
         });
 
@@ -415,7 +419,7 @@ public class ShipBuilderScreen implements Screen {
         //update the property stack
         if (!newDef.isEmpty()) {
             propertiesScrollPane.setActor(propertiesVerticalGroup);
-            selectComponent(newDef);
+            selectComponents(newDef);
         } else {
             propertiesScrollPane.setActor(shipInfoTable);
             selectShip();
@@ -426,7 +430,7 @@ public class ShipBuilderScreen implements Screen {
      * the case that a real component was selected
      * newDefs must NOT be empty
      */
-    private void selectComponent(List<ComponentDef> newDefs) {
+    private void selectComponents(List<ComponentDef> newDefs) {
         Collection<ExternalPropertyData> allPossibleExternalProperties = newDefs.get(0).properties.values();
         Map<ExternalPropertySpecification, List<ExternalPropertyData>> properties = new LinkedHashMap<>();
         for (ExternalPropertyData data : allPossibleExternalProperties) {
@@ -452,6 +456,10 @@ public class ShipBuilderScreen implements Screen {
             nameTextField.setText(componentName);
             componentNameLabel.setText(newDefs.get(0).getType().toString());
             rotateButton.setVisible(true);
+
+            propertiesVerticalGroup.addActorAt(0, basicInfoContainer);
+        } else {
+            propertiesVerticalGroup.removeActor(basicInfoContainer);
         }
 
         int oldCount = propertiesVerticalGroup.getChildren().size - 1;

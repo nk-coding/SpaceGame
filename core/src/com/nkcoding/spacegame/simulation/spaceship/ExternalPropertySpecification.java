@@ -4,6 +4,7 @@ import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.interpreter.compiler.MethodType;
 import com.nkcoding.interpreter.compiler.TypeNamePair;
+import com.nkcoding.ui.ValueStatus;
 
 import java.util.Collection;
 import java.util.Map;
@@ -88,29 +89,34 @@ public class ExternalPropertySpecification {
         this(name, type, true);
     }
 
-    public boolean verifyInit(String init) {
-        if (init.equals("") || init.equals("~")) return true;
+    public ValueStatus verifyInit(String init) {
+        if (init.equals("")) {
+            return ValueStatus.OK;
+        } else if (init.equals("~")) {
+            return ValueStatus.WARNING;
+        }
         switch (type.name) {
             case DataType.BOOLEAN_KW:
-                return init.equalsIgnoreCase("true") || init.equalsIgnoreCase("false");
+                return ValueStatus.of(init.equalsIgnoreCase("true")
+                        || init.equalsIgnoreCase("false"));
             case DataType.FLOAT_KW:
                 try {
-                    if (init.isBlank()) return true;
+                    if (init.isBlank()) return ValueStatus.OK;
                     Float.parseFloat(init);
-                    return true;
+                    return ValueStatus.OK;
                 } catch (Exception e) {
-                    return false;
+                    return ValueStatus.ERROR;
                 }
             case DataType.INTEGER_KW:
                 try {
-                    if (init.isBlank()) return true;
+                    if (init.isBlank()) return ValueStatus.OK;
                     Integer.parseInt(init);
-                    return true;
+                    return ValueStatus.OK;
                 } catch (Exception e) {
-                    return false;
+                    return ValueStatus.ERROR;
                 }
             case DataType.STRING_KW:
-                return true;
+                return ValueStatus.OK;
             default:
                 throw new RuntimeException("not implemented");
 
@@ -123,8 +129,12 @@ public class ExternalPropertySpecification {
      * @param methods map with all methods
      * @return true if everything is ok
      */
-    public boolean verifyHandler(String handlerName, Map<String, ? extends MethodDefinition> methods) {
-        if (handlerName.equals("") || handlerName.equals("~")) return true;
+    public ValueStatus verifyHandler(String handlerName, Map<String, ? extends MethodDefinition> methods) {
+        if (handlerName.equals("")) {
+            return ValueStatus.OK;
+        } else if (handlerName.equals("~")) {
+            return ValueStatus.WARNING;
+        }
         boolean correctHandler = false;
         MethodDefinition def = methods.get(handlerName);
         if (def != null) {
@@ -133,7 +143,7 @@ public class ExternalPropertySpecification {
             }
         }
 
-        return correctHandler;
+        return ValueStatus.of(correctHandler);
     }
 
     /**
@@ -143,7 +153,8 @@ public class ExternalPropertySpecification {
      * @return true if everything is ok
      */
     public boolean verify(Map<String, ? extends MethodDefinition> methods, String initData, String handlerName) {
-        return (supportsWrite || verifyInit(initData)) && (supportsChangedHandler || verifyHandler(handlerName, methods));
+        return (supportsWrite || verifyInit(initData) != ValueStatus.ERROR)
+                && (supportsChangedHandler || verifyHandler(handlerName, methods) != ValueStatus.ERROR);
     }
 
     //adds the external method definitions the list

@@ -98,8 +98,6 @@ public class Styles {
         propertyBoxStyle.getterButtonDrawable = assetManager.getDrawable(Asset.GetterSymbol);
         propertyBoxStyle.setterButtonDrawable = assetManager.getDrawable(Asset.SetterSymbol);
         propertyBoxStyle.textFieldStyle = textFieldStyle;
-        propertyBoxStyle.illegalInputColor = new Color(0xff0000ff);
-        propertyBoxStyle.legalInputColor = new Color(0xffffffff);
         propertyBoxStyle.labelStyle = labelStyleSmall;
         propertyBoxStyle.spacing = defaultScaledAbs;
 
