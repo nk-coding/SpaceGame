@@ -2,6 +2,7 @@ package com.nkcoding.spacegame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -558,8 +559,10 @@ public class ShipBuilderScreen implements Screen {
 
     //checks if the name is ok
     private void verifyName() {
-        //TODO nameTextField.setColor(shipDef.verifyComponentName(shipDesigner.getSelectedComponent(), nameTextField.getText()) ?
-               // new Color(0xffffffff) : new Color(0xff0000ff));
+        if (shipDesigner.getSelectedComponents().size() == 1) {
+            nameTextField.setColor(shipDef.verifyComponentName(shipDesigner.getSelectedComponents().get(0), nameTextField.getText()) ?
+                    new Color(0xffffffff) : new Color(0xff0000ff));
+        }
     }
 
     //switches the view
@@ -638,7 +641,7 @@ public class ShipBuilderScreen implements Screen {
     //saves the current state
     private void save() {
         shipDef.code = codeEditor.getText();
-        //TODO saveComponentDef(shipDesigner.getSelectedComponent());
+        saveComponentDef(shipDesigner.getSelectedComponents());
         validate();
 
         shipDef.setValidated(codeValidated && shipValidated);

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ShipDef {
     //the max width / height of a ship
@@ -99,8 +100,10 @@ public class ShipDef {
      */
     public boolean verifyComponentName(ComponentDef def, String name) {
         if (name.equals("")) return true;
-        ComponentDef nameDef = getComponent(name);
-        return nameDef == null || nameDef == def;
+        List<ComponentDef> matches = componentDefs.stream().filter(comDef -> comDef.getName().equals(name)).collect(Collectors.toList());
+        if (matches.size() == 0) return true;
+        else if (matches.size() > 1) return false;
+        else return matches.get(0) == def;
     }
 
     /**
