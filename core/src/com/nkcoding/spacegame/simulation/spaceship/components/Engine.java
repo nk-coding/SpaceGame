@@ -47,7 +47,6 @@ public class Engine extends Component {
             enginePower = (enginePower < 0) ? 0 : Math.min(enginePower, 100);
             //update requested power
             powerRequested.set(enginePower);
-            //System.out.println("received power: " + powerReceived.get());
             enginePower = Math.min((int) powerReceived.get(), enginePower);
             applyForce(enginePower / 1000f);
         }

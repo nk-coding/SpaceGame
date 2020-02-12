@@ -16,7 +16,6 @@ public class GetValueExpression<T> implements Expression<T> {
 
     @Override
     public T getResult(Stack stack) {
-        //System.out.println("try get value: " + name);
         return (T) getStackItem.getStackItem(stack).getResult(stack);
     }
 

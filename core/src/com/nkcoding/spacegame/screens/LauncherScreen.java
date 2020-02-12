@@ -46,7 +46,7 @@ public class LauncherScreen implements Screen {
         this.spaceGame = spaceGame;
         Batch spriteBatch = spaceGame.getBatch();
         ExtAssetManager assetManager = spaceGame.getAssetManager();
-        final Styles styles = new Styles(assetManager);
+        final Styles styles = Styles.getDefaultStyles(assetManager);
         defaultPadding = 15 * styles.scaleFactor;
 
         //region create the stage with and all its components

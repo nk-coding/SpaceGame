@@ -57,22 +57,34 @@ public class CodeEditor extends WidgetGroup {
             @Override
             public Optional<Boolean> preInput(InputEvent event, char character) {
                 //correct tab
-                if (character == '\t') {
-                    System.out.println("TAB");
-                    paste("   ", true, true);
-                    return Optional.of(true);
-                } else if (character == ')') {
-                    boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == ')';
-                    if (endBracketExists) {
-                        moveCursor(true, false);
+                switch (character) {
+                    case '\t':
+                        System.out.println("TAB");
+                        paste("   ", true, true);
                         return Optional.of(true);
+                    case ')': {
+                        boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == ')';
+                        if (endBracketExists) {
+                            moveCursor(true, false);
+                            return Optional.of(true);
+                        }
+                        break;
                     }
-                } else if (character == ']') {
-                    boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == ']';
-                    if (endBracketExists) {
-                        moveCursor(true, false);
-                        return Optional.of(true);
+                    case ']': {
+                        boolean endBracketExists = text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == ']';
+                        if (endBracketExists) {
+                            moveCursor(true, false);
+                            return Optional.of(true);
+                        }
+                        break;
                     }
+                    case '"':
+                        boolean endQuotationMarkExists= text.length() > getCursorPosition() && text.charAt(getCursorPosition()) == '\"';
+                        if (endQuotationMarkExists) {
+                            moveCursor(true, false);
+                            return Optional.of(true);
+                        }
+                        break;
                 }
                 return Optional.empty();
             }
@@ -106,6 +118,8 @@ public class CodeEditor extends WidgetGroup {
                     case '[':
                         paste("]", false, false);
                         return true;
+                    case '"':
+                        paste("\"", false, false);
                     default:
                         return false;
                 }
@@ -163,7 +177,7 @@ public class CodeEditor extends WidgetGroup {
         if (ScissorStack.pushScissors(scissors)) {
             //draw line numbers
             float lineHight = font.getLineHeight();
-            float offset = -font.getLineHeight() * codeTextArea.firstLineShowing + codeScrollPane.getVisualScrollY() + numbersAreaClip.height - codeEditorStyle.background.getTopHeight();
+            float offset = -font.getLineHeight() * codeTextArea.firstLineShowing + codeScrollPane.getVisualScrollY() + numbersAreaClip.height - codeEditorStyle.background.getTopHeight() + font.getDescent();
             int drawUntil = Math.max(codeTextArea.linesShowing, 1);
             if (codeTextArea.getLines() < codeTextArea.firstLineShowing + codeTextArea.linesShowing)
                 drawUntil = codeTextArea.getLines() - codeTextArea.firstLineShowing;
@@ -266,13 +280,16 @@ public class CodeEditor extends WidgetGroup {
 
         public Drawable vScrollKnob;
 
-        public CodeEditorStyle(BitmapFont font, Color fontColor, Drawable cursor, Drawable selection, Drawable background, Drawable autocompletion, ColorParser colorParser) {
-            super(font, fontColor, cursor, selection, background, autocompletion);
+        public CodeEditorStyle(BitmapFont font, Color fontColor, Drawable cursor,
+                               Drawable selection, Drawable background, Drawable autocompletion, Drawable selectedAutocompletion,
+                               ColorParser colorParser) {
+            super(font, fontColor, cursor, selection, background, autocompletion, selectedAutocompletion);
             this.colorParser = colorParser;
         }
 
-        public CodeEditorStyle(TextField.TextFieldStyle textFieldStyle, Drawable autocompletion, ScrollPane.ScrollPaneStyle scrollPaneStyle, ColorParser colorParser) {
-            super(textFieldStyle, autocompletion);
+        public CodeEditorStyle(TextField.TextFieldStyle textFieldStyle, Drawable autocompletion, Drawable selectedAutocompletion,
+                               ScrollPane.ScrollPaneStyle scrollPaneStyle, ColorParser colorParser) {
+            super(textFieldStyle, autocompletion, selectedAutocompletion);
             this.colorParser = colorParser;
             this.corner = scrollPaneStyle.corner;
             this.hScroll = scrollPaneStyle.hScroll;
@@ -288,7 +305,8 @@ public class CodeEditor extends WidgetGroup {
         }
 
         private MultiColorTextArea.MultiColorTextAreaStyle createTextFieldStyle() {
-            MultiColorTextArea.MultiColorTextAreaStyle style = new MultiColorTextArea.MultiColorTextAreaStyle(this, autocompletion);
+            MultiColorTextArea.MultiColorTextAreaStyle style = new MultiColorTextArea.MultiColorTextAreaStyle(this,
+                    autocompletion, selectedAutocompletion);
             style.background = null;
             return style;
         }

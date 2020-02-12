@@ -1,6 +1,6 @@
 package com.nkcoding.interpreter.compiler;
 
-public class Token {
+public class Token implements Comparable<Token>{
 
     public static final int BLOCK_START = 0x1;
     public static final int BLOCK_END = 0x2;
@@ -65,5 +65,20 @@ public class Token {
     @Override
     public String toString() {
         return String.format("[%s,%d, %d]", content, getLength(), pos);
+    }
+
+    @Override
+    public int compareTo(Token o) {
+        int lineCompare = Integer.compare(line, o.line);
+        return lineCompare != 0 ? lineCompare : Integer.compare(pos, o.pos);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() == Token.class) {
+            return ((Token) obj).line == line && ((Token) obj).pos == pos;
+        } else {
+            return false;
+        }
     }
 }
