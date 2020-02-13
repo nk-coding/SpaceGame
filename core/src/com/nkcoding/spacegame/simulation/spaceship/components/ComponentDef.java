@@ -37,6 +37,18 @@ public class ComponentDef extends ComponentDefBase {
         }
     }
 
+    /**
+     * copy constructor
+     * @param toCopy ComponentDef to copy
+     */
+    public ComponentDef(ComponentDef toCopy) {
+        super(toCopy);
+        name = toCopy.name;
+        for (Map.Entry<String, ExternalPropertyData> entry : toCopy.properties.entrySet()) {
+            properties.put(entry.getKey(), new ExternalPropertyData(entry.getValue()));
+        }
+    }
+
     public static ComponentDef fromJson(JsonValue value) {
         ComponentDef comDef = new ComponentDef(ComponentType.valueOf(value.getString("type")));
         //set the basic values
