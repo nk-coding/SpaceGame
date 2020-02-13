@@ -1,18 +1,23 @@
 package com.nkcoding.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
+import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.Disposable;
 import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.Component;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
+import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDefBase;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentType;
 
 import java.util.ArrayList;
@@ -20,6 +25,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
 
@@ -30,15 +36,17 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
     //Consumer for when the selection changed
     private BiConsumer<List<ComponentDef>, List<ComponentDef>> selectionChanged;
 
+    private List<ComponentDef> componentClipboard = new LinkedList<>();
+    private Clipboard clipboard;
+
     //constructor with a shipDef
     public ShipDesigner(ShipDef shipDef, ExtAssetManager assetManager, Texture noComponent, Texture selection,
                         BiConsumer<List<ComponentDef>, List<ComponentDef>> selectionChanged) {
         super(assetManager, selection, noComponent);
         //ShipDef that contains all ComponentDefs
         this.selectionChanged = selectionChanged;
-
         this.designerHelper = shipDef.getShipDesignerHelper();
-
+        clipboard = Gdx.app.getClipboard();
 
         //capture touch events
         addCaptureListener(new InputListener() {
@@ -77,7 +85,6 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
         switch (keyCode) {
             case Input.Keys.DEL:
             case Input.Keys.FORWARD_DEL:
-
                 if (getSelectedComponents().size() > 0) {
                     for (ComponentDef def : getSelectedComponents()) {
                         removeComponent(def);
@@ -85,6 +92,26 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
                     return true;
                 }
                 return false;
+            case Input.Keys.C:
+                clipboard.setContents("");
+                componentClipboard = selectedComponents.stream().map(ComponentDef::new).collect(Collectors.toList());
+                return true;
+            case Input.Keys.V:
+                if (clipboard.getContents().equals("") && !componentClipboard.isEmpty()) {
+                    Vector2 pos = screenToLocalCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+                    int posX = calculateXIndex(pos.x);
+                    int posY = calculateYIndex(pos.y);
+                    int offsetX = componentClipboard.stream().mapToInt(ComponentDefBase::getX).min().orElseThrow();
+                    int offsetY = componentClipboard.stream().mapToInt(ComponentDefBase::getY).min().orElseThrow();
+
+                    if (drag(componentClipboard, posX - offsetX, posY - offsetY )) {
+                        drop(componentClipboard, posX - offsetX, posY - offsetY);
+                        componentClipboard = selectedComponents.stream().map(ComponentDef::new).collect(Collectors.toList());
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
             default:
                 return false;
         }
