@@ -300,7 +300,6 @@ public class SpaceSimulation implements InputProcessor {
             }
             // complete future manually if none of the simulateds completed it
             if (!future.isDone()) {
-                System.out.println("no module completed " + future.toString());
                 future.complete(future.getType().getDefaultValue());
             }
         }
