@@ -20,11 +20,8 @@ import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.NormalMethodDefinition;
-import com.nkcoding.spacegame.Asset;
-import com.nkcoding.spacegame.ExtAssetManager;
-import com.nkcoding.spacegame.SaveGameManager;
-import com.nkcoding.spacegame.SpaceGame;
-import com.nkcoding.spacegame.simulation.spaceship.ExternalPropertySpecification;
+import com.nkcoding.spacegame.*;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertySpecification;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentType;
@@ -91,7 +88,8 @@ public class ShipBuilderScreen implements Screen {
     public ShipBuilderScreen(SpaceGame spaceGame, ShipDef shipDef) {
         this.shipDef = shipDef;
         //create new compiler
-        compiler = shipDef.createCompiler("");
+        GameScriptProvider scriptProvider = new GameScriptProvider();
+        compiler = scriptProvider.createCompiler("");
 
         //the game
         //fields from game

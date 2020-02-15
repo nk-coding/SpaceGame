@@ -7,6 +7,7 @@ import com.nkcoding.interpreter.operators.NegateIntegerOperation;
 import com.nkcoding.util.Tuple;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,10 +26,10 @@ public class Compiler {
     private MethodDefinition actualMethod;
 
     //constructor
-    public Compiler(String[] lines, MethodDefinition[] externalMethods) {
+    public Compiler(String[] lines, Collection<MethodDefinition> externalMethods) {
         text = new ProgramTextWrapper(lines);
         methods = new Methods();
-        methods.addExternMethods(externalMethods);
+        methods.addExternalMethods(externalMethods);
         stack = new CompilerStack();
     }
 

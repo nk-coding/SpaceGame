@@ -5,16 +5,22 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.nkcoding.interpreter.ConcurrentStackItem;
+import com.nkcoding.interpreter.ExternalMethodFuture;
+import com.nkcoding.interpreter.ExternalMethodHandler;
 import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.Program;
+import com.nkcoding.spacegame.GameScriptProvider;
 import com.nkcoding.spacegame.SpaceSimulation;
 import com.nkcoding.spacegame.simulation.communication.UpdateTransmission;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertySpecification;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.Component;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDefBase;
+import com.nkcoding.spacegame.simulation.spaceship.components.ComponentType;
 import com.nkcoding.spacegame.simulation.spaceship.components.communication.*;
 
 import java.io.DataInputStream;
@@ -25,6 +31,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class Ship extends Simulated {
@@ -171,7 +178,6 @@ public class Ship extends Simulated {
                 break;
             default:
                 UpdateComponentTransmission uct = (UpdateComponentTransmission) transmission;
-                System.out.println("UpdateComponent: " + uct);
                 componentsMap[uct.x][uct.y].receiveTransmission(uct);
                 break;
         }
@@ -261,6 +267,32 @@ public class Ship extends Simulated {
         radius = (float) Math.sqrt(height * height + width * width);
     }
 
+    /**
+     * initializes the Ship type
+     * adds ExternalMethod handlers
+     */
+    public static void initializeType(final GameScriptProvider engine) {
+        Consumer<ExternalMethodFuture> handleGetterSetter = (future ->
+        {
+            ExternalMethodHandler handler =  engine.getExternalMethodHandler((String)future.getParameters()[0]);
+            if (handler != null) {
+                handler.handleExternalMethod(future);
+            }
+        });
+
+        for (ComponentType type : ComponentType.values()) {
+            for (ExternalPropertySpecification specification : type.propertySpecifications) {
+                if (specification.supportsRead) {
+                    engine.addExternalMethod(specification.createGetter(), specification.supportsConcurrentHandling, handleGetterSetter);
+                }
+                if (specification.supportsWrite) {
+                    engine.addExternalMethod(specification.createSetter(), specification.supportsConcurrentHandling, handleGetterSetter);
+                }
+
+            }
+        }
+    }
+
     public class ShipModel {
         //global variables
         public final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables;
@@ -272,26 +304,27 @@ public class Ship extends Simulated {
         private boolean isPowerRequestDifferent = true;
         //is a structure check necessary
         private boolean isStructureCheckNecessary = true;
+
         private HashMap<String, MethodStatement> methods;
 
         //construct Ship out of ShipDef (public constructor)
         public ShipModel(ShipDef def, SpaceSimulation spaceSimulation) {
-            if (!def.getValidated()) throw new IllegalArgumentException("shipDef is not validated"); //here
+            if (!def.getValidated()) throw new IllegalArgumentException("shipDef is not validated");
             //compile the script
-            Compiler compiler = def.createCompiler(def.code); //here
-            Program program = null; //here
+            Compiler compiler = spaceSimulation.createCompiler(def.code);
+            Program program = null;
             try {
-                program = compiler.compile(); //here
+                program = compiler.compile();
             } catch (CompileException e) {
-                e.printStackTrace(); //here
+                e.printStackTrace();
             }
-            globalVariables = program.globalVariables; //here
-            methods = new HashMap<>(); //here
-            for (MethodStatement statement : program.methods) { //here
-                methods.put(statement.getDefinition().getName(), statement); //here
+            globalVariables = program.globalVariables;
+            methods = new HashMap<>();
+            for (MethodStatement statement : program.methods) {
+                methods.put(statement.getDefinition().getName(), statement);
             }
             //init new list with all the components
-            components = new ArrayList<>(def.componentDefs.size()); //here
+            components = new ArrayList<>(def.componentDefs.size());
         }
         //endregion
 
@@ -299,14 +332,14 @@ public class Ship extends Simulated {
         //pass other ship to copy important stuff (external method stuff etc.)
         ShipModel(Ship oldShip, ShipModel oldModel, List<Component> components) {
             //set globalVariables
-            this.globalVariables = oldModel.globalVariables; //here
+            this.globalVariables = oldModel.globalVariables;
             //set the components
-            this.components = new ArrayList<>(components.size()); //here
-            Body oldBody = oldShip.getBody(); //here
-            Body body = getBody(); //here
-            body.setTransform(oldBody.getPosition(), oldBody.getAngle()); //here
-            updateLinearVelocity(oldBody); //here
-            body.setAngularVelocity(oldBody.getAngularVelocity()); //here
+            this.components = new ArrayList<>(components.size());
+            Body oldBody = oldShip.getBody();
+            Body body = getBody();
+            body.setTransform(oldBody.getPosition(), oldBody.getAngle());
+            updateLinearVelocity(oldBody);
+            body.setAngularVelocity(oldBody.getAngularVelocity());
         }
 
         private void initComponentProperties() {
@@ -412,6 +445,9 @@ public class Ship extends Simulated {
         }
 
         public void act(float delta) {
+            for (Component.ComponentModel component : components) {
+                component.getProperties().values().forEach(ExternalProperty::update);
+            }
             //check structure if necessary
             if (isStructureCheckNecessary) {
                 checkStructure();

@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.spacegame.Asset;
 import com.nkcoding.spacegame.simulation.Ship;
-import com.nkcoding.spacegame.simulation.spaceship.ExternalPropertySpecification;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertySpecification;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.util.IOTriFunction;
 import com.nkcoding.util.TriFunction;
@@ -23,30 +23,31 @@ import static com.nkcoding.spacegame.simulation.spaceship.components.ExplosiveCa
 import static com.nkcoding.spacegame.simulation.spaceship.components.Sensors.IS_SCANNER_ENABLED;
 import static com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.IS_ENABLED_KEY;
 import static com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.RADIUS_KEY;
+import static com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertySpecification.builder;
 
 public enum ComponentType {
     Engine((short)0, Engine::new, Engine::new, 1, 2, 100, 100, 100, Asset.Engine,
-            new ExternalPropertySpecification(ENGINE_POWER_KEY, DataType.INTEGER)),
+            builder(ENGINE_POWER_KEY, DataType.INTEGER).read().write().changedHandler().concurrent().build()),
     Cannon((short) 1, Cannon::new, Cannon::new, 1, 2, 100, 100, 50, Asset.Cannon,
-            new ExternalPropertySpecification(IS_SHOOTING_KEY, DataType.BOOLEAN),
-            new ExternalPropertySpecification(BUFFER_LEVEL_KEY, DataType.FLOAT, false, true, false)),
+            builder(IS_SHOOTING_KEY, DataType.BOOLEAN).read().write().changedHandler().concurrent().build(),
+            builder(BUFFER_LEVEL_KEY, DataType.FLOAT).read().build()),
     PowerCore((short) 2, PowerCore::new, PowerCore::new, 2, 2, 200, 500, -100, Asset.PowerCore),
     BasicHull((short) 3, BasicHull::new, BasicHull::new, Asset.BasicHull),
     ExplosiveCanister((short) 4, ExplosiveCanister::new, ExplosiveCanister::new, 1, 1, 50, 50, 0, Asset.ExplosiveCanister,
-            new ExternalPropertySpecification(EXPLODE_KEY, DataType.BOOLEAN)),
+            builder(EXPLODE_KEY, DataType.BOOLEAN).read().write().changedHandler().concurrent().build()),
     ShieldGenerator((short) 5, ShieldGenerator::new, ShieldGenerator::new, 2, 2, 200, 100, 30, Asset.ShieldGenerator,
-            new ExternalPropertySpecification(RADIUS_KEY, DataType.FLOAT),
-            new ExternalPropertySpecification(IS_ENABLED_KEY, DataType.BOOLEAN),
-            new ExternalPropertySpecification(BUFFER_LEVEL_KEY, DataType.FLOAT, false, true, false)),
+            builder(RADIUS_KEY, DataType.FLOAT).read().write().changedHandler().concurrent().build(),
+            builder(IS_ENABLED_KEY, DataType.BOOLEAN).read().write().changedHandler().concurrent().build(),
+            builder(BUFFER_LEVEL_KEY, DataType.FLOAT).read().build()),
     ComputeCore((short) 6, ComputeCore::new, ComputeCore::new, 2, 2, 400, 800, 0, Asset.ComputeCore,
-            new ExternalPropertySpecification(KEY_DOWN_KEY, DataType.STRING, false, false, true),
-            new ExternalPropertySpecification(KEY_UP_KEY, DataType.STRING, false, false, true),
-            new ExternalPropertySpecification(ANGULAR_VELOCITY_KEY, DataType.FLOAT, false, true, false),
-            new ExternalPropertySpecification(VELOCITY_KEY, DataType.FLOAT, false, true, false),
-            new ExternalPropertySpecification(CAMERA_FOCUS_KEY, DataType.BOOLEAN),
-            new ExternalPropertySpecification(INIT_CALLBACK_KEY, DataType.STRING, false, false, true)),
+            builder(KEY_DOWN_KEY, DataType.STRING).changedHandler().build(),
+            builder(KEY_UP_KEY, DataType.STRING).changedHandler().build(),
+            builder(ANGULAR_VELOCITY_KEY, DataType.FLOAT).read().build(),
+            builder(VELOCITY_KEY, DataType.FLOAT).read().build(),
+            builder(CAMERA_FOCUS_KEY, DataType.BOOLEAN).read().write().changedHandler().concurrent().build(),
+            builder(INIT_CALLBACK_KEY, DataType.STRING).changedHandler().build()),
     Sensors((short) 7, Sensors::new, Sensors::new, 2, 1, 100, 100, 0, Asset.Sensors,
-            new ExternalPropertySpecification(IS_SCANNER_ENABLED, DataType.BOOLEAN));
+            builder(IS_SCANNER_ENABLED, DataType.BOOLEAN).read().write().changedHandler().concurrent().build());
 
     //the width of the component
     public final int width;
@@ -64,7 +65,7 @@ public enum ComponentType {
     //file position of the preview image
     public final Asset defaultTexture;
     //array with all the keys for the ExternalProperties
-    public final ExternalPropertySpecification[] propertyDefs;
+    public final ExternalPropertySpecification[] propertySpecifications;
     //the mass of the Component
     public final float mass;
     //the maximum power level for the component
@@ -79,15 +80,15 @@ public enum ComponentType {
                   int width, int height,
                   int health, float mass,
                   float maxPowerLevel, Asset defaultTexture,
-                  ExternalPropertySpecification... propertyDefs) {
-        ExternalPropertySpecification[] newPropertyDefs = new ExternalPropertySpecification[propertyDefs.length + 5];
-        System.arraycopy(propertyDefs, 0, newPropertyDefs, 5, propertyDefs.length);
-        newPropertyDefs[0] = new ExternalPropertySpecification(HEALTH_KEY, DataType.FLOAT, false);
-        newPropertyDefs[1] = new ExternalPropertySpecification(POWER_REQUESTED_KEY, DataType.FLOAT, false);
-        newPropertyDefs[2] = new ExternalPropertySpecification(REQUEST_LEVEL_KEY, DataType.INTEGER, true);
-        newPropertyDefs[3] = new ExternalPropertySpecification(HAS_FULL_POWER_KEY, DataType.BOOLEAN, false);
-        newPropertyDefs[4] = new ExternalPropertySpecification(POWER_RECEIVED_KEY, DataType.FLOAT, false);
-        this.propertyDefs = newPropertyDefs;
+                  ExternalPropertySpecification... propertySpecifications) {
+        ExternalPropertySpecification[] newPropertyDefs = new ExternalPropertySpecification[propertySpecifications.length + 5];
+        System.arraycopy(propertySpecifications, 0, newPropertyDefs, 5, propertySpecifications.length);
+        newPropertyDefs[0] = builder(HEALTH_KEY, DataType.FLOAT).read().changedHandler().build();
+        newPropertyDefs[1] = builder(POWER_REQUESTED_KEY, DataType.FLOAT).read().changedHandler().build();
+        newPropertyDefs[2] = builder(REQUEST_LEVEL_KEY, DataType.INTEGER).read().write().changedHandler().concurrent().build();
+        newPropertyDefs[3] = builder(HAS_FULL_POWER_KEY, DataType.BOOLEAN).read().changedHandler().build();
+        newPropertyDefs[4] = builder(POWER_RECEIVED_KEY, DataType.FLOAT).read().changedHandler().build();
+        this.propertySpecifications = newPropertyDefs;
         this.constructor = constructor;
         this.deserializer = deserializer;
         this.defaultTexture = defaultTexture;
@@ -103,14 +104,14 @@ public enum ComponentType {
     ComponentType(short index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor,
                   IOTriFunction<ComponentDefBase, DataInputStream, Ship, ? extends Component> deserializer,
                   float powerLevel,
-                  Asset previewImg, ExternalPropertySpecification... propertyDefs) {
-        this(index, constructor, deserializer, 1, 1, 100, 100, powerLevel, previewImg, propertyDefs);
+                  Asset previewImg, ExternalPropertySpecification... propertySpecifications) {
+        this(index, constructor, deserializer, 1, 1, 100, 100, powerLevel, previewImg, propertySpecifications);
     }
 
     ComponentType(short index, TriFunction<ComponentDef, Ship, Ship.ShipModel, ? extends Component> constructor,
                   IOTriFunction<ComponentDefBase, DataInputStream, Ship, ? extends Component> deserializer,
-                  Asset previewImg, ExternalPropertySpecification... propertyDefs) {
-        this(index, constructor, deserializer, 0, previewImg, propertyDefs);
+                  Asset previewImg, ExternalPropertySpecification... propertySpecifications) {
+        this(index, constructor, deserializer, 0, previewImg, propertySpecifications);
     }
 
     /**

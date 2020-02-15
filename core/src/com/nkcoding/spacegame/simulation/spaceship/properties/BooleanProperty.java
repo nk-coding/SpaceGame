@@ -1,6 +1,6 @@
 package com.nkcoding.spacegame.simulation.spaceship.properties;
 
-public class BooleanProperty extends ExternalProperty<Boolean> {
+public class BooleanProperty extends CacheProperty<Boolean> {
     private boolean value = false;
 
     public BooleanProperty(String name) {

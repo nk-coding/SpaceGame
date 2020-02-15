@@ -1,6 +1,6 @@
 package com.nkcoding.spacegame.simulation.spaceship.properties;
 
-public class IntProperty extends ExternalProperty<Integer> {
+public class IntProperty extends CacheProperty<Integer> {
     private int value = 0;
 
     public IntProperty(String name) {

@@ -36,7 +36,7 @@ public class ExternalMethodStatement<T> implements Statement, Expression<T> {
         future.setParameters(parameters);
         future.setName(name);
         future.setType(type);
-        stack.requestExternalMethod(future);
+        stack.getCallbackHandler().handleExternalMethod(future);
         try {
             return (T) future.get();
         } catch (Exception e) {

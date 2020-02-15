@@ -1,4 +1,4 @@
-package com.nkcoding.spacegame.simulation.spaceship;
+package com.nkcoding.spacegame.simulation.spaceship.properties;
 
 import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
@@ -36,6 +36,8 @@ public class ExternalPropertySpecification {
      */
     public final boolean supportsChangedHandler;
 
+    public final boolean supportsConcurrentHandling;
+
     public final  String getterName;
 
     public final String setterName;
@@ -45,7 +47,8 @@ public class ExternalPropertySpecification {
      * the default constructor
      */
     public ExternalPropertySpecification(String name, DataType type, boolean supportsRead, boolean supportsWrite,
-                                         boolean supportsChangedHandler, String getterName, String setterName) {
+                                         boolean supportsChangedHandler, boolean supportsConcurrentHandling,
+                                         String getterName, String setterName) {
         //check if type is ok
         if (type.equals(DataType.VOID)) throw new IllegalArgumentException("type cannot be " + DataType.VOID_KW);
         this.name = name;
@@ -53,40 +56,9 @@ public class ExternalPropertySpecification {
         this.supportsRead = supportsRead;
         this.supportsWrite = supportsWrite;
         this.supportsChangedHandler = supportsChangedHandler;
+        this.supportsConcurrentHandling = supportsConcurrentHandling;
         this.getterName = getterName;
         this.setterName = setterName;
-    }
-
-    /**
-     * wrapper that sets getter- and setterName to the default get / set
-     */
-    public ExternalPropertySpecification(String name, DataType type, boolean supportsWrite,
-                                         boolean supportsRead, boolean supportsChangedHandler) {
-        this(name, type, supportsRead, supportsWrite, supportsChangedHandler, "get" + name, "set" + name);
-    }
-
-    /**
-     * wrapper that sets getter- and setterName to the default get / set
-     * and supportsRead to true
-     */
-    public ExternalPropertySpecification(String name, DataType type, boolean supportsWrite, boolean supportsChangedHandler) {
-        this(name, type, true, supportsWrite, supportsChangedHandler, "get" + name, "set" + name);
-    }
-
-    /**
-     * wrapper that sets getter- and setterName to the default get / set
-     * and supportsRead to true and supportsChangedHandler to true
-     */
-    public ExternalPropertySpecification(String name, DataType type, boolean supportsWrite) {
-        this(name, type, supportsWrite, true);
-    }
-
-    /**
-     * wrapper that sets getter- and setterName to the default get / set
-     * and supportsRead, supportsWrite and supportsChangedHandler to true
-     */
-    public ExternalPropertySpecification(String name, DataType type) {
-        this(name, type, true);
     }
 
     public ValueStatus verifyInit(String init) {
@@ -157,22 +129,12 @@ public class ExternalPropertySpecification {
                 && (supportsChangedHandler || verifyHandler(handlerName, methods) != ValueStatus.ERROR);
     }
 
-    //adds the external method definitions the list
-    public void addExternalMethodDefs(Collection<? super MethodDefinition> list) {
-        if (supportsWrite) {
-            list.add(createSetter());
-        }
-        if (supportsRead) {
-            list.add(createGetter());
-        }
-    }
-
     //helper for addExternalMethodDef
-    private MethodDefinition createGetter() {
+    public MethodDefinition createGetter() {
         return new MethodDefinition(MethodType.External, getterName, type, new TypeNamePair("id", DataType.STRING));
     }
 
-    private MethodDefinition createSetter() {
+    public MethodDefinition createSetter() {
         return new MethodDefinition(MethodType.External, setterName, DataType.VOID,
                 new TypeNamePair("id", DataType.STRING),
                 new TypeNamePair("value", type));
@@ -190,6 +152,63 @@ public class ExternalPropertySpecification {
                     && ((ExternalPropertySpecification) obj).setterName.equals(setterName);
         } else {
             return false;
+        }
+    }
+
+    public static ExternalPropertySpecificationBuilder builder(String name, DataType type) {
+        return new ExternalPropertySpecificationBuilder(name, type);
+    }
+
+    public static class ExternalPropertySpecificationBuilder {
+        public String name;
+        public DataType type;
+        public boolean supportsRead = false;
+        public boolean supportsWrite = false;
+        public boolean supportsChangedHandler = false;
+        public boolean supportsConcurrentHandling = false;
+        public String getterName = null;
+        public String setterName = null;
+
+        public ExternalPropertySpecificationBuilder(String name, DataType type) {
+            this.name = name;
+            this.type = type;
+        }
+
+        public ExternalPropertySpecificationBuilder read() {
+            supportsRead = true;
+            return this;
+        }
+
+        public ExternalPropertySpecificationBuilder write() {
+            supportsWrite = true;
+            return this;
+        }
+
+        public ExternalPropertySpecificationBuilder changedHandler() {
+            supportsChangedHandler = true;
+            return this;
+        }
+
+        public ExternalPropertySpecificationBuilder concurrent() {
+            supportsConcurrentHandling = true;
+            return this;
+        }
+
+        public ExternalPropertySpecificationBuilder getterName(String getterName) {
+            this.getterName = getterName;
+            return this;
+        }
+
+        public ExternalPropertySpecificationBuilder setterName(String setterName) {
+            this.setterName = setterName;
+            return this;
+        }
+
+        public ExternalPropertySpecification build() {
+            return new ExternalPropertySpecification(name, type, supportsRead, supportsWrite,
+                    supportsChangedHandler, supportsConcurrentHandling,
+                    getterName != null ? getterName : "get" + name,
+                    setterName != null ? setterName : "set" + name);
         }
     }
 }

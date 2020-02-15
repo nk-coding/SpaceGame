@@ -2,10 +2,7 @@ package com.nkcoding.interpreter.compiler;
 
 import com.nkcoding.interpreter.MethodStatement;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 //contains predefined methods and List of extern methods
@@ -13,7 +10,7 @@ public class Methods {
     //map of all predefined methods
     private HashMap<MethodDefinition, Function> predefinedMethods = new HashMap<>();
 
-    //list of all extern methods
+    //list of all external methods
     private ArrayList<MethodDefinition> externMethods = new ArrayList<>();
 
     //array of all normal methods
@@ -149,14 +146,14 @@ public class Methods {
         return null;
     }
 
-    //add an extern method
-    public void addExternMethod(MethodDefinition definition) {
+    //add an external method
+    public void addExternalMethod(MethodDefinition definition) {
         externMethods.add(definition);
     }
 
-    //add an array of extern methods
-    public void addExternMethods(MethodDefinition[] definitions) {
-        if (definitions != null) externMethods.addAll(Arrays.asList(definitions));
+    //add an array of external methods
+    public void addExternalMethods(Collection<MethodDefinition> definitions) {
+        if (definitions != null) externMethods.addAll(definitions);
     }
 
     //helper for normal methods

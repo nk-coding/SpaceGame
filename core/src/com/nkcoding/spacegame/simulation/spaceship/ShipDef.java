@@ -6,7 +6,7 @@ import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentType;
-import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertySpecification;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,26 +118,6 @@ public class ShipDef {
             result &= def.verifyProperties(methods);
         }
         return result;
-    }
-
-    public Compiler createCompiler(String text) {
-        //create the external method statements for the components
-        HashMap<String, ExternalPropertySpecification> externalPropertyDatas = new HashMap<>();
-        for (ComponentType com : ComponentType.values()) {
-            for (ExternalPropertySpecification data : com.propertyDefs) {
-                if (!externalPropertyDatas.containsKey(data.name)) {
-                    externalPropertyDatas.put(data.name, data);
-                }
-            }
-        }
-
-        ArrayList<MethodDefinition> methodDefinitions = new ArrayList<>();
-        for (ExternalPropertySpecification data : externalPropertyDatas.values()) {
-            data.addExternalMethodDefs(methodDefinitions);
-        }
-        String[] lines = text.split("\\r?\\n");
-
-        return new Compiler(lines, methodDefinitions.toArray(MethodDefinition[]::new));
     }
 
     public void toJson(Json json) {

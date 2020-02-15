@@ -1,6 +1,6 @@
 package com.nkcoding.spacegame.simulation.spaceship.properties;
 
-public class StringProperty extends ExternalProperty<String> {
+public class StringProperty extends CacheProperty<String> {
     private String value = "";
 
     public StringProperty(String name) {
