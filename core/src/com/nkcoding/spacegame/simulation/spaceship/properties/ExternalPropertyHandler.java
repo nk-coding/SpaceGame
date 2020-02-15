@@ -51,7 +51,7 @@ public abstract class ExternalPropertyHandler implements ExternalMethodHandler {
         if (property != null) {
             if (future.getParameters().length == 2) {
                 //it is a setter
-                property.set(future.getParameters()[1]);
+                property.setFromExternal(future.getParameters()[1]);
                 future.complete(null);
             } else {
                 //it is a getter

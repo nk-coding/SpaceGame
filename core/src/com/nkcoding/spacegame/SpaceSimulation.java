@@ -404,6 +404,10 @@ public class SpaceSimulation implements InputProcessor, ExternalMethodHandler {
         }
     }
 
+    public ExternalMethodHandler getExternalMethodHandler(String key) {
+        return externalMethodHandlers.get(key);
+    }
+
     public void draw(Batch batch) {
         // update the batch
         batch.setProjectionMatrix(camera.combined);

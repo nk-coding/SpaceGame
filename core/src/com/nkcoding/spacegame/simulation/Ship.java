@@ -5,12 +5,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.nkcoding.interpreter.ConcurrentStackItem;
+import com.nkcoding.interpreter.ExternalMethodFuture;
+import com.nkcoding.interpreter.ExternalMethodHandler;
 import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.Program;
 import com.nkcoding.spacegame.SpaceSimulation;
 import com.nkcoding.spacegame.simulation.communication.UpdateTransmission;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertySpecification;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.Component;
@@ -27,6 +30,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class Ship extends Simulated {
@@ -266,10 +270,19 @@ public class Ship extends Simulated {
      * initializes the Ship type
      * adds ExternalMethod handlers
      */
-    public static void initializeType(SpaceSimulation simulation) {
+    public static void initializeType(final SpaceSimulation simulation) {
+        Consumer<ExternalMethodFuture> handleGetterSetter = (future ->
+        {
+            ExternalMethodHandler handler =  simulation.getExternalMethodHandler((String)future.getParameters()[0]);
+            if (handler != null) {
+                handler.handleExternalMethod(future);
+            }
+        });
+
         for (ComponentType type : ComponentType.values()) {
             for (ExternalPropertySpecification specification : type.propertySpecifications) {
-                //TODO
+                simulation.addExternalMethod(specification.getterName, specification.supportsConcurrentHandling, handleGetterSetter);
+                simulation.addExternalMethod(specification.setterName, specification.supportsConcurrentHandling, handleGetterSetter);
             }
         }
     }
@@ -425,6 +438,9 @@ public class Ship extends Simulated {
         }
 
         public void act(float delta) {
+            for (Component.ComponentModel component : components) {
+                component.getProperties().values().forEach(ExternalProperty::update);
+            }
             //check structure if necessary
             if (isStructureCheckNecessary) {
                 checkStructure();
