@@ -76,11 +76,22 @@ public abstract class ExternalProperty<T> implements RunningState {
         this.changedMethodStatement = changedMethodStatement;
     }
 
+    /**
+     * starts the changed handler if necessary
+     */
     public void startChangedHandler(ScriptingEngine engine, final ConcurrentHashMap<String, ConcurrentStackItem> globalVariables) {
         if ((!isRunning || allowParallel) && supportsChangedHandler && changed && getChangedMethodStatement() != null) {
             engine.runMethod(getChangedMethodStatement(), this, globalVariables, get2());
             changed = false;
         }
+    }
+
+    /**
+     * updates the value from cached changes
+     * should be called before get
+     */
+    public void update() {
+
     }
 
     public abstract void setInitValue(String value);

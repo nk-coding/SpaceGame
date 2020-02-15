@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.nkcoding.communication.Communication;
 import com.nkcoding.communication.ResetDataOutputStream;
+import com.nkcoding.interpreter.ExternalMethodCallbackHandler;
 import com.nkcoding.interpreter.ExternalMethodFuture;
 import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.spacegame.simulation.CoreUnit;
@@ -24,8 +25,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class SpaceSimulation implements InputProcessor {
+public class SpaceSimulation implements InputProcessor, ExternalMethodCallbackHandler {
     public static final float TILE_SIZE = 8f;
 
     private static final float LOW_TIMEOUT = 1f / 2;
@@ -73,6 +75,10 @@ public class SpaceSimulation implements InputProcessor {
     private int bodyUpdateID = 1;
 
     private Communication communication;
+
+    //Queue of all ExternMethodFutures, they will be executed on the main tread
+    //therefore, this queue must be concurrent
+    private final ConcurrentLinkedQueue<ExternalMethodFuture> futureQueue = new ConcurrentLinkedQueue<>();
 
     // constructor
     public SpaceSimulation(SpaceGame spaceGame, Communication communication) {
@@ -292,8 +298,8 @@ public class SpaceSimulation implements InputProcessor {
     }
 
     private void handleScriptingEngine() {
-        while (!scriptingEngine.getFutureQueue().isEmpty()) {
-            ExternalMethodFuture future = scriptingEngine.getFutureQueue().poll();
+        while (this.futureQueue.isEmpty()) {
+            ExternalMethodFuture future = futureQueue.poll();
             ExternalPropertyHandler handler = propertyHandlers.get(future.getParameters()[0]);
             if (handler != null) {
                 handler.handleExternalMethod(future);
@@ -573,5 +579,10 @@ public class SpaceSimulation implements InputProcessor {
         } else {
             return new ResetDataOutputStream();
         }
+    }
+
+    @Override
+    public void handleExternalMethodFuture(ExternalMethodFuture future) {
+
     }
 }
