@@ -11,10 +11,12 @@ import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.Program;
 import com.nkcoding.spacegame.SpaceSimulation;
 import com.nkcoding.spacegame.simulation.communication.UpdateTransmission;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertySpecification;
 import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.Component;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDefBase;
+import com.nkcoding.spacegame.simulation.spaceship.components.ComponentType;
 import com.nkcoding.spacegame.simulation.spaceship.components.communication.*;
 
 import java.io.DataInputStream;
@@ -258,6 +260,18 @@ public class Ship extends Simulated {
         width = (maxX - minX) * ShipDef.UNIT_SIZE;
         height = (maxY - minY) * ShipDef.UNIT_SIZE;
         radius = (float) Math.sqrt(height * height + width * width);
+    }
+
+    /**
+     * initializes the Ship type
+     * adds ExternalMethod handlers
+     */
+    public static void initializeType(SpaceSimulation simulation) {
+        for (ComponentType type : ComponentType.values()) {
+            for (ExternalPropertySpecification specification : type.propertySpecifications) {
+                //TODO
+            }
+        }
     }
 
     public class ShipModel {

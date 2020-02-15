@@ -1,13 +1,14 @@
 package com.nkcoding.spacegame.simulation.spaceship.properties;
 
 import com.nkcoding.interpreter.ExternalMethodFuture;
+import com.nkcoding.interpreter.ExternalMethodHandler;
 import com.nkcoding.interpreter.MethodStatement;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ExternalPropertyHandler {
+public abstract class ExternalPropertyHandler implements ExternalMethodHandler {
     public abstract String getName();
 
     //map with all properties
@@ -45,7 +46,7 @@ public abstract class ExternalPropertyHandler {
     /**
      * find automatically the correct ExternalProperty
      */
-    public boolean handleExternalMethod(ExternalMethodFuture future) {
+    public void handleExternalMethod(ExternalMethodFuture future) {
         ExternalProperty property = methodNames.get(future.getName());
         if (property != null) {
             if (future.getParameters().length == 2) {
@@ -56,8 +57,7 @@ public abstract class ExternalPropertyHandler {
                 //it is a getter
                 future.complete(property.get2());
             }
-            return true;
-        } else return false;
+        }
     }
 
 

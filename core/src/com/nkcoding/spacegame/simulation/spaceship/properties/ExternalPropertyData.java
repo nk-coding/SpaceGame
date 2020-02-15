@@ -3,12 +3,7 @@ package com.nkcoding.spacegame.simulation.spaceship.properties;
 import com.badlogic.gdx.utils.Json;
 import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
-import com.nkcoding.interpreter.compiler.MethodType;
-import com.nkcoding.interpreter.compiler.TypeNamePair;
-import com.nkcoding.spacegame.simulation.spaceship.ExternalPropertySpecification;
-import com.nkcoding.ui.ValueStatus;
 
-import java.util.Collection;
 import java.util.Map;
 
 public class ExternalPropertyData {

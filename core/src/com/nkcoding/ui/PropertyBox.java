@@ -1,7 +1,6 @@
 package com.nkcoding.ui;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -12,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.interpreter.compiler.NormalMethodDefinition;
-import com.nkcoding.spacegame.simulation.spaceship.ExternalPropertySpecification;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertySpecification;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 
 import java.util.List;

@@ -4,7 +4,6 @@ import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.interpreter.compiler.TypeNamePair;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,6 +18,13 @@ public class ScriptingEngine {
                 return t;
             });
 
+
+    //the handler for the ExternalMethodFutures
+    public final ExternalMethodHandler handler;
+
+    public ScriptingEngine(ExternalMethodHandler handler) {
+        this.handler = handler;
+    }
 
     /**
      * call a method async

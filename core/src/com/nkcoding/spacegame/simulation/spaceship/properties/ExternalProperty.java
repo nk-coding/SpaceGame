@@ -96,6 +96,14 @@ public abstract class ExternalProperty<T> implements RunningState {
 
     public abstract void setInitValue(String value);
 
+    /**
+     * sets from external
+     * by default, this is handled like a normal set
+     */
+    public void setFromExternal(T value) {
+        set(value);
+    }
+
     public abstract void set(T value);
 
     public abstract T get2();

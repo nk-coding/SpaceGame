@@ -63,8 +63,7 @@ public class Stack {
         stackLevel--;
     }
 
-    //should add this to the list on the main thread
-    public void requestExternalMethod(ExternalMethodFuture future) {
-        scriptingEngine.getFutureQueue().add(future);
+    public ExternalMethodHandler getCallbackHandler() {
+        return scriptingEngine.handler;
     }
 }

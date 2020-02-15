@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.spacegame.simulation.Ship;
-import com.nkcoding.spacegame.simulation.spaceship.ExternalPropertySpecification;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertySpecification;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
 
@@ -32,7 +32,7 @@ public class ComponentDef extends ComponentDefBase {
     public ComponentDef(ComponentType type) {
         super(type);
         //add all ExternalPropertyDefs
-        for (ExternalPropertySpecification data : type.propertyDefs) {
+        for (ExternalPropertySpecification data : type.propertySpecifications) {
             properties.put(data.name, new ExternalPropertyData(data));
         }
     }

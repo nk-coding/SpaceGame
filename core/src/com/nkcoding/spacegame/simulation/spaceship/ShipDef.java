@@ -6,7 +6,7 @@ import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.MethodDefinition;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.ComponentType;
-import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
+import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertySpecification;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,7 +124,7 @@ public class ShipDef {
         //create the external method statements for the components
         HashMap<String, ExternalPropertySpecification> externalPropertyDatas = new HashMap<>();
         for (ComponentType com : ComponentType.values()) {
-            for (ExternalPropertySpecification data : com.propertyDefs) {
+            for (ExternalPropertySpecification data : com.propertySpecifications) {
                 if (!externalPropertyDatas.containsKey(data.name)) {
                     externalPropertyDatas.put(data.name, data);
                 }
