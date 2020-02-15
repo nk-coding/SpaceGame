@@ -129,22 +129,12 @@ public class ExternalPropertySpecification {
                 && (supportsChangedHandler || verifyHandler(handlerName, methods) != ValueStatus.ERROR);
     }
 
-    //adds the external method definitions the list
-    public void addExternalMethodDefs(Collection<? super MethodDefinition> list) {
-        if (supportsWrite) {
-            list.add(createSetter());
-        }
-        if (supportsRead) {
-            list.add(createGetter());
-        }
-    }
-
     //helper for addExternalMethodDef
-    private MethodDefinition createGetter() {
+    public MethodDefinition createGetter() {
         return new MethodDefinition(MethodType.External, getterName, type, new TypeNamePair("id", DataType.STRING));
     }
 
-    private MethodDefinition createSetter() {
+    public MethodDefinition createSetter() {
         return new MethodDefinition(MethodType.External, setterName, DataType.VOID,
                 new TypeNamePair("id", DataType.STRING),
                 new TypeNamePair("value", type));

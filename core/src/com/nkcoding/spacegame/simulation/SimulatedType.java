@@ -1,5 +1,6 @@
 package com.nkcoding.spacegame.simulation;
 
+import com.nkcoding.spacegame.GameScriptProvider;
 import com.nkcoding.spacegame.SpaceSimulation;
 import com.nkcoding.util.IOBiFunction;
 
@@ -16,10 +17,10 @@ public enum SimulatedType {
     //constructor to create new instances via multiplayer
     public final IOBiFunction<SpaceSimulation, DataInputStream, Simulated> constructor;
     private final short index;
-    public final Consumer<SpaceSimulation> typeInitializer;
+    public final Consumer<GameScriptProvider> typeInitializer;
 
     SimulatedType(IOBiFunction<SpaceSimulation, DataInputStream, Simulated> constructor,
-                  short index, Consumer<SpaceSimulation> typeInitializer) {
+                  short index, Consumer<GameScriptProvider> typeInitializer) {
         this.constructor = constructor;
         this.index = index;
         this.typeInitializer = typeInitializer;

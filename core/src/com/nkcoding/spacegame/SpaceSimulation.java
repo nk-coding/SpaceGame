@@ -8,8 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.nkcoding.communication.Communication;
 import com.nkcoding.communication.ResetDataOutputStream;
-import com.nkcoding.interpreter.ExternalMethodHandler;
 import com.nkcoding.interpreter.ExternalMethodFuture;
+import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.ScriptingEngine;
 import com.nkcoding.spacegame.simulation.CoreUnit;
 import com.nkcoding.spacegame.simulation.Simulated;
@@ -17,7 +17,6 @@ import com.nkcoding.spacegame.simulation.SimulatedType;
 import com.nkcoding.spacegame.simulation.SynchronizationPriority;
 import com.nkcoding.spacegame.simulation.communication.TransmissionID;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler;
-import com.nkcoding.util.Tuple;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -26,17 +25,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentMap;
-import java.util.function.Consumer;
 
-public class SpaceSimulation implements InputProcessor, ExternalMethodHandler {
+public class SpaceSimulation extends GameScriptProvider implements InputProcessor {
     public static final float TILE_SIZE = 8f;
 
     private static final float LOW_TIMEOUT = 1f / 2;
     private static final float MEDIUM_TIMEOUT = 1f / 5;
     private static final float HIGH_TIMEOUT = 1f / 20;
+    // handles all teh ExternalPropertyHandlers
+    protected ScriptingEngine scriptingEngine;
     private float lastLow = 0;
     private float lastMedium = 0;
     private float lastHigh = 0;
@@ -75,26 +72,19 @@ public class SpaceSimulation implements InputProcessor, ExternalMethodHandler {
 
     private Communication communication;
 
-    // handles all the ExternalPropertyHandlers
-    private ScriptingEngine scriptingEngine;
-    //Queue of all ExternMethodFutures, they will be executed on the main tread
-    //therefore, this queue must be concurrent
-    private final ConcurrentLinkedQueue<ExternalMethodFuture> futureQueue = new ConcurrentLinkedQueue<>();
-    // map with all objects that can receive futures
-    private final ConcurrentMap<String, ExternalMethodHandler> externalMethodHandlers = new ConcurrentHashMap<>();
-    private final ConcurrentMap<String, Tuple<Boolean, Consumer<ExternalMethodFuture>>> externalMethodsMap = new ConcurrentHashMap<>();
 
     // constructor
     public SpaceSimulation(SpaceGame spaceGame, Communication communication) {
+        super();
         this.spaceGame = spaceGame;
         this.communication = communication;
         if (communication != null) {
             this.clientID = communication.getId();
         }
+        scriptingEngine = new ScriptingEngine(this);
         // set Batch and assetManager
         assetManager = spaceGame.getAssetManager();
         // init scriptingEngine
-        scriptingEngine = new ScriptingEngine(this);
         // init the world
         world = new World(new Vector2(0, 0), true);
         world.setContactListener(new ContactListener() {
@@ -135,10 +125,6 @@ public class SpaceSimulation implements InputProcessor, ExternalMethodHandler {
         });
         // init camera
         this.camera = new OrthographicCamera();
-        //init Simulated
-        for (SimulatedType type : SimulatedType.values()) {
-            type.typeInitializer.accept(this);
-        }
     }
 
     public ScriptingEngine getScriptingEngine() {
@@ -250,7 +236,7 @@ public class SpaceSimulation implements InputProcessor, ExternalMethodHandler {
     }
 
     public boolean containsExternalPropertyHandler(String str) {
-        return externalMethodHandlers.get(str) != null;
+        return getExternalMethodHandler(str) != null;
     }
 
     // calls act on all Simulateds
@@ -402,10 +388,6 @@ public class SpaceSimulation implements InputProcessor, ExternalMethodHandler {
             }
             return null;
         }
-    }
-
-    public ExternalMethodHandler getExternalMethodHandler(String key) {
-        return externalMethodHandlers.get(key);
     }
 
     public void draw(Batch batch) {
@@ -577,10 +559,6 @@ public class SpaceSimulation implements InputProcessor, ExternalMethodHandler {
         } else {
             return new ResetDataOutputStream();
         }
-    }
-
-    public void addExternalMethod(String name, boolean concurrentSupport, Consumer<ExternalMethodFuture> methodHandler) {
-        externalMethodsMap.put(name, new Tuple<>(concurrentSupport, methodHandler));
     }
 
     /**

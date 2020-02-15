@@ -120,26 +120,6 @@ public class ShipDef {
         return result;
     }
 
-    public Compiler createCompiler(String text) {
-        //create the external method statements for the components
-        HashMap<String, ExternalPropertySpecification> externalPropertyDatas = new HashMap<>();
-        for (ComponentType com : ComponentType.values()) {
-            for (ExternalPropertySpecification data : com.propertySpecifications) {
-                if (!externalPropertyDatas.containsKey(data.name)) {
-                    externalPropertyDatas.put(data.name, data);
-                }
-            }
-        }
-
-        ArrayList<MethodDefinition> methodDefinitions = new ArrayList<>();
-        for (ExternalPropertySpecification data : externalPropertyDatas.values()) {
-            data.addExternalMethodDefs(methodDefinitions);
-        }
-        String[] lines = text.split("\\r?\\n");
-
-        return new Compiler(lines, methodDefinitions.toArray(MethodDefinition[]::new));
-    }
-
     public void toJson(Json json) {
         json.writeObjectStart(this.getClass().getSimpleName());
 

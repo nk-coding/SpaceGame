@@ -11,6 +11,7 @@ import com.nkcoding.interpreter.MethodStatement;
 import com.nkcoding.interpreter.compiler.CompileException;
 import com.nkcoding.interpreter.compiler.Compiler;
 import com.nkcoding.interpreter.compiler.Program;
+import com.nkcoding.spacegame.GameScriptProvider;
 import com.nkcoding.spacegame.SpaceSimulation;
 import com.nkcoding.spacegame.simulation.communication.UpdateTransmission;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalProperty;
@@ -270,10 +271,10 @@ public class Ship extends Simulated {
      * initializes the Ship type
      * adds ExternalMethod handlers
      */
-    public static void initializeType(final SpaceSimulation simulation) {
+    public static void initializeType(final GameScriptProvider engine) {
         Consumer<ExternalMethodFuture> handleGetterSetter = (future ->
         {
-            ExternalMethodHandler handler =  simulation.getExternalMethodHandler((String)future.getParameters()[0]);
+            ExternalMethodHandler handler =  engine.getExternalMethodHandler((String)future.getParameters()[0]);
             if (handler != null) {
                 handler.handleExternalMethod(future);
             }
@@ -281,8 +282,13 @@ public class Ship extends Simulated {
 
         for (ComponentType type : ComponentType.values()) {
             for (ExternalPropertySpecification specification : type.propertySpecifications) {
-                simulation.addExternalMethod(specification.getterName, specification.supportsConcurrentHandling, handleGetterSetter);
-                simulation.addExternalMethod(specification.setterName, specification.supportsConcurrentHandling, handleGetterSetter);
+                if (specification.supportsRead) {
+                    engine.addExternalMethod(specification.createGetter(), specification.supportsConcurrentHandling, handleGetterSetter);
+                }
+                if (specification.supportsWrite) {
+                    engine.addExternalMethod(specification.createSetter(), specification.supportsConcurrentHandling, handleGetterSetter);
+                }
+
             }
         }
     }
@@ -298,26 +304,27 @@ public class Ship extends Simulated {
         private boolean isPowerRequestDifferent = true;
         //is a structure check necessary
         private boolean isStructureCheckNecessary = true;
+
         private HashMap<String, MethodStatement> methods;
 
         //construct Ship out of ShipDef (public constructor)
         public ShipModel(ShipDef def, SpaceSimulation spaceSimulation) {
-            if (!def.getValidated()) throw new IllegalArgumentException("shipDef is not validated"); //here
+            if (!def.getValidated()) throw new IllegalArgumentException("shipDef is not validated");
             //compile the script
-            Compiler compiler = def.createCompiler(def.code); //here
-            Program program = null; //here
+            Compiler compiler = spaceSimulation.createCompiler(def.code);
+            Program program = null;
             try {
-                program = compiler.compile(); //here
+                program = compiler.compile();
             } catch (CompileException e) {
-                e.printStackTrace(); //here
+                e.printStackTrace();
             }
-            globalVariables = program.globalVariables; //here
-            methods = new HashMap<>(); //here
-            for (MethodStatement statement : program.methods) { //here
-                methods.put(statement.getDefinition().getName(), statement); //here
+            globalVariables = program.globalVariables;
+            methods = new HashMap<>();
+            for (MethodStatement statement : program.methods) {
+                methods.put(statement.getDefinition().getName(), statement);
             }
             //init new list with all the components
-            components = new ArrayList<>(def.componentDefs.size()); //here
+            components = new ArrayList<>(def.componentDefs.size());
         }
         //endregion
 
@@ -325,14 +332,14 @@ public class Ship extends Simulated {
         //pass other ship to copy important stuff (external method stuff etc.)
         ShipModel(Ship oldShip, ShipModel oldModel, List<Component> components) {
             //set globalVariables
-            this.globalVariables = oldModel.globalVariables; //here
+            this.globalVariables = oldModel.globalVariables;
             //set the components
-            this.components = new ArrayList<>(components.size()); //here
-            Body oldBody = oldShip.getBody(); //here
-            Body body = getBody(); //here
-            body.setTransform(oldBody.getPosition(), oldBody.getAngle()); //here
-            updateLinearVelocity(oldBody); //here
-            body.setAngularVelocity(oldBody.getAngularVelocity()); //here
+            this.components = new ArrayList<>(components.size());
+            Body oldBody = oldShip.getBody();
+            Body body = getBody();
+            body.setTransform(oldBody.getPosition(), oldBody.getAngle());
+            updateLinearVelocity(oldBody);
+            body.setAngularVelocity(oldBody.getAngularVelocity());
         }
 
         private void initComponentProperties() {
