@@ -43,10 +43,10 @@ public enum ComponentType {
             builder(KEY_DOWN_KEY, DataType.STRING).changedHandler().build(),
             builder(KEY_UP_KEY, DataType.STRING).changedHandler().build(),
             builder(ANGULAR_VELOCITY_KEY, DataType.FLOAT).read().build(),
-            builder(VELOCITY_KEY, DataType.FLOAT).read().build(),
+            builder(VELOCITY_KEY, DataType.fromName("[float dx, float dy]")).read().build(),
             builder(CAMERA_FOCUS_KEY, DataType.BOOLEAN).read().write().changedHandler().concurrent().build(),
             builder(INIT_CALLBACK_KEY, DataType.STRING).changedHandler().build(),
-            builder(POSITION_KEY, DataType.fromName("[float x, float y]")).read().build(),
+            builder(SHIP_POSITION_KEY, DataType.fromName("[float x, float y]")).read().build(),
             builder(ROTATION_KEY, DataType.FLOAT).read().build()),
     Sensors((short) 7, Sensors::new, Sensors::new, 2, 1, 100, 100, 0, Asset.Sensors,
             builder(IS_SCANNER_ENABLED, DataType.BOOLEAN).read().write().changedHandler().concurrent().build());
@@ -83,13 +83,14 @@ public enum ComponentType {
                   int health, float mass,
                   float maxPowerLevel, Asset defaultTexture,
                   ExternalPropertySpecification... propertySpecifications) {
-        ExternalPropertySpecification[] newPropertyDefs = new ExternalPropertySpecification[propertySpecifications.length + 5];
-        System.arraycopy(propertySpecifications, 0, newPropertyDefs, 5, propertySpecifications.length);
+        ExternalPropertySpecification[] newPropertyDefs = new ExternalPropertySpecification[propertySpecifications.length + 6];
+        System.arraycopy(propertySpecifications, 0, newPropertyDefs, 6, propertySpecifications.length);
         newPropertyDefs[0] = builder(HEALTH_KEY, DataType.FLOAT).read().changedHandler().build();
         newPropertyDefs[1] = builder(POWER_REQUESTED_KEY, DataType.FLOAT).read().changedHandler().build();
         newPropertyDefs[2] = builder(REQUEST_LEVEL_KEY, DataType.INTEGER).read().write().changedHandler().concurrent().build();
         newPropertyDefs[3] = builder(HAS_FULL_POWER_KEY, DataType.BOOLEAN).read().changedHandler().build();
         newPropertyDefs[4] = builder(POWER_RECEIVED_KEY, DataType.FLOAT).read().changedHandler().build();
+        newPropertyDefs[5] = builder(POSITION_KEY, DataType.fromName("[float x, float y]")).read().build();
         this.propertySpecifications = newPropertyDefs;
         this.constructor = constructor;
         this.deserializer = deserializer;
