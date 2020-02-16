@@ -112,8 +112,8 @@ public class ComputeCore extends Component implements CoreUnit {
                 velocity.items[0] = new StackItem<Float>(DataType.FLOAT);
                 velocity.items[1] = new StackItem<Float>(DataType.FLOAT);
                 Vector2 vel = getShip().getBody().getLinearVelocity();
-                velocity.items[0].setValue(vel.x);
-                velocity.items[1].setValue(vel.y);
+                velocity.items[0].setValue(vel.x * 10);
+                velocity.items[1].setValue(vel.y * 10);
                 return velocity;
             }
         });
