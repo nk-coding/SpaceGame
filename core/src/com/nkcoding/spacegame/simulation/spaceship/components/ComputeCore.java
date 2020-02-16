@@ -2,7 +2,10 @@ package com.nkcoding.spacegame.simulation.spaceship.components;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import com.nkcoding.interpreter.ListObject;
 import com.nkcoding.interpreter.MethodStatement;
+import com.nkcoding.interpreter.StackItem;
+import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.spacegame.simulation.CoreUnit;
 import com.nkcoding.spacegame.simulation.Ship;
 import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyData;
@@ -20,6 +23,8 @@ public class ComputeCore extends Component implements CoreUnit {
     public static final String VELOCITY_KEY = "Velocity";
     public static final String CAMERA_FOCUS_KEY = "CameraFocus";
     public static final String INIT_CALLBACK_KEY = "InitCallback";
+    public static final String POSITION_KEY = "Position";
+    public static final String ROTATION_KEY = "Rotation";
     //endregion
 
     private ComputeCoreModel model;
@@ -138,6 +143,28 @@ public class ComputeCore extends Component implements CoreUnit {
                 super.init(data, methods);
                 changed = true;
                 startChangedHandler(getSpaceSimulation().getScriptingEngine(), getShip().model.globalVariables);
+            }
+        });
+
+        //the Position
+        public final VirtualProperty<ListObject> position = register(new VirtualProperty<>(POSITION_KEY) {
+            @Override
+            public ListObject get2() {
+                ListObject pos = new ListObject(2);
+                pos.items[0] = new StackItem<Float>(DataType.FLOAT);
+                pos.items[1] = new StackItem<Float>(DataType.FLOAT);
+                Vector2 currentCenterPos = getWorldCenterPosition();
+                pos.items[0].setValue(10f * currentCenterPos.x);
+                pos.items[1].setValue(10f * currentCenterPos.y);
+                return pos;
+            }
+        });
+
+        //the Rotation
+        public final VirtualProperty<Float> rotation = register(new VirtualProperty<>(ROTATION_KEY) {
+            @Override
+            public Float get2() {
+                return getShip().getRotation();
             }
         });
         //endregion
