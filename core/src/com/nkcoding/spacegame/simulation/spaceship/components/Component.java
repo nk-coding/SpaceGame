@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.nkcoding.interpreter.ListObject;
+import com.nkcoding.interpreter.StackItem;
+import com.nkcoding.interpreter.compiler.DataType;
 import com.nkcoding.spacegame.ExtAssetManager;
 import com.nkcoding.spacegame.SpaceSimulation;
 import com.nkcoding.spacegame.simulation.Damageable;
@@ -14,10 +17,7 @@ import com.nkcoding.spacegame.simulation.spaceship.ShipDef;
 import com.nkcoding.spacegame.simulation.spaceship.components.communication.ComponentUpdateID;
 import com.nkcoding.spacegame.simulation.spaceship.components.communication.DamageTransmission;
 import com.nkcoding.spacegame.simulation.spaceship.components.communication.UpdateComponentTransmission;
-import com.nkcoding.spacegame.simulation.spaceship.properties.BooleanProperty;
-import com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertyHandler;
-import com.nkcoding.spacegame.simulation.spaceship.properties.FloatProperty;
-import com.nkcoding.spacegame.simulation.spaceship.properties.IntProperty;
+import com.nkcoding.spacegame.simulation.spaceship.properties.*;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -30,6 +30,7 @@ public abstract class Component implements Damageable {
     public static final String REQUEST_LEVEL_KEY = "RequestLevel";
     public static final String HAS_FULL_POWER_KEY = "HasFullPower";
     public static final String POWER_RECEIVED_KEY = "PowerReceived";
+    public static final String POSITION_KEY = "Position";
     //endregion
 
     //region sides
@@ -387,6 +388,20 @@ public abstract class Component implements Damageable {
             public void set(int value) {
                 if (get() != value) shipModel.invalidatePowerLevelOrder();
                 super.set(value);
+            }
+        });
+
+        //the Position
+        public final VirtualProperty<ListObject> position = register(new VirtualProperty<>(POSITION_KEY) {
+            @Override
+            public ListObject get2() {
+                ListObject pos = new ListObject(2);
+                pos.items[0] = new StackItem<Float>(DataType.FLOAT);
+                pos.items[1] = new StackItem<Float>(DataType.FLOAT);
+                Vector2 currentCenterPos = localToWorld(new Vector2(defBase.getRealWidth() * ShipDef.UNIT_SIZE / 2, defBase.getRealHeight() * ShipDef.UNIT_SIZE / 2));
+                pos.items[0].setValue(10f * currentCenterPos.x);
+                pos.items[1].setValue(10f * currentCenterPos.y);
+                return pos;
             }
         });
 

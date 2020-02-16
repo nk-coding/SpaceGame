@@ -23,7 +23,7 @@ public class ComputeCore extends Component implements CoreUnit {
     public static final String VELOCITY_KEY = "Velocity";
     public static final String CAMERA_FOCUS_KEY = "CameraFocus";
     public static final String INIT_CALLBACK_KEY = "InitCallback";
-    public static final String POSITION_KEY = "Position";
+    public static final String SHIP_POSITION_KEY = "ShipPosition";
     public static final String ROTATION_KEY = "Rotation";
     //endregion
 
@@ -103,13 +103,21 @@ public class ComputeCore extends Component implements CoreUnit {
                 return getShip().getBody().getAngularVelocity();
             }
         });
+
         //wrapper for the velocity from Body
-        public final VirtualProperty<Float> velocity = register(new VirtualProperty<>(VELOCITY_KEY) {
+        public final VirtualProperty<ListObject> velocity = register(new VirtualProperty<>(VELOCITY_KEY) {
             @Override
-            public Float get2() {
-                return getShip().getBody().getLinearVelocity().len();
+            public ListObject get2() {
+                ListObject velocity = new ListObject(2);
+                velocity.items[0] = new StackItem<Float>(DataType.FLOAT);
+                velocity.items[1] = new StackItem<Float>(DataType.FLOAT);
+                Vector2 vel = getShip().getBody().getLinearVelocity();
+                velocity.items[0].setValue(vel.x);
+                velocity.items[1].setValue(vel.y);
+                return velocity;
             }
         });
+
         //focus from SpaceSimulation
         public final VirtualProperty<Boolean> cameraFocus = register(new VirtualProperty<>(CAMERA_FOCUS_KEY) {
             @Override
@@ -130,6 +138,7 @@ public class ComputeCore extends Component implements CoreUnit {
                 return getSpaceSimulation().getCameraCoreUnit() == ComputeCore.this;
             }
         });
+
         //the init handler
         public final VirtualProperty<String> initCallback = register(new VirtualProperty<>(INIT_CALLBACK_KEY) {
             @Override
@@ -147,7 +156,7 @@ public class ComputeCore extends Component implements CoreUnit {
         });
 
         //the Position
-        public final VirtualProperty<ListObject> position = register(new VirtualProperty<>(POSITION_KEY) {
+        public final VirtualProperty<ListObject> shipPosition = register(new VirtualProperty<>(SHIP_POSITION_KEY) {
             @Override
             public ListObject get2() {
                 ListObject pos = new ListObject(2);
