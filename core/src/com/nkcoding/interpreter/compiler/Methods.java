@@ -103,6 +103,16 @@ public class Methods {
                     int max = (int)obj[1];
                     return (int)(Math.random() * (max - min) + min);
                 });
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "degToRad", DataType.FLOAT, new TypeNamePair("deg", DataType.FLOAT)),
+                (Function<Object[], Float>) obj ->
+                {
+                    return (float)Math.toRadians((float)obj[0]);
+                });
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "radToDeg", DataType.FLOAT, new TypeNamePair("rad", DataType.FLOAT)),
+                (Function<Object[], Float>) obj ->
+                {
+                    return (float)Math.toDegrees((float)obj[0]);
+                });
 
     }
 

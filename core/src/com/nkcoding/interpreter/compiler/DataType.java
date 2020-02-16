@@ -218,16 +218,39 @@ public final class DataType {
 
     @Override
     public String toString() {
-        return name + (name.equals(LIST_KW) ? ": " + Arrays.toString(listTypes) : "");
+        if (!name.equals(LIST_KW)) {
+            return name;
+        } else {
+            StringBuilder builder = new StringBuilder();
+            for (TypeNamePair pair : listTypes) {
+                builder.append(pair.getType());
+                builder.append(" ");
+                if (pair.getName() != null) {
+                    builder.append(pair.getName());
+                }
+                builder.append(", ");
+            }
+            return "[" + builder.substring(0, builder.length() - 2) + "]";
+        }
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj.getClass().equals(DataType.class)) {
-            boolean arrayEqual = Arrays.equals(listTypes, ((DataType) obj).listTypes);
+            boolean arrayEqual = listTypesEquals(((DataType) obj).listTypes);
             return name.equals(((DataType) obj).name) && arrayEqual;
         } else {
             return false;
         }
+    }
+
+    private boolean listTypesEquals(TypeNamePair[] otherListTypes) {
+        if (listTypes == otherListTypes) return true;
+        if (listTypes == null ^ otherListTypes == null) return false;
+        if (listTypes.length != otherListTypes.length) return false;
+        for (int i = 0; i < listTypes.length; i++) {
+            if (!listTypes[i].getType().equals(otherListTypes[i].getType())) return false;
+        }
+        return true;
     }
 }

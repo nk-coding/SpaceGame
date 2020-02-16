@@ -45,7 +45,9 @@ public enum ComponentType {
             builder(ANGULAR_VELOCITY_KEY, DataType.FLOAT).read().build(),
             builder(VELOCITY_KEY, DataType.FLOAT).read().build(),
             builder(CAMERA_FOCUS_KEY, DataType.BOOLEAN).read().write().changedHandler().concurrent().build(),
-            builder(INIT_CALLBACK_KEY, DataType.STRING).changedHandler().build()),
+            builder(INIT_CALLBACK_KEY, DataType.STRING).changedHandler().build(),
+            builder(POSITION_KEY, DataType.fromName("[float x, float y]")).read().build(),
+            builder(ROTATION_KEY, DataType.FLOAT).read().build()),
     Sensors((short) 7, Sensors::new, Sensors::new, 2, 1, 100, 100, 0, Asset.Sensors,
             builder(IS_SCANNER_ENABLED, DataType.BOOLEAN).read().write().changedHandler().concurrent().build());
 
