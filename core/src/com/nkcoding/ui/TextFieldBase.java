@@ -389,6 +389,7 @@ public class TextFieldBase extends Widget implements Disableable {
     }
 
     protected void drawAutocompletion(Batch batch, BitmapFont font, float x, float y) {
+        font.setColor(style.fontColor);
         //not implemented here, job for MultiColorTextArea
     }
 

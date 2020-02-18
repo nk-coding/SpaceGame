@@ -406,7 +406,7 @@ public class ShipBuilderScreen implements Screen {
             img.setUserObject(type);
             componentsStack.add(img).width(ShipDesigner.COMPONENT_SIZE * type.width * styles.scaleFactor)
                     .height(ShipDesigner.COMPONENT_SIZE * type.height * styles.scaleFactor)
-                    .pad(styles.defaultScaledAbs, styles.defaultScaledAbs, 0, styles.defaultScaledAbs).top().left();
+                    .pad(styles.defaultScaledAbs, styles.defaultScaledAbs, 0, styles.defaultScaledAbs).top().left().growX();
             componentsStack.row();
         }
     }
