@@ -126,7 +126,7 @@ public class CodeEditor extends WidgetGroup {
             }
         };
         codeTextArea.setFocusTraversal(false);
-        codeScrollPane = new ScrollPane(codeTextArea, codeEditorStyle.createScrollPaneStyle());
+        codeScrollPane = new CustomScrollPane(codeTextArea, codeEditorStyle.createScrollPaneStyle());
         codeScrollPane.setOverscroll(false, false);
         //set attributes on ScrollPane
         codeScrollPane.setFadeScrollBars(false);

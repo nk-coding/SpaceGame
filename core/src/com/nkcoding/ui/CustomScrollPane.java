@@ -1,5 +1,6 @@
 package com.nkcoding.ui;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -38,6 +39,7 @@ public class CustomScrollPane extends ScrollPane {
      * it fu***ing works
      * don't touch it
      * don't question it
+     * this fixes the 2 layout() for resize bug
      */
     @Override
     public void setBounds(float x, float y, float width, float height) {
@@ -62,5 +64,12 @@ public class CustomScrollPane extends ScrollPane {
             }
         }
         super.setBounds(x, y, width, height);
+    }
+
+    @Override
+    public void layout() {
+        super.layout();
+        visualScrollX(MathUtils.clamp(getVisualScrollX(), 0, getMaxX()));
+        visualScrollY(MathUtils.clamp(getVisualScrollY(), 0, getMaxY()));
     }
 }

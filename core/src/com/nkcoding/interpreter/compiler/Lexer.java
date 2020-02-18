@@ -186,7 +186,22 @@ public class Lexer {
      * gets an Iterator which starts at the first Token for the specified line
      */
     public Iterator<Token> getLineStartIterator(int line) {
-        return tokens.tailSet(getTokenAfter(line, 0)).iterator();
+        Token lineStartToken = getTokenAfter(line, 0);
+        if (lineStartToken != null) {
+            return tokens.tailSet(lineStartToken).iterator();
+        } else {
+            return new Iterator<>() {
+                @Override
+                public boolean hasNext() {
+                    return false;
+                }
+
+                @Override
+                public Token next() {
+                    return null;
+                }
+            };
+        }
     }
 
     /**
