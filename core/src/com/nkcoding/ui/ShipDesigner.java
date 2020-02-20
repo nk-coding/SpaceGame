@@ -106,7 +106,7 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
 
                     if (drag(componentClipboard, posX - offsetX, posY - offsetY )) {
                         drop(componentClipboard, posX - offsetX, posY - offsetY);
-                        componentClipboard = selectedComponents.stream().map(ComponentDef::new).collect(Collectors.toList());
+                        componentClipboard = componentClipboard.stream().map(ComponentDef::new).collect(Collectors.toList());
                     }
                     return true;
                 } else {
@@ -175,6 +175,8 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
 
     //drops at the position
     public void drop(List<ComponentDef> components, int offsetX, int offsetY) {
+        this.getStage().setKeyboardFocus(this);
+        updateSelectedComponents(new ArrayList<>(components));
         for (ComponentDef def : components) {
             designerHelper.moveComponent(def, def.getX() + offsetX, def.getY() + offsetY, def.getRotation());
         }

@@ -83,7 +83,7 @@ public class PropertyBox extends WidgetGroup {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.getClipboard().setContents(specification.getterName + "(\""
-                        + (componentName != null ? componentName : "") + "\")");
+                        + (PropertyBox.this.componentName != null ? PropertyBox.this.componentName : "") + "\")");
             }
         });
         setterImageButton = new ImageButton(style.setterButtonDrawable);
@@ -91,7 +91,7 @@ public class PropertyBox extends WidgetGroup {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.getClipboard().setContents(specification.setterName + "(\""
-                        + (componentName != null ? componentName : "") + "\", )");
+                        + (PropertyBox.this.componentName != null ? PropertyBox.this.componentName : "") + "\", )");
             }
         });
         addActor(nameLabel);
@@ -117,6 +117,13 @@ public class PropertyBox extends WidgetGroup {
         this.specification = specification;
         this.propertyDatas = propertyDatas;
         init();
+    }
+
+    /**
+     * updates the ComponentName
+     */
+    public void setComponentName(String componentName) {
+        this.componentName = componentName;
     }
 
     /**

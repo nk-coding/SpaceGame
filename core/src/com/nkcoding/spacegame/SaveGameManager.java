@@ -13,6 +13,7 @@ import java.io.Writer;
 
 public class SaveGameManager {
     private static final String SAVE_FILE_PATH = "saveGame.json";
+    private static final String EMERGENCY_SAVE_FILE_PATH = "emergencySave.json";
     private static SaveGame saveGame = null;
 
     /**
@@ -29,6 +30,11 @@ public class SaveGameManager {
 
     public static void save() {
         FileHandle handle = Gdx.files.local(SAVE_FILE_PATH);
+        saveGame.save(handle);
+    }
+
+    public static void emergencySave() {
+        FileHandle handle = Gdx.files.local(EMERGENCY_SAVE_FILE_PATH);
         saveGame.save(handle);
     }
 

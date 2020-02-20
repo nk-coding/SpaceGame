@@ -256,7 +256,8 @@ public class ZoomScrollPane extends WidgetGroup {
                 //check for zoom
                 if (zoom && (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT))) {
                     setZoom(zoomLevel * (float) Math.pow(1.3, -amount),
-                            screenToLocalCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY())));
+                            screenToLocalCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY())),
+                            false);
                 } else if (scrollY)
                     setScrollY(amountY + getMouseWheelY() * amount);
                 else if (scrollX) //
@@ -466,7 +467,7 @@ public class ZoomScrollPane extends WidgetGroup {
         float width = getWidth();
         float height = getHeight();
 
-        if (needsRezoom()) setZoom(getZoom(), null);
+        if (needsRezoom()) setZoom(getZoom(), null, true);
 
         float scrollbarHeight = 0;
         if (hScrollKnob != null) scrollbarHeight = hScrollKnob.getMinHeight();
@@ -964,7 +965,7 @@ public class ZoomScrollPane extends WidgetGroup {
         return false;
     }
 
-    public void setZoom(float newZoom, Vector2 zoomPosition) {
+    public void setZoom(float newZoom, Vector2 zoomPosition, boolean instant) {
         if (widget instanceof  Zoomable) {
             float minZoom = Math.min(areaWidth / ((Zoomable) widget).getUnscaledWidth(),
                     areaHeight / ((Zoomable) widget).getUnscaledHeight());
@@ -979,6 +980,10 @@ public class ZoomScrollPane extends WidgetGroup {
             childPercentageY = 1f - (visualAmountY + (getHeight() - zoomPosition.y)) / getActor().getHeight();
 
         }
+        if (instant) {
+            visualZoomLevel = newZoom;
+        }
+
 
         zoomLevelDif = Math.abs(visualZoomLevel - newZoom);
         this.zoomLevel = newZoom;

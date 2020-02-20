@@ -218,7 +218,7 @@ public final class DataType {
 
     @Override
     public String toString() {
-        if (!name.equals(LIST_KW)) {
+        if (listTypes == null || !name.equals(LIST_KW)) {
             return name;
         } else {
             StringBuilder builder = new StringBuilder();
