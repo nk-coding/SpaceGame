@@ -877,7 +877,7 @@ public class MultiColorTextArea extends TextFieldBase implements Cullable {
 
         @Override
         public boolean keyDown(InputEvent event, int keycode) {
-            if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT) {
+            if (keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT || keycode == Input.Keys.ESCAPE) {
                 autocompletionEnabled = false;
             }
             boolean result = super.keyDown(event, keycode);

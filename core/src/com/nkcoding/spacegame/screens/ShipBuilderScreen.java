@@ -150,7 +150,10 @@ public class ShipBuilderScreen implements Screen {
         final Label nameLabel = new Label("name", styles.labelStyleSmall);
 
         nameTextField = new TextField("", styles.textFieldStyle);
-        nameTextField.setTextFieldListener((textField, c) -> verifyName());
+        nameTextField.setTextFieldListener((textField, c) -> {
+            verifyName();
+            updateComponentName(nameTextField.getText());
+        });
         verifyName();
 
         //the table with the component / ship name
@@ -371,8 +374,6 @@ public class ShipBuilderScreen implements Screen {
                 shipDesigner.drop(components,
                         dragShip.calculateXIndex(x - dragShip.dragOffset.x + componentSize / 2) - dragShip.offsetX,
                         dragShip.calculateYIndex(y - dragShip.dragOffset.y + componentSize / 2) - dragShip.offsetY);
-                shipDesigner.clearSelectedComponents();
-                components.forEach(shipDesigner::addSelectedComponent);
             }
         });
 
@@ -418,6 +419,14 @@ public class ShipBuilderScreen implements Screen {
             save();
         }
         return false;
+    }
+
+    private void updateComponentName(String newName) {
+        for (Actor actor : propertiesVerticalGroup.getChildren()) {
+            if (actor instanceof Container && ((Container) actor).getActor() instanceof PropertyBox) {
+                ((PropertyBox) ((Container) actor).getActor()).setComponentName(newName);
+            }
+        }
     }
 
     /**
@@ -582,6 +591,7 @@ public class ShipBuilderScreen implements Screen {
         if (isShipView) {
             stage.addActor(codeRootTable);
             shipRootTable.remove();
+            stage.setKeyboardFocus(shipDesigner);
         } else {
             parse(true);
 
@@ -652,12 +662,19 @@ public class ShipBuilderScreen implements Screen {
 
     //saves the current state
     private void save() {
-        shipDef.code = codeEditor.getText();
-        saveComponentDef(shipDesigner.getSelectedComponents());
-        validate();
-
-        shipDef.setValidated(codeValidated && shipValidated);
-        SaveGameManager.save();
+        try {
+            shipDef.code = codeEditor.getText();
+            saveComponentDef(shipDesigner.getSelectedComponents());
+            validate();
+            shipDef.setValidated(codeValidated && shipValidated);
+            SaveGameManager.save();
+        } catch (Exception e) {
+            System.err.println("something went wrong during save: EMERGENCY SAVE");
+            e.printStackTrace();
+            shipDef.setValidated(false);
+            SaveGameManager.emergencySave();
+            throw e;
+        }
     }
 
     private void validate() {
