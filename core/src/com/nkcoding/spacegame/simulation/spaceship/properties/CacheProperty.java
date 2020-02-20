@@ -1,7 +1,7 @@
 package com.nkcoding.spacegame.simulation.spaceship.properties;
 
 public abstract class CacheProperty<T> extends ExternalProperty<T>{
-    private T cache = null;
+    private volatile T cache = null;
 
     public CacheProperty(String name) {
         super(name);

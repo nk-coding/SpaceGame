@@ -131,6 +131,7 @@ public class ShipBuilderScreen implements Screen {
         shipDesignerZoomScrollPane = new ZoomScrollPane(shipDesigner, styles.zoomScrollPaneStyle);
         shipDesignerZoomScrollPane.setFlickScroll(true);
         shipDesignerZoomScrollPane.setFadeScrollBars(false);
+        shipDesignerZoomScrollPane.setForceScroll(true, true);
         shipDesignerZoomScrollPane.setOverscroll(false, false);
         UIHelper.activateScrollOnHover(shipDesignerZoomScrollPane);
 
@@ -406,7 +407,7 @@ public class ShipBuilderScreen implements Screen {
             img.setUserObject(type);
             componentsStack.add(img).width(ShipDesigner.COMPONENT_SIZE * type.width * styles.scaleFactor)
                     .height(ShipDesigner.COMPONENT_SIZE * type.height * styles.scaleFactor)
-                    .pad(styles.defaultScaledAbs, styles.defaultScaledAbs, 0, styles.defaultScaledAbs).top().left();
+                    .pad(styles.defaultScaledAbs, styles.defaultScaledAbs, 0, styles.defaultScaledAbs).top().left().growX();
             componentsStack.row();
         }
     }

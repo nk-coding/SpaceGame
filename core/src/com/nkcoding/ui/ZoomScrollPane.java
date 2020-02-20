@@ -255,7 +255,8 @@ public class ZoomScrollPane extends WidgetGroup {
                 setScrollbarsVisible(true);
                 //check for zoom
                 if (zoom && (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT))) {
-                    setZoom(zoomLevel * (float) Math.pow(1.3, -amount));
+                    setZoom(zoomLevel * (float) Math.pow(1.3, -amount),
+                            screenToLocalCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY())));
                 } else if (scrollY)
                     setScrollY(amountY + getMouseWheelY() * amount);
                 else if (scrollX) //
@@ -323,7 +324,6 @@ public class ZoomScrollPane extends WidgetGroup {
         invalidateHierarchy();
     }
 
-    //TODO
     //I have to implement stuff when I activate smooth scrolling
     public void act(float delta) {
         super.act(delta);
@@ -338,10 +338,7 @@ public class ZoomScrollPane extends WidgetGroup {
             animating = true;
         }
 
-        //this seems to not have something to do with the smooth scrolling
-        //however, I want to know what the purpose of this code is so I leave an output
         if (flingTimer > 0) {
-            //System.out.println("act() -> flingTimer > 0");
             setScrollbarsVisible(true);
 
             float alpha = flingTimer / flingTime;
@@ -469,6 +466,8 @@ public class ZoomScrollPane extends WidgetGroup {
         float width = getWidth();
         float height = getHeight();
 
+        if (needsRezoom()) setZoom(getZoom(), null);
+
         float scrollbarHeight = 0;
         if (hScrollKnob != null) scrollbarHeight = hScrollKnob.getMinHeight();
         if (style.hScroll != null) scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
@@ -550,6 +549,8 @@ public class ZoomScrollPane extends WidgetGroup {
         }
         scrollX(MathUtils.clamp(amountX, 0, maxX));
         scrollY(MathUtils.clamp(amountY, 0, maxY));
+        visualScrollX(MathUtils.clamp(amountX, 0, maxX));
+        visualScrollY(MathUtils.clamp(amountY, 0, maxY));
 
         // Set the bounds and scroll knob sizes if scrollbars are needed.
         if (scrollX) {
@@ -954,13 +955,30 @@ public class ZoomScrollPane extends WidgetGroup {
         return zoomLevel;
     }
 
-    public void setZoom(float newZoom) {
-        Vector2 localPosition = screenToLocalCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-        percentageX = localPosition.x / getWidth();
-        percentageY = localPosition.y / getHeight();
+    private boolean needsRezoom() {
+        if (widget instanceof  Zoomable) {
+            float minZoom = Math.min(areaWidth / ((Zoomable) widget).getUnscaledWidth(),
+                    areaHeight / ((Zoomable) widget).getUnscaledHeight());
+            return getZoom() < minZoom || getZoom() > 10;
+        }
+        return false;
+    }
 
-        childPercentageX = (visualAmountX + localPosition.x) / getActor().getWidth();
-        childPercentageY = 1f - (visualAmountY + (getHeight() - localPosition.y)) / getActor().getHeight();
+    public void setZoom(float newZoom, Vector2 zoomPosition) {
+        if (widget instanceof  Zoomable) {
+            float minZoom = Math.min(areaWidth / ((Zoomable) widget).getUnscaledWidth(),
+                    areaHeight / ((Zoomable) widget).getUnscaledHeight());
+            newZoom = MathUtils.clamp(newZoom, minZoom,10);
+        }
+
+        if (zoomPosition != null) {
+            percentageX = zoomPosition.x / getWidth();
+            percentageY = zoomPosition.y / getHeight();
+
+            childPercentageX = (visualAmountX + zoomPosition.x) / getActor().getWidth();
+            childPercentageY = 1f - (visualAmountY + (getHeight() - zoomPosition.y)) / getActor().getHeight();
+
+        }
 
         zoomLevelDif = Math.abs(visualZoomLevel - newZoom);
         this.zoomLevel = newZoom;

@@ -200,6 +200,16 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
     }
 
     @Override
+    public float getUnscaledWidth() {
+        return COMPONENT_SIZE * ShipDef.MAX_SIZE;
+    }
+
+    @Override
+    public float getUnscaledHeight() {
+        return COMPONENT_SIZE * ShipDef.MAX_SIZE;
+    }
+
+    @Override
     public float getPrefWidth() {
         return zoom * COMPONENT_SIZE * ShipDef.MAX_SIZE;
     }
