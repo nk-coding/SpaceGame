@@ -113,6 +113,11 @@ public class Methods {
                 {
                     return (float)Math.toDegrees((float)obj[0]);
                 });
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "sqrt", DataType.FLOAT, new TypeNamePair("x", DataType.FLOAT)),
+                (Function<Object[], Float>) obj ->
+                {
+                    return (float)Math.sqrt((float)obj[0]);
+                });
 
     }
 
