@@ -93,11 +93,14 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
                 }
                 return false;
             case Input.Keys.C:
-                clipboard.setContents("");
-                componentClipboard = selectedComponents.stream().map(ComponentDef::new).collect(Collectors.toList());
-                return true;
+                if (UIUtils.ctrl()) {
+                    clipboard.setContents("");
+                    componentClipboard = selectedComponents.stream().map(ComponentDef::new).collect(Collectors.toList());
+                    return true;
+                }
+                return false;
             case Input.Keys.V:
-                if (clipboard.getContents().equals("") && !componentClipboard.isEmpty()) {
+                if (clipboard.getContents().equals("") && !componentClipboard.isEmpty() && UIUtils.ctrl()) {
                     Vector2 pos = screenToLocalCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
                     int posX = calculateXIndex(pos.x);
                     int posY = calculateYIndex(pos.y);
@@ -112,6 +115,12 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
                 } else {
                     return false;
                 }
+            case Input.Keys.A:
+                if (UIUtils.ctrl()) {
+                    updateSelectedComponents(new ArrayList<>(designerHelper.getComponents()));
+                    return true;
+                }
+                return false;
             default:
                 return false;
         }

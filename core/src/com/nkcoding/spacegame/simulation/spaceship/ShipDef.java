@@ -161,6 +161,10 @@ public class ShipDef {
             }
         }
 
+        public List<ComponentDef> getComponents() {
+            return componentDefs;
+        }
+
         //Add a component to componentsMap and componentsDefs
         //this requires that TryMoveComponent was called immediately before
         //otherwise this might lead to unexpected behaviour
