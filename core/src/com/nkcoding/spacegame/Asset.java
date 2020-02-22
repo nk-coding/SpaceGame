@@ -35,6 +35,7 @@ public enum Asset {
     ErrorSymbol("textures/ui/errorSymbol.png"),
     ActionNecessarySymbol("textures/ui/actionNecessarySymbol.png"),
     Selection("textures/ui/selection.png"),
+    SelectionWithBorder("textures/ui/selectionWithBorder.png"),
     BasicBackground("textures/ui/basicBackground.png"),
     LightBackground("textures/ui/lightBackground.png"),
     GetterSymbol("textures/ui/getterSymbol.png"),

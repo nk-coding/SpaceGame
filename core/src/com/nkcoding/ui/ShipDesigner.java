@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.Disposable;
@@ -43,13 +44,16 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
     private Vector2 selectionEnd = new Vector2();
     private int draggingPointer = -1;
 
+    private ShipDesignerStyle style;
+
     //constructor with a shipDef
-    public ShipDesigner(ShipDef shipDef, ExtAssetManager assetManager, Texture noComponent, Texture selection,
+    public ShipDesigner(ShipDef shipDef, ExtAssetManager assetManager, ShipDesignerStyle style,
                         BiConsumer<List<ComponentDef>, List<ComponentDef>> selectionChanged) {
-        super(assetManager, selection, noComponent);
+        super(assetManager, style.selection, style.noComponent);
         //ShipDef that contains all ComponentDefs
         this.selectionChanged = selectionChanged;
         this.designerHelper = shipDef.getShipDesignerHelper();
+        this.style = style;
         clipboard = Gdx.app.getClipboard();
 
         //capture touch events
@@ -159,6 +163,9 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
                     return true;
                 }
                 return false;
+            case Input.Keys.R:
+                rotateSelectedComponent();
+                return true;
             default:
                 return false;
         }
@@ -294,9 +301,23 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
         if (draggingPointer != -1) {
-            batch.setColor(1,1,1,0.5f);
-            batch.draw(selection, getDrawX() + selectionStart.x, getDrawY() + selectionStart.y,
+            style.boxSelection.draw(batch,
+                    getDrawX() + selectionStart.x, getDrawY() + selectionStart.y,
                     selectionEnd.x - selectionStart.x, selectionEnd.y - selectionStart.y);
+        }
+    }
+
+    public static class ShipDesignerStyle {
+        public Texture noComponent;
+        public Texture selection;
+        public Drawable boxSelection;
+
+        public ShipDesignerStyle() {}
+
+        public ShipDesignerStyle(Texture noComponent, Texture selection, Drawable boxSelection) {
+            this.noComponent = noComponent;
+            this.selection = selection;
+            this.boxSelection = boxSelection;
         }
     }
 }

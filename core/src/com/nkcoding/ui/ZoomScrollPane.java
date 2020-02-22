@@ -230,7 +230,7 @@ public class ZoomScrollPane extends WidgetGroup {
 
             @Override
             public void fling(InputEvent event, float x, float y, int button) {
-                if (button == Input.Buttons.RIGHT) {
+                if (button == Input.Buttons.LEFT) {
                     if (Math.abs(x) > 150 && scrollX) {
                         flingTimer = flingTime;
                         velocityX = x;
