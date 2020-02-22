@@ -39,6 +39,10 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
     private List<ComponentDef> componentClipboard = new LinkedList<>();
     private Clipboard clipboard;
 
+    private Vector2 selectionStart = new Vector2();
+    private Vector2 selectionEnd = new Vector2();
+    private int draggingPointer = -1;
+
     //constructor with a shipDef
     public ShipDesigner(ShipDef shipDef, ExtAssetManager assetManager, Texture noComponent, Texture selection,
                         BiConsumer<List<ComponentDef>, List<ComponentDef>> selectionChanged) {
@@ -52,22 +56,56 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
         addCaptureListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (UIUtils.shift()) {
-                    ComponentDef def = getComponentAt(x, y);
-                    if (def != null) {
-                        toggleSelectedComponent(getComponentAt(x, y));
+                if (button == Input.Buttons.LEFT) {
+                    if (UIUtils.shift()) {
+                        ComponentDef def = getComponentAt(x, y);
+                        if (def != null) {
+                            toggleSelectedComponent(getComponentAt(x, y));
+                        }
+                    } else {
+                        ComponentDef def = getComponentAt(x, y);
+                        if (def != null && !selectedComponents.contains(def)) {
+                            clearSelectedComponents();
+                            addSelectedComponent(def);
+                        } else if (def == null) {
+                            clearSelectedComponents();
+                        }
                     }
-                } else {
-                    ComponentDef def = getComponentAt(x, y);
-                    if (def != null && !selectedComponents.contains(def)) {
-                        clearSelectedComponents();
-                        addSelectedComponent(def);
-                    } else if (def == null) {
-                        clearSelectedComponents();
-                    }
+                    getStage().setKeyboardFocus(ShipDesigner.this);
+                    return true;
+                } else if (button == Input.Buttons.RIGHT && draggingPointer == -1) {
+                    System.out.println("x: " + x + ", y: " + y);
+                    selectionStart = new Vector2(x, y);
+                    selectionEnd.set(x, y);
+                    draggingPointer = pointer;
+                    return true;
+                } else  {
+                    return false;
                 }
-                getStage().setKeyboardFocus(ShipDesigner.this);
-                return true;
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                if (pointer == draggingPointer) {
+                    selectionEnd.set(x, y);
+                } else {
+                    super.touchDragged(event, x, y, pointer);
+                }
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (pointer == draggingPointer) {
+                    draggingPointer = -1;
+                    int xStart = calculateXIndex(Math.min(selectionStart.x, selectionEnd.x));
+                    int xEnd = calculateXIndex(Math.max(selectionStart.x, selectionEnd.x));
+                    int yStart = calculateYIndex(Math.min(selectionStart.y, selectionEnd.y));
+                    int yEnd = calculateYIndex(Math.max(selectionStart.y, selectionEnd.y));
+                    updateSelectedComponents(designerHelper.getComponents().stream()
+                            .filter(c -> c.getX() > xStart && c.getX() + c.getRealWidth() <= xEnd
+                                    && c.getY() > yStart && c.getY() + c.getRealHeight() <= yEnd)
+                            .collect(Collectors.toList()));
+                }
             }
         });
 
@@ -249,6 +287,16 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
             return selectedComponents.contains(def) ? DrawMode.SELECTED : DrawMode.NORMAL;
         } else {
             return null;
+        }
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+        if (draggingPointer != -1) {
+            batch.setColor(1,1,1,0.5f);
+            batch.draw(selection, getDrawX() + selectionStart.x, getDrawY() + selectionStart.y,
+                    selectionEnd.x - selectionStart.x, selectionEnd.y - selectionStart.y);
         }
     }
 }

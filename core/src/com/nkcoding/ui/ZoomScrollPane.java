@@ -209,26 +209,38 @@ public class ZoomScrollPane extends WidgetGroup {
 
         flickScrollListener = new ActorGestureListener() {
 
+            boolean panActive = false;
+
+            @Override
+            public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchDown(event, x, y, pointer, button);
+                panActive = button == Input.Buttons.LEFT;
+            }
+
             @Override
             public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
-                setScrollbarsVisible(true);
-                amountX -= deltaX;
-                amountY += deltaY;
-                clamp();
-                if (cancelTouchFocus && ((scrollX && deltaX != 0) || (scrollY && deltaY != 0))) cancelTouchFocus();
+                if (panActive) {
+                    setScrollbarsVisible(true);
+                    amountX -= deltaX;
+                    amountY += deltaY;
+                    clamp();
+                    if (cancelTouchFocus && ((scrollX && deltaX != 0) || (scrollY && deltaY != 0))) cancelTouchFocus();
+                }
             }
 
             @Override
             public void fling(InputEvent event, float x, float y, int button) {
-                if (Math.abs(x) > 150 && scrollX) {
-                    flingTimer = flingTime;
-                    velocityX = x;
-                    if (cancelTouchFocus) cancelTouchFocus();
-                }
-                if (Math.abs(y) > 150 && scrollY) {
-                    flingTimer = flingTime;
-                    velocityY = -y;
-                    if (cancelTouchFocus) cancelTouchFocus();
+                if (button == Input.Buttons.RIGHT) {
+                    if (Math.abs(x) > 150 && scrollX) {
+                        flingTimer = flingTime;
+                        velocityX = x;
+                        if (cancelTouchFocus) cancelTouchFocus();
+                    }
+                    if (Math.abs(y) > 150 && scrollY) {
+                        flingTimer = flingTime;
+                        velocityY = -y;
+                        if (cancelTouchFocus) cancelTouchFocus();
+                    }
                 }
             }
 
