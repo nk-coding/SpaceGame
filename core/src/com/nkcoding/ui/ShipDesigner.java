@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.Disposable;
@@ -39,35 +40,76 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
     private List<ComponentDef> componentClipboard = new LinkedList<>();
     private Clipboard clipboard;
 
+    private Vector2 selectionStart = new Vector2();
+    private Vector2 selectionEnd = new Vector2();
+    private int draggingPointer = -1;
+
+    private ShipDesignerStyle style;
+
     //constructor with a shipDef
-    public ShipDesigner(ShipDef shipDef, ExtAssetManager assetManager, Texture noComponent, Texture selection,
+    public ShipDesigner(ShipDef shipDef, ExtAssetManager assetManager, ShipDesignerStyle style,
                         BiConsumer<List<ComponentDef>, List<ComponentDef>> selectionChanged) {
-        super(assetManager, selection, noComponent);
+        super(assetManager, style.selection, style.noComponent);
         //ShipDef that contains all ComponentDefs
         this.selectionChanged = selectionChanged;
         this.designerHelper = shipDef.getShipDesignerHelper();
+        this.style = style;
         clipboard = Gdx.app.getClipboard();
 
         //capture touch events
         addCaptureListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (UIUtils.shift()) {
-                    ComponentDef def = getComponentAt(x, y);
-                    if (def != null) {
-                        toggleSelectedComponent(getComponentAt(x, y));
+                if (button == Input.Buttons.LEFT) {
+                    if (UIUtils.shift()) {
+                        ComponentDef def = getComponentAt(x, y);
+                        if (def != null) {
+                            toggleSelectedComponent(getComponentAt(x, y));
+                        }
+                    } else {
+                        ComponentDef def = getComponentAt(x, y);
+                        if (def != null && !selectedComponents.contains(def)) {
+                            clearSelectedComponents();
+                            addSelectedComponent(def);
+                        } else if (def == null) {
+                            clearSelectedComponents();
+                        }
                     }
-                } else {
-                    ComponentDef def = getComponentAt(x, y);
-                    if (def != null && !selectedComponents.contains(def)) {
-                        clearSelectedComponents();
-                        addSelectedComponent(def);
-                    } else if (def == null) {
-                        clearSelectedComponents();
-                    }
+                    getStage().setKeyboardFocus(ShipDesigner.this);
+                    return true;
+                } else if (button == Input.Buttons.RIGHT && draggingPointer == -1) {
+                    System.out.println("x: " + x + ", y: " + y);
+                    selectionStart = new Vector2(x, y);
+                    selectionEnd.set(x, y);
+                    draggingPointer = pointer;
+                    return true;
+                } else  {
+                    return false;
                 }
-                getStage().setKeyboardFocus(ShipDesigner.this);
-                return true;
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                if (pointer == draggingPointer) {
+                    selectionEnd.set(x, y);
+                } else {
+                    super.touchDragged(event, x, y, pointer);
+                }
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (pointer == draggingPointer) {
+                    draggingPointer = -1;
+                    int xStart = calculateXIndex(Math.min(selectionStart.x, selectionEnd.x));
+                    int xEnd = calculateXIndex(Math.max(selectionStart.x, selectionEnd.x));
+                    int yStart = calculateYIndex(Math.min(selectionStart.y, selectionEnd.y));
+                    int yEnd = calculateYIndex(Math.max(selectionStart.y, selectionEnd.y));
+                    updateSelectedComponents(designerHelper.getComponents().stream()
+                            .filter(c -> c.getX() > xStart && c.getX() + c.getRealWidth() <= xEnd
+                                    && c.getY() > yStart && c.getY() + c.getRealHeight() <= yEnd)
+                            .collect(Collectors.toList()));
+                }
             }
         });
 
@@ -100,7 +142,7 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
                 }
                 return false;
             case Input.Keys.V:
-                if (clipboard.getContents().equals("") && !componentClipboard.isEmpty() && UIUtils.ctrl()) {
+                if ("".equals(clipboard.getContents()) && !componentClipboard.isEmpty() && UIUtils.ctrl()) {
                     Vector2 pos = screenToLocalCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
                     int posX = calculateXIndex(pos.x);
                     int posY = calculateYIndex(pos.y);
@@ -121,6 +163,9 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
                     return true;
                 }
                 return false;
+            case Input.Keys.R:
+                rotateSelectedComponent();
+                return true;
             default:
                 return false;
         }
@@ -249,6 +294,30 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
             return selectedComponents.contains(def) ? DrawMode.SELECTED : DrawMode.NORMAL;
         } else {
             return null;
+        }
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+        if (draggingPointer != -1) {
+            style.boxSelection.draw(batch,
+                    getDrawX() + selectionStart.x, getDrawY() + selectionStart.y,
+                    selectionEnd.x - selectionStart.x, selectionEnd.y - selectionStart.y);
+        }
+    }
+
+    public static class ShipDesignerStyle {
+        public Texture noComponent;
+        public Texture selection;
+        public Drawable boxSelection;
+
+        public ShipDesignerStyle() {}
+
+        public ShipDesignerStyle(Texture noComponent, Texture selection, Drawable boxSelection) {
+            this.noComponent = noComponent;
+            this.selection = selection;
+            this.boxSelection = boxSelection;
         }
     }
 }

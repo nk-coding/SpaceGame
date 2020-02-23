@@ -23,6 +23,7 @@ public class Styles {
     public final TextField.TextFieldStyle textFieldStyle;
     public final PropertyBox.PropertyBoxStyle propertyBoxStyle;
     public final CodeEditor.CodeEditorStyle codeEditorStyle;
+    public final ShipDesigner.ShipDesignerStyle shipDesignerStyle;
     public final TextButton.TextButtonStyle textButtonStyle;
     public final BitmapFont bitmapFontBig;
     public final BitmapFont bitmapFontSmall;
@@ -51,7 +52,9 @@ public class Styles {
         bitmapFontBig = generateFont((int)(32 * scaleFactor));
         bitmapFontSmall = generateFont((int)(18 * scaleFactor));
 
-        borderBackgroundDrawable = new NinePatchDrawable(new NinePatch(assetManager.getTexture(Asset.SimpleBorder), 3, 3, 3, 3));
+        NinePatch borderNinePatch = new NinePatch(assetManager.getTexture(Asset.SimpleBorder), 3, 3, 3, 3);
+        borderNinePatch.scale(scaleFactor, scaleFactor);
+        borderBackgroundDrawable = new NinePatchDrawable(borderNinePatch);
         borderBackgroundDrawable.setLeftWidth(defaultScaledAbs);
         borderBackgroundDrawable.setRightWidth(defaultScaledAbs);
         borderBackgroundDrawable.setTopHeight(defaultScaledAbs);
@@ -112,6 +115,14 @@ public class Styles {
         textButtonStyle.fontColor = new Color(0xffffffff);
         textButtonStyle.down = borderBackgroundDrawable;
         textButtonStyle.up = borderBackgroundDrawable;
+
+        //ShipDesigner
+        NinePatch boxSelectionNinePatch = new NinePatch(assetManager.getTexture(Asset.SelectionWithBorder), 2,2,2,2);
+        boxSelectionNinePatch.scale(scaleFactor, scaleFactor);
+
+        shipDesignerStyle = new ShipDesigner.ShipDesignerStyle(assetManager.getTexture(Asset.NoComponent),
+                assetManager.getTexture(Asset.Selection),
+                new NinePatchDrawable(boxSelectionNinePatch));
     }
 
     private BitmapFont generateFont(int fontSize) {

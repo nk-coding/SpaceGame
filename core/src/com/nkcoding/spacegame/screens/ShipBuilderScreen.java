@@ -127,7 +127,7 @@ public class ShipBuilderScreen implements Screen {
         UIHelper.activateScrollOnHover(componentsScrollPane);
 
         //shipDesigner
-        shipDesigner = new ShipDesigner(shipDef, assetManager, assetManager.getTexture(Asset.NoComponent), assetManager.getTexture(Asset.Selection), this::selectedComponentChanged);
+        shipDesigner = new ShipDesigner(shipDef, assetManager, styles.shipDesignerStyle, this::selectedComponentChanged);
         shipDesignerZoomScrollPane = new ZoomScrollPane(shipDesigner, styles.zoomScrollPaneStyle);
         shipDesignerZoomScrollPane.setFlickScroll(true);
         shipDesignerZoomScrollPane.setFadeScrollBars(false);
