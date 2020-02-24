@@ -23,6 +23,7 @@ import static com.nkcoding.spacegame.simulation.spaceship.components.ExplosiveCa
 import static com.nkcoding.spacegame.simulation.spaceship.components.Sensors.IS_SCANNER_ENABLED;
 import static com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.IS_ENABLED_KEY;
 import static com.nkcoding.spacegame.simulation.spaceship.components.ShieldGenerator.RADIUS_KEY;
+import static com.nkcoding.spacegame.simulation.spaceship.components.Screen.COLOR_KEY;
 import static com.nkcoding.spacegame.simulation.spaceship.properties.ExternalPropertySpecification.builder;
 
 public enum ComponentType {
@@ -49,7 +50,9 @@ public enum ComponentType {
             builder(SHIP_POSITION_KEY, DataType.fromName("[float x, float y]")).read().build(),
             builder(ROTATION_KEY, DataType.FLOAT).read().build()),
     Sensors((short) 7, Sensors::new, Sensors::new, 2, 1, 100, 100, 0, Asset.Sensors,
-            builder(IS_SCANNER_ENABLED, DataType.BOOLEAN).read().write().changedHandler().concurrent().build());
+            builder(IS_SCANNER_ENABLED, DataType.BOOLEAN).read().write().changedHandler().concurrent().build()),
+    Screen((short) 8, Screen::new, Screen::new, Asset.ScreenDesigner,
+            builder(COLOR_KEY, DataType.INTEGER).read().write().changedHandler().concurrent().build());
 
     //the width of the component
     public final int width;
@@ -156,6 +159,8 @@ public enum ComponentType {
                 return ComputeCore;
             case 7:
                 return Sensors;
+            case 8:
+                return Screen;
             default:
                 throw new IllegalStateException();
         }

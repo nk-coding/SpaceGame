@@ -122,6 +122,8 @@ public class Ship extends Simulated {
                         return new RadiusTransmission(inputStream);
                     case ComponentUpdateID.SHIELD:
                         return new ShieldTransmission(inputStream);
+                    case ComponentUpdateID.COLOR:
+                        return new ColorTransmission(inputStream);
                     default:
                         throw new IllegalStateException("unknown ComponentID: " + componentUpdateID);
                 }

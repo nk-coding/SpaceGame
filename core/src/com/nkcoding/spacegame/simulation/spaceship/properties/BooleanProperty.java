@@ -18,7 +18,7 @@ public class BooleanProperty extends CacheProperty<Boolean> {
 
     @Override
     public void setInitValue(String value) {
-        this.value = value.equalsIgnoreCase("true");
+        set(value.equalsIgnoreCase("true"));
     }
 
     @Override

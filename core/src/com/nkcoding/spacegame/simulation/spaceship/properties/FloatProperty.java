@@ -19,9 +19,9 @@ public class FloatProperty extends CacheProperty<Float> {
     @Override
     public void setInitValue(String value) {
         try {
-            this.value = Float.parseFloat(value);
+            set(Float.parseFloat(value));
         } catch (Exception e) {
-            this.value = 0f;
+            set(0f);
         }
     }
 

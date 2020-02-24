@@ -192,8 +192,7 @@ public abstract class Component implements Damageable {
      * @param batch the Batch to draw on
      */
     public void draw(Batch batch, boolean original) {
-        drawTexture(batch, defaultTexture, new Vector2(0, 0),
-                getWidth(), getHeight(), 0);
+        drawComponentTexture(batch, defaultTexture);
         if (isOriginal()) {
             model.draw(batch);
         }
@@ -221,6 +220,15 @@ public abstract class Component implements Damageable {
                 0, 0,
                 texture.getWidth(), texture.getHeight(),
                 false, false);
+    }
+
+    /**
+     * draws the specified texture in the size of the Component
+     * @param componentTexture the Texture to draw
+     */
+    protected void drawComponentTexture(Batch batch, Texture componentTexture) {
+        drawTexture(batch, componentTexture, new Vector2(0, 0),
+                getWidth(), getHeight(), 0);
     }
 
     /**

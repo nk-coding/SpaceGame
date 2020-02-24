@@ -19,9 +19,9 @@ public class IntProperty extends CacheProperty<Integer> {
     @Override
     public void setInitValue(String value) {
         try {
-            this.value = Integer.parseInt(value);
+            set(Integer.parseInt(value));
         } catch (Exception e) {
-            this.value = 0;
+            set(0);
         }
     }
 

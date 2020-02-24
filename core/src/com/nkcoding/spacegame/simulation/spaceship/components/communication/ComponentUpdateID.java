@@ -6,4 +6,5 @@ public final class ComponentUpdateID {
 
     public static final short RADIUS = 10;
     public static final short SHIELD = 11;
+    public static final short COLOR = 20;
 }

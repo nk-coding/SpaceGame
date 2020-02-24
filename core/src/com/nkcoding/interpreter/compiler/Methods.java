@@ -1,5 +1,6 @@
 package com.nkcoding.interpreter.compiler;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.nkcoding.interpreter.MethodStatement;
 
 import java.util.*;
@@ -53,6 +54,14 @@ public class Methods {
                         e.printStackTrace();
                     }
                     return null;
+                });
+        predefinedMethods.put(new MethodDefinition(MethodType.Predefined, "rgb", DataType.INTEGER,
+                new TypeNamePair("r", DataType.INTEGER), new TypeNamePair("r", DataType.INTEGER), new TypeNamePair("r", DataType.INTEGER)),
+                (Function<Object[], Integer>) obj ->
+                {
+                    return MathUtils.clamp(0, (int)obj[0], 255) << 16
+                            | MathUtils.clamp(0, (int)obj[1], 255) << 8
+                            | MathUtils.clamp(0, (int)obj[2], 255);
                 });
 
         //math functions

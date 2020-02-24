@@ -23,6 +23,6 @@ public class StringProperty extends CacheProperty<String> {
 
     @Override
     public void setInitValue(String value) {
-        this.value = value;
+        set(value);
     }
 }
