@@ -142,7 +142,7 @@ public class ShipDesigner extends ShipWidget implements Zoomable, Disposable {
                 }
                 return false;
             case Input.Keys.V:
-                if (clipboard.getContents().equals("") && !componentClipboard.isEmpty() && UIUtils.ctrl()) {
+                if ("".equals(clipboard.getContents()) && !componentClipboard.isEmpty() && UIUtils.ctrl()) {
                     Vector2 pos = screenToLocalCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
                     int posX = calculateXIndex(pos.x);
                     int posY = calculateYIndex(pos.y);
