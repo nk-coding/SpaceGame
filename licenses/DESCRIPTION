@@ -1,9 +1,9 @@
 copyright for specific files:
-core/src/ui/TextFieldBase.java: modified version under GPL 2.0, original version copyright see AUTHORS file
-core/src/ui/MultiColorTextArea.java: modified version under GPL 2.0, original version copyright see AUTHORS file
+core/src/ui/TextFieldBase.java: modified version under Apache License 2.0, original version copyright see AUTHORS file
+core/src/ui/MultiColorTextArea.java: modified version under Apache License 2.0, original version copyright see AUTHORS file
 core/assets/fonts/sourceCodePro-Medium.ttf: under OFL, copyright see OFL.txt
-core/assets/ui/saveSymbol.png: modified version under GPL 2.0, original version copyright see https://github.com/google/material-design-icons
-core/assets/ui/okSymbol.png: modified version under GPL 2.0, original version copyright see https://github.com/google/material-design-icons
+core/assets/ui/saveSymbol.png: modified version under Apache License 2.0, original version copyright see https://github.com/google/material-design-icons
+core/assets/ui/okSymbol.png: modified version under Apache License 2.0, original version copyright see https://github.com/google/material-design-icons
 core/assets/ui/rotateSymbol.png: modified version under  Creative Commons Attribution-Share Alike 3.0 Unported
     (https://creativecommons.org/licenses/by-sa/3.0/legalcode) based on original version by Fabián Alexis
     (see https://github.com/fabianalexisinostroza/Antu-classic)
