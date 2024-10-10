@@ -1,5 +1,12 @@
 apply plugin: "java"
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+        vendor = JvmVendorSpec.ADOPTIUM
+    }
+}
+
 sourceCompatibility = 1.11
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 

@@ -1,5 +1,12 @@
 apply plugin: "java"
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+        vendor = JvmVendorSpec.ADOPTIUM
+    }
+}
+
 sourceCompatibility = 1.11
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs = ["../core/assets"]
@@ -13,15 +20,11 @@ task run(dependsOn: classes, type: JavaExec) {
     standardInput = System.in
     workingDir = project.rootDir
     ignoreExitValue = true
-}
 
-task debug(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-    workingDir = project.rootDir
-    ignoreExitValue = true
-    debug = true
+    javaLauncher.set(javaToolchains.launcherFor {
+        languageVersion.set(JavaLanguageVersion.of(11))
+        vendor = JvmVendorSpec.ADOPTIUM
+    })
 }
 
 task dist(type: Jar) {

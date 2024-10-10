@@ -1,15 +1,12 @@
-buildscript {
-    
+plugins {
+    id 'java'
+}
 
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven { url "https://plugins.gradle.org/m2/" }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        jcenter()
-        google()
-    }
-    dependencies {
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+        vendor = JvmVendorSpec.ADOPTIUM
     }
 }
 
@@ -26,18 +23,13 @@ allprojects {
     }
 
     repositories {
-        mavenLocal()
         mavenCentral()
-        jcenter()
-        google()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
+  
 }
 
 project(":desktop") {
     apply plugin: "java-library"
-
 
     dependencies {
         implementation project(":core")
